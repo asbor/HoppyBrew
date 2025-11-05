@@ -91,6 +91,7 @@ class StyleBase(BaseModel):
     abv_range: Optional[str] = None
 
     class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
         schema_extra = {"example": STYLE_BASE_EXAMPLE}
 
 
