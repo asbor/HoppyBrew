@@ -10,6 +10,7 @@ const {
   fetchHops, fetchFermentables, fetchYeasts, fetchMiscs,
   getLowStockItems 
 } = useInventory()
+const { getBatchStatusColor } = useStatusColors()
 
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -54,20 +55,6 @@ const lowStockItems = computed(() => {
     ...items.miscs.map(m => ({ name: m.name, amount: m.amount, unit: m.unit, type: 'Misc' })),
   ].slice(0, 5)
 })
-
-// Status badge color helper
-function getBatchStatusColor(status: string) {
-  const colors: Record<string, string> = {
-    planning: 'bg-gray-500',
-    brew_day: 'bg-orange-500',
-    primary_fermentation: 'bg-blue-500',
-    secondary_fermentation: 'bg-indigo-500',
-    conditioning: 'bg-purple-500',
-    packaged: 'bg-green-500',
-    completed: 'bg-gray-400',
-  }
-  return colors[status] || 'bg-gray-500'
-}
 
 function formatDate(dateString: string | undefined) {
   if (!dateString) return 'N/A'

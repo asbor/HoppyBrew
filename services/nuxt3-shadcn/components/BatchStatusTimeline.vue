@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 
+const { getBatchStatusColor } = useStatusColors()
+
 export interface BatchStatus {
   id: string
   name: string
@@ -36,16 +38,7 @@ const currentStepIndex = computed(() => {
 })
 
 const statusColor = computed(() => {
-  const colors: Record<string, string> = {
-    design: 'bg-gray-400',
-    planning: 'bg-blue-400',
-    brewing: 'bg-orange-500',
-    fermenting: 'bg-purple-500',
-    conditioning: 'bg-cyan-500',
-    packaging: 'bg-green-500',
-    complete: 'bg-green-700',
-  }
-  return colors[props.batch.status] || 'bg-gray-400'
+  return getBatchStatusColor(props.batch.status)
 })
 
 const statusBadgeVariant = computed(() => {
