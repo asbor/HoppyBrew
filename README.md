@@ -408,44 +408,6 @@ Here are some of the most frequently used Docker commands:
 
 
 
-### Docker Deployment
-
-#### Prerequisites for Docker Deployment
-
-To run the project using Docker, you need to have the following software installed on your machine:
-
-* Docker
-
-
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone <your-repository-url>
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 
@@ -508,9 +470,12 @@ Project Link: [HoppyBrew](https://github.com/asbor/HoppyBrew)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
+* [Vue.js](https://vuejs.org/) - Progressive JavaScript framework
+* [Nuxt.js](https://nuxt.com/) - Vue.js meta-framework
+* [Shadcn UI](https://ui.shadcn.com/) - Beautifully designed components
+* [SQLAlchemy](https://www.sqlalchemy.org/) - Python SQL toolkit and ORM
+* [Brewfather](https://web.brewfather.app/) - Inspiration for this project
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
