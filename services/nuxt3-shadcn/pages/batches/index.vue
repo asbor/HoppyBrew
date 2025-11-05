@@ -1,58 +1,8 @@
-<template>
-  <div>
-    <header class="flex justify-between items-center mb-8">
-      <div>
-        <h1 class="text-2xl font-semibold">Batches</h1>
-      </div>
-      <div>
-        <div class="flex gap-4">
-          <Button asChild>
-            <NuxtLink href="/batches/newBatch">New Batch</NuxtLink>
-          </Button>
-        </div>
-      </div>
-    </header>
-    <div v-if="loading" class="text-center">Loading...</div>
-    <div v-else>
-      <div style="width: 1600px; height: 800px;">
-        <Table style="height: 100%; width: 100%;">
-          <TableCaption>A list of your batches.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>id</TableHead>
-              <TableHead>batch name</TableHead>
-              <TableHead>batch size</TableHead>
-              <TableHead>created at</TableHead>
-              <TableHead>actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <!-- Loop through batches and display each batch -->
-            <template v-for="batch in batches" :key="batch.id">
-              <TableRow>
-                <TableCell>{{ batch.id }}</TableCell>
-                <TableCell>{{ batch.batch_name }}</TableCell>
-                <TableCell>{{ batch.batch_size }}</TableCell>
-                <TableCell>{{ batch.created_at }}</TableCell>
-                <TableCell class="text-right">
-                  <!-- Add buttons for actions like edit or delete -->
-                  <Button asChild class="mr-2">
-                    <NuxtLink :href="`/batches/${batch.id}`">Edit</NuxtLink>
-                  </Button>
-
-                  <!-- Delete button -->
-                  <Button @click="deleteBatch(batch.id)">Delete</Button>
-                </TableCell>
-              </TableRow>
-            </template>
-          </TableBody>
-        </Table>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -61,63 +11,250 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { ref, onMounted } from 'vue';
+} from '@/components/ui/table'
+import type { BatchStatus } from '@/composables/useBatches'
 
-// Define interface for batch
-interface Batch {
-  id: string;
-  recipe_id: string;
-  batch_size: number;
-  created_at: string;
-  name: string;
-}
+const { batches, loading, error, fetchAll, remove } = useBatches()
 
-const batches = ref<Batch[]>([]);
-const selectedBatch = ref<Batch | null>(null);
-const loading = ref(false);
+const searchQuery = ref('')
+const filterStatus = ref<BatchStatus | 'all'>('all')
 
-async function fetchBatches() {
-  try {
-    loading.value = true;
-    const response = await fetch('http://localhost:8000/batches', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch batches');
-    }
-    const data = await response.json();
-    batches.value = data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
+// Filtered batches based on search and status
+const filteredBatches = computed(() => {
+  let result = batches.value
+
+  // Filter by status
+  if (filterStatus.value !== 'all') {
+    result = result.filter(batch => batch.status === filterStatus.value)
   }
-}
 
-function deleteBatch(id: string) {
+  // Filter by search query
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(batch =>
+      batch.batch_name.toLowerCase().includes(query)
+    )
+  }
+
+  return result
+})
+
+async function deleteBatch(id: string) {
   if (!confirm('Are you sure you want to delete this batch?')) {
-    return;
+    return
   }
 
-  // Delete the batch
-  fetch(`http://localhost:8000/batches/${id}`, {
-    method: 'DELETE',
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to delete batch');
-      }
-      // Remove the deleted batch from the list
-      batches.value = batches.value.filter((batch) => batch.id !== id);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  const result = await remove(id)
+  if (result.error) {
+    alert(`Failed to delete batch: ${result.error.value}`)
+  }
 }
 
-onMounted(fetchBatches);
+function getBatchStatusColor(status: BatchStatus) {
+  const colors: Record<BatchStatus, string> = {
+    planning: 'bg-gray-500',
+    brew_day: 'bg-orange-500',
+    primary_fermentation: 'bg-blue-500',
+    secondary_fermentation: 'bg-indigo-500',
+    conditioning: 'bg-purple-500',
+    packaged: 'bg-green-500',
+    completed: 'bg-gray-400',
+    archived: 'bg-gray-300',
+  }
+  return colors[status] || 'bg-gray-500'
+}
+
+function formatDate(dateString: string | undefined) {
+  if (!dateString) return 'N/A'
+  return new Date(dateString).toLocaleDateString('en-GB', { 
+    day: '2-digit', 
+    month: '2-digit', 
+    year: 'numeric' 
+  })
+}
+
+function calculateDaysInStage(batch: any) {
+  const statusDate = batch.fermentation_start_date || batch.brew_date || batch.created_at
+  if (!statusDate) return 0
+  
+  const now = new Date()
+  const start = new Date(statusDate)
+  const diffTime = Math.abs(now.getTime() - start.getTime())
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+}
+
+// Load batches on mount
+onMounted(async () => {
+  await fetchAll()
+})
 </script>
+
+<template>
+  <div class="space-y-6">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h1 class="text-3xl font-bold">Batches</h1>
+        <p class="text-muted-foreground">Track your brewing batches and fermentation progress</p>
+      </div>
+      <Button asChild>
+        <NuxtLink href="/batches/newBatch">
+          <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+          New Batch
+        </NuxtLink>
+      </Button>
+    </header>
+
+    <!-- Search & Filters -->
+    <div class="flex flex-col md:flex-row gap-4">
+      <div class="flex-1">
+        <Input
+          v-model="searchQuery"
+          placeholder="Search batches by name..."
+          class="max-w-md"
+        >
+          <template #prefix>
+            <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
+          </template>
+        </Input>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <Button 
+          variant="outline" 
+          size="sm"
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
+          @click="filterStatus = 'all'"
+        >
+          All
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm"
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'primary_fermentation' }"
+          @click="filterStatus = 'primary_fermentation'"
+        >
+          Fermenting
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm"
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'conditioning' }"
+          @click="filterStatus = 'conditioning'"
+        >
+          Conditioning
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm"
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'packaged' }"
+          @click="filterStatus = 'packaged'"
+        >
+          Packaged
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm"
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'completed' }"
+          @click="filterStatus = 'completed'"
+        >
+          Completed
+        </Button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="text-center py-12">
+      <p class="text-muted-foreground">Loading batches...</p>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="text-center py-12">
+      <p class="text-destructive">{{ error }}</p>
+    </div>
+
+    <!-- Empty State -->
+    <Card v-else-if="batches.length === 0" class="text-center py-12">
+      <CardHeader>
+        <Icon name="mdi:beer" class="mx-auto h-12 w-12 text-muted-foreground" />
+        <CardTitle>No batches yet</CardTitle>
+        <CardDescription>
+          Start your first brew by creating a batch from a recipe
+        </CardDescription>
+      </CardHeader>
+      <CardFooter class="justify-center">
+        <Button asChild>
+          <NuxtLink href="/batches/newBatch">
+            <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+            Create First Batch
+          </NuxtLink>
+        </Button>
+      </CardFooter>
+    </Card>
+
+    <!-- Batches Table -->
+    <Card v-else>
+      <CardHeader>
+        <div class="flex items-center justify-between">
+          <div>
+            <CardTitle>Batch List</CardTitle>
+            <CardDescription>
+              {{ filteredBatches.length }} {{ filteredBatches.length === 1 ? 'batch' : 'batches' }} found
+            </CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Batch Name</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Batch Size</TableHead>
+              <TableHead>Brew Date</TableHead>
+              <TableHead>Days in Stage</TableHead>
+              <TableHead>OG</TableHead>
+              <TableHead>FG</TableHead>
+              <TableHead>ABV</TableHead>
+              <TableHead class="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="batch in filteredBatches" :key="batch.id">
+              <TableCell class="font-medium">
+                <NuxtLink :href="`/batches/${batch.id}`" class="hover:underline">
+                  {{ batch.batch_name }}
+                </NuxtLink>
+              </TableCell>
+              <TableCell>
+                <Badge :class="getBatchStatusColor(batch.status)" class="text-white">
+                  {{ batch.status.replace(/_/g, ' ') }}
+                </Badge>
+              </TableCell>
+              <TableCell>{{ batch.batch_size }} L</TableCell>
+              <TableCell>{{ formatDate(batch.brew_date || batch.created_at) }}</TableCell>
+              <TableCell>{{ calculateDaysInStage(batch) }} days</TableCell>
+              <TableCell>{{ batch.og?.toFixed(3) || 'N/A' }}</TableCell>
+              <TableCell>{{ batch.fg?.toFixed(3) || 'N/A' }}</TableCell>
+              <TableCell>{{ batch.abv?.toFixed(1) || 'N/A' }}%</TableCell>
+              <TableCell class="text-right space-x-2">
+                <Button asChild variant="ghost" size="sm">
+                  <NuxtLink :href="`/batches/${batch.id}`">
+                    <Icon name="mdi:pencil" class="h-4 w-4" />
+                  </NuxtLink>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  @click="deleteBatch(batch.id)"
+                  class="text-destructive hover:text-destructive"
+                >
+                  <Icon name="mdi:delete" class="h-4 w-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  </div>
+</template>
