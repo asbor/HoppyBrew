@@ -100,12 +100,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="grid w-full gap-6">
+  <div class="grid w-full gap-ha-md">
     <!-- Header -->
     <header class="flex items-start justify-between">
       <div class="grow">
-        <p class="text-muted-foreground">Welcome back to HoppyBrew!</p>
-        <h1 class="text-3xl font-bold">Dashboard</h1>
+        <p class="text-ha-sm text-muted-foreground">Welcome back to HoppyBrew!</p>
+        <h1 class="text-ha-2xl font-bold">Dashboard</h1>
       </div>
     </header>
 
@@ -120,58 +120,58 @@ onMounted(async () => {
     </div>
 
     <!-- Main Content -->
-    <main v-else class="grid w-full gap-6">
+    <main v-else class="grid w-full gap-ha-md">
       <!-- Stats Cards -->
-      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div class="grid gap-ha-sm md:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle class="text-sm font-medium">Total Recipes</CardTitle>
-            <Icon name="mdi:book-open-page-variant" class="h-4 w-4 text-muted-foreground" />
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-ha-sm">
+            <CardTitle class="text-ha-sm font-medium">Total Recipes</CardTitle>
+            <Icon name="mdi:book-open-page-variant" class="h-6 w-6 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div class="text-2xl font-bold">{{ stats.totalRecipes }}</div>
-            <p class="text-xs text-muted-foreground">
+            <div class="text-ha-2xl font-bold">{{ stats.totalRecipes }}</div>
+            <p class="text-ha-xs text-muted-foreground">
               Your recipe library
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle class="text-sm font-medium">Active Batches</CardTitle>
-            <Icon name="mdi:beer" class="h-4 w-4 text-muted-foreground" />
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-ha-sm">
+            <CardTitle class="text-ha-sm font-medium">Active Batches</CardTitle>
+            <Icon name="mdi:beer" class="h-6 w-6 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div class="text-2xl font-bold">{{ stats.activeBatches }}</div>
-            <p class="text-xs text-muted-foreground">
+            <div class="text-ha-2xl font-bold">{{ stats.activeBatches }}</div>
+            <p class="text-ha-xs text-muted-foreground">
               Currently fermenting
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle class="text-sm font-medium">Inventory Items</CardTitle>
-            <Icon name="mdi:package-variant" class="h-4 w-4 text-muted-foreground" />
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-ha-sm">
+            <CardTitle class="text-ha-sm font-medium">Inventory Items</CardTitle>
+            <Icon name="mdi:package-variant" class="h-6 w-6 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div class="text-2xl font-bold">{{ stats.totalInventoryItems }}</div>
-            <p class="text-xs text-muted-foreground">
+            <div class="text-ha-2xl font-bold">{{ stats.totalInventoryItems }}</div>
+            <p class="text-ha-xs text-muted-foreground">
               Total ingredients
             </p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle class="text-sm font-medium">Low Stock Items</CardTitle>
-            <Icon name="mdi:alert-circle" class="h-4 w-4 text-muted-foreground" />
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-ha-sm">
+            <CardTitle class="text-ha-sm font-medium">Low Stock Items</CardTitle>
+            <Icon name="mdi:alert-circle" class="h-6 w-6 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div class="text-2xl font-bold" :class="stats.lowStockCount > 0 ? 'text-orange-500' : ''">
+            <div class="text-ha-2xl font-bold" :class="stats.lowStockCount > 0 ? 'text-orange-500' : ''">
               {{ stats.lowStockCount }}
             </div>
-            <p class="text-xs text-muted-foreground">
+            <p class="text-ha-xs text-muted-foreground">
               Need restocking
             </p>
           </CardContent>
@@ -179,31 +179,31 @@ onMounted(async () => {
       </div>
 
       <!-- Two Column Layout -->
-      <div class="grid gap-6 md:grid-cols-2">
+      <div class="grid gap-ha-md md:grid-cols-2">
         <!-- Recent Batches -->
         <Card>
           <CardHeader>
-            <CardTitle>Recent Batches</CardTitle>
+            <CardTitle class="text-ha-lg">Recent Batches</CardTitle>
             <CardDescription>Your latest brewing activity</CardDescription>
           </CardHeader>
           <CardContent>
-            <div v-if="recentBatches.length === 0" class="text-center py-8 text-muted-foreground">
+            <div v-if="recentBatches.length === 0" class="text-center py-ha-lg text-muted-foreground">
               No batches yet. Start your first brew!
             </div>
-            <div v-else class="space-y-4">
+            <div v-else class="space-y-ha-sm">
               <div v-for="batch in recentBatches" :key="batch.id" class="flex items-center justify-between">
                 <div class="flex-1">
-                  <NuxtLink :href="`/batches/${batch.id}`" class="font-medium hover:underline">
+                  <NuxtLink :href="`/batches/${batch.id}`" class="font-medium hover:underline text-ha-base">
                     {{ batch.batch_name }}
                   </NuxtLink>
-                  <p class="text-sm text-muted-foreground">{{ formatDate(batch.brew_date || batch.created_at) }}</p>
+                  <p class="text-ha-sm text-muted-foreground">{{ formatDate(batch.brew_date || batch.created_at) }}</p>
                 </div>
                 <Badge :class="getBatchStatusColor(batch.status)" class="text-white">
                   {{ batch.status.replace(/_/g, ' ') }}
                 </Badge>
               </div>
             </div>
-            <div class="mt-4 pt-4 border-t">
+            <div class="mt-ha-sm pt-ha-sm border-t">
               <Button asChild variant="outline" class="w-full">
                 <NuxtLink href="/batches">View All Batches</NuxtLink>
               </Button>
@@ -214,26 +214,26 @@ onMounted(async () => {
         <!-- Recent Recipes -->
         <Card>
           <CardHeader>
-            <CardTitle>Recent Recipes</CardTitle>
+            <CardTitle class="text-ha-lg">Recent Recipes</CardTitle>
             <CardDescription>Your latest recipe designs</CardDescription>
           </CardHeader>
           <CardContent>
-            <div v-if="recentRecipes.length === 0" class="text-center py-8 text-muted-foreground">
+            <div v-if="recentRecipes.length === 0" class="text-center py-ha-lg text-muted-foreground">
               No recipes yet. Create your first recipe!
             </div>
-            <div v-else class="space-y-4">
+            <div v-else class="space-y-ha-sm">
               <div v-for="recipe in recentRecipes" :key="recipe.id" class="flex items-center justify-between">
                 <div class="flex-1">
-                  <NuxtLink :href="`/recipes/${recipe.id}`" class="font-medium hover:underline">
+                  <NuxtLink :href="`/recipes/${recipe.id}`" class="font-medium hover:underline text-ha-base">
                     {{ recipe.name }}
                   </NuxtLink>
-                  <p class="text-sm text-muted-foreground">
+                  <p class="text-ha-sm text-muted-foreground">
                     {{ recipe.type }} • {{ recipe.est_abv?.toFixed(1) }}% ABV • {{ recipe.ibu?.toFixed(0) }} IBU
                   </p>
                 </div>
               </div>
             </div>
-            <div class="mt-4 pt-4 border-t">
+            <div class="mt-ha-sm pt-ha-sm border-t">
               <Button asChild variant="outline" class="w-full">
                 <NuxtLink href="/recipes">View All Recipes</NuxtLink>
               </Button>
@@ -245,23 +245,23 @@ onMounted(async () => {
       <!-- Low Stock Alert -->
       <Card v-if="lowStockItems.length > 0">
         <CardHeader>
-          <CardTitle class="flex items-center gap-2">
-            <Icon name="mdi:alert-circle" class="h-5 w-5 text-orange-500" />
+          <CardTitle class="flex items-center gap-ha-sm text-ha-lg">
+            <Icon name="mdi:alert-circle" class="h-6 w-6 text-orange-500" />
             Low Stock Alert
           </CardTitle>
           <CardDescription>These items need restocking soon</CardDescription>
         </CardHeader>
         <CardContent>
-          <div class="space-y-3">
+          <div class="space-y-ha-xs">
             <div v-for="(item, index) in lowStockItems" :key="index" class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-ha-xs">
                 <Badge variant="outline">{{ item.type }}</Badge>
-                <span class="font-medium">{{ item.name }}</span>
+                <span class="font-medium text-ha-base">{{ item.name }}</span>
               </div>
-              <span class="text-sm text-muted-foreground">{{ item.amount }} {{ item.unit }}</span>
+              <span class="text-ha-sm text-muted-foreground">{{ item.amount }} {{ item.unit }}</span>
             </div>
           </div>
-          <div class="mt-4 pt-4 border-t">
+          <div class="mt-ha-sm pt-ha-sm border-t">
             <Button asChild variant="outline" class="w-full">
               <NuxtLink href="/inventory">Manage Inventory</NuxtLink>
             </Button>
@@ -272,31 +272,31 @@ onMounted(async () => {
       <!-- Quick Actions -->
       <Card>
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+          <CardTitle class="text-ha-lg">Quick Actions</CardTitle>
           <CardDescription>Common brewing tasks</CardDescription>
         </CardHeader>
-        <CardContent class="grid gap-3 md:grid-cols-4">
+        <CardContent class="grid gap-ha-xs md:grid-cols-4">
           <Button asChild variant="default">
             <NuxtLink href="/recipes/newRecipe">
-              <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+              <Icon name="mdi:plus" class="mr-2 h-5 w-5" />
               New Recipe
             </NuxtLink>
           </Button>
           <Button asChild variant="default">
             <NuxtLink href="/batches/newBatch">
-              <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+              <Icon name="mdi:plus" class="mr-2 h-5 w-5" />
               New Batch
             </NuxtLink>
           </Button>
           <Button asChild variant="outline">
             <NuxtLink href="/tools">
-              <Icon name="mdi:calculator" class="mr-2 h-4 w-4" />
+              <Icon name="mdi:calculator" class="mr-2 h-5 w-5" />
               Calculators
             </NuxtLink>
           </Button>
           <Button asChild variant="outline">
             <NuxtLink href="/library">
-              <Icon name="mdi:library" class="mr-2 h-4 w-4" />
+              <Icon name="mdi:library" class="mr-2 h-5 w-5" />
               Recipe Library
             </NuxtLink>
           </Button>
