@@ -21,6 +21,7 @@ from . import inventory_yeasts
 from . import trigger_beer_styles_processing
 from . import health
 from . import references
+from . import homeassistant
 
 __all__ = [
     "recipes",
@@ -43,4 +44,5 @@ __all__ = [
     "trigger_beer_styles_processing",
     "health",
     "references",
+    "homeassistant",
 ]

@@ -17,6 +17,9 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
+# Constants
+UNKNOWN_RECIPE_NAME = "Unknown"
+
 
 class HomeAssistantBatchSensor(BaseModel):
     """Batch sensor data formatted for HomeAssistant"""
@@ -37,6 +40,31 @@ class HomeAssistantDiscoveryConfig(BaseModel):
     unique_id: str
     device: Dict[str, Any]
     icon: str = "mdi:beer"
+
+
+def calculate_batch_age(created_at: datetime) -> int:
+    """Calculate batch age in days"""
+    return (datetime.now() - created_at).days
+
+
+def determine_batch_state(batch_age_days: int) -> str:
+    """
+    Determine batch state based on age in days.
+    
+    Args:
+        batch_age_days: Age of the batch in days
+        
+    Returns:
+        State string: "brewing", "fermenting", "conditioning", or "ready"
+    """
+    if batch_age_days < 1:
+        return "brewing"
+    elif batch_age_days < 14:
+        return "fermenting"
+    elif batch_age_days < 28:
+        return "conditioning"
+    else:
+        return "ready"
 
 
 @router.get(
@@ -76,18 +104,9 @@ async def get_batches_for_homeassistant(db: Session = Depends(get_db)):
     
     sensors = []
     for batch in batches:
-        # Calculate batch age in days
-        batch_age_days = (datetime.now() - batch.created_at).days
-        
-        # Determine batch state based on age and logs
-        if batch_age_days < 1:
-            state = "brewing"
-        elif batch_age_days < 14:
-            state = "fermenting"
-        elif batch_age_days < 28:
-            state = "conditioning"
-        else:
-            state = "ready"
+        # Calculate batch age and state
+        batch_age_days = calculate_batch_age(batch.created_at)
+        state = determine_batch_state(batch_age_days)
         
         # Build attributes
         attributes = {
@@ -101,7 +120,7 @@ async def get_batches_for_homeassistant(db: Session = Depends(get_db)):
             "updated_at": batch.updated_at.isoformat(),
             "age_days": batch_age_days,
             "recipe_id": batch.recipe_id,
-            "recipe_name": batch.recipe.name if batch.recipe else "Unknown",
+            "recipe_name": batch.recipe.name if batch.recipe else UNKNOWN_RECIPE_NAME,
         }
         
         # Add latest log activity if available
@@ -164,16 +183,8 @@ async def get_batch_for_homeassistant(
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
     
-    batch_age_days = (datetime.now() - batch.created_at).days
-    
-    if batch_age_days < 1:
-        state = "brewing"
-    elif batch_age_days < 14:
-        state = "fermenting"
-    elif batch_age_days < 28:
-        state = "conditioning"
-    else:
-        state = "ready"
+    batch_age_days = calculate_batch_age(batch.created_at)
+    state = determine_batch_state(batch_age_days)
     
     attributes = {
         "batch_id": batch.id,
@@ -187,7 +198,7 @@ async def get_batch_for_homeassistant(
         "updated_at": batch.updated_at.isoformat(),
         "age_days": batch_age_days,
         "recipe_id": batch.recipe_id,
-        "recipe_name": batch.recipe.name if batch.recipe else "Unknown",
+        "recipe_name": batch.recipe.name if batch.recipe else UNKNOWN_RECIPE_NAME,
     }
     
     if batch.batch_log:
@@ -237,13 +248,14 @@ async def get_brewery_summary(db: Session = Depends(get_db)):
     ready_count = 0
     
     for batch in batches:
-        batch_age_days = (datetime.now() - batch.created_at).days
+        batch_age_days = calculate_batch_age(batch.created_at)
+        state = determine_batch_state(batch_age_days)
         
-        if batch_age_days < 1:
+        if state == "brewing":
             brewing_count += 1
-        elif batch_age_days < 14:
+        elif state == "fermenting":
             fermenting_count += 1
-        elif batch_age_days < 28:
+        elif state == "conditioning":
             conditioning_count += 1
         else:
             ready_count += 1
