@@ -4,6 +4,7 @@
  
 @layer base {
   :root {
+    /* Home Assistant Light Theme (not used, but kept for compatibility) */
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
  
@@ -37,34 +38,35 @@
   }
  
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Home Assistant Dark Theme Colors */
+    --background: 222 47% 11%;        /* #111111 - Main background */
+    --foreground: 0 0% 95%;           /* #F1F1F1 - Main text color */
  
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
+    --muted: 215 28% 17%;             /* #1E2228 - Muted backgrounds */
+    --muted-foreground: 0 0% 70%;     /* #B3B3B3 - Muted text */
  
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 47% 11%;           /* #111111 - Popover background */
+    --popover-foreground: 0 0% 95%;   /* #F1F1F1 - Popover text */
  
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
+    --card: 215 28% 17%;              /* #1E2228 - Card background */
+    --card-foreground: 0 0% 95%;      /* #F1F1F1 - Card text */
  
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
+    --border: 215 20% 25%;            /* #2E3338 - Borders */
+    --input: 215 28% 17%;             /* #1E2228 - Input background */
  
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+    --primary: 199 89% 48%;           /* #03A9F4 - Home Assistant blue */
+    --primary-foreground: 0 0% 100%;  /* #FFFFFF - Primary text */
  
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 215 28% 17%;         /* #1E2228 - Secondary background */
+    --secondary-foreground: 0 0% 95%; /* #F1F1F1 - Secondary text */
  
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 199 89% 48%;            /* #03A9F4 - Accent color */
+    --accent-foreground: 0 0% 100%;   /* #FFFFFF - Accent text */
  
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 70% 50%;         /* Red for errors */
+    --destructive-foreground: 0 0% 100%;
  
-    --ring: 0 0% 83.1%;
+    --ring: 199 89% 48%;              /* #03A9F4 - Focus ring */
   }
 }
  
@@ -74,5 +76,25 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+  /* Ensure all inputs, textareas, and selects have visible text in dark mode */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply text-foreground;
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Ensure placeholder text is visible */
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    @apply text-muted-foreground;
+    opacity: 0.7;
+  }
+  
+  /* Fix for number input spinners */
+  .dark input[type="number"] {
+    @apply text-foreground;
   }
 }
