@@ -51,17 +51,18 @@ async function deleteBatch(id: string) {
 }
 
 function getBatchStatusColor(status: BatchStatus) {
+  // Colors matching Home Assistant design system
   const colors: Record<BatchStatus, string> = {
-    planning: 'bg-gray-500',
-    brew_day: 'bg-orange-500',
-    primary_fermentation: 'bg-blue-500',
-    secondary_fermentation: 'bg-indigo-500',
-    conditioning: 'bg-purple-500',
-    packaged: 'bg-green-500',
-    completed: 'bg-gray-400',
-    archived: 'bg-gray-300',
+    planning: 'bg-slate-500',        // Gray for planning/inactive
+    brew_day: 'bg-amber-500',        // Amber for warning/in-progress (was orange)
+    primary_fermentation: 'bg-sky-500',     // Blue for active states (was blue-500)
+    secondary_fermentation: 'bg-blue-500',  // Deeper blue for secondary fermentation
+    conditioning: 'bg-purple-500',   // Purple for special states
+    packaged: 'bg-emerald-500',      // Green for success/completed (was green-500)
+    completed: 'bg-green-600',       // Darker green for final completion
+    archived: 'bg-gray-400',         // Light gray for archived
   }
-  return colors[status] || 'bg-gray-500'
+  return colors[status] || 'bg-slate-500'
 }
 
 function formatDate(dateString: string | undefined) {
