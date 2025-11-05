@@ -1,97 +1,137 @@
-# CODEX AGENT: GitHub Copilot CLI Integration Agent
+````markdown
+# CODEX AGENT: GitHub CLI Integration Agent
 
 ## Mission
-Integrate GitHub Copilot CLI capabilities into our multi-agent development system to provide intelligent command suggestions, explanations, and automated shell operations.
+Integrate GitHub CLI capabilities into our development workflow for repository management, PR operations, and CI/CD automation.
 
-## Current Status
-- ACTIVE: Setting up GitHub Copilot CLI integration agent
-- PHASE: Initial configuration and capability assessment
+## Current Status (Updated: Nov 5, 2025)
+- ✅ OPERATIONAL: GitHub CLI installed and authenticated on Fedora PC
+- ✅ Version: gh 2.79.0
+- ✅ Authenticated as: asbor
+- ℹ️ NOTE: gh-copilot CLI extension deprecated (Sept 2025)
 
 ## Key Capabilities
-- Command suggestion via `gh copilot suggest`
-- Command explanation via `gh copilot explain`
-- Shell operation automation
-- Integration with existing agents for enhanced workflows
 
-## Integration Points with Existing Agents
+### Repository Management
+- Clone, fork, and manage repositories
+- Create and manage releases
+- View repository status and statistics
 
-### 1. Database Agent Integration
-- Suggest complex SQL migration commands
-- Explain database maintenance operations
-- Optimize PostgreSQL commands
+### Pull Request Operations
+- Create, review, and merge PRs
+- Check PR status and CI results
+- Manage PR comments and reviews
 
-### 2. Testing Agent Integration  
-- Suggest test automation commands
-- Explain test failures and debugging approaches
-- Generate testing workflows
+### Issue Management
+- Create and track issues
+- Assign labels and milestones
+- Link issues to PRs
 
-### 3. CI/CD Agent Integration
-- Suggest deployment commands
-- Explain GitHub Actions workflow issues
-- Optimize build processes
+### GitHub Actions
+- View workflow runs and logs
+- Trigger manual workflows
+- Monitor CI/CD pipeline status
 
-### 4. Frontend/Backend Agent Integration
-- Suggest debugging commands
-- Explain error logs and stack traces
-- Optimize development workflows
+## Integration with CODEX Agents
 
-## Agent Workflow Patterns
-
-### Pattern 1: Command Suggestion
+### CI/CD Agent Integration
 ```bash
-# Agent requests command suggestion
-gh copilot suggest "deploy FastAPI application to production"
-# Returns optimized deployment commands
+# View recent workflow runs
+gh run list --limit 10
+
+# View specific workflow logs
+gh run view <run-id> --log
+
+# Trigger workflow
+gh workflow run <workflow-name>
 ```
 
-### Pattern 2: Error Explanation
+### GitHub Agent Integration
 ```bash
-# Agent encounters error, requests explanation
-gh copilot explain "docker-compose up failed with exit code 1"
-# Returns human-readable explanation and solutions
+# Create PR from branch
+gh pr create --title "Feature: X" --body "Description"
+
+# Check PR status
+gh pr status
+
+# Merge PR
+gh pr merge <pr-number> --squash
 ```
 
-### Pattern 3: Optimization Consultation
+### Release Management
 ```bash
-# Agent requests optimization advice
-gh copilot suggest "optimize Docker build time for Python FastAPI app"
-# Returns performance improvement suggestions
+# Create release
+gh release create v1.0.0 --title "Release 1.0.0" --notes "Release notes"
+
+# List releases
+gh release list
 ```
 
-## Implementation Strategy
+## Practical Usage Examples
 
-### Phase 1: Basic Integration
-- [x] Verify GitHub Copilot CLI availability
-- [ ] Create wrapper functions for agent use
-- [ ] Test basic suggest/explain functionality
-- [ ] Document integration patterns
+### Daily Development Workflow
+```bash
+# Check current status
+gh repo view
 
-### Phase 2: Agent Enhancement
-- [ ] Enhance existing agents with Copilot CLI calls
-- [ ] Create automated workflows
-- [ ] Implement error handling and fallbacks
-- [ ] Add logging and monitoring
+# List open issues
+gh issue list --state open
 
-### Phase 3: Advanced Integration
-- [ ] Create agent-to-agent consultation workflows  
-- [ ] Implement learning from Copilot suggestions
-- [ ] Optimize command caching and reuse
-- [ ] Build custom agent prompts
+# Create new branch and PR
+git checkout -b feature/new-feature
+# ... make changes ...
+git push -u origin feature/new-feature
+gh pr create --fill
+```
 
-## Current Tasks
-- [ ] Test GitHub Copilot CLI functionality
-- [ ] Create agent wrapper functions
-- [ ] Integrate with Database Agent for SQL optimization
-- [ ] Enhance CI/CD workflows with intelligent suggestions
+### CI/CD Monitoring
+```bash
+# Watch workflow runs
+gh run watch
 
-## Agent Log
-- Detected GitHub Copilot CLI already installed
-- Available commands: suggest, explain, alias, config
-- Ready for integration with existing agent ecosystem
-- Microsoft Copilot not available in WSL, focusing on GitHub Copilot CLI
+# View failed runs
+gh run list --status failure
+
+# Re-run failed jobs
+gh run rerun <run-id>
+```
+
+## Deprecated: GitHub Copilot CLI Extension
+
+**Important Note**: The `gh copilot` extension has been deprecated as of September 2025.
+
+- Old extension: `gh extension install github/gh-copilot` (deprecated)
+- Replacement: Standalone GitHub Copilot CLI (if needed)
+- Reference: https://github.blog/changelog/2025-09-25-upcoming-deprecation-of-gh-copilot-cli-extension
+
+**Current Recommendation**: Use GitHub Copilot in VS Code for AI assistance instead of CLI extension.
+
+## Current Implementation Status
+
+### Completed Setup
+- [x] GitHub CLI installed (gh 2.79.0)
+- [x] Authenticated as asbor
+- [x] SSH key configured and uploaded
+- [x] Git protocol set to SSH
+- [x] Basic functionality verified
+
+### Integration Tasks
+- [ ] Create aliases for common operations
+- [ ] Integrate with CI/CD workflows
+- [ ] Document team workflow patterns
+- [ ] Set up automation scripts
+
+## Agent Log (Nov 5, 2025)
+- Installed GitHub CLI on Fedora personal PC
+- Authenticated successfully as asbor
+- Configured SSH protocol for git operations
+- Discovered gh-copilot extension deprecation
+- Updated documentation to reflect current state
+- Primary AI assistance now via GitHub Copilot in VS Code
 
 ## Next Steps
-1. Test GitHub Copilot CLI integration with current development tasks
-2. Create wrapper functions for agent use
-3. Enhance existing agents with Copilot CLI capabilities
-4. Document best practices for agent-to-Copilot workflows
+1. Create useful gh aliases for HoppyBrew workflows
+2. Integrate gh commands into CI/CD automation
+3. Document PR and release management patterns
+4. Use gh for repository health monitoring
+````
