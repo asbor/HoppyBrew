@@ -27,6 +27,7 @@ from .Ingredients.hops import RecipeHop, InventoryHop
 from .Ingredients.miscs import RecipeMisc, InventoryMisc
 from .Ingredients.yeasts import RecipeYeast, InventoryYeast
 from .references import References
+from .devices import Device
 
 __all__ = [
     "Recipes",
@@ -60,4 +61,5 @@ __all__ = [
     "RecipeYeast",
     "InventoryYeast",
     "References",
+    "Device",
 ]

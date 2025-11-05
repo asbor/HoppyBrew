@@ -109,6 +109,37 @@ The project is developed using the following tools:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Project Structure
+
+This repository is organized to maintain clarity and ease of navigation:
+
+```
+HoppyBrew/
+├── services/           # Application services
+│   ├── backend/       # FastAPI backend with database models and endpoints
+│   └── nuxt3-shadcn/  # Nuxt 3 frontend with shadcn-vue UI components
+├── documents/         # Project documentation
+│   ├── docs/          # Architecture and design documentation
+│   ├── archive/       # Historical documentation and archived files
+│   ├── status/        # Development status logs
+│   └── templates/     # Documentation templates
+├── .agents/           # AI agent configuration files
+├── alembic/           # Database migrations
+├── data/              # Application data storage
+├── seeds/             # Database seed scripts
+├── tools/             # Utility tools and scripts
+├── CHANGELOG.md       # Version history
+├── CONTRIBUTING.md    # Contribution guidelines
+├── README.md          # This file
+├── ROADMAP.md         # Project roadmap
+├── TODO.md            # Task tracking
+└── docker-compose.yml # Docker orchestration
+```
+
+For detailed project documentation, see the [ROADMAP](ROADMAP.md) and [TODO](TODO.md) files.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ---
 
 <!-- GETTING STARTED -->
