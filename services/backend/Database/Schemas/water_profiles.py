@@ -18,16 +18,16 @@ class WaterProfileBase(BaseModel):
 
     """
 
-    name: Optional[str]
-    version: Optional[int]
-    amount: Optional[int]
-    calcium: Optional[int]
-    bicarbonate: Optional[int]
-    sulfate: Optional[int]
-    chloride: Optional[int]
-    sodium: Optional[int]
-    magnesium: Optional[int]
-    ph: Optional[int]
-    notes: Optional[str]
-    display_amount: Optional[str]
-    inventory: Optional[int]
+    name: Optional[str] = None
+    version: Optional[int] = None
+    amount: Optional[int] = None
+    calcium: Optional[int] = None
+    bicarbonate: Optional[int] = None
+    sulfate: Optional[int] = None
+    chloride: Optional[int] = None
+    sodium: Optional[int] = None
+    magnesium: Optional[int] = None
+    ph: Optional[int] = None
+    notes: Optional[str] = None
+    display_amount: Optional[str] = None
+    inventory: Optional[int] = None

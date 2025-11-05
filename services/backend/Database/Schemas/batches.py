@@ -21,18 +21,18 @@ class BatchCreate(BatchBase):
 
 
 class BatchUpdate(BaseModel):
-    batch_name: Optional[str]
-    batch_number: Optional[int]
-    batch_size: Optional[float]
-    brewer: Optional[str]
-    brew_date: Optional[datetime]
+    batch_name: Optional[str] = None
+    batch_number: Optional[int] = None
+    batch_size: Optional[float] = None
+    brewer: Optional[str] = None
+    brew_date: Optional[datetime] = None
 
 
 class Batch(BatchBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    batch_log: Optional[BatchLog]
+    batch_log: Optional[BatchLog] = None
     inventory_hops: List[InventoryHop]
     inventory_fermentables: List[InventoryFermentable]
     inventory_miscs: List[InventoryMisc]

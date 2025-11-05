@@ -23,8 +23,8 @@ class Inventory(BaseModel):
 
     """
 
-    stock: Optional[float]
-    cost_per_unit: Optional[float]
-    eng_units: Optional[str]
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+    stock: Optional[float] = None
+    cost_per_unit: Optional[float] = None
+    eng_units: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

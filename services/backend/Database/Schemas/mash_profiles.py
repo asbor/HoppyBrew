@@ -21,18 +21,18 @@ class MashProfileBase(BaseModel):
 
     """
 
-    name: Optional[str]
-    version: Optional[int]
-    grain_temp: Optional[int]
-    tun_temp: Optional[int]
-    sparge_temp: Optional[int]
-    ph: Optional[int]
-    tun_weight: Optional[int]
-    tun_specific_heat: Optional[int]
+    name: Optional[str] = None
+    version: Optional[int] = None
+    grain_temp: Optional[int] = None
+    tun_temp: Optional[int] = None
+    sparge_temp: Optional[int] = None
+    ph: Optional[int] = None
+    tun_weight: Optional[int] = None
+    tun_specific_heat: Optional[int] = None
     # equip_adjust: bool
 
-    notes: Optional[str]
-    display_grain_temp: Optional[str]
-    display_tun_temp: Optional[str]
-    display_sparge_temp: Optional[str]
-    display_tun_weight: Optional[str]
+    notes: Optional[str] = None
+    display_grain_temp: Optional[str] = None
+    display_tun_temp: Optional[str] = None
+    display_sparge_temp: Optional[str] = None
+    display_tun_weight: Optional[str] = None
