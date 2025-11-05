@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, Text, Index
+from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -15,6 +16,9 @@ class Styles(Base):
     """
 
     __tablename__ = "styles"
+    __table_args__ = (
+        Index("ix_styles_recipe_id", "recipe_id"),
+    )
     id = Column(Integer, nullable=True, primary_key=True)
     name = Column(String(255), nullable=True)
     version = Column(Integer, nullable=True)
@@ -53,6 +57,7 @@ class Styles(Base):
     abv_range = Column(String(255), nullable=True)
     # Relationships
 
-    recipe_id = Column(Integer, ForeignKey("recipes.id"))
+    recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
+    recipe = relationship("Recipes", back_populates="style_profile")
 
 # TODO: batch_id = Column(Integer, ForeignKey('batches.id'))

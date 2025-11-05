@@ -1,19 +1,32 @@
 # services/backend/Database/Models/recipes.py
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, Index
 from sqlalchemy.orm import relationship
 from database import Base
 
 
 class Recipes(Base):
     __tablename__ = "recipes"
+    __table_args__ = (
+        Index("ix_recipes_origin_recipe_id", "origin_recipe_id"),
+        Index("ix_recipes_name_version", "name", "version"),
+    )
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     is_batch = Column(Boolean, default=False)
     origin_recipe_id = Column(Integer,
                               ForeignKey("recipes.id"),
                               nullable=True)
-    origin_recipe = relationship("Recipes", remote_side=[id])
+    origin_recipe = relationship(
+        "Recipes",
+        remote_side=[id],
+        back_populates="derived_recipes",
+    )
+    derived_recipes = relationship(
+        "Recipes",
+        back_populates="origin_recipe",
+        cascade="all, delete-orphan",
+    )
     version = Column(Integer)
     type = Column(String)
     brewer = Column(String)
@@ -53,9 +66,50 @@ class Recipes(Base):
     display_secondary_temp = Column(String)
     display_tertiary_temp = Column(String)
     display_age_temp = Column(String)
-    hops = relationship("RecipeHop", back_populates="recipe")
-    fermentables = relationship("RecipeFermentable",
-                                back_populates="recipe")
-    yeasts = relationship("RecipeYeast", back_populates="recipe")
-    miscs = relationship("RecipeMisc", back_populates="recipe")
-    batches = relationship("Batches", back_populates="recipe")
+    hops = relationship(
+        "RecipeHop",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    fermentables = relationship(
+        "RecipeFermentable",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    yeasts = relationship(
+        "RecipeYeast",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    miscs = relationship(
+        "RecipeMisc",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    batches = relationship(
+        "Batches",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    style_guideline = relationship(
+        "StyleGuidelines",
+        back_populates="recipe",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    style_profile = relationship(
+        "Styles",
+        back_populates="recipe",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    equipment_profiles = relationship(
+        "EquipmentProfiles",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    water_profiles = relationship(
+        "WaterProfiles",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )

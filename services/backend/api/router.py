@@ -12,6 +12,7 @@ from .endpoints import (
     logs,
     questions,
     style_guidelines,
+    styles,
     references,
     mash_profiles,
     water_profiles,
@@ -33,6 +34,7 @@ router.include_router(health.router, tags=["health"])
 router.include_router(logs.router, tags=["logs"])
 router.include_router(questions.router, tags=["questions"])
 router.include_router(style_guidelines.router, tags=["style_guidelines"])
+router.include_router(styles.router, tags=["styles"])
 router.include_router(references.router, tags=["references"])
 
 # Profile routers

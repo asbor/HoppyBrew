@@ -4,8 +4,8 @@
 Analyze and optimize the SQLAlchemy database models in HoppyBrew for better performance, relationships, and data integrity.
 
 ## Current Status
-- ACTIVE: Analyzing database models in Database/Models/
-- PHASE: Performance optimization and relationship analysis
+- ACTIVE: Implementing ORM relationship and index optimizations in `Database/Models/`
+- PHASE: Schema hardening and performance optimization rollout
 
 ## Key Findings So Far
 - Missing back_populates relationships in several models
@@ -27,12 +27,18 @@ Analyze and optimize the SQLAlchemy database models in HoppyBrew for better perf
 - ✅ Profiles/* - Equipment, mash, and water profiles
 
 ## TODO Tasks
-- [ ] Complete relationship mapping analysis
-- [ ] Identify missing indexes on foreign keys
-- [ ] Suggest composite indexes for common queries
-- [ ] Review cascading delete strategies
-- [ ] Propose schema optimization recommendations
+- [x] Complete relationship mapping analysis
+- [x] Identify missing indexes on foreign keys
+- [x] Suggest composite indexes for common queries
+- [x] Review cascading delete strategies
+- [x] Propose schema optimization recommendations
 - [ ] Generate migration scripts for improvements
+
+## Implementation Focus
+- Wiring missing `back_populates` pairs between recipes, styles, profiles, and ingredient subtypes
+- Adding supporting indexes (single-column FK and composite workload-driven)
+- Enforcing unique constraints on profile names where docs require uniqueness
+- Tightening cascade behavior for dependent batch and ingredient records
 
 ## Recommendations in Progress
 1. Add proper back_populates relationships

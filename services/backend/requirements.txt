@@ -1,6 +1,9 @@
 # Install the FastAPI framework
 fastapi
 
+# Install python-multipart for form data
+python-multipart
+
 # Install the Uvicorn server
 uvicorn
 

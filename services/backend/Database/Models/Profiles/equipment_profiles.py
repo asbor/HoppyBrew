@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    ForeignKey,
+    Index,
+    UniqueConstraint,
+)
+from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -19,6 +28,10 @@ class EquipmentProfiles(Base):
     """
 
     __tablename__ = "equipment"
+    __table_args__ = (
+        UniqueConstraint("name", name="uq_equipment_name"),
+        Index("ix_equipment_recipe_id", "recipe_id"),
+    )
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=True)
     version = Column(Integer, nullable=True)
@@ -46,6 +59,7 @@ class EquipmentProfiles(Base):
     display_top_up_kettle = Column(String(255), nullable=True)
     # Relationships
 
-    recipe_id = Column(Integer, ForeignKey("recipes.id"))
+    recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
+    recipe = relationship("Recipes", back_populates="equipment_profiles")
 
 # TODO: batch_id = Column(Integer, ForeignKey('batches.id'))

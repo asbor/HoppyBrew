@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, Text, Index
+from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -15,6 +16,9 @@ class StyleGuidelines(Base):
     """
 
     __tablename__ = "style_guidelines"
+    __table_args__ = (
+        Index("ix_style_guidelines_recipe_id", "recipe_id"),
+    )
     id = Column(Integer, nullable=True, primary_key=True)
     block_heading = Column(String(255), nullable=True)
     circle_image = Column(String(255), nullable=True)
@@ -54,4 +58,5 @@ class StyleGuidelines(Base):
 
     # Relationships
 
-    recipe_id = Column(Integer, ForeignKey("recipes.id"))
+    recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
+    recipe = relationship("Recipes", back_populates="style_guideline")
