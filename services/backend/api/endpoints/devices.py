@@ -50,7 +50,8 @@ async def create_device(
     Creates a new external device configuration in the system.
     Supports various device types including iSpindel and Tilt hydrometers.
     """
-    db_device = models.Device(**device.dict())
+    # Create device
+    db_device = models.Device(**device.model_dump())
     db.add(db_device)
     db.commit()
     db.refresh(db_device)
@@ -78,7 +79,7 @@ async def update_device(
         raise HTTPException(status_code=404, detail="Device not found")
     
     # Only update fields that were provided
-    update_data = device.dict(exclude_unset=True)
+    update_data = device.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_device, key, value)
     
