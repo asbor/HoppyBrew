@@ -7,6 +7,9 @@ from sqlalchemy.orm import sessionmaker
 from main import app
 from database import Base, get_db
 
+# Import all models to ensure they're registered with Base.metadata
+import Database.Models  # noqa: F401
+
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
