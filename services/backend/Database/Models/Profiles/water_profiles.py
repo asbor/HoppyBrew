@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -34,7 +35,7 @@ class WaterProfiles(Base):
     display_amount = Column(String(255), nullable=True)
     inventory = Column(Integer, nullable=True)
     # Relationships
-
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
+    recipe = relationship("Recipes", back_populates="water_profiles")
 
 # TODO: batch_id = Column(Integer, ForeignKey('batches.id'))

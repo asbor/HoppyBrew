@@ -99,9 +99,9 @@ async def create_reference(
     reference: schemas.ReferenceCreate, db: Session = Depends(get_db)
 ):
     favicon_url = fetch_favicon(reference.url)
-    db_reference = models.References(
-        **reference.dict(), favicon_url=favicon_url
-    )
+    reference_data = reference.dict()
+    reference_data['favicon_url'] = favicon_url
+    db_reference = models.References(**reference_data)
     db.add(db_reference)
     db.commit()
     db.refresh(db_reference)
