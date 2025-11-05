@@ -1,97 +1,307 @@
-<script setup>
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-const loading = ref(false)
-let data = ref([])
-const list = [
-  {
-    title: "Today"
-  }, {
-    title: "Week"
-  }, {
-    title: "Month"
-  }, {
-    title: "Year"
-  }
-]
+<script setup lang="ts">
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
-let currentCategory = ref("today");
+const { recipes, loading: recipesLoading, fetchAll: fetchRecipes } = useRecipes()
+const { batches, loading: batchesLoading, fetchAll: fetchBatches, getActiveBatches } = useBatches()
+const { 
+  hops, fermentables, yeasts, miscs,
+  fetchHops, fetchFermentables, fetchYeasts, fetchMiscs,
+  getLowStockItems 
+} = useInventory()
 
-function generateRandomValue(number = 7) {
-  let values = [];
-  for (let j = 0; j < number + 1; j++) {
-    values.push(Math.floor(Math.random() * 100));
+const loading = ref(true)
+const error = ref<string | null>(null)
+
+// Dashboard stats
+const stats = computed(() => {
+  const activeBatches = getActiveBatches()
+  const lowStock = getLowStockItems(50) // threshold: 50g/ml
+  
+  return {
+    totalRecipes: recipes.value.length,
+    activeBatches: activeBatches.length,
+    totalInventoryItems: hops.value.length + fermentables.value.length + yeasts.value.length + miscs.value.length,
+    lowStockCount: lowStock.total,
+    lastBrewDate: batches.value.length > 0 
+      ? batches.value.sort((a, b) => new Date(b.brew_date || b.created_at).getTime() - new Date(a.brew_date || a.created_at).getTime())[0].brew_date 
+      : null,
   }
-  data.value = values;
-  return values;
+})
+
+// Recent batches (last 5)
+const recentBatches = computed(() => {
+  return batches.value
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 5)
+})
+
+// Recent recipes (last 5)
+const recentRecipes = computed(() => {
+  return recipes.value
+    .sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime())
+    .slice(0, 5)
+})
+
+// Low stock items
+const lowStockItems = computed(() => {
+  const items = getLowStockItems(50)
+  return [
+    ...items.hops.map(h => ({ name: h.name, amount: h.amount, unit: h.unit, type: 'Hop' })),
+    ...items.fermentables.map(f => ({ name: f.name, amount: f.amount, unit: f.unit, type: 'Fermentable' })),
+    ...items.yeasts.map(y => ({ name: y.name, amount: y.amount, unit: y.unit, type: 'Yeast' })),
+    ...items.miscs.map(m => ({ name: m.name, amount: m.amount, unit: m.unit, type: 'Misc' })),
+  ].slice(0, 5)
+})
+
+// Status badge color helper
+function getBatchStatusColor(status: string) {
+  const colors: Record<string, string> = {
+    planning: 'bg-gray-500',
+    brew_day: 'bg-orange-500',
+    primary_fermentation: 'bg-blue-500',
+    secondary_fermentation: 'bg-indigo-500',
+    conditioning: 'bg-purple-500',
+    packaged: 'bg-green-500',
+    completed: 'bg-gray-400',
+  }
+  return colors[status] || 'bg-gray-500'
 }
 
-const setCategory = (e) => {
-  let v = e.target.innerText.toLowerCase();
-  currentCategory.value = v
-  if (v === 'today') generateRandomValue(24);
-  if (v === 'week') generateRandomValue(7);
-  if (v === 'month') generateRandomValue(31);
-  if (v === 'year') generateRandomValue(365);
+function formatDate(dateString: string | undefined) {
+  if (!dateString) return 'N/A'
+  return new Date(dateString).toLocaleDateString('en-GB', { 
+    day: '2-digit', 
+    month: '2-digit', 
+    year: 'numeric' 
+  })
 }
 
-const cards = [
-  {
-    title: "Sales",
-    progression: 12,
-    amount: 1244.43,
-    label: "View sales",
-    description: "Sales of March 2024",
-    icon: "solar:ticket-sale-outline"
-  },
-  {
-    title: "Refunds",
-    progression: 8,
-    amount: 84.44,
-    label: "View refunds",
-    description: "Refunds since beginning of year",
-    icon: "heroicons-outline:receipt-refund"
-  },
-  {
-    title: "Payouts",
-    progression: 14,
-    amount: 899.99,
-    label: "View payouts",
-    description: "Payouts of this week",
-    icon: "tabler:zoom-money"
+// Load data on mount
+onMounted(async () => {
+  try {
+    loading.value = true
+    await Promise.all([
+      fetchRecipes(),
+      fetchBatches(),
+      fetchHops(),
+      fetchFermentables(),
+      fetchYeasts(),
+      fetchMiscs(),
+    ])
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Failed to load dashboard data'
+    console.error('Dashboard load error:', e)
+  } finally {
+    loading.value = false
   }
-]
-
-onMounted(() => {
-  generateRandomValue(24);
 })
 </script>
 
 <template>
-  <div class="grid w-full gap-4">
+  <div class="grid w-full gap-6">
+    <!-- Header -->
     <header class="flex items-start justify-between">
       <div class="grow">
-        <p>Hi, welcome back !</p>
-        <h1>Dashboard</h1>
+        <p class="text-muted-foreground">Welcome back to HoppyBrew!</p>
+        <h1 class="text-3xl font-bold">Dashboard</h1>
       </div>
-      <userNewDialog />
-      <UserAccountLoginDialog />
     </header>
-    <main class="grid w-full gap-4">
-      <Tabs default-value="Today" class="w-full" @click="setCategory">
-        <TabsList class="max-w-[400px]">
-          <TabsTrigger v-for="item, index in list" :key="index" :value="item.title">
-            {{ item.title }}
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent class="w-[100%]" v-for="item, index in list " :key="index" :value="item.title">
-          <Chart v-if="data.length > 0" :currentCategory="currentCategory" :data="data" />
-        </TabsContent>
-      </Tabs>
-    </main>
-    <footer>
-      <div class="grid gap-4 lg:grid-cols-3">
-        <Card v-for='( item, index ) in cards' :card="item" :key='index' />
+
+    <!-- Loading State -->
+    <div v-if="loading" class="text-center py-12">
+      <p class="text-muted-foreground">Loading dashboard...</p>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="text-center py-12">
+      <p class="text-destructive">{{ error }}</p>
+    </div>
+
+    <!-- Main Content -->
+    <main v-else class="grid w-full gap-6">
+      <!-- Stats Cards -->
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle class="text-sm font-medium">Total Recipes</CardTitle>
+            <Icon name="mdi:book-open-page-variant" class="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div class="text-2xl font-bold">{{ stats.totalRecipes }}</div>
+            <p class="text-xs text-muted-foreground">
+              Your recipe library
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle class="text-sm font-medium">Active Batches</CardTitle>
+            <Icon name="mdi:beer" class="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div class="text-2xl font-bold">{{ stats.activeBatches }}</div>
+            <p class="text-xs text-muted-foreground">
+              Currently fermenting
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle class="text-sm font-medium">Inventory Items</CardTitle>
+            <Icon name="mdi:package-variant" class="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div class="text-2xl font-bold">{{ stats.totalInventoryItems }}</div>
+            <p class="text-xs text-muted-foreground">
+              Total ingredients
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle class="text-sm font-medium">Low Stock Items</CardTitle>
+            <Icon name="mdi:alert-circle" class="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div class="text-2xl font-bold" :class="stats.lowStockCount > 0 ? 'text-orange-500' : ''">
+              {{ stats.lowStockCount }}
+            </div>
+            <p class="text-xs text-muted-foreground">
+              Need restocking
+            </p>
+          </CardContent>
+        </Card>
       </div>
-    </footer>
+
+      <!-- Two Column Layout -->
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Recent Batches -->
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Batches</CardTitle>
+            <CardDescription>Your latest brewing activity</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div v-if="recentBatches.length === 0" class="text-center py-8 text-muted-foreground">
+              No batches yet. Start your first brew!
+            </div>
+            <div v-else class="space-y-4">
+              <div v-for="batch in recentBatches" :key="batch.id" class="flex items-center justify-between">
+                <div class="flex-1">
+                  <NuxtLink :href="`/batches/${batch.id}`" class="font-medium hover:underline">
+                    {{ batch.batch_name }}
+                  </NuxtLink>
+                  <p class="text-sm text-muted-foreground">{{ formatDate(batch.brew_date || batch.created_at) }}</p>
+                </div>
+                <Badge :class="getBatchStatusColor(batch.status)" class="text-white">
+                  {{ batch.status.replace(/_/g, ' ') }}
+                </Badge>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t">
+              <Button asChild variant="outline" class="w-full">
+                <NuxtLink href="/batches">View All Batches</NuxtLink>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Recent Recipes -->
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Recipes</CardTitle>
+            <CardDescription>Your latest recipe designs</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div v-if="recentRecipes.length === 0" class="text-center py-8 text-muted-foreground">
+              No recipes yet. Create your first recipe!
+            </div>
+            <div v-else class="space-y-4">
+              <div v-for="recipe in recentRecipes" :key="recipe.id" class="flex items-center justify-between">
+                <div class="flex-1">
+                  <NuxtLink :href="`/recipes/${recipe.id}`" class="font-medium hover:underline">
+                    {{ recipe.name }}
+                  </NuxtLink>
+                  <p class="text-sm text-muted-foreground">
+                    {{ recipe.type }} • {{ recipe.est_abv?.toFixed(1) }}% ABV • {{ recipe.ibu?.toFixed(0) }} IBU
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t">
+              <Button asChild variant="outline" class="w-full">
+                <NuxtLink href="/recipes">View All Recipes</NuxtLink>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <!-- Low Stock Alert -->
+      <Card v-if="lowStockItems.length > 0">
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
+            <Icon name="mdi:alert-circle" class="h-5 w-5 text-orange-500" />
+            Low Stock Alert
+          </CardTitle>
+          <CardDescription>These items need restocking soon</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div class="space-y-3">
+            <div v-for="(item, index) in lowStockItems" :key="index" class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <Badge variant="outline">{{ item.type }}</Badge>
+                <span class="font-medium">{{ item.name }}</span>
+              </div>
+              <span class="text-sm text-muted-foreground">{{ item.amount }} {{ item.unit }}</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t">
+            <Button asChild variant="outline" class="w-full">
+              <NuxtLink href="/inventory">Manage Inventory</NuxtLink>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <!-- Quick Actions -->
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+          <CardDescription>Common brewing tasks</CardDescription>
+        </CardHeader>
+        <CardContent class="grid gap-3 md:grid-cols-4">
+          <Button asChild variant="default">
+            <NuxtLink href="/recipes/newRecipe">
+              <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+              New Recipe
+            </NuxtLink>
+          </Button>
+          <Button asChild variant="default">
+            <NuxtLink href="/batches/newBatch">
+              <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+              New Batch
+            </NuxtLink>
+          </Button>
+          <Button asChild variant="outline">
+            <NuxtLink href="/tools">
+              <Icon name="mdi:calculator" class="mr-2 h-4 w-4" />
+              Calculators
+            </NuxtLink>
+          </Button>
+          <Button asChild variant="outline">
+            <NuxtLink href="/library">
+              <Icon name="mdi:library" class="mr-2 h-4 w-4" />
+              Recipe Library
+            </NuxtLink>
+          </Button>
+        </CardContent>
+      </Card>
+    </main>
   </div>
 </template>
