@@ -55,7 +55,7 @@ class StyleBase(BaseModel):
     """
 
     name: str
-    version: int
+    version: Optional[int] = None
     category: Optional[str] = None
     category_number: Optional[int] = None
     style_letter: Optional[str] = None
@@ -92,3 +92,12 @@ class StyleBase(BaseModel):
 
     class Config:
         schema_extra = {"example": STYLE_BASE_EXAMPLE}
+
+
+class Style(StyleBase):
+    """Style schema with ID for responses"""
+    id: Optional[int] = None
+
+    class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
+        schema_extra = {"example": {**STYLE_BASE_EXAMPLE, "id": 1}}

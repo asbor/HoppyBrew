@@ -307,7 +307,7 @@ async def scale_recipe(
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
-    recipe_model = schemas.Recipe.from_orm(recipe)
+    recipe_model = schemas.Recipe.model_validate(recipe)
     if recipe_model.batch_size is None:
         raise HTTPException(
             status_code=400,

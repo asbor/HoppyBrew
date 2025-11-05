@@ -40,6 +40,7 @@ class YeastBase(BaseModel):
     add_to_secondary: Optional[bool] = None
 
     class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
         schema_extra = {"example": YEAST_BASE_EXAMPLE}
 
 

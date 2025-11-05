@@ -36,6 +36,7 @@ class HopBase(BaseModel):
     display_time: Optional[str] = None
 
     class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
         schema_extra = {"example": HOP_BASE_EXAMPLE}
 
 

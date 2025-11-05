@@ -64,6 +64,7 @@ class FermentableBase(BaseModel):
     used_in: Optional[str] = None
 
     class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
         schema_extra = {"example": FERMENTABLE_BASE_EXAMPLE}
 
 

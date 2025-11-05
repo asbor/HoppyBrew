@@ -32,6 +32,7 @@ class MiscBase(BaseModel):
     batch_size: Optional[int] = None
 
     class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
         schema_extra = {"example": MISC_BASE_EXAMPLE}
 
 

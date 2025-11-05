@@ -11,5 +11,7 @@ def test_trigger_beer_styles_runs_background_task(client, monkeypatch):
 
     response = client.post("/refresh-beer-styles")
     assert response.status_code == 200
-    assert response.json() == {"message": "Script is running in the background"}
+    response_data = response.json()
+    assert "message" in response_data
+    assert "task_id" in response_data  # Task ID is now returned
     assert calls["count"] == 1

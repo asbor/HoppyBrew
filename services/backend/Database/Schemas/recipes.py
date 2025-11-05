@@ -136,7 +136,7 @@ class Recipe(RecipeBase):
     origin_recipe_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Pydantic v2: renamed from orm_mode
         schema_extra = {
             "example": {
                 **RECIPE_BASE_EXAMPLE,

@@ -13,11 +13,11 @@ db = SessionLocal()
 
 @router.get(
     "/styles",
-    response_model=List[schemas.StyleBase],
+    response_model=List[schemas.Style],
     summary="List beer style definitions",
     response_description="A collection of BJCP style entries defined in the system.",
 )
-async def get_all_styles(db: db_dependency) -> List[schemas.StyleBase]:
+async def get_all_styles(db: db_dependency) -> List[schemas.Style]:
     """Return all BJCP style definitions available in the catalogue."""
     styles = db.query(models.Styles).all()
     return styles
