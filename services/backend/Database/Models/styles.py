@@ -16,9 +16,7 @@ class Styles(Base):
     """
 
     __tablename__ = "styles"
-    __table_args__ = (
-        Index("ix_styles_recipe_id", "recipe_id"),
-    )
+
     id = Column(Integer, nullable=True, primary_key=True)
     name = Column(String(255), nullable=True)
     version = Column(Integer, nullable=True)

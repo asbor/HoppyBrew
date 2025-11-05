@@ -23,27 +23,46 @@ logger.info(f"IS_TESTING: {IS_TESTING}")
 if IS_TESTING:
     SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 else:
-    SQLALCHEMY_DATABASE_URL = f'''postgresql: //
-    {os.getenv('DATABASE_USER')}:
-    {os.getenv('DATABASE_PASSWORD')}@
-    {os.getenv('DATABASE_HOST')}:
-    {os.getenv('DATABASE_PORT')}/
-    {os.getenv('DATABASE_NAME')}'''
+    SQLALCHEMY_DATABASE_URL = f'postgresql://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@{os.getenv("DATABASE_HOST")}:{os.getenv("DATABASE_PORT")}/{os.getenv("DATABASE_NAME")}'
 
 # Connect to the database
 
 logger.info(f"Connecting to the database: {SQLALCHEMY_DATABASE_URL}")
-engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
-if not IS_TESTING:
+
+if IS_TESTING:
+    # For SQLite, just create the engine
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
+else:
+    # For PostgreSQL, wait for it to be ready and create database if needed
     from sqlalchemy_utils import database_exists, create_database
+    import psycopg2
 
-    # Wait for the database to be available before connecting
+    # Wait for PostgreSQL to be ready
+    logger.info("Waiting for PostgreSQL to be available")
+    max_retries = 30
+    for i in range(max_retries):
+        try:
+            conn = psycopg2.connect(
+                host=os.getenv("DATABASE_HOST"),
+                port=os.getenv("DATABASE_PORT"),
+                user=os.getenv("DATABASE_USER"),
+                password=os.getenv("DATABASE_PASSWORD"),
+                database="postgres"  # Connect to default database first
+            )
+            conn.close()
+            logger.info("PostgreSQL is available")
+            break
+        except psycopg2.OperationalError:
+            if i < max_retries - 1:
+                logger.info(f"Waiting for PostgreSQL... ({i+1}/{max_retries})")
+                time.sleep(1)
+            else:
+                raise Exception("Could not connect to PostgreSQL")
 
-    logger.info("Waiting for the database to be available")
-    while not database_exists(SQLALCHEMY_DATABASE_URL):
-        time.sleep(1)
-    # Create the database if it does not exist
+    # Create the engine
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
+    # Create database if it doesn't exist
     if not database_exists(engine.url):
         logger.info("Creating the database")
         create_database(engine.url)

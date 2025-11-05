@@ -11,7 +11,7 @@ logger = get_logger("Main")
 # Connect to the database (bind the engine)
 # Create the tables in the database (create_all)
 logger.info("Connecting to the database and creating tables")
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine, checkfirst=True)
 
 # Create the FastAPI app and include the router from the endpoints folder
 
