@@ -11,13 +11,13 @@ These instructions will are based on Linux and MacOS. The application can be run
 1. Clone the repository
 
 ```bash
-git clone https://github.com/asbor/iu-project-software-engineering.git
+git clone <your-repository-url>
 ```
 
 1. Change into the project directory
 
 ```bash
-cd iu-project-software-engineering
+cd YOUR-REPO-NAME
 ```
 
 1. Create a virtual environment

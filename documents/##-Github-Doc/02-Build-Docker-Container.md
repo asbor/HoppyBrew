@@ -21,7 +21,7 @@ docker -v
 navigate to the project folder, and clone the GitHub example repository
 
 ```git
-git clone https://github.com/asbor/iu-project-software-engineering.git
+git clone <your-repository-url>
 ```
 
 This repository comes with further instructions on steps which are to taken.

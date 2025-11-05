@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://gitlab.com/asbor/iu-project-software-engineering">
+  <a href="#">
     <img src="documents/images/logo.png" alt="Logo" width="300">
   </a>
 
@@ -39,14 +39,14 @@
   <p align="center">
     This project, part of the Software Engineering course at the Faculty of Informatics, International University of Applied Sciences Bad Honnef - Bonn, is inspired by Brewfather. It aims to develop a web app tailored for home-brewers to efficiently manage brewing processes. Motivated by personal experience as a homebrewer and interest in self-hosting, the creator seeks to provide a self-hosted alternative to subscription-based services like Brewfather. The project will be hosted on a personal server, running within a Docker container, to cater to a specific niche in brewing management.
     <br />
-    <a href="https://gitlab.com/asbor/iu-project-software-engineering"><strong>Explore the docs »</strong></a>
+    <a href="#"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://gitlab.com/asbor/iu-project-software-engineering">View Demo</a>
+    <a href="#">View Demo</a>
     ·
-    <a href="https://gitlab.com/asbor/iu-project-software-engineering/-/issues/new?issuable_template=bug">Report Bug</a>
+    <a href="#">Report Bug</a>
     ·
-    <a href="https://gitlab.com/asbor/iu-project-software-engineering/-/issues/new?issuable_template=feature">Request Feature</a>
+    <a href="#">Request Feature</a>
   </p>
 </div>
 
@@ -449,7 +449,7 @@ This is an example of how to list things you need to use the software and how to
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
    ```sh
-   git clone https://github.com/asbor/iu-project-software-engineering.git
+   git clone <your-repository-url>
    ```
 3. Install NPM packages
    ```sh
@@ -483,7 +483,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/asbor/iu-project-software-engineering/issues) for a full list of proposed features (and known issues).
+See the open issues for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -519,7 +519,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://github.com/asbor/iu-project-software-engineering](https://github.com/asbor/iu-project-software-engineering)
+Project Link: [Add your repository link here]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -538,16 +538,16 @@ Project Link: [https://github.com/asbor/iu-project-software-engineering](https:/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/asbor/iu-project-software-engineering.svg?style=for-the-badge
-[contributors-url]: https://github.com/asbor/iu-project-software-engineering/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/asbor/iu-project-software-engineering.svg?style=for-the-badge
-[forks-url]: https://github.com/asbor/iu-project-software-engineering/network/members
-[stars-shield]: https://img.shields.io/github/stars/asbor/iu-project-software-engineering.svg?style=for-the-badge
-[stars-url]: https://github.com/asbor/iu-project-software-engineering/stargazers
-[issues-shield]: https://img.shields.io/github/issues/asbor/iu-project-software-engineering.svg?style=for-the-badge
-[issues-url]: https://github.com/asbor/iu-project-software-engineering/issues
-[license-shield]: https://img.shields.io/github/license/asbor/iu-project-software-engineering.svg?style=for-the-badge
-[license-url]: https://github.com/asbor/iu-project-software-engineering/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
+[contributors-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
+[forks-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/network/members
+[stars-shield]: https://img.shields.io/github/stars/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
+[stars-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/stargazers
+[issues-shield]: https://img.shields.io/github/issues/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
+[issues-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/issues
+[license-shield]: https://img.shields.io/github/license/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
+[license-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: www.linkedin.com/in/asbjørn-bordoy-89b0462a
 [product-screenshot]: documents/images/screenshot.png
@@ -570,7 +570,7 @@ Project Link: [https://github.com/asbor/iu-project-software-engineering](https:/
 [pydantic]: https://img.shields.io/badge/pydantic-005571?style=for-the-badge&logo=pydantic
 [pydantic-url]: https://pydantic-docs.helpmanual.io/
 [GitHub]: https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white
-[GitHub-url]: https://github.com/asbor/iu-project-software-engineering
+[GitHub-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME
 [Markdown]: https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white
 [Markdown-url]: https://www.markdownguide.org/
 [PlantUML]: https://img.shields.io/badge/PlantUML-000000?style=for-the-badge&logo=plantuml&logoColor=white

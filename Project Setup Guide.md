@@ -96,13 +96,13 @@ sudo apt-get install git
 Clone the project repository:
 
 ```bash
-git clone https://gitlab.com/asbor1/iu-project-software-engineering.git
+git clone <your-repository-url>
 ```
 
 Open the project in your preferred IDE:
 
 ```bash
-code iu-project-software-engineering
+code YOUR-REPO-NAME
 ```
 
 ### 3. Initial Setup
