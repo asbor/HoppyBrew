@@ -46,7 +46,7 @@ def test_seed_american_ipa_creates_fermentables(db_session: Session):
     }
     assert fermentable_names == expected_names
     
-    total_amount = sum(f.amount for f in fermentables if f.amount)
+    total_amount = sum(f.amount for f in fermentables)
     assert total_amount == 6.0
 
 
@@ -66,7 +66,7 @@ def test_seed_american_ipa_creates_hops(db_session: Session):
     expected_names = {"Cascade", "Centennial", "Citra", "Simcoe", "Amarillo"}
     assert hop_names == expected_names
     
-    total_hops = sum(h.amount for h in hops if h.amount)
+    total_hops = sum(h.amount for h in hops)
     assert total_hops == 150.0
 
 

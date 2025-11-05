@@ -235,7 +235,7 @@ def seed_american_ipa_recipe() -> int:
                 name="Irish Moss",
                 type="Fining",
                 use="Boil",
-                amount=5,  # grams (as integer)
+                amount=5,  # grams
                 time=15,  # minutes
                 notes="Helps with clarity by removing proteins",
             ),
@@ -244,7 +244,7 @@ def seed_american_ipa_recipe() -> int:
                 name="Yeast Nutrient",
                 type="Other",
                 use="Boil",
-                amount=2,  # grams (as integer)
+                amount=2,  # grams
                 time=10,  # minutes
                 notes="Supports healthy yeast fermentation",
             ),
