@@ -4,21 +4,21 @@ from typing import Optional
 
 class YeastBase(BaseModel):
     name: str
-    type: Optional[str]
-    form: Optional[str]
-    amount: Optional[float]
-    amount_is_weight: Optional[bool]
-    laboratory: Optional[str]
-    product_id: Optional[str]
-    min_temperature: Optional[float]
-    max_temperature: Optional[float]
-    flocculation: Optional[str]
-    attenuation: Optional[float]
-    notes: Optional[str]
-    best_for: Optional[str]
-    times_cultured: Optional[int]
-    max_reuse: Optional[int]
-    add_to_secondary: Optional[bool]
+    type: Optional[str] = None
+    form: Optional[str] = None
+    amount: Optional[float] = None
+    amount_is_weight: Optional[bool] = None
+    laboratory: Optional[str] = None
+    product_id: Optional[str] = None
+    min_temperature: Optional[float] = None
+    max_temperature: Optional[float] = None
+    flocculation: Optional[str] = None
+    attenuation: Optional[float] = None
+    notes: Optional[str] = None
+    best_for: Optional[str] = None
+    times_cultured: Optional[int] = None
+    max_reuse: Optional[int] = None
+    add_to_secondary: Optional[bool] = None
 
 
 class RecipeYeast(YeastBase):

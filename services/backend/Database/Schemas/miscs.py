@@ -4,17 +4,17 @@ from typing import Optional
 
 class MiscBase(BaseModel):
     name: str
-    type: Optional[str]
-    use: Optional[str]
-    amount_is_weight: Optional[bool]
-    use_for: Optional[str]
-    notes: Optional[str]
-    amount: Optional[int]
-    time: Optional[int]
-    display_amount: Optional[str]
-    inventory: Optional[int]
-    display_time: Optional[str]
-    batch_size: Optional[int]
+    type: Optional[str] = None
+    use: Optional[str] = None
+    amount_is_weight: Optional[bool] = None
+    use_for: Optional[str] = None
+    notes: Optional[str] = None
+    amount: Optional[int] = None
+    time: Optional[int] = None
+    display_amount: Optional[str] = None
+    inventory: Optional[int] = None
+    display_time: Optional[str] = None
+    batch_size: Optional[int] = None
 
 
 class RecipeMisc(MiscBase):

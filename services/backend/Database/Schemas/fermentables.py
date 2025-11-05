@@ -5,23 +5,23 @@ from datetime import date
 
 class FermentableBase(BaseModel):
     name: str
-    type: Optional[str]
-    yield_: Optional[float]
-    color: Optional[int]
-    origin: Optional[str]
-    supplier: Optional[str]
-    notes: Optional[str]
-    potential: Optional[float]  # Change to float
-    amount: Optional[float]
-    cost_per_unit: Optional[float]
-    manufacturing_date: Optional[date]
-    expiry_date: Optional[date]
-    lot_number: Optional[str]
-    exclude_from_total: Optional[bool]
-    not_fermentable: Optional[bool]
-    description: Optional[str]
-    substitutes: Optional[str]
-    used_in: Optional[str]
+    type: Optional[str] = None
+    yield_: Optional[float] = None
+    color: Optional[int] = None
+    origin: Optional[str] = None
+    supplier: Optional[str] = None
+    notes: Optional[str] = None
+    potential: Optional[float] = None  # Change to float
+    amount: Optional[float] = None
+    cost_per_unit: Optional[float] = None
+    manufacturing_date: Optional[date] = None
+    expiry_date: Optional[date] = None
+    lot_number: Optional[str] = None
+    exclude_from_total: Optional[bool] = None
+    not_fermentable: Optional[bool] = None
+    description: Optional[str] = None
+    substitutes: Optional[str] = None
+    used_in: Optional[str] = None
 
 
 class RecipeFermentable(FermentableBase):
