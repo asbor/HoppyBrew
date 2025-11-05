@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    container_name: iu-project-software-engineering-backend-1
+    container_name: hoppybrew-backend-1
     build:
       context: ./services/backend
       dockerfile: Dockerfile
@@ -19,7 +19,7 @@ services:
       - my-network
 
   db:
-    container_name: iu-project-software-engineering-db-1
+    container_name: hoppybrew-db-1
     image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
@@ -34,7 +34,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   frontend:
-    container_name: iu-project-software-engineering-frontend-1
+    container_name: hoppybrew-frontend-1
     build:
       context: ./services/nuxt3-shadcn
       dockerfile: Dockerfile

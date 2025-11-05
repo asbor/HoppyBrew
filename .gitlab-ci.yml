@@ -1,3 +1,13 @@
+# GitLab CI/CD Configuration
+# 
+# NOTE: This file is from the previous repository setup.
+# If you're using GitHub, consider removing this file and setting up GitHub Actions instead.
+# If you're using GitLab, keep this file and update the repository-specific variables.
+#
+# To remove this file: 
+#   git rm .gitlab-ci.yml
+#   git commit -m "Remove GitLab CI configuration"
+#
 default:
   image: docker:20.10.16
   services:
