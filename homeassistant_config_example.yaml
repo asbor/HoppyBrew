@@ -1,0 +1,251 @@
+# Example HomeAssistant Configuration for HoppyBrew
+
+# This file contains example configurations for integrating HoppyBrew with HomeAssistant.
+# Copy the relevant sections to your HomeAssistant configuration.yaml file.
+
+# ============================================================================
+# BASIC SETUP - Monitor Active Batches
+# ============================================================================
+
+sensor:
+  # Overall brewery status showing number of active batches
+  - platform: rest
+    name: "HoppyBrew Active Batches"
+    resource: http://192.168.1.100:8000/api/homeassistant/summary
+    value_template: "{{ value_json.active_batches }}"
+    unit_of_measurement: "batches"
+    icon: mdi:brewery
+    json_attributes:
+      - total_batches
+      - brewing_batches
+      - fermenting_batches
+      - conditioning_batches
+      - ready_batches
+      - state
+    scan_interval: 300  # Update every 5 minutes
+
+# ============================================================================
+# SPECIFIC BATCH MONITORING
+# ============================================================================
+
+  # Monitor a specific batch by ID (replace with your batch ID)
+  - platform: rest
+    name: "Current Brew - IPA Batch 1"
+    resource: http://192.168.1.100:8000/api/homeassistant/batches/1
+    value_template: "{{ value_json.state }}"
+    icon: mdi:beer
+    json_attributes_path: "$.attributes"
+    json_attributes:
+      - batch_name
+      - batch_number
+      - batch_size
+      - batch_size_unit
+      - age_days
+      - brewer
+      - brew_date
+      - recipe_name
+      - last_activity
+      - last_activity_time
+    scan_interval: 300
+
+# ============================================================================
+# TEMPLATE SENSORS - Derived Values
+# ============================================================================
+
+template:
+  - sensor:
+      # Calculate total volume of all active batches
+      - name: "Total Batch Volume"
+        unique_id: "hoppybrew_total_volume"
+        state: >
+          {% set attrs = state_attr('sensor.hoppybrew_active_batches', 'total_batches') %}
+          {% if attrs %}
+            {{ attrs | int }}
+          {% else %}
+            0
+          {% endif %}
+        unit_of_measurement: "batches"
+        icon: mdi:cup-water
+
+      # Show age of current batch
+      - name: "Current Batch Age"
+        unique_id: "hoppybrew_current_batch_age"
+        state: >
+          {% set age = state_attr('sensor.current_brew_ipa_batch_1', 'age_days') %}
+          {{ age if age else 0 }}
+        unit_of_measurement: "days"
+        icon: mdi:calendar-clock
+
+      # Estimate days until ready (assuming 28 day total cycle)
+      - name: "Days Until Ready"
+        unique_id: "hoppybrew_days_until_ready"
+        state: >
+          {% set age = state_attr('sensor.current_brew_ipa_batch_1', 'age_days') %}
+          {% if age %}
+            {{ [0, 28 - age | int] | max }}
+          {% else %}
+            28
+          {% endif %}
+        unit_of_measurement: "days"
+        icon: mdi:timer-sand
+
+# ============================================================================
+# AUTOMATIONS - Notifications and Actions
+# ============================================================================
+
+automation:
+  # Notify when batch moves to fermenting stage
+  - alias: "Notify Fermentation Started"
+    trigger:
+      - platform: state
+        entity_id: sensor.current_brew_ipa_batch_1
+        to: "fermenting"
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "🍺 Fermentation Started"
+          message: "{{ state_attr('sensor.current_brew_ipa_batch_1', 'batch_name') }} has entered fermentation stage!"
+          data:
+            notification_icon: mdi:flask
+
+  # Notify when batch is ready
+  - alias: "Notify Batch Ready"
+    trigger:
+      - platform: state
+        entity_id: sensor.current_brew_ipa_batch_1
+        to: "ready"
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "🍺 Batch Ready!"
+          message: "{{ state_attr('sensor.current_brew_ipa_batch_1', 'batch_name') }} is ready to bottle!"
+          data:
+            notification_icon: mdi:beer
+
+  # Alert if fermentation taking too long (>21 days)
+  - alias: "Alert Long Fermentation"
+    trigger:
+      - platform: template
+        value_template: >
+          {{ state_attr('sensor.current_brew_ipa_batch_1', 'age_days') | int > 21 and 
+             states('sensor.current_brew_ipa_batch_1') == 'fermenting' }}
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "⚠️ Long Fermentation"
+          message: "Batch has been fermenting for {{ state_attr('sensor.current_brew_ipa_batch_1', 'age_days') }} days. Check if ready for next stage."
+
+  # Daily status update for active batches
+  - alias: "Daily Brewery Status"
+    trigger:
+      - platform: time
+        at: "09:00:00"
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.hoppybrew_active_batches
+        above: 0
+    action:
+      - service: notify.mobile_app
+        data:
+          title: "☕ Daily Brewery Update"
+          message: >
+            Active batches: {{ states('sensor.hoppybrew_active_batches') }}
+            Fermenting: {{ state_attr('sensor.hoppybrew_active_batches', 'fermenting_batches') }}
+            Conditioning: {{ state_attr('sensor.hoppybrew_active_batches', 'conditioning_batches') }}
+            Ready: {{ state_attr('sensor.hoppybrew_active_batches', 'ready_batches') }}
+
+# ============================================================================
+# LOVELACE DASHBOARD - Custom Cards
+# ============================================================================
+
+# Add to your Lovelace dashboard configuration (ui-lovelace.yaml or via UI)
+
+# Example 1: Entities Card showing brewery status
+# type: entities
+# title: HoppyBrew Brewery
+# entities:
+#   - entity: sensor.hoppybrew_active_batches
+#     name: Active Batches
+#   - type: attribute
+#     entity: sensor.hoppybrew_active_batches
+#     attribute: brewing_batches
+#     name: Currently Brewing
+#     icon: mdi:pot-steam
+#   - type: attribute
+#     entity: sensor.hoppybrew_active_batches
+#     attribute: fermenting_batches
+#     name: Fermenting
+#     icon: mdi:flask
+#   - type: attribute
+#     entity: sensor.hoppybrew_active_batches
+#     attribute: conditioning_batches
+#     name: Conditioning
+#     icon: mdi:barrel
+#   - type: attribute
+#     entity: sensor.hoppybrew_active_batches
+#     attribute: ready_batches
+#     name: Ready to Bottle
+#     icon: mdi:beer
+
+# Example 2: Gauge Card for batch progress
+# type: gauge
+# entity: sensor.current_batch_age
+# name: Batch Age
+# min: 0
+# max: 28
+# severity:
+#   green: 0
+#   yellow: 14
+#   red: 21
+# unit: days
+
+# Example 3: Markdown Card with batch details
+# type: markdown
+# content: |
+#   ## Current Batch
+#   **Name:** {{ state_attr('sensor.current_brew_ipa_batch_1', 'batch_name') }}
+#   **Recipe:** {{ state_attr('sensor.current_brew_ipa_batch_1', 'recipe_name') }}
+#   **Size:** {{ state_attr('sensor.current_brew_ipa_batch_1', 'batch_size') }} {{ state_attr('sensor.current_brew_ipa_batch_1', 'batch_size_unit') }}
+#   **Age:** {{ state_attr('sensor.current_brew_ipa_batch_1', 'age_days') }} days
+#   **Stage:** {{ states('sensor.current_brew_ipa_batch_1') }}
+#   **Brewer:** {{ state_attr('sensor.current_brew_ipa_batch_1', 'brewer') }}
+
+# ============================================================================
+# ADVANCED - Multiple Batch Monitoring
+# ============================================================================
+
+# To monitor multiple batches, create separate sensors for each batch ID:
+
+# sensor:
+#   - platform: rest
+#     name: "Batch 1 - IPA"
+#     resource: http://192.168.1.100:8000/api/homeassistant/batches/1
+#     value_template: "{{ value_json.state }}"
+#     json_attributes_path: "$.attributes"
+#     json_attributes:
+#       - batch_name
+#       - age_days
+#     
+#   - platform: rest
+#     name: "Batch 2 - Stout"
+#     resource: http://192.168.1.100:8000/api/homeassistant/batches/2
+#     value_template: "{{ value_json.state }}"
+#     json_attributes_path: "$.attributes"
+#     json_attributes:
+#       - batch_name
+#       - age_days
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+# 1. Replace "192.168.1.100:8000" with your actual HoppyBrew server address
+# 2. Replace batch IDs (e.g., "/batches/1") with your actual batch IDs
+# 3. Adjust scan_interval based on your needs (default: 60 seconds, recommended: 300 seconds)
+# 4. Customize entity names and icons to match your preferences
+# 5. For mobile notifications, replace "notify.mobile_app" with your actual notification service
+# 6. Test each configuration section individually before adding all at once
+# 7. Check HomeAssistant logs if sensors don't appear or update
+# 8. Use Developer Tools > States to verify sensor data
+
+# For more information, see HOMEASSISTANT_INTEGRATION.md in the HoppyBrew repository
