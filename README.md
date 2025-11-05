@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="#">
+  <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME">
     <img src="documents/images/logo.png" alt="Logo" width="300">
   </a>
 
@@ -39,14 +39,14 @@
   <p align="center">
     This project, part of the Software Engineering course at the Faculty of Informatics, International University of Applied Sciences Bad Honnef - Bonn, is inspired by Brewfather. It aims to develop a web app tailored for home-brewers to efficiently manage brewing processes. Motivated by personal experience as a homebrewer and interest in self-hosting, the creator seeks to provide a self-hosted alternative to subscription-based services like Brewfather. The project will be hosted on a personal server, running within a Docker container, to cater to a specific niche in brewing management.
     <br />
-    <a href="#"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="#">View Demo</a>
+    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME">View Demo</a>
     ·
-    <a href="#">Report Bug</a>
+    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/issues">Report Bug</a>
     ·
-    <a href="#">Request Feature</a>
+    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/issues">Request Feature</a>
   </p>
 </div>
 

@@ -69,8 +69,9 @@ A quick reference template for updating README after migration:
 ### Quick Start (5 minutes)
 
 1. **Create your new repository** on GitHub/GitLab
-2. **Clone this repository** and push to your new remote:
+2. **Clone this repository** (the source you want to migrate) and push to your new remote:
    ```bash
+   # Clone the current/source repository
    git clone https://github.com/asbor/iu-project-software-engineering.git
    cd iu-project-software-engineering
    git remote remove origin

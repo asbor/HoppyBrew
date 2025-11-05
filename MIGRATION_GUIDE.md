@@ -21,7 +21,7 @@ Before moving to a new repository, this codebase has been cleaned up to remove:
 ### 2. Clone This Project and Push to New Repository
 
 ```bash
-# Clone this repository (if you haven't already)
+# Clone this current repository (the source you want to migrate)
 git clone https://github.com/asbor/iu-project-software-engineering.git
 cd iu-project-software-engineering
 
