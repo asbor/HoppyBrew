@@ -69,6 +69,26 @@ function isStepCurrent(stepIndex: number): boolean {
   return stepIndex === currentStepIndex.value
 }
 
+function getStepClasses(index: number): string {
+  if (isStepComplete(index)) {
+    return `${statusColor.value} border-transparent text-white`
+  }
+  if (isStepCurrent(index)) {
+    return `${statusColor.value} border-transparent text-white ring-4 ring-offset-2`
+  }
+  return 'border-gray-300 text-gray-400'
+}
+
+function getStepLabelClasses(index: number): string {
+  if (isStepCurrent(index)) {
+    return 'text-gray-900 font-semibold'
+  }
+  if (isStepComplete(index)) {
+    return 'text-gray-700'
+  }
+  return 'text-gray-400'
+}
+
 function formatDate(dateString?: string): string {
   if (!dateString) return 'Not set'
   const date = new Date(dateString)
@@ -112,9 +132,7 @@ function formatDate(dateString?: string): string {
             <div 
               :class="[
                 'w-12 h-12 rounded-full flex items-center justify-center border-2 bg-white transition-all',
-                isStepComplete(index) ? `${statusColor} border-transparent text-white` : '',
-                isStepCurrent(index) ? `${statusColor} border-transparent text-white ring-4 ring-offset-2` : '',
-                !isStepComplete(index) && !isStepCurrent(index) ? 'border-gray-300 text-gray-400' : '',
+                getStepClasses(index)
               ]"
             >
               <Icon 
@@ -127,8 +145,7 @@ function formatDate(dateString?: string): string {
             <span 
               :class="[
                 'mt-2 text-xs text-center font-medium',
-                isStepCurrent(index) ? 'text-gray-900 font-semibold' : '',
-                isStepComplete(index) ? 'text-gray-700' : 'text-gray-400',
+                getStepLabelClasses(index)
               ]"
             >
               {{ step.label }}

@@ -318,20 +318,32 @@ export const useCalculators = () => {
 
   /**
    * Convert gravity to Plato
+   * Using the standard brewing formula
    * @param gravity Specific gravity
    * @returns Degrees Plato
    */
   function gravityToPlato(gravity: number): number {
-    return (-463.37) + (668.72 * gravity) - (205.35 * gravity * gravity)
+    // Standard brewing conversion constants
+    const PLATO_CONSTANT_A = -463.37
+    const PLATO_CONSTANT_B = 668.72
+    const PLATO_CONSTANT_C = 205.35
+    
+    return PLATO_CONSTANT_A + (PLATO_CONSTANT_B * gravity) - (PLATO_CONSTANT_C * gravity * gravity)
   }
 
   /**
    * Convert Plato to gravity
+   * Using the standard brewing formula
    * @param plato Degrees Plato
    * @returns Specific gravity
    */
   function platoToGravity(plato: number): number {
-    return 1 + (plato / (258.6 - ((plato / 258.2) * 227.1)))
+    // Standard brewing conversion constants
+    const GRAVITY_CONSTANT_A = 258.6
+    const GRAVITY_CONSTANT_B = 258.2
+    const GRAVITY_CONSTANT_C = 227.1
+    
+    return 1 + (plato / (GRAVITY_CONSTANT_A - ((plato / GRAVITY_CONSTANT_B) * GRAVITY_CONSTANT_C)))
   }
 
   return {

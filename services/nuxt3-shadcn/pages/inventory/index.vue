@@ -17,29 +17,35 @@ onMounted(async () => {
   ])
 })
 
-// Low stock threshold (configurable)
-const lowStockThreshold = ref(100)
+// Low stock threshold - TODO: Make this configurable via app settings
+// Different ingredient types may require different thresholds
+const LOW_STOCK_THRESHOLD = {
+  fermentables: 1000, // grams
+  hops: 100,         // grams
+  yeasts: 1,         // packages
+  miscs: 100,        // grams
+}
 
 // Computed stats
 const inventoryStats = computed(() => ({
   fermentables: {
     total: inventory.fermentables.value.length,
-    lowStock: inventory.fermentables.value.filter(f => f.amount < lowStockThreshold.value).length,
+    lowStock: inventory.fermentables.value.filter(f => f.amount < LOW_STOCK_THRESHOLD.fermentables).length,
     totalAmount: inventory.fermentables.value.reduce((sum, f) => sum + f.amount, 0),
   },
   hops: {
     total: inventory.hops.value.length,
-    lowStock: inventory.hops.value.filter(h => h.amount < lowStockThreshold.value).length,
+    lowStock: inventory.hops.value.filter(h => h.amount < LOW_STOCK_THRESHOLD.hops).length,
     totalAmount: inventory.hops.value.reduce((sum, h) => sum + h.amount, 0),
   },
   yeasts: {
     total: inventory.yeasts.value.length,
-    lowStock: inventory.yeasts.value.filter(y => y.amount < lowStockThreshold.value).length,
+    lowStock: inventory.yeasts.value.filter(y => y.amount < LOW_STOCK_THRESHOLD.yeasts).length,
     totalAmount: inventory.yeasts.value.reduce((sum, y) => sum + y.amount, 0),
   },
   miscs: {
     total: inventory.miscs.value.length,
-    lowStock: inventory.miscs.value.filter(m => m.amount < lowStockThreshold.value).length,
+    lowStock: inventory.miscs.value.filter(m => m.amount < LOW_STOCK_THRESHOLD.miscs).length,
     totalAmount: inventory.miscs.value.reduce((sum, m) => sum + m.amount, 0),
   },
 }))
