@@ -72,6 +72,14 @@
 
 The project, undertaken as part of the Software Engineering course at the Faculty of Informatics, International University of Applied Sciences Bad Honnef - Bonn, seeks to develop a web application tailored for home-brewers. Inspired by the existing project Brewfather, the objective is to create a platform that assists brewers in efficiently managing their brewing processes. The project is motivated by personal experience, with the creator being a homebrewer looking for a self-hosted solution. By leveraging Docker containers, the aim is to provide a self-hosted alternative to subscription-based services like Brewfather, catering to a specific niche within the brewing community.
 
+### Key Features
+
+- **Recipe Management**: Create, edit, and manage brewing recipes with detailed ingredient tracking
+- **Batch Tracking**: Monitor active brewing batches through all stages of production
+- **Inventory Management**: Track hops, fermentables, yeasts, and miscellaneous ingredients
+- **HomeAssistant Integration**: Monitor your brewing processes through HomeAssistant dashboards
+- **Self-Hosted**: Run on your own infrastructure with full control over your data
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
@@ -452,6 +460,19 @@ This is an example of how to list things you need to use the software and how to
 - Backend: `docker compose up backend db`
 - Frontend: `cd services/nuxt3-shadcn && yarn dev`
 - For detailed setup, see [`Project Setup Guide.md`](Project%20Setup%20Guide.md).
+
+### HomeAssistant Integration
+
+HoppyBrew includes native HomeAssistant integration for monitoring your brewing batches. See [HOMEASSISTANT_INTEGRATION.md](HOMEASSISTANT_INTEGRATION.md) for setup instructions.
+
+Quick example:
+```yaml
+sensor:
+  - platform: rest
+    name: "Brewery Status"
+    resource: http://your-hoppybrew-host:8000/api/homeassistant/summary
+    value_template: "{{ value_json.active_batches }}"
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
