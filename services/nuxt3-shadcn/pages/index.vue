@@ -278,25 +278,25 @@ onMounted(async () => {
         <CardContent class="grid gap-ha-xs md:grid-cols-4">
           <Button asChild variant="default">
             <NuxtLink href="/recipes/newRecipe">
-              <Icon name="mdi:plus" class="mr-2 h-5 w-5" />
+              <Icon name="mdi:plus" class="mr-ha-xs h-5 w-5" />
               New Recipe
             </NuxtLink>
           </Button>
           <Button asChild variant="default">
             <NuxtLink href="/batches/newBatch">
-              <Icon name="mdi:plus" class="mr-2 h-5 w-5" />
+              <Icon name="mdi:plus" class="mr-ha-xs h-5 w-5" />
               New Batch
             </NuxtLink>
           </Button>
           <Button asChild variant="outline">
             <NuxtLink href="/tools">
-              <Icon name="mdi:calculator" class="mr-2 h-5 w-5" />
+              <Icon name="mdi:calculator" class="mr-ha-xs h-5 w-5" />
               Calculators
             </NuxtLink>
           </Button>
           <Button asChild variant="outline">
             <NuxtLink href="/library">
-              <Icon name="mdi:library" class="mr-2 h-5 w-5" />
+              <Icon name="mdi:library" class="mr-ha-xs h-5 w-5" />
               Recipe Library
             </NuxtLink>
           </Button>
