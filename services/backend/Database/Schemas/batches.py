@@ -30,6 +30,7 @@ class BatchUpdate(BaseModel):
 
 class Batch(BatchBase):
     id: int
+    recipe_id: int
     created_at: datetime
     updated_at: datetime
     batch_log: Optional[BatchLog] = None

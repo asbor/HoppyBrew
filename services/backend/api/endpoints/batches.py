@@ -205,6 +205,9 @@ async def create_batch(
             db.add(db_inventory_yeast)
         db.commit()
         return db_batch
+    except HTTPException:
+        # Re-raise HTTP exceptions (like 404) without converting to 500
+        raise
     except Exception as e:
         logger.error(f"Error creating batch: {e}", exc_info=True)
         db.rollback()
@@ -231,10 +234,10 @@ async def get_batch_by_id(batch_id: int, db: Session = Depends(get_db)):
         db.query(models.Batches)
         .options(
             joinedload(models.Batches.recipe),
-            joinedload(models.Batches.fermentables),
-            joinedload(models.Batches.hops),
-            joinedload(models.Batches.miscs),
-            joinedload(models.Batches.yeasts),
+            joinedload(models.Batches.inventory_fermentables),
+            joinedload(models.Batches.inventory_hops),
+            joinedload(models.Batches.inventory_miscs),
+            joinedload(models.Batches.inventory_yeasts),
         )
         .filter(models.Batches.id == batch_id)
         .first()
