@@ -14,6 +14,7 @@ from typing import List
 import xml.etree.ElementTree as ET
 from fastapi.responses import StreamingResponse
 import io
+from pydantic import BaseModel
 try:
     import requests
 except ImportError:  # pragma: no cover - fallback when requests is unavailable
@@ -31,18 +32,47 @@ def _element_text(element, tag, default=None):
     return child.text
 
 
-@router.post("/references/import", response_model=dict)
+class ReferenceImportResponse(BaseModel):
+    message: str
+    imported_records: int
+    skipped_records: int
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "message": "References imported successfully",
+                "imported_records": 12,
+                "skipped_records": 2,
+            }
+        }
+
+
+@router.post(
+    "/references/import",
+    response_model=ReferenceImportResponse,
+    summary="Import references from BeerXML",
+    response_description="Outcome of the import operation summarising processed records.",
+)
 async def import_references(
     db: Session = Depends(get_db), file: UploadFile = File(...)
 ):
     contents = await file.read()
-    tree = ET.ElementTree(ET.fromstring(contents))
+    try:
+        tree = ET.ElementTree(ET.fromstring(contents))
+    except ET.ParseError as parse_error:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Provided file is not valid XML: {parse_error}",
+        ) from parse_error
     root = tree.getroot()
+    imported_count = 0
+    skipped_count = 0
     for ref_element in root.findall("reference"):
         name = _element_text(ref_element, "name")
         url = _element_text(ref_element, "url")
         if not name or not url:
             # Skip malformed records rather than failing the whole import
+            skipped_count += 1
             continue
         description = _element_text(ref_element, "description", "")
         category = _element_text(ref_element, "category", "")
@@ -55,8 +85,13 @@ async def import_references(
             favicon_url=favicon_url,
         )
         db.add(reference)
+        imported_count += 1
     db.commit()
-    return {"message": "References imported successfully"}
+    return ReferenceImportResponse(
+        message="References imported successfully",
+        imported_records=imported_count,
+        skipped_records=skipped_count,
+    )
 
 
 @router.get("/references/export")

@@ -1,20 +1,34 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 router = APIRouter()
 
 
-@router.get("/api/logs")
+class LogContentResponse(BaseModel):
+    log_content: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "log_content": "[2024-03-21 10:15:09] INFO - Server started on port 8000\n"
+                "[2024-03-21 10:17:45] ERROR - Failed to connect to fermentation sensor",
+            }
+        }
+
+
+@router.get(
+    "/api/logs",
+    response_model=LogContentResponse,
+    summary="Download backend logs",
+    response_description="Raw application logs collected from the service host.",
+)
 async def get_logs():
+    """Return the application log stream for debugging and support."""
     try:
-        # Read log content from file
-
-        with open("logs.log", "r") as file:
+        with open("logs.log", "r", encoding="utf-8") as file:
             log_content = file.read()
-        # Return log content as JSON response
-
-        return JSONResponse(content={"log_content": log_content})
+        return LogContentResponse(log_content=log_content)
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Failed to read log file: {e}"
-        )
+        ) from e

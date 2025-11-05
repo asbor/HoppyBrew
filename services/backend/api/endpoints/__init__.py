@@ -1,7 +1,9 @@
 from . import recipes
 from . import batches
 from . import hops
+from . import inventory_hops
 from . import fermentables
+from . import inventory_fermentables
 from . import style_guidelines
 from . import logs
 from . import questions
@@ -12,8 +14,10 @@ from . import water_profiles
 from . import mash_profiles
 from . import equipment_profiles
 from . import miscs
+from . import inventory_miscs
 from . import users
 from . import yeasts
+from . import inventory_yeasts
 from . import trigger_beer_styles_processing
 from . import health
 from . import references
@@ -22,7 +26,9 @@ __all__ = [
     "recipes",
     "batches",
     "hops",
+    "inventory_hops",
     "fermentables",
+    "inventory_fermentables",
     "style_guidelines",
     "logs",
     "questions",
@@ -30,8 +36,10 @@ __all__ = [
     "mash_profiles",
     "equipment_profiles",
     "miscs",
+    "inventory_miscs",
     "users",
     "yeasts",
+    "inventory_yeasts",
     "trigger_beer_styles_processing",
     "health",
     "references",

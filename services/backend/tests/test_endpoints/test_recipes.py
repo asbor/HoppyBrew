@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+import pytest
 import Database.Models as models
 
 
@@ -242,3 +243,46 @@ def test_delete_recipe_removes_related_rows(client, db_session):
         .count()
         == 0
     )
+
+
+def test_scale_recipe_endpoint_returns_scaled_payload(client):
+    created, payload = create_recipe(client, name="Scalable Recipe")
+    recipe_id = created["id"]
+
+    original_batch = payload["batch_size"]
+    target_batch_size = original_batch * 1.5
+
+    response = client.post(
+        f"/recipes/{recipe_id}/scale",
+        json={"target_batch_size": target_batch_size},
+    )
+
+    assert response.status_code == 200, response.text
+
+    data = response.json()
+    assert data["original_batch_size"] == pytest.approx(original_batch)
+    assert data["target_batch_size"] == pytest.approx(target_batch_size)
+    assert data["scale_factor"] == pytest.approx(
+        target_batch_size / original_batch
+    )
+
+    scaled_recipe = data["scaled_recipe"]
+    assert scaled_recipe["batch_size"] == pytest.approx(target_batch_size)
+    assert scaled_recipe["boil_size"] == pytest.approx(
+        payload["boil_size"] * (target_batch_size / original_batch)
+    )
+
+    original_hop_amount = payload["hops"][0]["amount"]
+    scaled_hop_amount = scaled_recipe["hops"][0]["amount"]
+    assert scaled_hop_amount == pytest.approx(
+        original_hop_amount * (target_batch_size / original_batch)
+    )
+
+    original_fermentable_amount = payload["fermentables"][0]["amount"]
+    scaled_fermentable_amount = scaled_recipe["fermentables"][0]["amount"]
+    assert scaled_fermentable_amount == pytest.approx(
+        original_fermentable_amount * (target_batch_size / original_batch)
+    )
+
+    metrics = data["metrics"]
+    assert set(metrics.keys()) == {"abv", "ibu", "srm"}

@@ -14,3 +14,4 @@
 - Introduce composite indexes for frequent lookups: `(name, version)` on `recipes`, `(recipe_id, batch_number)` on `batches`, `(batch_id, name)` on each inventory table, `(recipe_id, type)` (or `(recipe_id, name)`) on recipe ingredient tables, `(question_id, is_correct)` on `choices`, and `(mash_id, step_time)` on `mash_step`.
 - Enforce expected uniqueness with indexes or constraints on profile names (`equipment.name`, `mash.name`, `water.name`) per model docstrings.
 - Ensure future migrations build foreign-key indexes concurrently to avoid retroactive full-table scans.
+- Harden primary keys to be non-nullable on `styles` and `style_guidelines`, and audit remaining tables for similar PK nullability leaks.

@@ -19,3 +19,11 @@ class User(BaseModel):
 
     username: str
     password: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "username": "brewmaster",
+                "password": "S3curePassw0rd!",
+            }
+        }

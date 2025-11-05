@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import xml.etree.ElementTree as ET
 from collections import OrderedDict
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from sqlalchemy.orm import Session
 
