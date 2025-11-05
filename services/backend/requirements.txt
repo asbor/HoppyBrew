@@ -35,5 +35,6 @@ flake8
 
 # Install pytest for testing
 pytest
+httpx  # Required for FastAPI TestClient
 
 selenium
