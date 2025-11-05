@@ -20,17 +20,17 @@
               <div>
                 <label for="name" class="text-foreground">Name:</label>
                 <input type="text" id="name" v-model="recipe.name" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="brewer" class="text-foreground">Brewer:</label>
                 <input type="text" id="brewer" v-model="recipe.brewer" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="type" class="text-foreground">Type:</label>
                 <input type="text" id="type" v-model="recipe.type" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
             </RecipeBlock>
 
@@ -38,22 +38,22 @@
               <div>
                 <label for="batch_size" class="text-foreground">Batch Size:</label>
                 <input type="number" id="batch_size" v-model="recipe.batch_size" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="boil_size" class="text-foreground">Boil Size:</label>
                 <input type="number" id="boil_size" v-model="recipe.boil_size" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="boil_time" class="text-foreground">Boil Time:</label>
                 <input type="number" id="boil_time" v-model="recipe.boil_time" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="efficiency" class="text-foreground">Efficiency:</label>
                 <input type="number" id="efficiency" v-model="recipe.efficiency" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
             </EquipmentBlock>
 
@@ -61,27 +61,27 @@
               <div>
                 <label for="abv" class="text-foreground">ABV:</label>
                 <input type="number" id="abv" v-model="recipe.abv" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="og" class="text-foreground">OG:</label>
                 <input type="number" id="og" v-model="recipe.og" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="fg" class="text-foreground">FG:</label>
                 <input type="number" id="fg" v-model="recipe.fg" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="ibu" class="text-foreground">IBU:</label>
                 <input type="number" id="ibu" v-model="recipe.ibu" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="est_color" class="text-foreground">EBC:</label>
                 <input type="number" id="est_color" v-model="recipe.est_color" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
             </StyleBlock>
           </div>
@@ -92,7 +92,7 @@
                 <label for="fermentables" class="text-foreground">Fermentables:</label>
                 <div v-for="fermentable in recipe.fermentables" :key="fermentable.id">
                   <input type="text" v-model="fermentable.name" required placeholder="Optional"
-                    class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                    class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
             </FermentablesBlock>
@@ -102,7 +102,7 @@
                 <label for="hops" class="text-foreground">Hops:</label>
                 <div v-for="hop in recipe.hops" :key="hop.id">
                   <input type="text" v-model="hop.name" required placeholder="Optional"
-                    class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                    class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
             </HopsBlock>
@@ -112,7 +112,7 @@
                 <label for="miscs" class="text-foreground">Miscs:</label>
                 <div v-for="misc in recipe.miscs" :key="misc.id">
                   <input type="text" v-model="misc.name" required placeholder="Optional"
-                    class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                    class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
             </MiscsBlock>
@@ -122,7 +122,7 @@
                 <label for="yeasts" class="text-foreground">Yeasts:</label>
                 <div v-for="yeast in recipe.yeasts" :key="yeast.id">
                   <input type="text" v-model="yeast.name" required placeholder="Optional"
-                    class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                    class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
             </YeastBlock>
@@ -131,7 +131,7 @@
               <div>
                 <label for="mash" class="text-foreground">Mash:</label>
                 <input type="text" id="mash" v-model="recipe.mash" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
             </MashBlock>
 
@@ -139,7 +139,7 @@
               <div>
                 <label for="fermentation" class="text-foreground">Fermentation:</label>
                 <input type="text" id="fermentation" v-model="recipe.fermentation" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
             </FermentationBlock>
           </div>
@@ -149,7 +149,7 @@
               <div>
                 <label for="water" class="text-foreground">Water:</label>
                 <input type="text" id="water" v-model="recipe.water" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full">
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
             </WaterBlock>
 
@@ -157,7 +157,7 @@
               <div>
                 <label for="notes" class="text-foreground">Notes:</label>
                 <textarea id="notes" v-model="recipe.notes" required placeholder="Optional"
-                  class="border border-input bg-background text-foreground rounded-lg p-2 w-full"></textarea>
+                  class="border border-input rounded-lg p-2 w-full"></textarea>
               </div>
             </NotesBlock>
           </div>

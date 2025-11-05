@@ -41,31 +41,31 @@
     /* Home Assistant Dark Theme Colors */
     --background: 222 47% 11%;        /* #111111 - Main background */
     --foreground: 0 0% 95%;           /* #F1F1F1 - Main text color */
- 
+
     --muted: 215 28% 17%;             /* #1E2228 - Muted backgrounds */
     --muted-foreground: 0 0% 70%;     /* #B3B3B3 - Muted text */
- 
+
     --popover: 222 47% 11%;           /* #111111 - Popover background */
     --popover-foreground: 0 0% 95%;   /* #F1F1F1 - Popover text */
- 
+
     --card: 215 28% 17%;              /* #1E2228 - Card background */
     --card-foreground: 0 0% 95%;      /* #F1F1F1 - Card text */
- 
+
     --border: 215 20% 25%;            /* #2E3338 - Borders */
-    --input: 215 28% 17%;             /* #1E2228 - Input background */
- 
+    --input: 215 20% 25%;             /* #2E3338 - Input border color */
+
     --primary: 199 89% 48%;           /* #03A9F4 - Home Assistant blue */
     --primary-foreground: 0 0% 100%;  /* #FFFFFF - Primary text */
- 
+
     --secondary: 215 28% 17%;         /* #1E2228 - Secondary background */
     --secondary-foreground: 0 0% 95%; /* #F1F1F1 - Secondary text */
- 
+
     --accent: 199 89% 48%;            /* #03A9F4 - Accent color */
     --accent-foreground: 0 0% 100%;   /* #FFFFFF - Accent text */
- 
+
     --destructive: 0 70% 50%;         /* Red for errors */
     --destructive-foreground: 0 0% 100%;
- 
+
     --ring: 199 89% 48%;              /* #03A9F4 - Focus ring */
   }
 }
@@ -78,23 +78,29 @@
     @apply bg-background text-foreground;
   }
   
-  /* Ensure all inputs, textareas, and selects have visible text in dark mode */
+  /* Ensure all inputs, textareas, and selects have proper styling in dark mode */
   .dark input,
   .dark textarea,
   .dark select {
-    @apply text-foreground;
-    color: hsl(var(--foreground)) !important;
+    background-color: hsl(var(--muted));
+    color: hsl(var(--foreground));
+    border-color: hsl(var(--border));
   }
   
   /* Ensure placeholder text is visible */
   .dark input::placeholder,
   .dark textarea::placeholder {
-    @apply text-muted-foreground;
+    color: hsl(var(--muted-foreground));
     opacity: 0.7;
   }
   
-  /* Fix for number input spinners */
-  .dark input[type="number"] {
-    @apply text-foreground;
+  /* Focus state for inputs */
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: hsl(var(--ring));
+    border-color: hsl(var(--ring));
   }
 }
