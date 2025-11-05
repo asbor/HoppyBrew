@@ -2,6 +2,46 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 
+FERMENTABLE_BASE_EXAMPLE = {
+    "name": "Pilsner Malt",
+    "type": "Grain",
+    "yield_": 80.0,
+    "color": 2,
+    "origin": "Germany",
+    "supplier": "Weyermann",
+    "notes": "Light-bodied base malt ideal for lagers.",
+    "potential": 1.037,
+    "amount": 4.5,
+    "cost_per_unit": 1.25,
+    "manufacturing_date": "2024-01-15",
+    "expiry_date": "2025-01-15",
+    "lot_number": "LOT-20240115",
+    "exclude_from_total": False,
+    "not_fermentable": False,
+    "description": "Highly modified malt delivering a clean malt backbone.",
+    "substitutes": "German Pils, Bohemian Pilsner",
+    "used_in": "Hoppy Lager",
+}
+
+INVENTORY_FERMENTABLE_EXAMPLE = {
+    **FERMENTABLE_BASE_EXAMPLE,
+    "alpha": 0.0,
+    "beta": 0.0,
+    "form": "Grain",
+    "use": "Mash",
+    "amount_is_weight": True,
+    "product_id": "MALT-PLS-001",
+    "min_temperature": 10.0,
+    "max_temperature": 25.0,
+    "flocculation": None,
+    "attenuation": None,
+    "max_reuse": None,
+    "inventory": 18.0,
+    "display_amount": "4.5 kg",
+    "display_time": "Mash",
+    "batch_size": 20.0,
+}
+
 
 class FermentableBase(BaseModel):
     name: str
@@ -23,12 +63,18 @@ class FermentableBase(BaseModel):
     substitutes: Optional[str] = None
     used_in: Optional[str] = None
 
+    class Config:
+        schema_extra = {"example": FERMENTABLE_BASE_EXAMPLE}
+
 
 class RecipeFermentable(FermentableBase):
     recipe_id: int
 
     class Config:
-        orm_mode: bool = True
+        orm_mode = True
+        schema_extra = {
+            "example": {**FERMENTABLE_BASE_EXAMPLE, "recipe_id": 12}
+        }
 
 
 class InventoryFermentableBase(FermentableBase):
@@ -48,6 +94,9 @@ class InventoryFermentableBase(FermentableBase):
     display_time: Optional[str] = None  # Specific to all
     batch_size: Optional[float] = None  # Specific to miscs
 
+    class Config:
+        schema_extra = {"example": INVENTORY_FERMENTABLE_EXAMPLE}
+
 
 class InventoryFermentableCreate(InventoryFermentableBase):
     pass
@@ -58,4 +107,11 @@ class InventoryFermentable(InventoryFermentableBase):
     batch_id: Optional[int] = None  # Allow batch_id to be None
 
     class Config:
-        orm_mode: bool = True
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                **INVENTORY_FERMENTABLE_EXAMPLE,
+                "id": 34,
+                "batch_id": 9,
+            }
+        }

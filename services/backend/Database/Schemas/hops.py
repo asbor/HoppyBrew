@@ -1,6 +1,23 @@
 from pydantic import BaseModel
 from typing import Optional
 
+HOP_BASE_EXAMPLE = {
+    "name": "Cascade",
+    "origin": "USA",
+    "alpha": 5.5,
+    "type": "Aroma",
+    "form": "Pellet",
+    "beta": 6.0,
+    "hsi": 15.0,
+    "amount": 28.0,
+    "use": "Boil",
+    "time": 60,
+    "notes": "Classic citrus and grapefruit aroma.",
+    "display_amount": "28 g",
+    "inventory": "4.5 kg",
+    "display_time": "60 min",
+}
+
 
 class HopBase(BaseModel):
     name: str
@@ -18,16 +35,21 @@ class HopBase(BaseModel):
     inventory: Optional[str] = None
     display_time: Optional[str] = None
 
+    class Config:
+        schema_extra = {"example": HOP_BASE_EXAMPLE}
+
 
 class RecipeHop(HopBase):
     recipe_id: int
 
     class Config:
-        orm_mode: bool = True
+        orm_mode = True
+        schema_extra = {"example": {**HOP_BASE_EXAMPLE, "recipe_id": 1}}
 
 
 class InventoryHopBase(HopBase):
-    pass
+    class Config:
+        schema_extra = {"example": HOP_BASE_EXAMPLE}
 
 
 class InventoryHopCreate(InventoryHopBase):
@@ -39,4 +61,5 @@ class InventoryHop(InventoryHopBase):
     batch_id: Optional[int] = None  # Allow batch_id to be None
 
     class Config:
-        orm_mode: bool = True
+        orm_mode = True
+        schema_extra = {"example": {**HOP_BASE_EXAMPLE, "id": 7, "batch_id": 3}}

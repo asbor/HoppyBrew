@@ -2,53 +2,55 @@
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session, joinedload
+from typing import List
 from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
 
 router = APIRouter()
 
+
+def _with_relationships(query):
+    """
+    Apply the common joinedload options needed to return full recipe payloads.
+    """
+    return query.options(
+        joinedload(models.Recipes.hops),
+        joinedload(models.Recipes.fermentables),
+        joinedload(models.Recipes.yeasts),
+        joinedload(models.Recipes.miscs),
+    )
+
+
+def _fetch_recipe(db: Session, recipe_id: int):
+    return (
+        _with_relationships(db.query(models.Recipes))
+        .filter(models.Recipes.id == recipe_id)
+        .first()
+    )
+
 # Get all recipes
 
 
-@router.get("/recipes")
+@router.get("/recipes", response_model=List[schemas.Recipe])
 async def get_all_recipes(db: Session = Depends(get_db)):
     """
     This endpoint returns all the recipes stored in the database.
 
     """
-    recipes = (
-        db.query(models.Recipes)
-        .options(
-            joinedload(models.Recipes.hops),
-            joinedload(models.Recipes.fermentables),
-            joinedload(models.Recipes.yeasts),
-            joinedload(models.Recipes.miscs),
-        )
-        .all()
-    )
+    recipes = _with_relationships(db.query(models.Recipes)).all()
     return recipes
 
 # Get a recipe by ID
 
 
-@router.get("/recipes/{recipe_id}")
+@router.get("/recipes/{recipe_id}", response_model=schemas.Recipe)
 async def get_recipe_by_id(recipe_id: int, db: Session = Depends(get_db)):
     """
     This endpoint returns a recipe by its ID.
 
     """
-    recipe = (
-        db.query(models.Recipes)
-        .options(
-            joinedload(models.Recipes.hops),
-            joinedload(models.Recipes.fermentables),
-            joinedload(models.Recipes.yeasts),
-            joinedload(models.Recipes.miscs),
-        )
-        .filter(models.Recipes.id == recipe_id)
-        .first()
-    )
+    recipe = _fetch_recipe(db, recipe_id)
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
     return recipe
@@ -76,7 +78,6 @@ async def create_recipe(
             status_code=400, detail="Recipe with this name already exists"
         )
     # Exclude the related fields when creating the Recipes instance
-
     db_recipe = models.Recipes(
         **recipe.dict(exclude={"hops", "fermentables", "yeasts", "miscs"})
     )
@@ -108,7 +109,7 @@ async def create_recipe(
         )
         db.add(db_yeast)
     db.commit()
-    return db_recipe
+    return _fetch_recipe(db, db_recipe.id)
 
 # Update a recipe by ID
 
@@ -167,8 +168,7 @@ async def update_recipe(
         db_yeast = models.RecipeYeast(**yeast_data.dict(), recipe_id=recipe_id)
         db.add(db_yeast)
     db.commit()
-    db.refresh(db_recipe)
-    return db_recipe
+    return _fetch_recipe(db, recipe_id)
 
 # Delete a recipe by ID
 

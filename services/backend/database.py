@@ -21,7 +21,9 @@ load_dotenv()
 IS_TESTING = os.getenv("TESTING", "0") == "1"
 logger.info(f"IS_TESTING: {IS_TESTING}")
 if IS_TESTING:
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+    SQLALCHEMY_DATABASE_URL = os.getenv(
+        "TEST_DATABASE_URL", "sqlite:///./test_fermentables.db"
+    )
 else:
     SQLALCHEMY_DATABASE_URL = f'postgresql://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@{os.getenv("DATABASE_HOST")}:{os.getenv("DATABASE_PORT")}/{os.getenv("DATABASE_NAME")}'
 
@@ -30,8 +32,12 @@ else:
 logger.info(f"Connecting to the database: {SQLALCHEMY_DATABASE_URL}")
 
 if IS_TESTING:
-    # For SQLite, just create the engine
-    engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
+    # For SQLite tests, ensure the engine can be shared across threads
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        echo=True,
+        connect_args={"check_same_thread": False},
+    )
 else:
     # For PostgreSQL, wait for it to be ready and create database if needed
     from sqlalchemy_utils import database_exists, create_database

@@ -1,6 +1,9 @@
 # api/endpoints/references.py
 
-from bs4 import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except ImportError:  # pragma: no cover - fallback when bs4 is unavailable
+    BeautifulSoup = None
 from urllib.parse import urlparse, urljoin
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session
@@ -11,11 +14,21 @@ from typing import List
 import xml.etree.ElementTree as ET
 from fastapi.responses import StreamingResponse
 import io
-import requests
+try:
+    import requests
+except ImportError:  # pragma: no cover - fallback when requests is unavailable
+    requests = None
 
 router = APIRouter()
 
 # References Endpoints
+
+
+def _element_text(element, tag, default=None):
+    child = element.find(tag)
+    if child is None or child.text is None:
+        return default
+    return child.text
 
 
 @router.post("/references/import", response_model=dict)
@@ -26,10 +39,13 @@ async def import_references(
     tree = ET.ElementTree(ET.fromstring(contents))
     root = tree.getroot()
     for ref_element in root.findall("reference"):
-        name = ref_element.find("name").text
-        url = ref_element.find("url").text
-        description = ref_element.find("description").text
-        category = ref_element.find("category").text
+        name = _element_text(ref_element, "name")
+        url = _element_text(ref_element, "url")
+        if not name or not url:
+            # Skip malformed records rather than failing the whole import
+            continue
+        description = _element_text(ref_element, "description", "")
+        category = _element_text(ref_element, "category", "")
         favicon_url = fetch_favicon(url)
         reference = models.References(
             name=name,
@@ -100,7 +116,7 @@ async def create_reference(
 ):
     favicon_url = fetch_favicon(reference.url)
     reference_data = reference.dict()
-    reference_data['favicon_url'] = favicon_url
+    reference_data["favicon_url"] = favicon_url
     db_reference = models.References(**reference_data)
     db.add(db_reference)
     db.commit()
@@ -147,18 +163,33 @@ async def update_reference(
 def fetch_favicon(url: str) -> str:
     parsed_url = urlparse(url)
     base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+    google_favicon_url = (
+        f"http://www.google.com/s2/favicons?domain={parsed_url.netloc}"
+        if parsed_url.netloc
+        else ""
+    )
+    if not parsed_url.scheme or not parsed_url.netloc or requests is None:
+        return google_favicon_url
+
     # Try common paths
 
     common_paths = ["/favicon.ico", "/favicon.png", "/favicon.svg"]
     for path in common_paths:
         favicon_url = urljoin(base_url, path)
-        response = requests.head(favicon_url)
-        if response.status_code == 200:
-            return favicon_url
+        try:
+            response = requests.head(favicon_url, timeout=2)
+            if response.status_code == 200:
+                return favicon_url
+        except Exception:
+            continue
     # Try parsing the HTML for <link> tags
 
+    if BeautifulSoup is None:
+        return google_favicon_url
+
     try:
-        response = requests.get(base_url)
+        response = requests.get(base_url, timeout=2)
+        response.raise_for_status()
         soup = BeautifulSoup(response.content, "html.parser")
         link_tags = soup.find_all(
             "link",
@@ -173,14 +204,14 @@ def fetch_favicon(url: str) -> str:
             href = link.get("href")
             if href:
                 favicon_url = urljoin(base_url, href)
-                response = requests.head(favicon_url)
-                if response.status_code == 200:
-                    return favicon_url
+                try:
+                    response = requests.head(favicon_url, timeout=2)
+                    if response.status_code == 200:
+                        return favicon_url
+                except Exception:
+                    continue
     except Exception as e:
         print(f"Error parsing HTML for {url}: {e}")
     # Fallback to Google's favicon service
 
-    google_favicon_url = (
-        f"http://www.google.com/s2/favicons?domain={parsed_url.netloc}"
-    )
     return google_favicon_url
