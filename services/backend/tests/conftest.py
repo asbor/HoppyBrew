@@ -48,8 +48,17 @@ def setup_and_teardown():
     # Instead of dropping tables, just delete all rows
     # This is faster and avoids connection pool issues
     with engine.begin() as connection:
+        # For SQLite, disable foreign key checks during cleanup
+        if engine.dialect.name == 'sqlite':
+            connection.exec_driver_sql('PRAGMA foreign_keys=OFF')
+        
+        # Delete in reverse topological order to respect foreign keys
         for table in reversed(Base.metadata.sorted_tables):
             connection.execute(table.delete())
+        
+        # Re-enable foreign key checks for SQLite
+        if engine.dialect.name == 'sqlite':
+            connection.exec_driver_sql('PRAGMA foreign_keys=ON')
 
 
 @pytest.fixture(scope="function")

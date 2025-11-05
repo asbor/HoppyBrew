@@ -10,4 +10,10 @@ router = APIRouter()
 db_dependency = Annotated[Session, Depends(get_db)]
 
 # TODO: Implement user endpoints with proper authentication and authorization
-# For now, this is a placeholder module
+# Planned implementation:
+# - JWT-based authentication (OAuth2 with password flow)
+# - User registration/login endpoints
+# - Password hashing with bcrypt
+# - Role-based access control (RBAC)
+# - User profile management endpoints
+# See issues #1-9 for related authentication requirements
