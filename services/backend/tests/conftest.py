@@ -1,4 +1,8 @@
 import os
+
+# Set environment variable for testing BEFORE any other imports
+os.environ["TESTING"] = "1"
+
 import pytest
 import logging
 from fastapi.testclient import TestClient
@@ -14,8 +18,6 @@ import Database.Models  # noqa: F401
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Set environment variable for testing
-os.environ["TESTING"] = "1"
 logger.debug(f"Environment variable TESTING set to: {os.environ['TESTING']}")
 
 # Database setup for testing

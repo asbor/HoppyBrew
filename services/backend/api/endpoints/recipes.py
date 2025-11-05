@@ -56,7 +56,7 @@ async def get_recipe_by_id(recipe_id: int, db: Session = Depends(get_db)):
 # Create a new recipe
 
 
-@router.post("/recipes")
+@router.post("/recipes", response_model=schemas.Recipe)
 async def create_recipe(
     recipe: schemas.RecipeBase, db: Session = Depends(get_db)
 ):
@@ -113,7 +113,7 @@ async def create_recipe(
 # Update a recipe by ID
 
 
-@router.put("/recipes/{recipe_id}")
+@router.put("/recipes/{recipe_id}", response_model=schemas.Recipe)
 async def update_recipe(
     recipe_id: int, recipe: schemas.RecipeBase, db: Session = Depends(get_db)
 ):
@@ -167,6 +167,7 @@ async def update_recipe(
         db_yeast = models.RecipeYeast(**yeast_data.dict(), recipe_id=recipe_id)
         db.add(db_yeast)
     db.commit()
+    db.refresh(db_recipe)
     return db_recipe
 
 # Delete a recipe by ID

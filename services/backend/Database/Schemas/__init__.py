@@ -6,7 +6,7 @@ from .Ingredients.Fermentable.adjunct import AdjunctBase
 from .Ingredients.Fermentable.grain import GrainBase
 from .questions import QuestionBase
 from .choices import ChoiceBase
-from .recipes import RecipeBase
+from .recipes import RecipeBase, Recipe
 from .batches import Batch, BatchCreate, BatchBase
 from .batch_logs import BatchLogBase
 from .style_guidelines import StyleGuidelineBase, StyleGuidelineBaseCreate
@@ -58,6 +58,7 @@ __all__ = [
     "AdjunctBase",
     "GrainBase",
     "RecipeBase",
+    "Recipe",
     "Batch",
     "BatchCreate",
     "BatchBase",
