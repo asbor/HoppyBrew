@@ -1,47 +1,12 @@
 import pytest
-from fastapi.testclient import TestClient
-from main import app
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from database import Base, get_db
 import logging
-
-# Use a separate test database
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_batches.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine
-)
-
-# Override the get_db function to use the test database
-
-
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(autouse=True)
-def setup_and_teardown():
-    # Create the database and tables
-    Base.metadata.create_all(bind=engine)
-    yield
-    # Drop the database tables after the test
-    Base.metadata.drop_all(bind=engine)
-
-
-def test_create_fermentable():
+def test_create_fermentable(client):
     response = client.post(
         "/inventory/fermentables",
         json={

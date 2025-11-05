@@ -7,6 +7,88 @@ from .fermentables import InventoryFermentable
 from .miscs import InventoryMisc
 from .yeasts import InventoryYeast
 
+BATCH_BASE_EXAMPLE = {
+    "batch_name": "Citrus IPA - March Run",
+    "batch_number": 1,
+    "batch_size": 20.0,
+    "brewer": "Alex Brewer",
+    "brew_date": "2024-03-21T08:00:00Z",
+}
+
+BATCH_FULL_EXAMPLE = {
+    **BATCH_BASE_EXAMPLE,
+    "id": 11,
+    "recipe_id": 42,
+    "created_at": "2024-03-21T08:00:00Z",
+    "updated_at": "2024-03-22T10:30:00Z",
+    "batch_log": {
+        "id": 5,
+        "log_entry": "Transferred to secondary fermenter.",
+        "created_at": "2024-03-22T09:00:00Z",
+    },
+    "inventory_hops": [
+        {
+            "id": 7,
+            "name": "Cascade",
+            "origin": "USA",
+            "alpha": 5.5,
+            "type": "Aroma",
+            "form": "Pellet",
+            "beta": 6.0,
+            "hsi": 15.0,
+            "amount": 28.0,
+            "use": "Dry Hop",
+            "time": 3,
+            "notes": "Added for burst of citrus aroma.",
+            "display_amount": "28 g",
+            "inventory": "4.5 kg",
+            "display_time": "3 days",
+            "batch_id": 11,
+        }
+    ],
+    "inventory_fermentables": [
+        {
+            "id": 34,
+            "name": "Pilsner Malt",
+            "type": "Grain",
+            "amount": 4.5,
+            "yield_": 80.0,
+            "color": 2,
+            "origin": "Germany",
+            "supplier": "Weyermann",
+            "notes": "Provides crisp malt backbone.",
+            "potential": 1.037,
+            "inventory": 18.0,
+            "display_amount": "4.5 kg",
+            "batch_id": 11,
+        }
+    ],
+    "inventory_miscs": [
+        {
+            "id": 15,
+            "name": "Irish Moss",
+            "type": "Fining",
+            "use": "Boil",
+            "amount": 14,
+            "time": 10,
+            "display_amount": "14 g",
+            "display_time": "10 min",
+            "batch_id": 11,
+        }
+    ],
+    "inventory_yeasts": [
+        {
+            "id": 22,
+            "name": "SafAle US-05",
+            "type": "Ale",
+            "form": "Dry",
+            "attenuation": 78.0,
+            "notes": "Clean American ale yeast.",
+            "batch_id": 11,
+        }
+    ],
+}
+
 
 class BatchBase(BaseModel):
     batch_name: str
@@ -15,9 +97,15 @@ class BatchBase(BaseModel):
     brewer: str
     brew_date: datetime
 
+    class Config:
+        schema_extra = {"example": BATCH_BASE_EXAMPLE}
+
 
 class BatchCreate(BatchBase):
     recipe_id: int
+
+    class Config:
+        schema_extra = {"example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}}
 
 
 class BatchUpdate(BaseModel):
@@ -26,6 +114,17 @@ class BatchUpdate(BaseModel):
     batch_size: Optional[float] = None
     brewer: Optional[str] = None
     brew_date: Optional[datetime] = None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "batch_name": "Citrus IPA - March Run",
+                "batch_number": 2,
+                "batch_size": 21.0,
+                "brewer": "Alex Brewer",
+                "brew_date": "2024-03-28T08:00:00Z",
+            }
+        }
 
 
 class Batch(BatchBase):
@@ -41,3 +140,4 @@ class Batch(BatchBase):
 
     class Config:
         orm_mode = True
+        schema_extra = {"example": BATCH_FULL_EXAMPLE}

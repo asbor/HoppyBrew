@@ -45,9 +45,10 @@ def test_import_references_creates_records(client, db_session, monkeypatch):
 
     response = client.post("/references/import", files=files)
     assert response.status_code == 200, response.text
-    assert response.json() == {
-        "message": "References imported successfully"
-    }
+    response_data = response.json()
+    assert response_data["message"] == "References imported successfully"
+    assert "imported_records" in response_data
+    assert "skipped_records" in response_data
 
     stored = db_session.query(models.References).all()
     assert len(stored) == 1

@@ -1,6 +1,33 @@
 from pydantic import BaseModel
 from typing import Optional
 
+EQUIPMENT_PROFILE_EXAMPLE = {
+    "name": "10 Gallon Electric Brewery",
+    "version": 1,
+    "boil_size": 38,
+    "batch_size": 23,
+    "tun_volume": 45,
+    "tun_weight": 15,
+    "tun_specific_heat": 3,
+    "top_up_water": 0,
+    "trub_chiller_loss": 2,
+    "evap_rate": 12,
+    "boil_time": 60,
+    "calc_boil_volume": True,
+    "lauter_deadspace": 1,
+    "top_up_kettle": 0,
+    "hop_utilization": 100,
+    "notes": "Configured for single-vessel electric brewing.",
+    "display_boil_size": "10 gal",
+    "display_batch_size": "6 gal",
+    "display_tun_volume": "12 gal",
+    "display_tun_weight": "15 lb",
+    "display_top_up_water": "0 gal",
+    "display_trub_chiller_loss": "0.5 gal",
+    "display_lauter_deadspace": "0.25 gal",
+    "display_top_up_kettle": "0 gal",
+}
+
 
 class EquipmentProfileBase(BaseModel):
     """
@@ -45,3 +72,6 @@ class EquipmentProfileBase(BaseModel):
     display_trub_chiller_loss: Optional[str]
     display_lauter_deadspace: Optional[str]
     display_top_up_kettle: Optional[str]
+
+    class Config:
+        schema_extra = {"example": EQUIPMENT_PROFILE_EXAMPLE}

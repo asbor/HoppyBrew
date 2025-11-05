@@ -1,6 +1,25 @@
 from pydantic import BaseModel
 from typing import Optional
 
+YEAST_BASE_EXAMPLE = {
+    "name": "SafAle US-05",
+    "type": "Ale",
+    "form": "Dry",
+    "amount": 11.5,
+    "amount_is_weight": True,
+    "laboratory": "Fermentis",
+    "product_id": "US-05",
+    "min_temperature": 18.0,
+    "max_temperature": 28.0,
+    "flocculation": "Medium",
+    "attenuation": 78.0,
+    "notes": "Clean fermenting American ale yeast with neutral profile.",
+    "best_for": "American pale ales and IPAs",
+    "times_cultured": 3,
+    "max_reuse": 5,
+    "add_to_secondary": False,
+}
+
 
 class YeastBase(BaseModel):
     name: str
@@ -20,16 +39,22 @@ class YeastBase(BaseModel):
     max_reuse: Optional[int] = None
     add_to_secondary: Optional[bool] = None
 
+    class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
+        schema_extra = {"example": YEAST_BASE_EXAMPLE}
+
 
 class RecipeYeast(YeastBase):
     recipe_id: int
 
     class Config:
-        orm_mode: bool = True
+        orm_mode = True
+        schema_extra = {"example": {**YEAST_BASE_EXAMPLE, "recipe_id": 12}}
 
 
 class InventoryYeastBase(YeastBase):
-    pass
+    class Config:
+        schema_extra = {"example": YEAST_BASE_EXAMPLE}
 
 
 class InventoryYeastCreate(InventoryYeastBase):
@@ -41,4 +66,5 @@ class InventoryYeast(InventoryYeastBase):
     batch_id: Optional[int] = None  # Allow batch_id to be None
 
     class Config:
-        orm_mode: bool = True
+        orm_mode = True
+        schema_extra = {"example": {**YEAST_BASE_EXAMPLE, "id": 22, "batch_id": 5}}

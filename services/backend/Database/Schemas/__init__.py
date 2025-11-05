@@ -6,11 +6,17 @@ from .Ingredients.Fermentable.adjunct import AdjunctBase
 from .Ingredients.Fermentable.grain import GrainBase
 from .questions import QuestionBase
 from .choices import ChoiceBase
-from .recipes import RecipeBase, Recipe
+from .recipes import (
+    RecipeBase,
+    Recipe,
+    RecipeMetrics,
+    RecipeScaleRequest,
+    RecipeScaleResponse,
+)
 from .batches import Batch, BatchCreate, BatchBase
 from .batch_logs import BatchLogBase
 from .style_guidelines import StyleGuidelineBase, StyleGuidelineBaseCreate
-from .styles import StyleBase
+from .styles import StyleBase, Style
 from .equipment_profiles import EquipmentProfileBase
 from .water_profiles import WaterProfileBase
 from .mash_profiles import MashProfileBase
@@ -59,6 +65,9 @@ __all__ = [
     "GrainBase",
     "RecipeBase",
     "Recipe",
+    "RecipeMetrics",
+    "RecipeScaleRequest",
+    "RecipeScaleResponse",
     "Batch",
     "BatchCreate",
     "BatchBase",
@@ -66,6 +75,7 @@ __all__ = [
     "StyleGuidelineBase",
     "StyleGuidelineBaseCreate",
     "StyleBase",
+    "Style",
     "EquipmentProfileBase",
     "WaterProfileBase",
     "MashProfileBase",

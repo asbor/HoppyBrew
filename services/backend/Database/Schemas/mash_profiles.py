@@ -1,6 +1,22 @@
 from pydantic import BaseModel
 from typing import Optional
 
+MASH_PROFILE_EXAMPLE = {
+    "name": "Single Infusion, Medium Body",
+    "version": 1,
+    "grain_temp": 22,
+    "tun_temp": 21,
+    "sparge_temp": 76,
+    "ph": 5,
+    "tun_weight": 15,
+    "tun_specific_heat": 3,
+    "notes": "Standard single infusion mash aimed at medium body ales.",
+    "display_grain_temp": "22 °C",
+    "display_tun_temp": "21 °C",
+    "display_sparge_temp": "76 °C",
+    "display_tun_weight": "15 lb",
+}
+
 
 class MashProfileBase(BaseModel):
     """
@@ -36,3 +52,6 @@ class MashProfileBase(BaseModel):
     display_tun_temp: Optional[str] = None
     display_sparge_temp: Optional[str] = None
     display_tun_weight: Optional[str] = None
+
+    class Config:
+        schema_extra = {"example": MASH_PROFILE_EXAMPLE}

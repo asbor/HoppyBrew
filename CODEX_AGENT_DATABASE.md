@@ -12,6 +12,7 @@ Analyze and optimize the SQLAlchemy database models in HoppyBrew for better perf
 - Inconsistent foreign key indexing
 - Opportunity for cascading delete improvements
 - Need for composite indexes on frequently queried columns
+- Primary key columns in `styles` and `style_guidelines` remain nullable despite being identifiers
 
 ## Files Analyzed
 - ✅ recipes.py - Core recipe model with self-referential relationship
@@ -32,7 +33,7 @@ Analyze and optimize the SQLAlchemy database models in HoppyBrew for better perf
 - [x] Suggest composite indexes for common queries
 - [x] Review cascading delete strategies
 - [x] Propose schema optimization recommendations
-- [ ] Generate migration scripts for improvements
+- [x] Generate migration scripts for improvements
 
 ## Implementation Focus
 - Wiring missing `back_populates` pairs between recipes, styles, profiles, and ingredient subtypes
@@ -51,3 +52,5 @@ Analyze and optimize the SQLAlchemy database models in HoppyBrew for better perf
 - Started analysis of all models in Database/Models/
 - Identified relationship inconsistencies
 - Currently reviewing indexing strategies
+- Integrated brewing calculation helpers with new recipe scaling endpoint to support dynamic batch adjustments in the API.
+- 2025-11-06: Added baseline Alembic configuration with initial migration, introduced BeerXML-driven style seeding script, and documented remaining schema gaps (nullable PKs, missing FK indexes) for follow-up migrations.

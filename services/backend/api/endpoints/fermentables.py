@@ -48,23 +48,6 @@ async def get_inventory_fermentable(
     return fermentable
 
 
-@router.post(
-    "/inventory/fermentables", response_model=schemas.InventoryFermentable
-)
-async def create_inventory_fermentable(
-    fermentable: schemas.InventoryFermentableCreate,
-    db: Session = Depends(get_db),
-):
-    try:
-        db_fermentable = models.InventoryFermentable(**fermentable.dict())
-        db.add(db_fermentable)
-        db.commit()
-        db.refresh(db_fermentable)
-        return db_fermentable
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
 @router.delete(
     "/inventory/fermentables/{id}", response_model=schemas.InventoryFermentable
 )
@@ -79,25 +62,3 @@ async def delete_inventory_fermentable(id: int, db: Session = Depends(get_db)):
     db.delete(fermentable)
     db.commit()
     return fermentable
-
-
-@router.put(
-    "/inventory/fermentables/{id}", response_model=schemas.InventoryFermentable
-)
-async def update_inventory_fermentable(
-    id: int,
-    fermentable: schemas.InventoryFermentableCreate,
-    db: Session = Depends(get_db),
-):
-    db_fermentable = (
-        db.query(models.InventoryFermentable)
-        .filter(models.InventoryFermentable.id == id)
-        .first()
-    )
-    if not db_fermentable:
-        raise HTTPException(status_code=404, detail="Fermentable not found")
-    for key, value in fermentable.dict().items():
-        setattr(db_fermentable, key, value)
-    db.commit()
-    db.refresh(db_fermentable)
-    return db_fermentable

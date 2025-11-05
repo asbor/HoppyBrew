@@ -1,6 +1,22 @@
 from pydantic import BaseModel
 from typing import Optional
 
+WATER_PROFILE_EXAMPLE = {
+    "name": "Burton-on-Trent IPA",
+    "version": 1,
+    "amount": 25,
+    "calcium": 275,
+    "bicarbonate": 260,
+    "sulfate": 650,
+    "chloride": 35,
+    "sodium": 25,
+    "magnesium": 45,
+    "ph": 8,
+    "notes": "Idealized profile for hoppy ales with high sulfate to chloride ratio.",
+    "display_amount": "25 L",
+    "inventory": 1,
+}
+
 
 class WaterProfileBase(BaseModel):
     """
@@ -31,3 +47,6 @@ class WaterProfileBase(BaseModel):
     notes: Optional[str] = None
     display_amount: Optional[str] = None
     inventory: Optional[int] = None
+
+    class Config:
+        schema_extra = {"example": WATER_PROFILE_EXAMPLE}

@@ -1,11 +1,82 @@
 # Database/Schemas/recipes_hops.py
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 from .hops import HopBase
 from .fermentables import FermentableBase
 from .miscs import MiscBase
 from .yeasts import YeastBase
+
+
+RECIPE_SAMPLE_HOP = {
+    "name": "Cascade",
+    "origin": "USA",
+    "alpha": 5.5,
+    "form": "Pellet",
+    "use": "Boil",
+    "time": 60,
+}
+
+RECIPE_SAMPLE_FERMENTABLE = {
+    "name": "Pilsner Malt",
+    "type": "Grain",
+    "amount": 4.5,
+    "yield_": 80.0,
+    "color": 2,
+}
+
+RECIPE_SAMPLE_MISC = {
+    "name": "Irish Moss",
+    "type": "Fining",
+    "use": "Boil",
+    "amount": 14,
+    "time": 10,
+}
+
+RECIPE_SAMPLE_YEAST = {
+    "name": "SafAle US-05",
+    "type": "Ale",
+    "form": "Dry",
+    "attenuation": 78.0,
+}
+
+RECIPE_BASE_EXAMPLE = {
+    "name": "Citrus IPA",
+    "version": 1,
+    "type": "All Grain",
+    "brewer": "Alex Brewer",
+    "batch_size": 20.0,
+    "boil_size": 25.0,
+    "boil_time": 60,
+    "ibu_method": "Tinseth",
+    "ibu": 65.0,
+    "est_abv": 6.4,
+    "notes": "Target a juicy hop profile with balanced bitterness.",
+    "display_batch_size": "20 L",
+    "display_boil_size": "25 L",
+    "hops": [RECIPE_SAMPLE_HOP],
+    "fermentables": [RECIPE_SAMPLE_FERMENTABLE],
+    "miscs": [RECIPE_SAMPLE_MISC],
+    "yeasts": [RECIPE_SAMPLE_YEAST],
+}
+
+RECIPE_SCALE_REQUEST_EXAMPLE = {
+    "target_batch_size": 40.0,
+    "target_boil_size": 50.0,
+}
+
+RECIPE_SCALE_RESPONSE_EXAMPLE = {
+    "original_batch_size": 20.0,
+    "target_batch_size": 40.0,
+    "scale_factor": 2.0,
+    "scaled_recipe": {
+        **RECIPE_BASE_EXAMPLE,
+        "id": 42,
+        "batch_size": 40.0,
+        "boil_size": 50.0,
+    },
+    "metrics": {"abv": 6.4, "ibu": 65.0, "srm": 8.0},
+}
 
 
 class RecipeBase(BaseModel):
@@ -50,11 +121,13 @@ class RecipeBase(BaseModel):
     display_tertiary_temp: Optional[str] = None
     display_age_temp: Optional[str] = None
     # List of objects for each ingredient type
+    hops: List[HopBase] = Field(default_factory=list)
+    fermentables: List[FermentableBase] = Field(default_factory=list)
+    miscs: List[MiscBase] = Field(default_factory=list)
+    yeasts: List[YeastBase] = Field(default_factory=list)
 
-    hops: Optional[List[HopBase]] = None
-    fermentables: Optional[List[FermentableBase]] = None
-    miscs: Optional[List[MiscBase]] = None
-    yeasts: Optional[List[YeastBase]] = None
+    class Config:
+        schema_extra = {"example": RECIPE_BASE_EXAMPLE}
 
 
 class Recipe(RecipeBase):
@@ -63,4 +136,37 @@ class Recipe(RecipeBase):
     origin_recipe_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Pydantic v2: renamed from orm_mode
+        schema_extra = {
+            "example": {
+                **RECIPE_BASE_EXAMPLE,
+                "id": 42,
+                "is_batch": False,
+                "origin_recipe_id": None,
+            }
+        }
+
+
+class RecipeMetrics(BaseModel):
+    abv: Optional[float] = None
+    ibu: Optional[float] = None
+    srm: Optional[float] = None
+
+
+class RecipeScaleRequest(BaseModel):
+    target_batch_size: float = Field(..., gt=0)
+    target_boil_size: Optional[float] = Field(None, gt=0)
+
+    class Config:
+        schema_extra = {"example": RECIPE_SCALE_REQUEST_EXAMPLE}
+
+
+class RecipeScaleResponse(BaseModel):
+    original_batch_size: float
+    target_batch_size: float
+    scale_factor: float
+    scaled_recipe: Recipe
+    metrics: RecipeMetrics
+
+    class Config:
+        schema_extra = {"example": RECIPE_SCALE_RESPONSE_EXAMPLE}
