@@ -14,7 +14,12 @@ Oversee and coordinate multiple Codex agents working on the HoppyBrew project to
    - Focus: Git workflow, branches, PRs, issues, releases
    - Terminal ID: TBD
 
-3. **Database Optimization Agent** (CODEX_AGENT_DATABASE.md)
+3. **CI/CD Pipeline Agent** (CODEX_AGENT_CICD.md) ⭐ HIGH PRIORITY
+   - Status: ACTIVE
+   - Focus: Automated testing, builds, deployments, quality gates
+   - Terminal ID: TBD
+
+4. **Database Optimization Agent** (CODEX_AGENT_DATABASE.md)
    - Status: ACTIVE
    - Focus: SQLAlchemy models, relationships, indexing
    - Terminal ID: TBD
@@ -48,6 +53,12 @@ Oversee and coordinate multiple Codex agents working on the HoppyBrew project to
 - Branch management and PR coordination
 - Issue tracking and labels
 - Release management and tagging
+
+### CI/CD Agent (HIGH PRIORITY)
+- .github/workflows/ directory and all CI/CD configurations
+- GitHub Actions workflow files
+- Docker build and deployment scripts
+- Quality gate configurations and security scanning
 
 ### Database Agent
 - services/backend/Database/Models/**

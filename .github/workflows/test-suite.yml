@@ -1,0 +1,119 @@
+name: Automated Test Suite
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - "feature/**"
+      - "bugfix/**"
+      - "agent/**"
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  backend-unit:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('services/backend/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ steps.setup-python.outputs.python-version }}-
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Prepare reports directory
+        run: mkdir -p reports
+
+      - name: Run pytest with verbose output
+        env:
+          PYTHONPATH: ${{ github.workspace }}/services/backend
+        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml
+
+      - name: Upload junit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-pytest-report
+          path: services/backend/reports/pytest-unit.xml
+          if-no-files-found: ignore
+
+  backend-integration:
+    name: Backend Integration (Docker Compose)
+    runs-on: ubuntu-latest
+    needs: backend-unit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Pre-pull base images
+        run: |
+          docker pull alpine:3.17 || true
+          docker pull node:lts-alpine || true
+          docker pull postgres:latest || true
+
+      - name: Run docker compose tests
+        run: |
+          docker compose -f docker-compose.test.yml up --build --abort-on-container-exit
+
+      - name: Export backend container logs
+        if: failure()
+        run: docker compose -f docker-compose.test.yml logs backend
+
+      - name: Tear down compose environment
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v --remove-orphans
+
+  frontend-build:
+    name: Frontend Build Verification
+    runs-on: ubuntu-latest
+    needs:
+      - backend-unit
+    defaults:
+      run:
+        working-directory: services/nuxt3-shadcn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: services/nuxt3-shadcn/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Nuxt build
+        run: yarn run build

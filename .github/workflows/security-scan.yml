@@ -1,0 +1,251 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+
+jobs:
+  python-deps:
+    name: Python Dependency Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pip-audit
+        run: python -m pip install --upgrade pip pip-audit
+
+      - name: Run pip-audit
+        id: audit
+        run: |
+          set +e
+          pip-audit -r requirements.txt --format json --output pip-audit.json
+          exit_code=$?
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-audit
+          path: services/backend/pip-audit.json
+          if-no-files-found: ignore
+
+      - name: Fail on vulnerabilities
+        if: steps.audit.outputs.exit_code != '0'
+        run: |
+          echo "pip-audit detected vulnerabilities (exit code ${{ steps.audit.outputs.exit_code }})."
+          exit 1
+
+  node-deps:
+    name: Node Dependency Audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/nuxt3-shadcn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: services/nuxt3-shadcn/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run audit
+        id: yarn-audit
+        run: |
+          set +e
+          yarn audit --groups dependencies --severity moderate --json > yarn-audit.json
+          exit_code=$?
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-audit
+          path: services/nuxt3-shadcn/yarn-audit.json
+          if-no-files-found: ignore
+
+      - name: Fail on vulnerabilities
+        if: steps.yarn-audit.outputs.exit_code != '0'
+        run: |
+          echo "yarn audit detected vulnerabilities (exit code ${{ steps.yarn-audit.outputs.exit_code }})."
+          exit 1
+
+  container-scan:
+    name: Container Vulnerability Scan
+    runs-on: ubuntu-latest
+    needs:
+      - python-deps
+      - node-deps
+    strategy:
+      matrix:
+        target:
+          - name: backend
+            context: services/backend
+            dockerfile: services/backend/Dockerfile
+          - name: frontend
+            context: services/nuxt3-shadcn
+            dockerfile: services/nuxt3-shadcn/Dockerfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image for scanning
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.target.context }}
+          file: ${{ matrix.target.dockerfile }}
+          push: false
+          tags: scan-${{ matrix.target.name }}:latest
+
+      - name: Run Trivy scan
+        id: trivy
+        uses: aquasecurity/trivy-action@v0.21.3
+        continue-on-error: true
+        with:
+          scan-type: image
+          image-ref: scan-${{ matrix.target.name }}:latest
+          severity: CRITICAL,HIGH,MEDIUM
+          format: sarif
+          output: trivy-${{ matrix.target.name }}.sarif
+
+      - name: Upload SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-${{ matrix.target.name }}.sarif
+
+      - name: Fail on vulnerabilities
+        if: steps.trivy.outcome != 'success'
+        run: |
+          echo "Trivy detected vulnerabilities."
+          exit 1
+
+  mcp-security-report:
+    name: MCP Security Analytics
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - python-deps
+      - node-deps
+      - container-scan
+    steps:
+      - name: Build summary
+        id: summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const results = {
+              python: '${{ needs.python-deps.result }}',
+              node: '${{ needs.node-deps.result }}',
+              container: '${{ needs.container-scan.result }}',
+            };
+            const failed = Object.values(results).some((result) => result !== 'success');
+            const markdown = [
+              '### Security Scan Summary',
+              '',
+              `- Python dependencies: **${results.python}**`,
+              `- Node dependencies: **${results.node}**`,
+              `- Container images: **${results.container}**`,
+            ].join('\n');
+            core.setOutput('markdown', markdown);
+            core.setOutput('failed', failed ? 'true' : 'false');
+
+      - name: MCP: Publish security analytics
+        uses: actions/github-script@v7
+        env:
+          MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+        with:
+          script: |
+            const url = process.env.MCP_SERVER_URL;
+            if (!url) {
+              core.info('MCP server URL not configured; skipping analytics dispatch.');
+              return;
+            }
+            const payload = {
+              repository: context.repo,
+              workflow: 'security-scan',
+              schedule: context.eventName === 'schedule',
+              summary: core.getInput('summary'),
+              stages: {
+                python: '${{ needs.python-deps.result }}',
+                node: '${{ needs.node-deps.result }}',
+                container: '${{ needs.container-scan.result }}',
+              },
+              conclusion: '${{ job.status }}',
+            };
+            const response = await fetch(`${url.replace(/\/$/, '')}/github/security-report`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(process.env.MCP_API_KEY ? { Authorization: `Bearer ${process.env.MCP_API_KEY}` } : {}),
+              },
+              body: JSON.stringify(payload),
+            });
+            if (!response.ok) {
+              core.setFailed(`Failed to publish MCP analytics: ${response.status} ${response.statusText}`);
+            } else {
+              core.info('MCP analytics dispatched successfully.');
+            }
+          summary: ${{ steps.summary.outputs.markdown }}
+
+      - name: MCP: Auto-issue for vulnerabilities
+        if: steps.summary.outputs.failed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const title = `Security scan alerts for ${context.runId}`;
+            const body = [
+              'Automated MCP alert for security scan findings.',
+              '',
+              core.getInput('markdown'),
+              '',
+              '_Generated automatically by the security workflow._',
+            ].join('\n');
+            const { data: existing } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${owner}/${repo} "${title}" in:title state:open label:security-alert`,
+            });
+            if (existing.total_count > 0) {
+              core.info('Existing security alert issue detected; skipping creation.');
+              return;
+            }
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body,
+              labels: ['security-alert', 'automated'],
+            });
+          markdown: ${{ steps.summary.outputs.markdown }}

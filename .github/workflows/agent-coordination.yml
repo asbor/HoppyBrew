@@ -1,0 +1,118 @@
+name: Agent Coordination
+
+on:
+  schedule:
+    - cron: "0 12 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  repository-analytics:
+    name: Repository Analytics Snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate analytics report
+        id: analytics
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+
+            const pullRequests = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const prsByLabel = pullRequests.reduce((acc, pr) => {
+              if (!pr.labels?.length) {
+                acc.unlabeled = (acc.unlabeled || 0) + 1;
+                return acc;
+              }
+              pr.labels.forEach((label) => {
+                acc[label.name] = (acc[label.name] || 0) + 1;
+              });
+              return acc;
+            }, {});
+
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const blockers = issues.filter((issue) =>
+              issue.labels?.some((label) => label.name.toLowerCase().includes('blocker'))
+            ).length;
+
+            const staleIssues = issues.filter((issue) => {
+              const updated = new Date(issue.updated_at);
+              const days = (Date.now() - updated.getTime()) / (1000 * 60 * 60 * 24);
+              return days > 14;
+            }).map((issue) => issue.number);
+
+            const agentAssignments = issues.reduce((acc, issue) => {
+              issue.labels?.forEach((label) => {
+                if (!label.name.startsWith('agent/')) {
+                  return;
+                }
+                acc[label.name] = (acc[label.name] || 0) + 1;
+              });
+              return acc;
+            }, {});
+
+            const summary = {
+              timestamp: new Date().toISOString(),
+              pullRequests: {
+                total: pullRequests.length,
+                awaitingReview: pullRequests.filter((pr) => pr.requested_reviewers?.length).length,
+                draft: pullRequests.filter((pr) => pr.draft).length,
+                labels: prsByLabel,
+              },
+              issues: {
+                total: issues.length,
+                blockers,
+                stale: staleIssues,
+                agentAssignments,
+              },
+            };
+
+            core.setOutput('json', JSON.stringify(summary, null, 2));
+
+      - name: MCP: Publish repository analytics
+        uses: actions/github-script@v7
+        env:
+          MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+        with:
+          script: |
+            const url = process.env.MCP_SERVER_URL;
+            if (!url) {
+              core.info('MCP server URL not configured; skipping analytics dispatch.');
+              return;
+            }
+            const payload = {
+              repository: context.repo,
+              workflow: 'agent-coordination',
+              analytics: JSON.parse(core.getInput('analytics')),
+            };
+            const response = await fetch(`${url.replace(/\/$/, '')}/github/repository-analytics`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(process.env.MCP_API_KEY ? { Authorization: `Bearer ${process.env.MCP_API_KEY}` } : {}),
+              },
+              body: JSON.stringify(payload),
+            });
+            if (!response.ok) {
+              core.setFailed(`Failed to publish MCP analytics: ${response.status} ${response.statusText}`);
+            } else {
+              core.info('MCP analytics dispatched successfully.');
+            }
+          analytics: ${{ steps.analytics.outputs.json }}
