@@ -19,6 +19,9 @@ from .endpoints import (
     equipment_profiles,
     users,
     trigger_beer_styles_processing,
+    homeassistant,
+    devices,
+
 )
 
 # create the router and include all the routers from the endpoints folder
@@ -36,6 +39,7 @@ router.include_router(questions.router, tags=["questions"])
 router.include_router(style_guidelines.router, tags=["style_guidelines"])
 router.include_router(styles.router, tags=["styles"])
 router.include_router(references.router, tags=["references"])
+router.include_router(devices.router, tags=["devices"])
 
 # Profile routers
 
@@ -49,3 +53,7 @@ router.include_router(users.router, tags=["user"])
 router.include_router(
     trigger_beer_styles_processing.router, tags=["refresh-beer-styles"]
 )
+
+# Include the HomeAssistant integration router
+
+router.include_router(homeassistant.router, tags=["homeassistant"])

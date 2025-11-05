@@ -78,6 +78,10 @@ tags_metadata = [
         "name": "refresh-beer-styles",
         "description": "Utility endpoints to refresh beer style datasets and cached content.",
     },
+    {
+        "name": "homeassistant",
+        "description": "HomeAssistant integration endpoints for monitoring brewing batches.",
+    },
 ]
 
 # Get logger instance

@@ -4,69 +4,72 @@
  
 @layer base {
   :root {
-    /* Home Assistant Light Theme (not used, but kept for compatibility) */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+
+    --background: 0 0% 98%;
+    --foreground: 0 0% 13%;
  
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 40%;
  
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
+    --popover-foreground: 0 0% 13%;
  
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 0 0% 13%;
  
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
  
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
  
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 13%;
  
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
  
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
  
-    --ring: 0 0% 3.9%;
+    --ring: 199 89% 48%;
  
     --radius: 0.5rem;
   }
  
   .dark {
-    /* Home Assistant Dark Theme Colors */
-    --background: 222 47% 11%;        /* #111111 - Main background */
-    --foreground: 0 0% 95%;           /* #F1F1F1 - Main text color */
 
-    --muted: 215 28% 17%;             /* #1E2228 - Muted backgrounds */
-    --muted-foreground: 0 0% 70%;     /* #B3B3B3 - Muted text */
 
-    --popover: 222 47% 11%;           /* #111111 - Popover background */
-    --popover-foreground: 0 0% 95%;   /* #F1F1F1 - Popover text */
-
-    --card: 215 28% 17%;              /* #1E2228 - Card background */
-    --card-foreground: 0 0% 95%;      /* #F1F1F1 - Card text */
-
-    --border: 215 20% 25%;            /* #2E3338 - Borders */
-    --input: 215 20% 25%;             /* #2E3338 - Input border color */
-
-    --primary: 199 89% 48%;           /* #03A9F4 - Home Assistant blue */
-    --primary-foreground: 0 0% 100%;  /* #FFFFFF - Primary text */
-
-    --secondary: 215 28% 17%;         /* #1E2228 - Secondary background */
-    --secondary-foreground: 0 0% 95%; /* #F1F1F1 - Secondary text */
-
-    --accent: 199 89% 48%;            /* #03A9F4 - Accent color */
-    --accent-foreground: 0 0% 100%;   /* #FFFFFF - Accent text */
-
-    --destructive: 0 70% 50%;         /* Red for errors */
+    --background: 222 16% 9%;
+    --foreground: 0 0% 95%;
+ 
+    --muted: 222 16% 15%;
+    --muted-foreground: 0 0% 60%;
+ 
+    --popover: 222 16% 12%;
+    --popover-foreground: 0 0% 95%;
+ 
+    --card: 222 16% 12%;
+    --card-foreground: 0 0% 95%;
+ 
+    --border: 222 16% 20%;
+    --input: 222 16% 20%;
+ 
+    /* Home Assistant blue accent */
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 222 16% 15%;
+    --secondary-foreground: 0 0% 95%;
+ 
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
+ 
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
-
-    --ring: 199 89% 48%;              /* #03A9F4 - Focus ring */
+ 
+    --ring: 199 89% 48%;
   }
 }
  

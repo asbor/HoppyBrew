@@ -1,26 +1,26 @@
 <template>
   <div>
-    <header class="flex items-center gap-2 p-4 transition cursor-pointer">
+    <header class="flex items-center gap-ha-sm p-ha-sm transition cursor-pointer">
       <Logo />
-      <h2 class="font-bold">HoppyBrew</h2>
-      <p class="text-sm text-neutral-500">v1.0.0</p>
+      <h2 class="font-bold text-ha-base">HoppyBrew</h2>
+      <p class="text-ha-xs text-muted-foreground">v1.0.0</p>
     </header>
-    <main class="px-4 grow">
-      <div class="grid gap-2">
+    <main class="px-ha-sm grow">
+      <div class="grid gap-ha-xs">
         <DropDownCreate />
         <NuxtLink :href="item.path" v-for='(item, index) in items' :key='index'
-          class="flex items-center gap-2 px-2 py-1 transition rounded cursor-pointer hover:bg-neutral-100 hover:text-neutral-900">
-          <Icon size="20" :name="item.icon" />
-          <span>{{ item.title }}</span>
+          class="flex items-center gap-ha-sm px-ha-sm py-ha-xs transition rounded cursor-pointer hover:bg-accent hover:text-accent-foreground">
+          <Icon size="24" :name="item.icon" />
+          <span class="text-ha-base">{{ item.title }}</span>
           <!-- Add @click event to call handleLinkClick function -->
         </NuxtLink>
       </div>
     </main>
     <footer>
       <div>
-        <div class="p-4">
-          <button @click="toggleDark()" class="flex items-center gap-2">
-            <Icon :name="isDark.value ? 'bx:bx-moon' : 'bx:bx-sun'" />
+        <div class="p-ha-sm">
+          <button @click="toggleDark()" class="flex items-center gap-ha-sm text-ha-base">
+            <Icon size="24" :name="isDark.value ? 'bx:bx-moon' : 'bx:bx-sun'" />
             <span>Toggle Color Mode</span>
           </button>
           <CheckDatabaseConnection />

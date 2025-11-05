@@ -90,3 +90,36 @@ ENV/
 # Rope project settings
 .ropeproject
 .Rproj.user
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Nuxt build output
+.nuxt/
+.output/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*-notes.txt
+*_temp.*
+
+# Build artifacts
+*.tar
+*.zip
+.pytest_cache/
