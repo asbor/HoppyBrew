@@ -1,0 +1,135 @@
+{
+  "orchestrator_version": "1.0.0",
+  "session_id": "phase-1-foundation-backend",
+  "created_at": "2025-11-05T20:15:00Z",
+  "status": "active",
+  
+  "agents": {
+    "agent-1-backend-api": {
+      "id": "agent-1-backend-api",
+      "name": "Backend API Completion",
+      "status": "running",
+      "pid": 132814,
+      "started_at": "2025-11-05T20:15:00Z",
+      "terminal": "pts/8",
+      "priority": 1,
+      "file_locks": [
+        "services/backend/api/endpoints/inventory_hops.py",
+        "services/backend/api/endpoints/inventory_fermentables.py",
+        "services/backend/api/endpoints/inventory_yeasts.py",
+        "services/backend/api/endpoints/inventory_miscs.py"
+      ],
+      "dependencies": [],
+      "timeout": 600
+    },
+    
+    "agent-2-database": {
+      "id": "agent-2-database",
+      "name": "Database Enhancement",
+      "status": "running",
+      "pid": 132970,
+      "started_at": "2025-11-05T20:15:00Z",
+      "terminal": "pts/9",
+      "priority": 1,
+      "file_locks": [
+        "alembic.ini",
+        "alembic/",
+        "services/backend/migrations/",
+        "seeds/seed_beer_styles.py",
+        "services/backend/Database/Models/"
+      ],
+      "dependencies": [],
+      "timeout": 600
+    },
+    
+    "agent-3-business-logic": {
+      "id": "agent-3-business-logic",
+      "name": "Brewing Calculations",
+      "status": "running",
+      "pid": 140633,
+      "started_at": "2025-11-05T20:18:00Z",
+      "terminal": "pts/14",
+      "priority": 2,
+      "file_locks": [
+        "services/backend/modules/brewing_calculations.py",
+        "services/backend/tests/test_modules/test_brewing_calculations.py"
+      ],
+      "dependencies": [],
+      "timeout": 600
+    },
+    
+    "agent-4-documentation": {
+      "id": "agent-4-documentation",
+      "name": "API Documentation",
+      "status": "running",
+      "pid": 133511,
+      "started_at": "2025-11-05T20:15:00Z",
+      "terminal": "pts/11",
+      "priority": 3,
+      "file_locks": [
+        "services/backend/main.py",
+        "README_API.md"
+      ],
+      "dependencies": ["agent-1-backend-api"],
+      "timeout": 600
+    },
+    
+    "agent-duplicate-inventory": {
+      "id": "agent-duplicate-inventory",
+      "name": "DUPLICATE: Inventory Endpoints",
+      "status": "running",
+      "pid": 139893,
+      "started_at": "2025-11-05T20:18:00Z",
+      "terminal": "pts/12",
+      "priority": 1,
+      "file_locks": [
+        "services/backend/api/endpoints/inventory_hops.py",
+        "services/backend/api/endpoints/inventory_fermentables.py",
+        "services/backend/api/endpoints/inventory_yeasts.py",
+        "services/backend/api/endpoints/inventory_miscs.py"
+      ],
+      "conflict_with": ["agent-1-backend-api"],
+      "warning": "DUPLICATE AGENT - Same file locks as agent-1. SHOULD BE TERMINATED."
+    }
+  },
+  
+  "conflicts": [
+    {
+      "type": "file_lock_conflict",
+      "severity": "critical",
+      "agents": ["agent-1-backend-api", "agent-duplicate-inventory"],
+      "files": [
+        "services/backend/api/endpoints/inventory_hops.py",
+        "services/backend/api/endpoints/inventory_fermentables.py",
+        "services/backend/api/endpoints/inventory_yeasts.py",
+        "services/backend/api/endpoints/inventory_miscs.py"
+      ],
+      "recommended_action": "Terminate agent-duplicate-inventory (newer agent with duplicate task)"
+    }
+  ],
+  
+  "file_change_queue": [
+    {
+      "timestamp": "2025-11-05T20:19:00Z",
+      "agent": "multiple",
+      "files": [
+        "services/backend/Database/Schemas/miscs.py",
+        "services/backend/Database/Schemas/yeasts.py",
+        "services/backend/Database/Schemas/style_guidelines.py",
+        "services/backend/Database/Schemas/styles.py",
+        "services/backend/Database/Schemas/recipes.py"
+      ],
+      "status": "uncommitted",
+      "conflict_risk": "high"
+    }
+  ],
+  
+  "coordination_rules": {
+    "max_concurrent_agents": 4,
+    "require_file_locks": true,
+    "auto_resolve_conflicts": false,
+    "merge_strategy": "manual_review",
+    "checkpoint_interval": 300,
+    "enable_agent_communication": true
+  }
+}
