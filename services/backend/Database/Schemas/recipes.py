@@ -55,3 +55,12 @@ class RecipeBase(BaseModel):
     fermentables: Optional[List[FermentableBase]] = None
     miscs: Optional[List[MiscBase]] = None
     yeasts: Optional[List[YeastBase]] = None
+
+
+class Recipe(RecipeBase):
+    id: int
+    is_batch: Optional[bool] = False
+    origin_recipe_id: Optional[int] = None
+
+    class Config:
+        orm_mode = True
