@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME">
+  <a href="https://github.com/asbor/HoppyBrew">
     <img src="documents/images/logo.png" alt="Logo" width="300">
   </a>
 
@@ -39,14 +39,14 @@
   <p align="center">
     This project, part of the Software Engineering course at the Faculty of Informatics, International University of Applied Sciences Bad Honnef - Bonn, is inspired by Brewfather. It aims to develop a web app tailored for home-brewers to efficiently manage brewing processes. Motivated by personal experience as a homebrewer and interest in self-hosting, the creator seeks to provide a self-hosted alternative to subscription-based services like Brewfather. The project will be hosted on a personal server, running within a Docker container, to cater to a specific niche in brewing management.
     <br />
-    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/asbor/HoppyBrew"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME">View Demo</a>
+    <a href="https://github.com/asbor/HoppyBrew">View Demo</a>
     ·
-    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/issues">Report Bug</a>
+    <a href="https://github.com/asbor/HoppyBrew/issues">Report Bug</a>
     ·
-    <a href="https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/issues">Request Feature</a>
+    <a href="https://github.com/asbor/HoppyBrew/issues">Request Feature</a>
   </p>
 </div>
 
@@ -467,9 +467,9 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+- Backend: `docker compose up backend db`
+- Frontend: `cd services/nuxt3-shadcn && yarn dev`
+- For detailed setup, see [`Project Setup Guide.md`](Project%20Setup%20Guide.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -478,12 +478,9 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the open issues for a full list of proposed features (and known issues).
+- High-level direction lives in [`ROADMAP.md`](ROADMAP.md).
+- Actionable backlog is tracked in [`TODO.md`](TODO.md).
+- Open issues capture feature requests and bugs.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -497,6 +494,7 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
+- Multi-agent contributors should review the collaboration contract in [`AI_AGENT_MANIFEST.md`](AI_AGENT_MANIFEST.md) before starting work.
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
@@ -519,7 +517,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [Add your repository link here]
+Project Link: [HoppyBrew](https://github.com/asbor/HoppyBrew)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -538,16 +536,16 @@ Project Link: [Add your repository link here]
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
-[contributors-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
-[forks-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/network/members
-[stars-shield]: https://img.shields.io/github/stars/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
-[stars-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/stargazers
-[issues-shield]: https://img.shields.io/github/issues/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
-[issues-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/issues
-[license-shield]: https://img.shields.io/github/license/YOUR-USERNAME/YOUR-REPO-NAME.svg?style=for-the-badge
-[license-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/asbor/HoppyBrew.svg?style=for-the-badge
+[contributors-url]: https://github.com/asbor/HoppyBrew/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/asbor/HoppyBrew.svg?style=for-the-badge
+[forks-url]: https://github.com/asbor/HoppyBrew/network/members
+[stars-shield]: https://img.shields.io/github/stars/asbor/HoppyBrew.svg?style=for-the-badge
+[stars-url]: https://github.com/asbor/HoppyBrew/stargazers
+[issues-shield]: https://img.shields.io/github/issues/asbor/HoppyBrew.svg?style=for-the-badge
+[issues-url]: https://github.com/asbor/HoppyBrew/issues
+[license-shield]: https://img.shields.io/github/license/asbor/HoppyBrew.svg?style=for-the-badge
+[license-url]: https://github.com/asbor/HoppyBrew/blob/main/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: www.linkedin.com/in/asbjørn-bordoy-89b0462a
 [product-screenshot]: documents/images/screenshot.png
@@ -570,7 +568,7 @@ Project Link: [Add your repository link here]
 [pydantic]: https://img.shields.io/badge/pydantic-005571?style=for-the-badge&logo=pydantic
 [pydantic-url]: https://pydantic-docs.helpmanual.io/
 [GitHub]: https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white
-[GitHub-url]: https://github.com/YOUR-USERNAME/YOUR-REPO-NAME
+[GitHub-url]: https://github.com/asbor/HoppyBrew
 [Markdown]: https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white
 [Markdown-url]: https://www.markdownguide.org/
 [PlantUML]: https://img.shields.io/badge/PlantUML-000000?style=for-the-badge&logo=plantuml&logoColor=white

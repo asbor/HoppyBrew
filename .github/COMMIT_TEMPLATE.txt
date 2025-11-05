@@ -1,0 +1,15 @@
+<type>(<scope>): <description>
+
+# Summary (imperative, <= 72 chars per line)
+# - type: feat | fix | docs | style | refactor | test | chore
+# - scope: database | frontend | testing | workspace | agents
+# - description: short summary of the change
+
+# Body (wrap at 72 chars)
+# - WHY the change is needed
+# - WHAT was done (highlight key files or behaviours)
+# - OPTIONAL: testing evidence, links to issues/roadmap
+
+# Footer
+# - References to issues (e.g. Closes ISSUE-001)
+# - Co-authors or breaking change notes

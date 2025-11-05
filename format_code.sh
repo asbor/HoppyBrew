@@ -13,4 +13,4 @@ autopep8 --in-place --aggressive --aggressive --recursive $BACKEND_DIR
 docformatter --in-place --recursive --wrap-summaries 79 --wrap-descriptions 79 $BACKEND_DIR
 
 # Run custom wrap comments script
-python wrap_comments.py $BACKEND_DIR --width 79
+python tools/wrap_comments.py $BACKEND_DIR --width 79

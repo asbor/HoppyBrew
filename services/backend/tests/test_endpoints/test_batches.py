@@ -1,86 +1,121 @@
 import pytest
-from fastapi.testclient import TestClient
-from main import app
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from database import Base, get_db
+from datetime import datetime
 import Database.Models as models
-import logging
-
-# Use a separate test database
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_batches.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine
-)
-
-# Override the get_db function to use the test database
 
 
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
+def create_base_recipe(client, db_session, name="Test Recipe"):
+    payload = {
+        "name": name,
+        "version": 1,
+        "type": "Ale",
+        "brewer": "Tester",
+        "batch_size": 20.0,
+        "boil_size": 25.0,
+        "boil_time": 60,
+        "hops": [{"name": "Cascade"}],
+        "fermentables": [{"name": "Pale Malt"}],
+        "yeasts": [{"name": "Ale Yeast"}],
+        "miscs": [{"name": "Irish Moss"}],
+    }
 
+    response = client.post("/recipes", json=payload)
+    assert response.status_code == 200, response.text
 
-app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
-
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
-
-@pytest.fixture(autouse=True)
-def setup_and_teardown():
-    # Create the database and tables
-    Base.metadata.create_all(bind=engine)
-    yield
-    # Drop the database tables after the test
-    Base.metadata.drop_all(bind=engine)
-
-
-def create_test_recipe(db):
-    recipe = models.Recipes(
-        name="Test Recipe",
-        is_batch=False,
-        version="1.0",
-        type="Ale",
-        brewer="Test Brewer",
-        batch_size=20.0,
-        boil_size=25.0,
-        boil_time=60,
-        efficiency=75.0,
-        notes="Test Notes",
-        taste_notes="Test Taste Notes",
-        taste_rating=5,
-        og=1.050,
-        fg=1.010,
-        fermentation_stages=1,
-        primary_age=7,
-        primary_temp=20.0,
-        secondary_age=7,
-        secondary_temp=20.0,
-        age=14,
-        age_temp=10.0,
-        carbonation_used="CO2",
-        est_og=1.050,
-        est_fg=1.010,
-        est_color=10.0,
-        ibu=40.0,
-        ibu_method="Tinseth",
-        est_abv=5.0,
+    recipe = (
+        db_session.query(models.Recipes)
+        .filter(models.Recipes.name == name)
+        .one()
     )
-    db.add(recipe)
-    db.commit()
-    db.refresh(recipe)
-    logger.debug(f"Created test recipe with ID: {recipe.id}")
-    return recipe
+    return recipe.id
 
 
-def test_create_batch():
-    # Create a test recipe
-    # TODO: Create a test recipe
-    pass
+def build_batch_payload(recipe_id, suffix="001"):
+    return {
+        "recipe_id": recipe_id,
+        "batch_name": f"Batch {suffix}",
+        "batch_number": int(suffix),
+        "batch_size": 18.5,
+        "brewer": "Batch Brewer",
+        "brew_date": datetime(2024, 1, 1, 12, 0, 0).isoformat(),
+    }
+
+
+def test_create_batch_copies_recipe_inventory(client, db_session):
+    recipe_id = create_base_recipe(client, db_session)
+
+    response = client.post("/batches", json=build_batch_payload(recipe_id))
+    assert response.status_code == 200, response.text
+    batch = response.json()
+
+    assert batch["batch_name"] == "Batch 001"
+    assert batch["recipe_id"] != recipe_id  # cloned recipe
+
+    detail = client.get(f"/batches/{batch['id']}")
+    assert detail.status_code == 200, detail.text
+    payload = detail.json()
+
+    assert len(payload["inventory_hops"]) == 1
+    assert len(payload["inventory_fermentables"]) == 1
+    assert len(payload["inventory_miscs"]) == 1
+    assert len(payload["inventory_yeasts"]) == 1
+
+
+def test_create_batch_with_unknown_recipe_returns_404(client):
+    response = client.post("/batches", json=build_batch_payload(999))
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Recipe not found"
+
+
+def test_update_batch_persists_changes(client, db_session):
+    recipe_id = create_base_recipe(client, db_session, name="Update Recipe")
+
+    create_resp = client.post("/batches", json=build_batch_payload(recipe_id))
+    batch_id = create_resp.json()["id"]
+
+    update_payload = {
+        "batch_name": "Batch Updated",
+        "batch_number": 42,
+        "batch_size": 20.5,
+        "brewer": "Updated Brewer",
+        "brew_date": datetime(2024, 2, 2, 10, 30, 0).isoformat(),
+    }
+    response = client.put(f"/batches/{batch_id}", json=update_payload)
+    assert response.status_code == 200, response.text
+
+    updated = response.json()
+    assert updated["batch_name"] == "Batch Updated"
+    assert updated["batch_number"] == 42
+    assert updated["batch_size"] == pytest.approx(20.5)
+    assert updated["brewer"] == "Updated Brewer"
+
+
+def test_delete_batch_removes_inventory(client, db_session):
+    recipe_id = create_base_recipe(client, db_session, name="Delete Recipe")
+    create_resp = client.post("/batches", json=build_batch_payload(recipe_id))
+    batch_id = create_resp.json()["id"]
+
+    response = client.delete(f"/batches/{batch_id}")
+    assert response.status_code == 200
+    assert response.json() == {"message": "Batch deleted successfully"}
+
+    missing = client.get(f"/batches/{batch_id}")
+    assert missing.status_code == 404
+
+    assert (
+        db_session.query(models.InventoryHop).filter_by(batch_id=batch_id).count()
+        == 0
+    )
+    assert (
+        db_session.query(models.InventoryFermentable)
+        .filter_by(batch_id=batch_id)
+        .count()
+        == 0
+    )
+    assert (
+        db_session.query(models.InventoryMisc).filter_by(batch_id=batch_id).count()
+        == 0
+    )
+    assert (
+        db_session.query(models.InventoryYeast).filter_by(batch_id=batch_id).count()
+        == 0
+    )

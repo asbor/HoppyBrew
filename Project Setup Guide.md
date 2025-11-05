@@ -96,13 +96,13 @@ sudo apt-get install git
 Clone the project repository:
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/asbor/HoppyBrew.git
 ```
 
 Open the project in your preferred IDE:
 
 ```bash
-code YOUR-REPO-NAME
+code HoppyBrew
 ```
 
 ### 3. Initial Setup
@@ -167,4 +167,3 @@ By following this guide, you can efficiently set up and run the project on Ubunt
 The current configuration involves running the backend with Docker Compose and the frontend in a separate development environment. This setup ensures seamless integration between the frontend and backend during development and testing. In future updates, the goal is to fully integrate the frontend into the Docker Compose setup, simplifying deployment and management.
 
 If you encounter any issues or have questions during the setup process, please refer to the project documentation or reach out to the project maintainers. This setup guide aims to streamline your development process and ensure you can quickly get the project up and running. Thank you for contributing to the project, and happy coding!
-
