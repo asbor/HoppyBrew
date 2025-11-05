@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Badge } from '~/components/ui/badge'
 
+const { getBatchStatusColor } = useStatusColors()
+
 export interface BatchStatus {
   id: string
   name: string
@@ -36,17 +38,7 @@ const currentStepIndex = computed(() => {
 })
 
 const statusColor = computed(() => {
-  // Colors matching Home Assistant design system
-  const colors: Record<string, string> = {
-    design: 'bg-slate-400',          // Gray for design/planning
-    planning: 'bg-sky-400',          // Blue for planning phase
-    brewing: 'bg-amber-500',         // Amber for active brewing
-    fermenting: 'bg-purple-500',     // Purple for fermentation
-    conditioning: 'bg-cyan-500',     // Cyan for conditioning
-    packaging: 'bg-emerald-500',     // Green for packaging
-    complete: 'bg-green-700',        // Dark green for completion
-  }
-  return colors[props.batch.status] || 'bg-slate-400'
+  return getBatchStatusColor(props.batch.status)
 })
 
 const statusBadgeVariant = computed(() => {

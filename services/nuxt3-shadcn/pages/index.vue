@@ -10,6 +10,7 @@ const {
   fetchHops, fetchFermentables, fetchYeasts, fetchMiscs,
   getLowStockItems 
 } = useInventory()
+const { getBatchStatusColor } = useStatusColors()
 
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -54,21 +55,6 @@ const lowStockItems = computed(() => {
     ...items.miscs.map(m => ({ name: m.name, amount: m.amount, unit: m.unit, type: 'Misc' })),
   ].slice(0, 5)
 })
-
-// Status badge color helper - matching Home Assistant design system
-function getBatchStatusColor(status: string) {
-  const colors: Record<string, string> = {
-    planning: 'bg-slate-500',        // Gray for planning/inactive
-    brew_day: 'bg-amber-500',        // Amber for warning/in-progress
-    primary_fermentation: 'bg-sky-500',     // Blue for active states
-    secondary_fermentation: 'bg-blue-500',  // Deeper blue for secondary fermentation
-    conditioning: 'bg-purple-500',   // Purple for special states
-    packaged: 'bg-emerald-500',      // Green for success/completed
-    completed: 'bg-green-600',       // Darker green for final completion
-    archived: 'bg-gray-400',         // Light gray for archived
-  }
-  return colors[status] || 'bg-slate-500'
-}
 
 function formatDate(dateString: string | undefined) {
   if (!dateString) return 'N/A'

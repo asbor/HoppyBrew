@@ -15,6 +15,7 @@ import {
 import type { BatchStatus } from '@/composables/useBatches'
 
 const { batches, loading, error, fetchAll, remove } = useBatches()
+const { getBatchStatusColor } = useStatusColors()
 
 const searchQuery = ref('')
 const filterStatus = ref<BatchStatus | 'all'>('all')
@@ -48,21 +49,6 @@ async function deleteBatch(id: string) {
   if (result.error) {
     alert(`Failed to delete batch: ${result.error.value}`)
   }
-}
-
-function getBatchStatusColor(status: BatchStatus) {
-  // Colors matching Home Assistant design system
-  const colors: Record<BatchStatus, string> = {
-    planning: 'bg-slate-500',        // Gray for planning/inactive
-    brew_day: 'bg-amber-500',        // Amber for warning/in-progress (was orange)
-    primary_fermentation: 'bg-sky-500',     // Blue for active states (was blue-500)
-    secondary_fermentation: 'bg-blue-500',  // Deeper blue for secondary fermentation
-    conditioning: 'bg-purple-500',   // Purple for special states
-    packaged: 'bg-emerald-500',      // Green for success/completed (was green-500)
-    completed: 'bg-green-600',       // Darker green for final completion
-    archived: 'bg-gray-400',         // Light gray for archived
-  }
-  return colors[status] || 'bg-slate-500'
 }
 
 function formatDate(dateString: string | undefined) {
