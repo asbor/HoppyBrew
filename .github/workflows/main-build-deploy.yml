@@ -143,7 +143,14 @@ jobs:
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-      - name: Push image
+      - name: Log in to DockerHub
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push image to GHCR
         if: ${{ secrets.GHCR_USERNAME != '' && secrets.GHCR_TOKEN != '' }}
         uses: docker/build-push-action@v5
         with:
@@ -153,6 +160,18 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.service.image }}:${{ env.IMAGE_TAG }}
             ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.service.image }}:latest
+          provenance: false
+
+      - name: Push image to DockerHub
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-${{ matrix.service.image }}:${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-${{ matrix.service.image }}:latest
           provenance: false
 
       - name: Emit image metadata

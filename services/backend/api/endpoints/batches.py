@@ -260,7 +260,7 @@ async def update_batch(
         raise HTTPException(status_code=404, detail="Batch not found")
     # Update the batch
 
-    for key, value in batch.dict().items():
+    for key, value in batch.model_dump().items():
         setattr(db_batch, key, value)
     db.commit()
     db.refresh(db_batch)
