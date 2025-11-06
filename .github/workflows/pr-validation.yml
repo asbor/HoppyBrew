@@ -199,7 +199,7 @@ jobs:
             }
           markdown: ${{ steps.summary.outputs.markdown }}
 
-      - name: MCP: Publish PR analytics
+      - name: "MCP: Publish PR analytics"
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         env:
@@ -242,7 +242,7 @@ jobs:
             }
           summary: ${{ steps.summary.outputs.markdown }}
 
-      - name: MCP: Auto-create CI failure issue
+      - name: "MCP: Auto-create CI failure issue"
         if: github.event_name == 'pull_request' && steps.summary.outputs.failed == 'true'
         uses: actions/github-script@v7
         with:
