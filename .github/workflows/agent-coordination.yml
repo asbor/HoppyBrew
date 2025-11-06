@@ -85,7 +85,7 @@ jobs:
 
             core.setOutput('json', JSON.stringify(summary, null, 2));
 
-      - name: MCP: Publish repository analytics
+      - name: "MCP: Publish repository analytics"
         uses: actions/github-script@v7
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
