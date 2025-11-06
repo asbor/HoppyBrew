@@ -16,7 +16,7 @@ class StyleGuidelines(Base):
     """
 
     __tablename__ = "style_guidelines"
-    id = Column(Integer, nullable=True, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     block_heading = Column(String(255), nullable=True)
     circle_image = Column(String(255), nullable=True)
     category = Column(String(255), nullable=True)
