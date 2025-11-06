@@ -27,7 +27,8 @@ const retryCount = ref(0);
 const checkDatabaseConnection = async () => {
     try {
         const apiUrl = config.public.API_URL || DEFAULT_API_URL;
-        const response = await fetch(`${apiUrl}/health`, {
+        const cleanUrl = apiUrl.replace(/\/$/, '');
+        const response = await fetch(`${cleanUrl}/health`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
