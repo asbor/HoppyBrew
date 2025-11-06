@@ -196,7 +196,7 @@ import BatchNoteDialog from '@/components/batch/BatchNoteDialog.vue'
 
 const route = useRoute()
 const router = useRouter()
-const { fetchOne, currentBatch, loading, error, update: updateBatch, updateStatus } = useBatches()
+const { fetchOne, currentBatch, loading, error, updateBatch, updateStatus } = useBatches()
 const { getBatchStatusColor } = useStatusColors()
 
 const batchId = route.params.id as string
