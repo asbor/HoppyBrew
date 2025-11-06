@@ -3,6 +3,12 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
 
+# Constants for ion concentration precision
+ION_PRECISION = 8
+ION_SCALE = 2
+PH_PRECISION = 4
+PH_SCALE = 2
+
 
 class WaterProfiles(Base):
     """
@@ -34,17 +40,17 @@ class WaterProfiles(Base):
     style_category = Column(String(100), nullable=True)
 
     # Ion concentrations (ppm) - using Numeric for precise decimal values
-    calcium = Column(Numeric(8, 2), nullable=False, default=0)
-    magnesium = Column(Numeric(8, 2), nullable=False, default=0)
-    sodium = Column(Numeric(8, 2), nullable=False, default=0)
-    chloride = Column(Numeric(8, 2), nullable=False, default=0)
-    sulfate = Column(Numeric(8, 2), nullable=False, default=0)
-    bicarbonate = Column(Numeric(8, 2), nullable=False, default=0)
+    calcium = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=False, default=0)
+    magnesium = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=False, default=0)
+    sodium = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=False, default=0)
+    chloride = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=False, default=0)
+    sulfate = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=False, default=0)
+    bicarbonate = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=False, default=0)
 
     # Additional water properties
-    ph = Column(Numeric(4, 2), nullable=True)
-    total_alkalinity = Column(Numeric(8, 2), nullable=True)
-    residual_alkalinity = Column(Numeric(8, 2), nullable=True)
+    ph = Column(Numeric(PH_PRECISION, PH_SCALE), nullable=True)
+    total_alkalinity = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=True)
+    residual_alkalinity = Column(Numeric(ION_PRECISION, ION_SCALE), nullable=True)
 
     # Legacy fields (kept for backward compatibility)
     version = Column(Integer, nullable=True)

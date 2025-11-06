@@ -1,5 +1,11 @@
 <template>
   <div class="grid w-full gap-4 p-4">
+    <!-- Error notification -->
+    <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">Error: </strong>
+      <span class="block sm:inline">{{ error }}</span>
+    </div>
+
     <header class="flex items-start justify-between">
       <div class="grow">
         <h1 class="text-2xl font-bold">Water Profiles</h1>
@@ -147,7 +153,7 @@
             </div>
           </div>
 
-          <div v-if="profile.sulfate && profile.chloride" class="mt-2 pt-2 border-t">
+          <div v-if="profile.sulfate && profile.chloride && profile.chloride > 0" class="mt-2 pt-2 border-t">
             <div class="flex justify-between text-sm">
               <span class="text-neutral-600">SO₄:Cl ratio:</span>
               <span class="font-mono">{{ (profile.sulfate / profile.chloride).toFixed(2) }}</span>
@@ -357,6 +363,7 @@ export default {
       selectedProfile: null,
       profileToDelete: null,
       formData: this.getEmptyFormData(),
+      error: null,
     };
   },
   computed: {
@@ -372,6 +379,10 @@ export default {
       }
 
       return filtered;
+    },
+    apiBaseUrl() {
+      const config = useRuntimeConfig();
+      return config.public.API_URL || 'http://localhost:8000';
     }
   },
   async created() {
@@ -394,24 +405,30 @@ export default {
         notes: '',
       };
     },
+    showError(message) {
+      this.error = message;
+      setTimeout(() => { this.error = null; }, 5000);
+    },
     async fetchProfiles() {
       this.loading = true;
+      this.error = null;
       try {
-        const response = await fetch('http://localhost:8000/water-profiles');
+        const response = await fetch(`${this.apiBaseUrl}/water-profiles`);
         if (!response.ok) throw new Error('Failed to fetch profiles');
         this.profiles = await response.json();
       } catch (error) {
         console.error('Error fetching water profiles:', error);
-        alert('Failed to load water profiles');
+        this.showError('Failed to load water profiles. Please try again.');
       } finally {
         this.loading = false;
       }
     },
     async saveProfile() {
+      this.error = null;
       try {
         const url = this.selectedProfile
-          ? `http://localhost:8000/water-profiles/${this.selectedProfile.id}`
-          : 'http://localhost:8000/water-profiles';
+          ? `${this.apiBaseUrl}/water-profiles/${this.selectedProfile.id}`
+          : `${this.apiBaseUrl}/water-profiles`;
 
         const method = this.selectedProfile ? 'PUT' : 'POST';
 
@@ -430,29 +447,30 @@ export default {
         this.closeDialog();
       } catch (error) {
         console.error('Error saving profile:', error);
-        alert(error.message);
+        this.showError(error.message);
       }
     },
     async duplicateProfile(id) {
+      this.error = null;
       try {
         const response = await fetch(
-          `http://localhost:8000/water-profiles/${id}/duplicate`,
+          `${this.apiBaseUrl}/water-profiles/${id}/duplicate`,
           { method: 'POST' }
         );
 
         if (!response.ok) throw new Error('Failed to duplicate profile');
 
         await this.fetchProfiles();
-        alert('Profile duplicated successfully!');
       } catch (error) {
         console.error('Error duplicating profile:', error);
-        alert('Failed to duplicate profile');
+        this.showError('Failed to duplicate profile. Please try again.');
       }
     },
     async deleteProfile() {
+      this.error = null;
       try {
         const response = await fetch(
-          `http://localhost:8000/water-profiles/${this.profileToDelete.id}`,
+          `${this.apiBaseUrl}/water-profiles/${this.profileToDelete.id}`,
           { method: 'DELETE' }
         );
 
@@ -462,7 +480,7 @@ export default {
         this.profileToDelete = null;
       } catch (error) {
         console.error('Error deleting profile:', error);
-        alert('Failed to delete profile');
+        this.showError('Failed to delete profile. Please try again.');
       }
     },
     viewProfile(profile) {
