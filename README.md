@@ -475,33 +475,6 @@ To run the project using Docker, you need to have the following software install
 
 
 
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone <your-repository-url>
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -578,9 +551,7 @@ Project Link: [HoppyBrew](https://github.com/asbor/HoppyBrew)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+Special thanks to the open-source community and the developers of the technologies used in this project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -643,5 +614,3 @@ Project Link: [HoppyBrew](https://github.com/asbor/HoppyBrew)
 [Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
 [Redis-url]: https://redis.io/
 
-
-Test commit
