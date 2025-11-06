@@ -276,3 +276,9 @@ jobs:
               labels: [markerLabel, 'automated'],
             });
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: Fail workflow if any job failed
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "One or more PR validation jobs failed. Check the summary above for details."
+          exit 1

@@ -339,3 +339,9 @@ jobs:
               labels: ['ci-failure', 'automated'],
             });
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: Fail workflow if any stage failed
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "One or more pipeline stages failed. Check the summary above for details."
+          exit 1

@@ -249,3 +249,9 @@ jobs:
               labels: ['security-alert', 'automated'],
             });
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: Fail workflow if security issues found
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "Security vulnerabilities detected. Check the summary above for details."
+          exit 1
