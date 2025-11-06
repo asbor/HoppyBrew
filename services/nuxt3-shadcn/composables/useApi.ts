@@ -3,8 +3,6 @@
  * Provides consistent error handling, loading states, and request management
  */
 
-const API_BASE_URL = 'http://localhost:8000'
-
 interface ApiResponse<T> {
   data: Ref<T | null>
   loading: Ref<boolean>
@@ -12,6 +10,9 @@ interface ApiResponse<T> {
 }
 
 export const useApi = () => {
+  const config = useRuntimeConfig()
+  const API_BASE_URL = config.public.API_URL
+
   /**
    * Generic GET request
    */
