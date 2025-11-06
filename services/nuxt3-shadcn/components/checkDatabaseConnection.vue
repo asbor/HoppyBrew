@@ -13,17 +13,20 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
+const MAX_RETRIES = 3;
+const POLL_INTERVAL_MS = 30000; // 30 seconds
+const DEFAULT_API_URL = 'http://localhost:8000';
+
 const config = useRuntimeConfig();
 const isConnectedToDatabase = ref(false);
 const errorMessage = ref('');
-let pollInterval = null;
-let retryCount = 0;
-const MAX_RETRIES = 3;
+const pollInterval = ref(null);
+const retryCount = ref(0);
 
 // Define a method to check the database connection status
 const checkDatabaseConnection = async () => {
     try {
-        const apiUrl = config.public.API_URL || 'http://localhost:8000';
+        const apiUrl = config.public.API_URL || DEFAULT_API_URL;
         const response = await fetch(`${apiUrl}/health`, {
             method: 'GET',
             headers: {
@@ -34,7 +37,7 @@ const checkDatabaseConnection = async () => {
         if (response.ok) {
             isConnectedToDatabase.value = true;
             errorMessage.value = '';
-            retryCount = 0;
+            retryCount.value = 0;
         } else {
             throw new Error(`Health check failed with status: ${response.status}`);
         }
@@ -42,11 +45,11 @@ const checkDatabaseConnection = async () => {
         console.error('Connection check error:', error);
         isConnectedToDatabase.value = false;
         
-        retryCount++;
-        if (retryCount >= MAX_RETRIES) {
+        retryCount.value++;
+        if (retryCount.value >= MAX_RETRIES) {
             errorMessage.value = 'Connection failed after multiple retries';
         } else {
-            errorMessage.value = `Connection error (retry ${retryCount}/${MAX_RETRIES})`;
+            errorMessage.value = `Connection error (retry ${retryCount.value}/${MAX_RETRIES})`;
         }
     }
 };
@@ -56,13 +59,13 @@ onMounted(() => {
     checkDatabaseConnection();
     
     // Poll every 30 seconds
-    pollInterval = setInterval(checkDatabaseConnection, 30000);
+    pollInterval.value = setInterval(checkDatabaseConnection, POLL_INTERVAL_MS);
 });
 
 onUnmounted(() => {
     // Clean up interval on component unmount
-    if (pollInterval) {
-        clearInterval(pollInterval);
+    if (pollInterval.value) {
+        clearInterval(pollInterval.value);
     }
 });
 
