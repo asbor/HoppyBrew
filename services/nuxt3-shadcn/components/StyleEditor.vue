@@ -131,9 +131,12 @@ const handleSave = async () => {
   error.value = null
   
   try {
+    // Remove the id field and other readonly fields before sending
+    const { id, created_at, updated_at, created_by, ...dataToSend } = formData.value
+    
     const response = props.styleId
-      ? await beerStylesApi.updateStyle(props.styleId, formData.value)
-      : await beerStylesApi.createStyle(formData.value as any)
+      ? await beerStylesApi.updateStyle(props.styleId, dataToSend)
+      : await beerStylesApi.createStyle(dataToSend as Omit<BeerStyle, 'id' | 'created_at' | 'updated_at'>)
     
     if (response.error.value) {
       error.value = response.error.value

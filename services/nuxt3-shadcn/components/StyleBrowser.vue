@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useBeerStyles, type BeerStyle, type StyleGuidelineSource, type StyleCategory } from '~/composables/useBeerStyles'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useDebounceFn } from '@vueuse/core'
 
 const beerStylesApi = useBeerStyles()
 
@@ -84,8 +85,13 @@ watch(selectedCategory, () => {
   fetchStyles()
 })
 
-watch(searchQuery, () => {
+// Debounced search to avoid excessive API calls
+const debouncedFetchStyles = useDebounceFn(() => {
   fetchStyles()
+}, 500)
+
+watch(searchQuery, () => {
+  debouncedFetchStyles()
 })
 
 // Computed

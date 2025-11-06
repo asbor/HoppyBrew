@@ -86,8 +86,11 @@ async def update_style_guideline_source(
     if not db_source:
         raise HTTPException(status_code=404, detail="Style guideline source not found")
     
-    for key, value in source.model_dump(exclude_unset=True).items():
-        setattr(db_source, key, value)
+    # Only update fields that are provided in the request
+    update_data = source.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        if hasattr(db_source, key):
+            setattr(db_source, key, value)
     
     try:
         db.commit()
@@ -201,8 +204,11 @@ async def update_style_category(
     if not db_category:
         raise HTTPException(status_code=404, detail="Style category not found")
     
-    for key, value in category.model_dump(exclude_unset=True).items():
-        setattr(db_category, key, value)
+    # Only update fields that are provided and exist on the model
+    update_data = category.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        if hasattr(db_category, key):
+            setattr(db_category, key, value)
     
     try:
         db.commit()
@@ -435,8 +441,11 @@ async def update_beer_style(
             detail="Cannot modify standard beer styles. Create a custom style instead."
         )
     
-    for key, value in style.model_dump(exclude_unset=True).items():
-        setattr(db_style, key, value)
+    # Only update fields that are provided and exist on the model
+    update_data = style.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        if hasattr(db_style, key):
+            setattr(db_style, key, value)
     
     try:
         db.commit()
