@@ -1,7 +1,13 @@
-FROM alpine:3.17
+FROM python:3.11-slim
 
-RUN apk add --no-cache python3 py3-pip libpq postgresql-client curl
-RUN adduser -D app
+# Install PostgreSQL client and other dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    postgresql-client \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -s /bin/bash app
 
 USER app
 
