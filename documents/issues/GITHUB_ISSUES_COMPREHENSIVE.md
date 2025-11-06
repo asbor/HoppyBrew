@@ -239,8 +239,52 @@ Implement comprehensive brewing calculator tools as both standalone pages and in
 - [ ] Mobile-friendly layouts
 - [ ] Keyboard shortcuts for power users
 
-**Dependencies**: None  
+**Dependencies**: None
 **Blocks**: #4 (recipe editor integration)
+
+---
+
+### ISSUE #51: Batch Lifecycle Field Parity
+**Priority**: P0
+**Component**: Backend + Frontend
+**Estimate**: 4 days
+
+**Description**:
+The Nuxt batch composable expects lifecycle status, fermentation milestones, and
+calculated metrics (OG, FG, ABV, SRM) for every batch, but the FastAPI schema
+only exposes the basic fields from `BatchBase`. This leaves multiple dashboard
+cards and filters without the data they need for the upcoming release.
+
+**Requirements**:
+- Add lifecycle columns to the `batches` table (`status`,
+  `fermentation_start_date`, `packaging_date`, `completion_date`, `notes`,
+  `og`, `fg`, `abv`, `ibu`, `srm_color`).
+- Introduce an enum for status values that matches the frontend type union
+  (`planning`, `brew_day`, `primary_fermentation`, etc.).
+- Update SQLAlchemy models, Pydantic schemas, and API responses to include the
+  new fields with sensible defaults.
+- Persist status history transitions from Issue #1 so the dashboard filters and
+  timers work correctly.
+- Extend seed scripts (including the new sample dataset) to populate realistic
+  values for the added fields.
+- Add regression tests that assert the expanded schema is returned by
+  `/batches` and `/batches/{id}`.
+
+**Acceptance Criteria**:
+- [ ] Batch responses include status, timeline, and metric fields required by
+      the frontend without manual null checks.
+- [ ] Database migration runs cleanly against existing installations.
+- [ ] Frontend dashboard shows correct counts and durations for each status.
+- [ ] Sample dataset demonstrates at least one batch in each lifecycle stage.
+
+**Evidence**:
+- Frontend expects `status`, fermentation dates, and metrics in the `Batch`
+  interface.【F:services/nuxt3-shadcn/composables/useBatches.ts†L6-L198】
+- Backend schema omits these fields entirely, returning only the base
+  attributes.【F:services/backend/Database/Schemas/batches.py†L93-L139】
+
+**Dependencies**: #1 (Batch status workflow)
+**Blocks**: #2 (Fermentation tracking)
 
 ---
 
@@ -531,7 +575,78 @@ Create comprehensive analytics dashboard with batch metrics, trends, and insight
 - [ ] Loading states for slow queries
 - [ ] Caching for expensive calculations
 
-**Dependencies**: #9 (tasting ratings needed for success metrics)  
+**Dependencies**: #9 (tasting ratings needed for success metrics)
+**Blocks**: None
+
+---
+
+### ISSUE #52: Frontend API Client Consistency
+**Priority**: P1
+**Component**: Frontend
+**Estimate**: 3 days
+
+**Description**:
+Numerous Nuxt pages bypass the shared `useApi` composable and hard-code
+`fetch('http://localhost:8000', ...)` calls. This breaks environment overrides,
+duplicates error handling, and complicates authentication integration planned
+for the release.
+
+**Requirements**:
+- Replace direct `fetch` usage in inventory, recipes, references, batches, and
+  profile pages with `useApi()` helpers.
+- Ensure each page exposes proper loading and error states wired to the shared
+  composable.
+- Centralize base URL configuration through runtime config so staging/production
+  deployments do not require code changes.
+- Add minimal unit tests (or component tests) verifying the updated pages call
+  the composable endpoints.
+
+**Acceptance Criteria**:
+- [ ] All frontend API calls flow through `useApi` (verified via search for
+      `fetch('http://localhost:8000`).
+- [ ] Runtime `API_URL` override works for local, staging, and production builds.
+- [ ] Updated pages surface consistent error and loading messaging.
+- [ ] No duplicated request logic remains in page components.
+
+**Evidence**:
+- Inventory page still hits the backend with a hard-coded base URL and manual
+  fetch logic.【F:services/nuxt3-shadcn/pages/inventory/hops/index.vue†L1-L154】
+- The `useApi` composable already provides base URL configuration and shared
+  error handling but is unused on those pages.【F:services/nuxt3-shadcn/composables/useApi.ts†L12-L154】
+
+**Dependencies**: None
+**Blocks**: #23 (Authentication & authorization)
+
+---
+
+### ISSUE #53: Pytest Environment Configuration Cleanup
+**Priority**: P1
+**Component**: Backend + Tooling
+**Estimate**: 1 day
+
+**Description**:
+Pytest emits configuration warnings because the project relies on an `env`
+option without the corresponding plugin. The noise hides real failures in CI
+and will confuse contributors preparing the release.
+
+**Requirements**:
+- Adopt `pytest-env` (or equivalent) to support `env = TESTING=1` in
+  `pytest.ini`, or move the environment variable initialization into
+  `conftest.py`.
+- Ensure `pytest` runs without configuration warnings locally and in CI.
+- Update documentation so contributors know how the testing database is
+  configured.
+
+**Acceptance Criteria**:
+- [ ] `pytest` executes with zero configuration warnings.
+- [ ] Tests still run against the in-memory/SQLite database when `TESTING=1`.
+- [ ] Documentation reflects the updated configuration approach.
+
+**Evidence**:
+- `pytest.ini` uses the unsupported `env` option without a plugin, triggering a
+  warning during every run.【F:services/backend/pytest.ini†L1-L4】【846269†L9-L37】
+
+**Dependencies**: None
 **Blocks**: None
 
 ---
@@ -1421,23 +1536,23 @@ Optimize application performance for production use.
 
 ## 📊 Issue Summary
 
-**Total Issues**: 50
+**Total Issues**: 53
 
 **By Priority**:
-- P0 (Critical): 5 issues - 31 days
-- P1 (High): 15 issues - 75 days
+- P0 (Critical): 6 issues - 35 days
+- P1 (High): 17 issues - 79 days
 - P2 (Medium): 20 issues - 85 days
 - P3 (Low): 10 issues - 63 days
 
 **By Component**:
-- Backend: 18 issues
-- Frontend: 20 issues
-- Full Stack: 8 issues
+- Backend: 19 issues
+- Frontend: 21 issues
+- Full Stack: 9 issues
 - DevOps: 4 issues
 
-**Estimated Total Effort**: ~254 developer-days
+**Estimated Total Effort**: ~262 developer-days
 
-**MVP Estimate** (P0 + Critical P1): ~106 developer-days (5-6 months with 1 developer)
+**MVP Estimate** (P0 + Critical P1): ~110 developer-days (5-6 months with 1 developer)
 
-**Complete Product** (P0 + P1): ~181 developer-days (9-10 months with 1 developer)
+**Complete Product** (P0 + P1): ~189 developer-days (9-10 months with 1 developer)
 

@@ -32,6 +32,7 @@ def run_all_seeds() -> None:
         # Import seed functions
         from seed_references import seed_references
         from seed_beer_styles import seed_beer_styles
+        from seed_sample_dataset import seed_sample_dataset
         
         # Run reference seeder
         logger.info("Seeding references...")
@@ -45,6 +46,11 @@ def run_all_seeds() -> None:
             logger.info(f"Seeded {style_count} beer styles")
         except FileNotFoundError as e:
             logger.warning(f"Skipping beer styles seeding: {e}")
+
+        # Populate showcase dataset
+        logger.info("Seeding sample dataset...")
+        sample_summary = seed_sample_dataset(session)
+        logger.info("Sample dataset summary: %s", sample_summary)
         
         logger.info("Master seeding process completed successfully")
         

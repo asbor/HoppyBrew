@@ -1,0 +1,501 @@
+{
+  "users": [
+    {
+      "username": "alex.brewer",
+      "email": "alex@hoppybrew.io",
+      "first_name": "Alex",
+      "last_name": "Brewster"
+    },
+    {
+      "username": "jamie.ferment",
+      "email": "jamie@hoppybrew.io",
+      "first_name": "Jamie",
+      "last_name": "Fermenter"
+    }
+  ],
+  "equipment_profiles": [
+    {
+      "name": "10 Gallon Stainless Kettle",
+      "version": 1,
+      "batch_size": 20,
+      "boil_size": 25,
+      "tun_volume": 38,
+      "tun_weight": 6,
+      "tun_specific_heat": 0.3,
+      "top_up_water": 0,
+      "trub_chiller_loss": 1.5,
+      "evap_rate": 12,
+      "boil_time": 60,
+      "calc_boil_volume": true,
+      "lauter_deadspace": 0.5,
+      "hop_utilization": 100,
+      "notes": "Primary brewery system",
+      "display_batch_size": "20 L",
+      "display_boil_size": "25 L",
+      "display_tun_volume": "38 L",
+      "display_tun_weight": "6 kg",
+      "display_trub_chiller_loss": "1.5 L",
+      "recipe_name": "Citrus Grove IPA"
+    },
+    {
+      "name": "Small Batch Electric",
+      "version": 1,
+      "batch_size": 10,
+      "boil_size": 12,
+      "tun_volume": 15,
+      "tun_weight": 4,
+      "tun_specific_heat": 0.25,
+      "top_up_water": 0,
+      "trub_chiller_loss": 0.8,
+      "evap_rate": 10,
+      "boil_time": 45,
+      "calc_boil_volume": true,
+      "lauter_deadspace": 0.3,
+      "hop_utilization": 95,
+      "notes": "Table-top pilot system",
+      "display_batch_size": "10 L",
+      "display_boil_size": "12 L",
+      "display_tun_volume": "15 L",
+      "display_tun_weight": "4 kg",
+      "display_trub_chiller_loss": "0.8 L",
+      "recipe_name": "Summer Citrus Wheat"
+    }
+  ],
+  "water_profiles": [
+    {
+      "name": "City Pale Ale",
+      "version": 1,
+      "calcium": 110,
+      "magnesium": 15,
+      "sodium": 25,
+      "chloride": 65,
+      "sulfate": 140,
+      "bicarbonate": 120,
+      "ph": 5,
+      "notes": "Balanced profile for hop-forward beers",
+      "display_amount": "25 L",
+      "recipe_name": "Citrus Grove IPA"
+    },
+    {
+      "name": "Soft Wheat",
+      "version": 1,
+      "calcium": 50,
+      "magnesium": 8,
+      "sodium": 12,
+      "chloride": 45,
+      "sulfate": 55,
+      "bicarbonate": 60,
+      "ph": 5,
+      "notes": "Soft profile for wheat beers",
+      "display_amount": "18 L",
+      "recipe_name": "Summer Citrus Wheat"
+    }
+  ],
+  "inventory": {
+    "hops": [
+      {
+        "name": "Citra",
+        "origin": "USA",
+        "alpha": 12.4,
+        "type": "Aroma",
+        "form": "Pellet",
+        "amount": 0.45,
+        "use": "Boil",
+        "time": 15,
+        "notes": "Bright tropical fruit",
+        "display_amount": "450 g",
+        "inventory": "0.45 kg",
+        "display_time": "15 min"
+      },
+      {
+        "name": "Mosaic",
+        "origin": "USA",
+        "alpha": 11.5,
+        "type": "Dual Purpose",
+        "form": "Pellet",
+        "amount": 0.32,
+        "use": "Dry Hop",
+        "time": 3,
+        "notes": "Berry and citrus",
+        "display_amount": "320 g",
+        "inventory": "0.32 kg",
+        "display_time": "3 days"
+      },
+      {
+        "name": "Saaz",
+        "origin": "Czech Republic",
+        "alpha": 3.4,
+        "type": "Aroma",
+        "form": "Pellet",
+        "amount": 0.18,
+        "use": "Boil",
+        "time": 60,
+        "notes": "Classic noble hop",
+        "display_amount": "180 g",
+        "inventory": "0.18 kg",
+        "display_time": "60 min"
+      }
+    ],
+    "fermentables": [
+      {
+        "name": "Pilsner Malt",
+        "type": "Grain",
+        "yield_": 80,
+        "color": 2,
+        "origin": "Germany",
+        "supplier": "Weyermann",
+        "amount": 18.5,
+        "cost_per_unit": 1.9,
+        "notes": "Base malt for crisp lagers",
+        "display_amount": "18.5 kg"
+      },
+      {
+        "name": "Maris Otter",
+        "type": "Grain",
+        "yield_": 83,
+        "color": 4,
+        "origin": "UK",
+        "supplier": "Crisp",
+        "amount": 12.0,
+        "cost_per_unit": 2.2,
+        "notes": "Rich base malt",
+        "display_amount": "12 kg"
+      },
+      {
+        "name": "Flaked Wheat",
+        "type": "Adjunct",
+        "yield_": 75,
+        "color": 2,
+        "origin": "USA",
+        "amount": 6.5,
+        "notes": "Adds body and haze",
+        "display_amount": "6.5 kg"
+      }
+    ],
+    "yeasts": [
+      {
+        "name": "SafAle US-05",
+        "type": "Ale",
+        "form": "Dry",
+        "laboratory": "Fermentis",
+        "product_id": "US05",
+        "attenuation": 78,
+        "min_temperature": 18,
+        "max_temperature": 24,
+        "notes": "Clean American ale yeast"
+      },
+      {
+        "name": "Wyeast 3068",
+        "type": "Wheat",
+        "form": "Liquid",
+        "laboratory": "Wyeast",
+        "product_id": "3068",
+        "attenuation": 74,
+        "min_temperature": 18,
+        "max_temperature": 24,
+        "notes": "Classic hefeweizen profile"
+      }
+    ],
+    "miscs": [
+      {
+        "name": "Irish Moss",
+        "type": "Fining",
+        "use": "Boil",
+        "amount": 15,
+        "time": 10,
+        "notes": "Clarifying agent",
+        "display_amount": "15 g",
+        "display_time": "10 min"
+      },
+      {
+        "name": "Orange Zest",
+        "type": "Flavor",
+        "use": "Secondary",
+        "amount": 120,
+        "time": 0,
+        "notes": "Adds bright citrus aroma",
+        "display_amount": "120 g",
+        "display_time": "Secondary"
+      }
+    ]
+  },
+  "recipes": [
+    {
+      "name": "Citrus Grove IPA",
+      "version": 3,
+      "type": "All Grain",
+      "brewer": "Alex Brewster",
+      "batch_size": 20.0,
+      "boil_size": 25.0,
+      "boil_time": 60,
+      "ibu_method": "Tinseth",
+      "ibu": 65,
+      "og": 1.064,
+      "fg": 1.012,
+      "est_abv": 6.8,
+      "notes": "Showcase citrus-forward hops with a soft malt backbone.",
+      "display_batch_size": "20 L",
+      "display_boil_size": "25 L",
+      "hops": [
+        {
+          "name": "Citra",
+          "origin": "USA",
+          "alpha": 12.4,
+          "type": "Aroma",
+          "form": "Pellet",
+          "amount": 0.06,
+          "use": "Boil",
+          "time": 60,
+          "display_amount": "60 g",
+          "display_time": "60 min"
+        },
+        {
+          "name": "Mosaic",
+          "origin": "USA",
+          "alpha": 11.5,
+          "type": "Dual Purpose",
+          "form": "Pellet",
+          "amount": 0.08,
+          "use": "Dry Hop",
+          "time": 3,
+          "display_amount": "80 g",
+          "display_time": "3 days"
+        }
+      ],
+      "fermentables": [
+        {
+          "name": "Pilsner Malt",
+          "type": "Grain",
+          "yield_": 80,
+          "color": 2,
+          "amount": 5.2
+        },
+        {
+          "name": "Munich Malt",
+          "type": "Grain",
+          "yield_": 78,
+          "color": 9,
+          "amount": 0.75
+        },
+        {
+          "name": "Flaked Wheat",
+          "type": "Adjunct",
+          "yield_": 75,
+          "color": 2,
+          "amount": 0.5
+        }
+      ],
+      "yeasts": [
+        {
+          "name": "SafAle US-05",
+          "type": "Ale",
+          "form": "Dry",
+          "attenuation": 78,
+          "amount": 0.0115
+        }
+      ],
+      "miscs": [
+        {
+          "name": "Irish Moss",
+          "type": "Fining",
+          "use": "Boil",
+          "amount": 14,
+          "time": 10,
+          "display_amount": "14 g",
+          "display_time": "10 min"
+        },
+        {
+          "name": "Orange Zest",
+          "type": "Flavor",
+          "use": "Secondary",
+          "amount": 120,
+          "time": 0,
+          "display_amount": "120 g",
+          "display_time": "Secondary"
+        }
+      ]
+    },
+    {
+      "name": "Midnight Oatmeal Stout",
+      "version": 2,
+      "type": "All Grain",
+      "brewer": "Jamie Fermenter",
+      "batch_size": 19.0,
+      "boil_size": 23.0,
+      "boil_time": 75,
+      "ibu_method": "Tinseth",
+      "ibu": 45,
+      "og": 1.058,
+      "fg": 1.016,
+      "est_abv": 5.5,
+      "notes": "Silky stout with cocoa and coffee notes.",
+      "display_batch_size": "19 L",
+      "display_boil_size": "23 L",
+      "hops": [
+        {
+          "name": "East Kent Goldings",
+          "origin": "UK",
+          "alpha": 5.5,
+          "type": "Aroma",
+          "form": "Pellet",
+          "amount": 0.04,
+          "use": "Boil",
+          "time": 60,
+          "display_amount": "40 g",
+          "display_time": "60 min"
+        }
+      ],
+      "fermentables": [
+        {
+          "name": "Maris Otter",
+          "type": "Grain",
+          "yield_": 83,
+          "color": 4,
+          "amount": 4.5
+        },
+        {
+          "name": "Flaked Oats",
+          "type": "Adjunct",
+          "yield_": 70,
+          "color": 2,
+          "amount": 0.9
+        },
+        {
+          "name": "Chocolate Malt",
+          "type": "Grain",
+          "yield_": 74,
+          "color": 350,
+          "amount": 0.45
+        }
+      ],
+      "yeasts": [
+        {
+          "name": "Wyeast 1084",
+          "type": "Ale",
+          "form": "Liquid",
+          "attenuation": 71,
+          "amount": 0.125
+        }
+      ],
+      "miscs": [
+        {
+          "name": "Cocoa Nibs",
+          "type": "Flavor",
+          "use": "Secondary",
+          "amount": 200,
+          "time": 0,
+          "display_amount": "200 g",
+          "display_time": "Secondary"
+        }
+      ]
+    },
+    {
+      "name": "Summer Citrus Wheat",
+      "version": 1,
+      "type": "All Grain",
+      "brewer": "Alex Brewster",
+      "batch_size": 18.0,
+      "boil_size": 22.0,
+      "boil_time": 60,
+      "ibu_method": "Tinseth",
+      "ibu": 22,
+      "og": 1.048,
+      "fg": 1.01,
+      "est_abv": 5.0,
+      "notes": "Light wheat beer with bright citrus aroma.",
+      "display_batch_size": "18 L",
+      "display_boil_size": "22 L",
+      "hops": [
+        {
+          "name": "Saaz",
+          "origin": "Czech Republic",
+          "alpha": 3.4,
+          "type": "Aroma",
+          "form": "Pellet",
+          "amount": 0.05,
+          "use": "Boil",
+          "time": 45,
+          "display_amount": "50 g",
+          "display_time": "45 min"
+        }
+      ],
+      "fermentables": [
+        {
+          "name": "Pilsner Malt",
+          "type": "Grain",
+          "yield_": 80,
+          "color": 2,
+          "amount": 3.8
+        },
+        {
+          "name": "Flaked Wheat",
+          "type": "Adjunct",
+          "yield_": 75,
+          "color": 2,
+          "amount": 1.2
+        }
+      ],
+      "yeasts": [
+        {
+          "name": "Wyeast 3068",
+          "type": "Wheat",
+          "form": "Liquid",
+          "attenuation": 74,
+          "amount": 0.125
+        }
+      ],
+      "miscs": [
+        {
+          "name": "Coriander Seed",
+          "type": "Spice",
+          "use": "Boil",
+          "amount": 10,
+          "time": 5,
+          "display_amount": "10 g",
+          "display_time": "5 min"
+        },
+        {
+          "name": "Lemon Peel",
+          "type": "Flavor",
+          "use": "Secondary",
+          "amount": 80,
+          "time": 0,
+          "display_amount": "80 g",
+          "display_time": "Secondary"
+        }
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "recipe_name": "Citrus Grove IPA",
+      "batch_name": "Citrus Grove IPA - Spring 2025",
+      "batch_number": 12,
+      "batch_size": 20.0,
+      "brewer": "Alex Brewster",
+      "brew_date": "2025-03-21T09:00:00",
+      "notes": "Dry hop planned for day 4"
+    },
+    {
+      "recipe_name": "Midnight Oatmeal Stout",
+      "batch_name": "Midnight Oatmeal Stout - Barrel A",
+      "batch_number": 5,
+      "batch_size": 19.0,
+      "brewer": "Jamie Fermenter",
+      "brew_date": "2025-02-14T18:30:00",
+      "notes": "Conditioning on cocoa nibs"
+    }
+  ],
+  "batch_logs": [
+    {
+      "batch_name": "Citrus Grove IPA - Spring 2025",
+      "activity": "Transferred to fermenter",
+      "notes": "Pitching at 19\u00b0C"
+    },
+    {
+      "batch_name": "Midnight Oatmeal Stout - Barrel A",
+      "activity": "Transferred to barrel",
+      "notes": "Added cocoa nibs and vanilla"
+    }
+  ]
+}
