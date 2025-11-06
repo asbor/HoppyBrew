@@ -54,12 +54,10 @@ services:
       - ./services/nuxt3-shadcn:/app
     command: sh -c "yarn && yarn dev --host 0.0.0.0"
     environment:
-      - API_BASE_URL=http://localhost:8000
+      - API_BASE_URL=http://backend:8000
       - HOST=0.0.0.0
     networks:
       - my-network
-    environment:
-      - API_BASE_URL=http://backend:8000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s
