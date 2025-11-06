@@ -229,7 +229,7 @@ jobs:
             core.setOutput('markdown', body);
             core.setOutput('failed', failed ? 'true' : 'false');
 
-      - name: MCP: Publish release analytics
+      - name: "MCP: Publish release analytics"
         uses: actions/github-script@v7
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
@@ -266,7 +266,7 @@ jobs:
           tag: ${{ needs.generate-notes.outputs.tag-name }}
           release-body: ${{ needs.generate-notes.outputs.body }}
 
-      - name: MCP: Auto-issue for release failures
+      - name: "MCP: Auto-issue for release failures"
         if: steps.summary.outputs.failed == 'true'
         uses: actions/github-script@v7
         with:
@@ -296,3 +296,9 @@ jobs:
             });
           tag: ${{ needs.generate-notes.outputs.tag-name }}
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: Fail workflow if release failed
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "One or more release pipeline stages failed. Check the summary above for details."
+          exit 1
