@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 from decimal import Decimal
@@ -34,17 +34,17 @@ SOURCE_PROFILE_EXAMPLE = {
 class WaterProfileBase(BaseModel):
     """
     Base schema for water profiles.
-    
+
     Supports two types of profiles:
     - source: Starting water (e.g., RO water, tap water, distilled water)
     - target: Desired brewing water profile for specific beer styles
     """
-    
+
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
     profile_type: str = Field(default='source', pattern='^(source|target)$')
     style_category: Optional[str] = Field(None, max_length=100)
-    
+
     # Ion concentrations (ppm)
     calcium: Decimal = Field(default=0, ge=0, le=10000)
     magnesium: Decimal = Field(default=0, ge=0, le=10000)
@@ -52,12 +52,12 @@ class WaterProfileBase(BaseModel):
     chloride: Decimal = Field(default=0, ge=0, le=10000)
     sulfate: Decimal = Field(default=0, ge=0, le=10000)
     bicarbonate: Decimal = Field(default=0, ge=0, le=10000)
-    
+
     # Additional properties
     ph: Optional[Decimal] = Field(None, ge=0, le=14)
     total_alkalinity: Optional[Decimal] = Field(None, ge=0)
     residual_alkalinity: Optional[Decimal] = None
-    
+
     # Legacy fields (for backward compatibility)
     version: Optional[int] = None
     amount: Optional[int] = None
@@ -71,21 +71,21 @@ class WaterProfileBase(BaseModel):
 
 class WaterProfileCreate(WaterProfileBase):
     """Schema for creating a new water profile."""
-    
+
     is_custom: bool = Field(default=True)
-    
+
     class Config:
         json_schema_extra = {"example": WATER_PROFILE_EXAMPLE}
 
 
 class WaterProfileUpdate(BaseModel):
     """Schema for updating an existing water profile."""
-    
+
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = None
     profile_type: Optional[str] = Field(None, pattern='^(source|target)$')
     style_category: Optional[str] = Field(None, max_length=100)
-    
+
     # Ion concentrations (ppm)
     calcium: Optional[Decimal] = Field(None, ge=0, le=10000)
     magnesium: Optional[Decimal] = Field(None, ge=0, le=10000)
@@ -93,12 +93,12 @@ class WaterProfileUpdate(BaseModel):
     chloride: Optional[Decimal] = Field(None, ge=0, le=10000)
     sulfate: Optional[Decimal] = Field(None, ge=0, le=10000)
     bicarbonate: Optional[Decimal] = Field(None, ge=0, le=10000)
-    
+
     # Additional properties
     ph: Optional[Decimal] = Field(None, ge=0, le=14)
     total_alkalinity: Optional[Decimal] = Field(None, ge=0)
     residual_alkalinity: Optional[Decimal] = None
-    
+
     # Legacy fields
     version: Optional[int] = None
     amount: Optional[int] = None
@@ -109,13 +109,13 @@ class WaterProfileUpdate(BaseModel):
 
 class WaterProfile(WaterProfileBase):
     """Schema for water profile with database fields."""
-    
+
     id: int
     is_default: bool
     is_custom: bool
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True
         json_schema_extra = {"example": {
