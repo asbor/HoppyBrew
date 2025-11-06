@@ -115,3 +115,4 @@ echo ""
 echo "Remaining open issues: $(gh issue list --repo "$REPO" --state open --json number --jq '. | length')"
 echo ""
 echo "🎉 Done!"
+
