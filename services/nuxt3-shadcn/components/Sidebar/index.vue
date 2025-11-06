@@ -1,16 +1,16 @@
 <script setup>
-const open = ref(true);
+import { ref } from 'vue'
+
+const open = ref(false)
 
 const toggleOverlay = () => {
-  open.value = !open.value;
-};
+  open.value = !open.value
+}
 
 const closeOverlay = () => {
-  console.log('Overlay closed');
-  open.value = false;
-};
-
-
+  console.log('Overlay closed')
+  open.value = false
+}
 </script>
 
 <template>
@@ -22,15 +22,13 @@ const closeOverlay = () => {
           @click="open = true" />
       </div>
 
-
-      <div name="overlay" v-if="open" :class="{ 'bg-white': !isDark, 'bg-gray-800': isDark }"
-        class="fixed top-0 left-0 z-[999] w-full h-full h-screen">
+      <div v-if="open" name="overlay" class="bg-background fixed top-0 left-0 z-[999] w-full h-full h-screen">
         <Icon class="absolute z-50 cursor-pointer right-4 top-4" size="30" name="material-symbols:close"
           @click="open = false" />
         <SidebarMenu @linkClicked="closeOverlay" />
       </div>
     </div>
-    <div class="hidden lg:flex w-[250px] h-screen flex flex-col justify-between border-r">
+    <div class="hidden lg:flex w-64 h-screen flex flex-col justify-between border-r border-border">
       <SidebarMenu />
     </div>
   </div>

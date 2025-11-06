@@ -70,6 +70,13 @@ from .references import (
     ReferenceInDBBase,
     Reference,
 )
+from .devices import (
+    DeviceBase,
+    DeviceCreate,
+    DeviceUpdate,
+    DeviceInDBBase,
+    Device,
+)
 
 __all__ = [
     "SugarBase",
@@ -132,6 +139,11 @@ __all__ = [
     "ReferenceUpdate",
     "ReferenceInDBBase",
     "Reference",
+    "DeviceBase",
+    "DeviceCreate",
+    "DeviceUpdate",
+    "DeviceInDBBase",
+    "Device",
     "QuestionBase",
     "ChoiceBase",
 ]

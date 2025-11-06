@@ -15,6 +15,7 @@ import {
 import type { BatchStatus } from '@/composables/useBatches'
 
 const { batches, loading, error, fetchAll, remove } = useBatches()
+const { getBatchStatusColor } = useStatusColors()
 
 const searchQuery = ref('')
 const filterStatus = ref<BatchStatus | 'all'>('all')
@@ -48,20 +49,6 @@ async function deleteBatch(id: string) {
   if (result.error) {
     alert(`Failed to delete batch: ${result.error.value}`)
   }
-}
-
-function getBatchStatusColor(status: BatchStatus) {
-  const colors: Record<BatchStatus, string> = {
-    planning: 'bg-gray-500',
-    brew_day: 'bg-orange-500',
-    primary_fermentation: 'bg-blue-500',
-    secondary_fermentation: 'bg-indigo-500',
-    conditioning: 'bg-purple-500',
-    packaged: 'bg-green-500',
-    completed: 'bg-gray-400',
-    archived: 'bg-gray-300',
-  }
-  return colors[status] || 'bg-gray-500'
 }
 
 function formatDate(dateString: string | undefined) {
