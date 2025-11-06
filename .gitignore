@@ -91,6 +91,36 @@ ENV/
 .ropeproject
 .Rproj.user
 
-# Node.js / Frontend
+# Node modules and frontend
 node_modules/
 package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Nuxt build output
+.nuxt/
+.output/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*-notes.txt
+*_temp.*
+
+# Build artifacts
+*.tar
+*.zip
+.pytest_cache/

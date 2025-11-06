@@ -1,0 +1,132 @@
+"""Add comprehensive beer styles tables
+
+Revision ID: 0002
+Revises: 0001
+Create Date: 2025-11-06 10:00:00.000000
+
+"""
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy import Column, Integer, String, Boolean, Text, Numeric, DateTime, ForeignKey, Index
+
+
+# revision identifiers, used by Alembic.
+revision = '0002'
+down_revision = '0001'
+branch_labels = None
+depends_on = None
+
+
+def upgrade():
+    """Create new beer style management tables"""
+    
+    # Create style_guideline_sources table
+    op.create_table(
+        'style_guideline_sources',
+        Column('id', Integer, primary_key=True, autoincrement=True),
+        Column('name', String(255), nullable=False),
+        Column('year', Integer, nullable=True),
+        Column('abbreviation', String(20), nullable=True),
+        Column('description', Text, nullable=True),
+        Column('is_active', Boolean, default=True),
+        Column('created_at', DateTime(timezone=True), server_default=sa.func.now()),
+        Column('updated_at', DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now()),
+    )
+    
+    # Create indexes on style_guideline_sources
+    op.create_index('idx_guideline_source_name', 'style_guideline_sources', ['name'])
+    op.create_index('idx_guideline_source_active', 'style_guideline_sources', ['is_active'])
+    
+    # Create style_categories table
+    op.create_table(
+        'style_categories',
+        Column('id', Integer, primary_key=True, autoincrement=True),
+        Column('guideline_source_id', Integer, ForeignKey('style_guideline_sources.id'), nullable=False),
+        Column('name', String(255), nullable=False),
+        Column('code', String(20), nullable=True),
+        Column('description', Text, nullable=True),
+        Column('parent_category_id', Integer, ForeignKey('style_categories.id'), nullable=True),
+    )
+    
+    # Create indexes on style_categories
+    op.create_index('idx_category_guideline', 'style_categories', ['guideline_source_id'])
+    op.create_index('idx_category_parent', 'style_categories', ['parent_category_id'])
+    op.create_index('idx_category_code', 'style_categories', ['code'])
+    
+    # Create beer_styles table
+    op.create_table(
+        'beer_styles',
+        Column('id', Integer, primary_key=True, autoincrement=True),
+        Column('guideline_source_id', Integer, ForeignKey('style_guideline_sources.id'), nullable=True),
+        Column('category_id', Integer, ForeignKey('style_categories.id'), nullable=True),
+        Column('name', String(255), nullable=False),
+        Column('style_code', String(20), nullable=True),
+        Column('subcategory', String(100), nullable=True),
+        
+        # Basic Parameters
+        Column('abv_min', Numeric(4, 2), nullable=True),
+        Column('abv_max', Numeric(4, 2), nullable=True),
+        Column('og_min', Numeric(5, 3), nullable=True),
+        Column('og_max', Numeric(5, 3), nullable=True),
+        Column('fg_min', Numeric(5, 3), nullable=True),
+        Column('fg_max', Numeric(5, 3), nullable=True),
+        Column('ibu_min', Integer, nullable=True),
+        Column('ibu_max', Integer, nullable=True),
+        Column('color_min_ebc', Numeric(6, 2), nullable=True),
+        Column('color_max_ebc', Numeric(6, 2), nullable=True),
+        Column('color_min_srm', Numeric(6, 2), nullable=True),
+        Column('color_max_srm', Numeric(6, 2), nullable=True),
+        
+        # Detailed Descriptions
+        Column('description', Text, nullable=True),
+        Column('aroma', Text, nullable=True),
+        Column('appearance', Text, nullable=True),
+        Column('flavor', Text, nullable=True),
+        Column('mouthfeel', Text, nullable=True),
+        Column('overall_impression', Text, nullable=True),
+        Column('comments', Text, nullable=True),
+        Column('history', Text, nullable=True),
+        Column('ingredients', Text, nullable=True),
+        Column('comparison', Text, nullable=True),
+        Column('examples', Text, nullable=True),
+        
+        # Metadata
+        Column('is_custom', Boolean, default=False),
+        Column('created_by', Integer, nullable=True),
+        Column('created_at', DateTime(timezone=True), server_default=sa.func.now()),
+        Column('updated_at', DateTime(timezone=True), server_default=sa.func.now(), onupdate=sa.func.now()),
+    )
+    
+    # Create indexes on beer_styles
+    op.create_index('idx_beer_style_name', 'beer_styles', ['name'])
+    op.create_index('idx_beer_style_code', 'beer_styles', ['style_code'])
+    op.create_index('idx_beer_style_guideline', 'beer_styles', ['guideline_source_id'])
+    op.create_index('idx_beer_style_category', 'beer_styles', ['category_id'])
+    op.create_index('idx_beer_style_custom', 'beer_styles', ['is_custom'])
+    op.create_index('idx_beer_style_abv', 'beer_styles', ['abv_min', 'abv_max'])
+    op.create_index('idx_beer_style_ibu', 'beer_styles', ['ibu_min', 'ibu_max'])
+
+
+def downgrade():
+    """Drop beer style management tables"""
+    
+    # Drop indexes first
+    op.drop_index('idx_beer_style_ibu', 'beer_styles')
+    op.drop_index('idx_beer_style_abv', 'beer_styles')
+    op.drop_index('idx_beer_style_custom', 'beer_styles')
+    op.drop_index('idx_beer_style_category', 'beer_styles')
+    op.drop_index('idx_beer_style_guideline', 'beer_styles')
+    op.drop_index('idx_beer_style_code', 'beer_styles')
+    op.drop_index('idx_beer_style_name', 'beer_styles')
+    
+    op.drop_index('idx_category_code', 'style_categories')
+    op.drop_index('idx_category_parent', 'style_categories')
+    op.drop_index('idx_category_guideline', 'style_categories')
+    
+    op.drop_index('idx_guideline_source_active', 'style_guideline_sources')
+    op.drop_index('idx_guideline_source_name', 'style_guideline_sources')
+    
+    # Drop tables in reverse order due to foreign keys
+    op.drop_table('beer_styles')
+    op.drop_table('style_categories')
+    op.drop_table('style_guideline_sources')

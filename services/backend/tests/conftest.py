@@ -71,3 +71,48 @@ def db_session():
         yield session
     finally:
         session.close()
+
+
+@pytest.fixture()
+def sample_batch(client, db_session):
+    """Create a sample batch for testing"""
+    from Database.Models.recipes import Recipes
+    from Database.Models.batches import Batches
+    from datetime import datetime
+    
+    # Create a recipe first
+    recipe = Recipes(
+        name="Test IPA",
+        version=1,
+        type="All Grain",
+        brewer="Test Brewer",
+        batch_size=20.0,
+        boil_size=25.0,
+        boil_time=60,
+        efficiency=75.0,
+    )
+    db_session.add(recipe)
+    db_session.commit()
+    db_session.refresh(recipe)
+    
+    # Create a batch
+    batch = Batches(
+        recipe_id=recipe.id,
+        batch_name="Test Batch IPA",
+        batch_number=1,
+        batch_size=20.0,
+        brewer="Test Brewer",
+        brew_date=datetime.now(),
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
+    )
+    db_session.add(batch)
+    db_session.commit()
+    db_session.refresh(batch)
+    
+    return {
+        "id": batch.id,
+        "recipe_id": recipe.id,
+        "batch_name": batch.batch_name,
+        "batch_number": batch.batch_number,
+    }
