@@ -262,7 +262,7 @@ jobs:
             core.setOutput('markdown', lines.join('\n'));
             core.setOutput('failed', hasFailures ? 'true' : 'false');
 
-      - name: MCP: Publish deployment analytics
+      - name: "MCP: Publish deployment analytics"
         uses: actions/github-script@v7
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
@@ -307,7 +307,7 @@ jobs:
             }
           summary: ${{ steps.summary.outputs.markdown }}
 
-      - name: MCP: Auto-issue for pipeline failures
+      - name: "MCP: Auto-issue for pipeline failures"
         if: steps.summary.outputs.failed == 'true'
         uses: actions/github-script@v7
         with:
@@ -339,3 +339,9 @@ jobs:
               labels: ['ci-failure', 'automated'],
             });
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: Fail workflow if any stage failed
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "One or more pipeline stages failed. Check the summary above for details."
+          exit 1
