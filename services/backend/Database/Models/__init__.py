@@ -3,8 +3,9 @@
 from .recipes import Recipes
 from .batches import Batches
 from .batch_logs import BatchLogs
-from .style_guidlines import StyleGuidelines
+from .style_guidlines import StyleGuidelines, StyleGuidelineSource
 from .styles import Styles
+from .beer_styles import BeerStyle, StyleCategory
 from .questions import Questions
 from .choices import Choices
 from .Ingredients.Fermentables.grain import RecipeGrain, InventoryGrain
@@ -34,7 +35,10 @@ __all__ = [
     "Batches",
     "BatchLogs",
     "StyleGuidelines",
+    "StyleGuidelineSource",
     "Styles",
+    "BeerStyle",
+    "StyleCategory",
     "Questions",
     "Choices",
     "RecipeGrain",
