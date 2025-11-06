@@ -90,3 +90,7 @@ ENV/
 # Rope project settings
 .ropeproject
 .Rproj.user
+
+# Node.js / Frontend
+node_modules/
+package-lock.json
