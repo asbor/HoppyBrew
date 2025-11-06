@@ -313,10 +313,11 @@ onMounted(fetchProfile)
                   <!-- Step Controls -->
                   <div class="flex flex-col gap-2">
                     <Button
-                      @click="removeStep(step.id!, index)"
+                      @click="step.id && removeStep(step.id, index)"
                       variant="destructive"
                       size="icon"
                       title="Remove step"
+                      :disabled="!step.id"
                     >
                       ✕
                     </Button>

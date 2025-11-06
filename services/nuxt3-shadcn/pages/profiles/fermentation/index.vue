@@ -117,7 +117,7 @@ onMounted(fetchProfiles)
             <Button asChild variant="outline" size="sm" class="mr-2">
               <NuxtLink :href="`/profiles/fermentation/${profile.id}`">Edit</NuxtLink>
             </Button>
-            <Button @click="handleDelete(profile.id!)" variant="destructive" size="sm">Delete</Button>
+            <Button @click="profile.id && handleDelete(profile.id)" variant="destructive" size="sm" :disabled="!profile.id">Delete</Button>
           </TableCell>
         </TableRow>
       </TableBody>
