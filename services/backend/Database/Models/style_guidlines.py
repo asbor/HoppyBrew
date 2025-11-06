@@ -1,18 +1,43 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text, Index
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, DateTime, Index
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from database import Base
+
+
+class StyleGuidelineSource(Base):
+    """
+    Represents different style guideline sources (BJCP, Brewers Association, etc.)
+    
+    Relationships:
+    - ONE guideline source can have MANY categories
+    - ONE guideline source can have MANY beer styles
+    """
+    
+    __tablename__ = "style_guideline_sources"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(255), nullable=False)  # e.g., "BJCP 2021", "Brewers Association 2025"
+    year = Column(Integer, nullable=True)
+    abbreviation = Column(String(20), nullable=True)  # e.g., "BJCP", "BA"
+    description = Column(Text, nullable=True)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    # Relationships
+    categories = relationship("StyleCategory", back_populates="guideline_source", cascade="all, delete-orphan")
+    beer_styles = relationship("BeerStyle", back_populates="guideline_source")
+    
+    __table_args__ = (
+        Index('idx_guideline_source_name', 'name'),
+        Index('idx_guideline_source_active', 'is_active'),
+    )
 
 
 class StyleGuidelines(Base):
     """
-    Description:
-
-    This class represents the style guidelines provided by the BJCP.
-
-    Relationships:
-
-    - ONE style can have ZERO or MANY recipes
-
+    Legacy class for backwards compatibility.
+    This represents the style guidelines provided by the BJCP.
     """
 
     __tablename__ = "style_guidelines"
@@ -35,25 +60,7 @@ class StyleGuidelines(Base):
     abv = Column(String(255), nullable=True)
     ibu = Column(String(255), nullable=True)
     ebc = Column(String(255), nullable=True)
-    # Calculated
-
-    # og_min = Column(Integer, nullable=True)
-
-    # og_max = Column(Integer, nullable=True)
-
-    # fg_min = Column(Integer, nullable=True)
-
-    # fg_max = Column(Integer, nullable=True)
-
-    # ibu_min = Column(Integer, nullable=True)
-
-    # ibu_max = Column(Integer, nullable=True)
-
-    # ebc_min = Column(Integer, nullable=True)
-
-    # ebc_max = Column(Integer, nullable=True)
-
-    # Relationships
-
+    
+    # Legacy relationship - kept for backward compatibility
     recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
     recipe = relationship("Recipes", back_populates="style_guideline")

@@ -181,7 +181,7 @@ jobs:
             core.setOutput('markdown', markdown);
             core.setOutput('failed', failed ? 'true' : 'false');
 
-      - name: MCP: Publish security analytics
+      - name: "MCP: Publish security analytics"
         uses: actions/github-script@v7
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
@@ -220,7 +220,7 @@ jobs:
             }
           summary: ${{ steps.summary.outputs.markdown }}
 
-      - name: MCP: Auto-issue for vulnerabilities
+      - name: "MCP: Auto-issue for vulnerabilities"
         if: steps.summary.outputs.failed == 'true'
         uses: actions/github-script@v7
         with:
@@ -249,3 +249,9 @@ jobs:
               labels: ['security-alert', 'automated'],
             });
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: Fail workflow if security issues found
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "Security vulnerabilities detected. Check the summary above for details."
+          exit 1

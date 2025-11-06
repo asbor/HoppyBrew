@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "batch_id": "47",
+    "reading_date": "2025-10-31T11:24:51.597453",
+    "gravity": 1.057,
+    "temperature": 20.5,
+    "ph": 5.2,
+    "notes": "Fermentation started - pitched yeast"
+  },
+  {
+    "id": "2",
+    "batch_id": "47",
+    "reading_date": "2025-11-02T11:24:51.597453",
+    "gravity": 1.045,
+    "temperature": 21.1,
+    "ph": 4.8,
+    "notes": "Active fermentation - lots of foam"
+  },
+  {
+    "id": "3",
+    "batch_id": "47",
+    "reading_date": "2025-11-04T11:24:51.597453",
+    "gravity": 1.038,
+    "temperature": 21.0,
+    "ph": 4.5,
+    "notes": "Fermentation slowing down"
+  },
+  {
+    "id": "4",
+    "batch_id": "47",
+    "reading_date": "2025-11-05T23:24:51.597453",
+    "gravity": 1.031,
+    "temperature": 21.1,
+    "ph": 4.2,
+    "notes": "Current reading - fermentation nearly complete"
+  }
+]

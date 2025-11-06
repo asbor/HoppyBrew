@@ -17,8 +17,28 @@ from .batches import Batch, BatchCreate, BatchBase
 from .batch_logs import BatchLogBase
 from .style_guidelines import StyleGuidelineBase, StyleGuidelineBaseCreate
 from .styles import StyleBase, Style
+from .beer_styles import (
+    StyleGuidelineSourceBase,
+    StyleGuidelineSourceCreate,
+    StyleGuidelineSourceUpdate,
+    StyleGuidelineSource,
+    StyleCategoryBase,
+    StyleCategoryCreate,
+    StyleCategoryUpdate,
+    StyleCategory,
+    BeerStyleBase,
+    BeerStyleCreate,
+    BeerStyleUpdate,
+    BeerStyle,
+    BeerStyleSearch,
+)
 from .equipment_profiles import EquipmentProfileBase
-from .water_profiles import WaterProfileBase
+from .water_profiles import (
+    WaterProfileBase,
+    WaterProfileCreate,
+    WaterProfileUpdate,
+    WaterProfile,
+)
 from .mash_profiles import MashProfileBase
 from .fermentables import (
     FermentableBase,
@@ -55,6 +75,13 @@ from .references import (
     ReferenceInDBBase,
     Reference,
 )
+from .devices import (
+    DeviceBase,
+    DeviceCreate,
+    DeviceUpdate,
+    DeviceInDBBase,
+    Device,
+)
 
 __all__ = [
     "SugarBase",
@@ -76,8 +103,24 @@ __all__ = [
     "StyleGuidelineBaseCreate",
     "StyleBase",
     "Style",
+    "StyleGuidelineSourceBase",
+    "StyleGuidelineSourceCreate",
+    "StyleGuidelineSourceUpdate",
+    "StyleGuidelineSource",
+    "StyleCategoryBase",
+    "StyleCategoryCreate",
+    "StyleCategoryUpdate",
+    "StyleCategory",
+    "BeerStyleBase",
+    "BeerStyleCreate",
+    "BeerStyleUpdate",
+    "BeerStyle",
+    "BeerStyleSearch",
     "EquipmentProfileBase",
     "WaterProfileBase",
+    "WaterProfileCreate",
+    "WaterProfileUpdate",
+    "WaterProfile",
     "MashProfileBase",
     "FermentableBase",
     "RecipeFermentable",
@@ -104,6 +147,11 @@ __all__ = [
     "ReferenceUpdate",
     "ReferenceInDBBase",
     "Reference",
+    "DeviceBase",
+    "DeviceCreate",
+    "DeviceUpdate",
+    "DeviceInDBBase",
+    "Device",
     "QuestionBase",
     "ChoiceBase",
 ]
