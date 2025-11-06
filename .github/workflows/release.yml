@@ -296,3 +296,9 @@ jobs:
             });
           tag: ${{ needs.generate-notes.outputs.tag-name }}
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: Fail workflow if release failed
+        if: steps.summary.outputs.failed == 'true'
+        run: |
+          echo "One or more release pipeline stages failed. Check the summary above for details."
+          exit 1
