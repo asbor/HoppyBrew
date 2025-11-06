@@ -152,6 +152,24 @@ Note: The following steps assume you are running locally on a Linux machine. If 
     sudo -u postgres psql -c "DROP DATABASE hoppybrew_db"
     ```
 
+### Load sample data
+
+The repository includes a comprehensive demo dataset so you can explore the
+interface with meaningful recipes, inventory, and batches. After installing the
+dependencies you can populate your database with:
+
+```sh
+# Use SQLite for a quick demo
+TESTING=1 TEST_DATABASE_URL=sqlite:///./hoppybrew_demo.db \
+  python seeds/seed_sample_dataset.py
+
+# Or seed an already running backend container (PostgreSQL)
+docker exec hoppybrew-backend python /app/seeds/seed_sample_dataset.py
+```
+
+The script is idempotent; running it again updates existing records instead of
+creating duplicates.
+
 ### The application
 
 1. **Clone the repository**

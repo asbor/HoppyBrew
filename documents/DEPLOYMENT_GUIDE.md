@@ -171,7 +171,7 @@ docker-compose -f docker-compose.prod.yml up -d --build
 # 3. Run database migrations
 docker exec hoppybrew-backend alembic upgrade head
 
-# 4. (Optional) Seed initial data
+# 4. (Optional) Seed initial data (references, styles, demo dataset)
 docker exec hoppybrew-backend python /app/seeds/seed_all.py
 
 # 5. Verify services
@@ -293,7 +293,7 @@ API_BASE_URL=https://hoppybrew.yourdomain.com/api
 # Run migrations
 docker exec hoppybrew-backend alembic upgrade head
 
-# Seed initial data
+# Seed initial data (references, styles, demo dataset)
 docker exec hoppybrew-backend python seeds/seed_all.py
 ```
 
