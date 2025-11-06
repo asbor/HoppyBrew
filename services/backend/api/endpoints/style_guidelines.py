@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/style_guidelines", response_model=List[schemas.StyleGuidelineBase]
+    "/style_guidelines", response_model=List[schemas.StyleGuideline]
 )
 async def get_all_style_guidelines(db: Session = Depends(get_db)):
     style_guidelines = db.query(models.StyleGuidelines).all()
@@ -22,7 +22,7 @@ async def get_all_style_guidelines(db: Session = Depends(get_db)):
 
 @router.get(
     "/style_guidelines/{guideline_id}",
-    response_model=schemas.StyleGuidelineBase,
+    response_model=schemas.StyleGuideline,
 )
 async def get_style_guideline(
     guideline_id: int, db: Session = Depends(get_db)
@@ -39,7 +39,7 @@ async def get_style_guideline(
     return guideline
 
 
-@router.post("/style_guidelines", response_model=schemas.StyleGuidelineBase)
+@router.post("/style_guidelines", response_model=schemas.StyleGuideline)
 async def create_style_guideline(
     guideline: schemas.StyleGuidelineBaseCreate, db: Session = Depends(get_db)
 ):
@@ -54,7 +54,7 @@ async def create_style_guideline(
 
 
 @router.delete(
-    "/style_guidelines/{id}", response_model=schemas.StyleGuidelineBase
+    "/style_guidelines/{id}", response_model=schemas.StyleGuideline
 )
 async def delete_style_guideline(id: int, db: Session = Depends(get_db)):
     guideline = (
@@ -72,7 +72,7 @@ async def delete_style_guideline(id: int, db: Session = Depends(get_db)):
 
 
 @router.put(
-    "/style_guidelines/{id}", response_model=schemas.StyleGuidelineBase
+    "/style_guidelines/{id}", response_model=schemas.StyleGuideline
 )
 async def update_style_guideline(
     id: int,

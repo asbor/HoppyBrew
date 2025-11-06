@@ -40,9 +40,20 @@ class StyleGuidelineBase(BaseModel):
     ebc: Optional[str] = None
 
     class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
         schema_extra = {"example": STYLE_GUIDELINE_EXAMPLE}
 
 
 class StyleGuidelineBaseCreate(StyleGuidelineBase):
     class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
         schema_extra = {"example": STYLE_GUIDELINE_EXAMPLE}
+
+
+class StyleGuideline(StyleGuidelineBase):
+    """StyleGuideline schema with ID for responses"""
+    id: Optional[int] = None
+
+    class Config:
+        from_attributes = True  # Pydantic v2: support ORM models
+        schema_extra = {"example": {**STYLE_GUIDELINE_EXAMPLE, "id": 1}}
