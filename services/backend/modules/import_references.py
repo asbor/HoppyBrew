@@ -4,8 +4,10 @@ from sqlalchemy.orm import sessionmaker
 import sys
 import os
 
-# Add parent directory to path to import models
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add parent directories to path to import models
+backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
 
 from Database.Models.references import References
 from database import SessionLocal, SQLALCHEMY_DATABASE_URL
