@@ -33,7 +33,12 @@ from .beer_styles import (
     BeerStyleSearch,
 )
 from .equipment_profiles import EquipmentProfileBase
-from .water_profiles import WaterProfileBase
+from .water_profiles import (
+    WaterProfileBase,
+    WaterProfileCreate,
+    WaterProfileUpdate,
+    WaterProfile,
+)
 from .mash_profiles import MashProfileBase
 from .fermentables import (
     FermentableBase,
@@ -113,6 +118,9 @@ __all__ = [
     "BeerStyleSearch",
     "EquipmentProfileBase",
     "WaterProfileBase",
+    "WaterProfileCreate",
+    "WaterProfileUpdate",
+    "WaterProfile",
     "MashProfileBase",
     "FermentableBase",
     "RecipeFermentable",
