@@ -173,7 +173,7 @@ async def create_recipe(
         )
     # Exclude the related fields when creating the Recipes instance
     db_recipe = models.Recipes(
-        **recipe.dict(exclude={"hops", "fermentables", "yeasts", "miscs"})
+        **recipe.model_dump(exclude={"hops", "fermentables", "yeasts", "miscs"})
     )
     db.add(db_recipe)
     db.commit()
@@ -223,7 +223,7 @@ async def update_recipe(
         raise HTTPException(status_code=404, detail="Recipe not found")
     # Update the recipe
 
-    for key, value in recipe.dict(
+    for key, value in recipe.model_dump(
         exclude={"hops", "fermentables", "yeasts", "miscs"}
     ).items():
         setattr(db_recipe, key, value)
