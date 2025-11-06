@@ -137,7 +137,7 @@ class Recipe(RecipeBase):
     origin_recipe_id: Optional[int] = None
 
     model_config = ConfigDict(
-        from_attributes=True,# Pydantic v2: renamed from orm_mode
+        from_attributes=True,  # Pydantic v2: renamed from orm_mode
         json_schema_extra={            "example": {                **RECIPE_BASE_EXAMPLE,                "id": 42,                "is_batch": False,                "origin_recipe_id": None,            }        }
     )
 

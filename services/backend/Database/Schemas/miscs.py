@@ -32,7 +32,7 @@ class MiscBase(BaseModel):
     batch_size: Optional[int] = None
 
     model_config = ConfigDict(
-        from_attributes=True,# Pydantic v2: support ORM models
+        from_attributes=True,  # Pydantic v2: support ORM models
         json_schema_extra={"example": MISC_BASE_EXAMPLE}
     )
 

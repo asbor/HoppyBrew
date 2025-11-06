@@ -91,7 +91,7 @@ class StyleBase(BaseModel):
     abv_range: Optional[str] = None
 
     model_config = ConfigDict(
-        from_attributes=True,# Pydantic v2: support ORM models
+        from_attributes=True,  # Pydantic v2: support ORM models
         json_schema_extra={"example": STYLE_BASE_EXAMPLE}
     )
 
@@ -101,6 +101,6 @@ class Style(StyleBase):
     id: Optional[int] = None
 
     model_config = ConfigDict(
-        from_attributes=True,# Pydantic v2: support ORM models
+        from_attributes=True,  # Pydantic v2: support ORM models
         json_schema_extra={"example": {**STYLE_BASE_EXAMPLE, "id": 1}}
     )
