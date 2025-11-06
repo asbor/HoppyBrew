@@ -160,3 +160,18 @@ async def read_main():
     Lightweight heartbeat check that confirms the API is reachable.
     """
     return ServiceStatus(message="Welcome to the HoppyBrew API", status="online")
+
+
+@app.get(
+    "/health",
+    tags=["system"],
+    summary="Health check endpoint",
+    response_description="Health status of the service and its dependencies.",
+    response_model=ServiceStatus,
+)
+async def health_check():
+    """
+    Health check endpoint for container orchestration and monitoring systems.
+    Returns 200 OK if the service is healthy and able to process requests.
+    """
+    return ServiceStatus(message="Service is healthy", status="ok")
