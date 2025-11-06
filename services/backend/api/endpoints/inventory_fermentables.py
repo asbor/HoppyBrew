@@ -18,7 +18,7 @@ async def create_inventory_fermentable(
     db: Session = Depends(get_db),
 ):
     try:
-        db_fermentable = models.InventoryFermentable(**fermentable.dict())
+        db_fermentable = models.InventoryFermentable(**fermentable.model_dump())
         db.add(db_fermentable)
         db.commit()
         db.refresh(db_fermentable)
@@ -42,7 +42,7 @@ async def update_inventory_fermentable(
     )
     if not db_fermentable:
         raise HTTPException(status_code=404, detail="Fermentable not found")
-    for key, value in fermentable.dict().items():
+    for key, value in fermentable.model_dump().items():
         setattr(db_fermentable, key, value)
     db.commit()
     db.refresh(db_fermentable)

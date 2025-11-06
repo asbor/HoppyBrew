@@ -150,7 +150,7 @@ async def create_reference(
     reference: schemas.ReferenceCreate, db: Session = Depends(get_db)
 ):
     favicon_url = fetch_favicon(reference.url)
-    reference_data = reference.dict()
+    reference_data = reference.model_dump()
     reference_data["favicon_url"] = favicon_url
     db_reference = models.References(**reference_data)
     db.add(db_reference)
@@ -186,7 +186,7 @@ async def update_reference(
     )
     if not db_reference:
         raise HTTPException(status_code=404, detail="Reference not found")
-    for key, value in reference.dict().items():
+    for key, value in reference.model_dump().items():
         setattr(db_reference, key, value)
     db.commit()
     db.refresh(db_reference)

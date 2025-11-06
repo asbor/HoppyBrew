@@ -44,7 +44,7 @@ async def create_style_guideline(
     guideline: schemas.StyleGuidelineBaseCreate, db: Session = Depends(get_db)
 ):
     try:
-        db_guideline = models.StyleGuidelines(**guideline.dict())
+        db_guideline = models.StyleGuidelines(**guideline.model_dump())
         db.add(db_guideline)
         db.commit()
         db.refresh(db_guideline)
@@ -88,7 +88,7 @@ async def update_style_guideline(
         raise HTTPException(
             status_code=404, detail="Style Guideline not found"
         )
-    for key, value in guideline.dict().items():
+    for key, value in guideline.model_dump().items():
         setattr(db_guideline, key, value)
     db.commit()
     db.refresh(db_guideline)
