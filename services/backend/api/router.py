@@ -17,6 +17,7 @@ from .endpoints import (
     mash_profiles,
     water_profiles,
     equipment_profiles,
+    fermentation_profiles,
     users,
     trigger_beer_styles_processing,
 )
@@ -42,6 +43,7 @@ router.include_router(references.router, tags=["references"])
 router.include_router(mash_profiles.router, tags=["mash_profiles"])
 router.include_router(water_profiles.router, tags=["water_profiles"])
 router.include_router(equipment_profiles.router, tags=["equipment_profiles"])
+router.include_router(fermentation_profiles.router, tags=["fermentation_profiles"])
 router.include_router(users.router, tags=["user"])
 
 # Include the script router
