@@ -23,6 +23,7 @@ from .Ingredients.Fermentables.sugar import RecipeSugar, InventorySugar
 from .Profiles.equipment_profiles import EquipmentProfiles
 from .Profiles.mash_profiles import MashProfiles
 from .Profiles.water_profiles import WaterProfiles
+from .Profiles.fermentation_profiles import FermentationProfiles, FermentationSteps
 from .Ingredients.fermentables import RecipeFermentable, InventoryFermentable
 from .Ingredients.hops import RecipeHop, InventoryHop
 from .Ingredients.miscs import RecipeMisc, InventoryMisc
@@ -56,6 +57,8 @@ __all__ = [
     "EquipmentProfiles",
     "MashProfiles",
     "WaterProfiles",
+    "FermentationProfiles",
+    "FermentationSteps",
     "RecipeFermentable",
     "InventoryFermentable",
     "RecipeHop",
