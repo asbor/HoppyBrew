@@ -10,15 +10,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'; // Import the ref function from Vue
+import { ref, onMounted, onUnmounted } from 'vue';
 
-const isConnectedToDatabase = ref(false); // Define a reactive boolean property
+const isConnectedToDatabase = ref(false);
+let intervalId = null;
 
 // Define a method to check the database connection status
 const checkDatabaseConnection = () => {
-    // make an API request to check the database connection status
-
-    fetch('http://localhost:8000', {
+    // Make an API request to check the database connection status using /health endpoint
+    fetch('http://localhost:8000/health', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -32,15 +32,27 @@ const checkDatabaseConnection = () => {
             }
         })
         .catch(error => {
-            console.error(error);
+            console.error('Database connection check failed:', error);
             isConnectedToDatabase.value = false;
         });
-
-
 }
 
-// Call the method to check the database connection status periodically or on demand
-checkDatabaseConnection();
+// Set up polling when component is mounted
+onMounted(() => {
+    // Check immediately on mount
+    checkDatabaseConnection();
+    
+    // Poll every 30 seconds
+    intervalId = setInterval(checkDatabaseConnection, 30000);
+});
+
+// Clean up interval when component is unmounted
+onUnmounted(() => {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+});
 
 </script>
 
