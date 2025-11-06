@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import date
 
@@ -63,19 +63,19 @@ class FermentableBase(BaseModel):
     substitutes: Optional[str] = None
     used_in: Optional[str] = None
 
-    class Config:
-        from_attributes = True  # Pydantic v2: support ORM models
-        schema_extra = {"example": FERMENTABLE_BASE_EXAMPLE}
+    model_config = ConfigDict(
+        from_attributes=True,# Pydantic v2: support ORM models
+        json_schema_extra={"example": FERMENTABLE_BASE_EXAMPLE}
+    )
 
 
 class RecipeFermentable(FermentableBase):
     recipe_id: int
 
-    class Config:
-        orm_mode = True
-        schema_extra = {
-            "example": {**FERMENTABLE_BASE_EXAMPLE, "recipe_id": 12}
-        }
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={            "example": {**FERMENTABLE_BASE_EXAMPLE, "recipe_id": 12}        }
+    )
 
 
 class InventoryFermentableBase(FermentableBase):
@@ -95,8 +95,9 @@ class InventoryFermentableBase(FermentableBase):
     display_time: Optional[str] = None  # Specific to all
     batch_size: Optional[float] = None  # Specific to miscs
 
-    class Config:
-        schema_extra = {"example": INVENTORY_FERMENTABLE_EXAMPLE}
+    model_config = ConfigDict(
+        json_schema_extra={"example": INVENTORY_FERMENTABLE_EXAMPLE}
+    )
 
 
 class InventoryFermentableCreate(InventoryFermentableBase):
@@ -107,12 +108,7 @@ class InventoryFermentable(InventoryFermentableBase):
     id: int
     batch_id: Optional[int] = None  # Allow batch_id to be None
 
-    class Config:
-        orm_mode = True
-        schema_extra = {
-            "example": {
-                **INVENTORY_FERMENTABLE_EXAMPLE,
-                "id": 34,
-                "batch_id": 9,
-            }
-        }
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={            "example": {                **INVENTORY_FERMENTABLE_EXAMPLE,                "id": 34,                "batch_id": 9,            }        }
+    )

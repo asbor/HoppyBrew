@@ -14,7 +14,7 @@ from typing import List
 import xml.etree.ElementTree as ET
 from fastapi.responses import StreamingResponse
 import io
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 try:
     import requests
 except ImportError:  # pragma: no cover - fallback when requests is unavailable
@@ -37,16 +37,9 @@ class ReferenceImportResponse(BaseModel):
     imported_records: int
     skipped_records: int
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "message": "References imported successfully",
-                "imported_records": 12,
-                "skipped_records": 2,
-            }
-        }
-
-
+    model_config = ConfigDict(
+        json_schema_extra={            "example": {                "message": "References imported successfully",                "imported_records": 12,                "skipped_records": 2,            }        }
+    )
 @router.post(
     "/references/import",
     response_model=ReferenceImportResponse,
@@ -150,7 +143,7 @@ async def create_reference(
     reference: schemas.ReferenceCreate, db: Session = Depends(get_db)
 ):
     favicon_url = fetch_favicon(reference.url)
-    reference_data = reference.dict()
+    reference_data = reference.model_dump()
     reference_data["favicon_url"] = favicon_url
     db_reference = models.References(**reference_data)
     db.add(db_reference)
@@ -186,7 +179,7 @@ async def update_reference(
     )
     if not db_reference:
         raise HTTPException(status_code=404, detail="Reference not found")
-    for key, value in reference.dict().items():
+    for key, value in reference.model_dump().items():
         setattr(db_reference, key, value)
     db.commit()
     db.refresh(db_reference)

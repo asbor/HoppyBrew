@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional, List
 from .batch_logs import BatchLog
@@ -97,17 +97,15 @@ class BatchBase(BaseModel):
     brewer: str
     brew_date: datetime
 
-    class Config:
-        schema_extra = {"example": BATCH_BASE_EXAMPLE}
-
-
+    model_config = ConfigDict(
+        json_schema_extra={"example": BATCH_BASE_EXAMPLE}
+    )
 class BatchCreate(BatchBase):
     recipe_id: int
 
-    class Config:
-        schema_extra = {"example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}}
-
-
+    model_config = ConfigDict(
+        json_schema_extra={"example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}}
+    )
 class BatchUpdate(BaseModel):
     batch_name: Optional[str] = None
     batch_number: Optional[int] = None
@@ -115,18 +113,9 @@ class BatchUpdate(BaseModel):
     brewer: Optional[str] = None
     brew_date: Optional[datetime] = None
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "batch_name": "Citrus IPA - March Run",
-                "batch_number": 2,
-                "batch_size": 21.0,
-                "brewer": "Alex Brewer",
-                "brew_date": "2024-03-28T08:00:00Z",
-            }
-        }
-
-
+    model_config = ConfigDict(
+        json_schema_extra={            "example": {                "batch_name": "Citrus IPA - March Run",                "batch_number": 2,                "batch_size": 21.0,                "brewer": "Alex Brewer",                "brew_date": "2024-03-28T08:00:00Z",            }        }
+    )
 class Batch(BatchBase):
     id: int
     recipe_id: int
@@ -138,6 +127,7 @@ class Batch(BatchBase):
     inventory_miscs: List[InventoryMisc]
     inventory_yeasts: List[InventoryYeast]
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": BATCH_FULL_EXAMPLE}
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={"example": BATCH_FULL_EXAMPLE}
+    )

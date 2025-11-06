@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 router = APIRouter()
 
@@ -7,15 +7,9 @@ router = APIRouter()
 class LogContentResponse(BaseModel):
     log_content: str
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "log_content": "[2024-03-21 10:15:09] INFO - Server started on port 8000\n"
-                "[2024-03-21 10:17:45] ERROR - Failed to connect to fermentation sensor",
-            }
-        }
-
-
+    model_config = ConfigDict(
+        json_schema_extra={            "example": {                "log_content": "[2024-03-21 10:15:09] INFO - Server started on port 8000\n"                "[2024-03-21 10:17:45] ERROR - Failed to connect to fermentation sensor",            }        }
+    )
 @router.get(
     "/api/logs",
     response_model=LogContentResponse,

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 MASH_PROFILE_EXAMPLE = {
@@ -53,5 +53,6 @@ class MashProfileBase(BaseModel):
     display_sparge_temp: Optional[str] = None
     display_tun_weight: Optional[str] = None
 
-    class Config:
-        schema_extra = {"example": MASH_PROFILE_EXAMPLE}
+    model_config = ConfigDict(
+        json_schema_extra={"example": MASH_PROFILE_EXAMPLE}
+    )
