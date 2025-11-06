@@ -45,8 +45,8 @@ fi
 if grep -q '^version:' docker-compose.yml 2>/dev/null; then
     echo "  - Removing deprecated 'version' from docker-compose.yml..."
     sed -i '/^version:/d' docker-compose.yml
-    # Remove the blank line that was after version
-    sed -i '/^$/{ N; s/^\n//; }' docker-compose.yml || true
+    # Remove any blank line at the start of the file
+    sed -i '1{/^$/d}' docker-compose.yml
     git add docker-compose.yml
 else
     echo "  - docker-compose version already removed"
@@ -65,13 +65,12 @@ fi
 # Commit the changes
 echo ""
 echo "Committing fixes..."
-git commit -m "Fix package manager conflict and remove deprecated docker-compose version
-
-- Remove package-lock.json to resolve npm/yarn conflict (project uses yarn)
-- Remove deprecated 'version' declaration from docker-compose.yml
-
-Resolves conflicts in PR #141
-Related to #139"
+git commit -m "Fix package manager conflict and remove deprecated docker-compose version" \
+          -m "- Remove package-lock.json to resolve npm/yarn conflict (project uses yarn)" \
+          -m "- Remove deprecated 'version' declaration from docker-compose.yml" \
+          -m "" \
+          -m "Resolves conflicts in PR #141" \
+          -m "Related to #139"
 
 echo ""
 echo "=== Resolution Complete ==="

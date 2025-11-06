@@ -75,7 +75,9 @@ A resolved version of the branch has been prepared with:
 - Clean, linear history with no conflicts
 
 **Branch:** `copilot/vscode1762383680631` (local)
-**Commit:** c8ebc90 - "Fix package manager conflict and remove deprecated docker-compose version"
+**Example Commit:** "Fix package manager conflict and remove deprecated docker-compose version"
+
+Note: The actual commit hash will vary when you run the resolution script.
 
 ## Next Steps
 
