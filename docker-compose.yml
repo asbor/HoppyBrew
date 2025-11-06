@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   backend:
     container_name: hoppybrew-backend-1
@@ -42,7 +40,10 @@ services:
       - 3000:3000
     volumes:
       - ./services/nuxt3-shadcn:/app
-    command: sh -c "yarn && yarn dev"
+    command: sh -c "yarn && yarn dev --host 0.0.0.0"
+    environment:
+      - API_BASE_URL=http://localhost:8000
+      - HOST=0.0.0.0
     networks:
       - my-network
 

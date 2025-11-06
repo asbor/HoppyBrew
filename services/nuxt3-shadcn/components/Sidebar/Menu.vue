@@ -1,46 +1,49 @@
 <template>
   <div>
-    <header class="flex items-center gap-ha-sm p-ha-sm transition cursor-pointer">
+    <header class="flex items-center gap-2 p-4 transition cursor-pointer">
       <Logo />
-      <h2 class="font-bold text-ha-base">HoppyBrew</h2>
-      <p class="text-ha-xs text-muted-foreground">v1.0.0</p>
+      <h2 class="font-bold text-base">HoppyBrew</h2>
+      <p class="text-xs text-muted-foreground">v1.0.0</p>
     </header>
-    <main class="px-ha-sm grow">
-      <div class="grid gap-ha-xs">
-        <DropDownCreate />
-        <NuxtLink :href="item.path" v-for='(item, index) in items' :key='index'
-          class="flex items-center gap-ha-sm px-ha-sm py-ha-xs transition rounded cursor-pointer hover:bg-accent hover:text-accent-foreground">
+    <main class="px-4 grow">
+      <div class="grid gap-1">
+        <DropDownCreate v-if="false" />
+        <NuxtLink :to="item.path" v-for='(item, index) in items' :key='index'
+          class="flex items-center gap-2 px-4 py-2 transition rounded cursor-pointer hover:bg-accent hover:text-accent-foreground">
           <Icon size="24" :name="item.icon" />
-          <span class="text-ha-base">{{ item.title }}</span>
-          <!-- Add @click event to call handleLinkClick function -->
+          <span class="text-base">{{ item.title }}</span>
         </NuxtLink>
       </div>
     </main>
     <footer>
       <div>
-        <div class="p-ha-sm">
-          <button @click="toggleDark()" class="flex items-center gap-ha-sm text-ha-base">
-            <Icon size="24" :name="isDark.value ? 'bx:bx-moon' : 'bx:bx-sun'" />
+        <div class="p-4">
+          <button @click="toggleDark()" class="flex items-center gap-2 text-base">
+            <Icon size="24" :name="isDark ? 'bx:bx-moon' : 'bx:bx-sun'" />
             <span>Toggle Color Mode</span>
           </button>
-          <CheckDatabaseConnection />
+          <CheckDatabaseConnection v-if="false" />
         </div>
-        <UserAccountUserItem />
       </div>
     </footer>
   </div>
 </template>
 
-<script setup>
-props: {
-  closeOverlay: Function
-};
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useDark, useToggle } from '@vueuse/core'
 
-import { defineEmits } from 'vue';
+interface Props {
+  closeOverlay?: Function
+}
 
-defineEmits(['linkClicked']);
+defineProps<Props>()
 
-import Button from '../ui/button/Button.vue';
+interface Emits {
+  linkClicked: []
+}
+
+defineEmits<Emits>()
 
 const items = ref([
   // Dashboard
@@ -67,10 +70,6 @@ const items = ref([
   { title: "Log", path: "/log", icon: "ri:file-list-3-line" },
 ])
 
-import { useDark, useToggle } from "@vueuse/core";
-
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
-
-
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 </script>

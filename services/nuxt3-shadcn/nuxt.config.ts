@@ -13,11 +13,30 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     API_URL: process.env.API_BASE_URL || "http://localhost:8000/",
-    public:{
+    public: {
       API_URL: process.env.API_BASE_URL || "http://localhost:8000/",
     }
   },
   generate: {
     fallback: true
-  }
+  },
+  vite: {
+    define: {
+      global: 'globalThis',
+    },
+    optimizeDeps: {
+      include: ['xml2js', 'buffer']
+    },
+    server: {
+      fs: {
+        allow: ['..']
+      }
+    }
+  },
+  nitro: {
+    experimental: {
+      wasm: true
+    }
+  },
+  ssr: false
 })
