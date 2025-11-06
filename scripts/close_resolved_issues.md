@@ -192,4 +192,3 @@ chmod +x scripts/close_duplicates.sh
 ---
 
 **End of Closure Guide**
-

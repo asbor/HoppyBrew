@@ -211,5 +211,3 @@ Before closing issues, verify:
 - [x] Created automated script for closure
 - [x] Created manual guide for closure
 - [ ] User confirms issues can be closed (awaiting approval)
-
-
