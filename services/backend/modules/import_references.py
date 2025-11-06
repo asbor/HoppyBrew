@@ -1,27 +1,48 @@
 import xml.etree.ElementTree as ET
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from your_models import References
+import sys
+import os
 
-DATABASE_URL = "postgresql://your_user:your_password@db/your_db"
-engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine)
-session = Session()
+# Add parent directory to path to import models
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from Database.Models.references import References
+from database import SessionLocal, SQLALCHEMY_DATABASE_URL
 
 
-def import_references(xml_file):
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
-    for ref_element in root.findall("reference"):
-        reference = References(
-            name=ref_element.find("name").text,
-            url=ref_element.find("url").text,
-            description=ref_element.find("description").text,
-            category=ref_element.find("category").text,
-            favicon_url=ref_element.find("favicon_url").text,
-        )
-        session.add(reference)
-    session.commit()
+def import_references(xml_file, session=None):
+    """
+    Import references from an XML file to the database.
+    
+    Args:
+        xml_file: Path to the input XML file
+        session: Optional SQLAlchemy session (creates one if not provided)
+    """
+    close_session = False
+    if session is None:
+        session = SessionLocal()
+        close_session = True
+    
+    try:
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        count = 0
+        for ref_element in root.findall("reference"):
+            reference = References(
+                name=ref_element.find("name").text,
+                url=ref_element.find("url").text,
+                description=ref_element.find("description").text,
+                category=ref_element.find("category").text,
+                favicon_url=ref_element.find("favicon_url").text,
+            )
+            session.add(reference)
+            count += 1
+        session.commit()
+        print(f"Imported {count} references from {xml_file}")
+    finally:
+        if close_session:
+            session.close()
 
 
 if __name__ == "__main__":

@@ -109,3 +109,93 @@ requirements:
 	@echo "[Info] - Installing requirements"
 	@pip3 install -r requirements.txt
 	@echo "Done"
+
+# Docker-specific commands
+.PHONY: docker-build docker-up docker-down docker-restart docker-logs docker-clean
+
+docker-build:
+	@echo "[Info] - Building Docker containers"
+	docker-compose build
+	@echo "Done"
+
+docker-up:
+	@echo "[Info] - Starting Docker containers"
+	docker-compose up -d
+	@echo "Done"
+
+docker-down:
+	@echo "[Info] - Stopping Docker containers"
+	docker-compose down
+	@echo "Done"
+
+docker-restart:
+	@echo "[Info] - Restarting Docker containers"
+	docker-compose restart
+	@echo "Done"
+
+docker-logs:
+	@echo "[Info] - Showing Docker logs"
+	docker-compose logs -f
+
+docker-clean:
+	@echo "[Info] - Removing Docker containers, networks, and volumes"
+	docker-compose down -v
+	@echo "Done"
+
+# Backend-specific commands
+.PHONY: backend-test backend-lint backend-format
+
+backend-test:
+	@echo "[Info] - Running backend tests"
+	cd services/backend && python -m pytest
+	@echo "Done"
+
+backend-lint:
+	@echo "[Info] - Linting backend code"
+	cd services/backend && python -m flake8 .
+	@echo "Done"
+
+backend-format:
+	@echo "[Info] - Formatting backend code"
+	cd services/backend && python -m black .
+	@echo "Done"
+
+# Frontend-specific commands
+.PHONY: frontend-install frontend-dev frontend-build frontend-lint
+
+frontend-install:
+	@echo "[Info] - Installing frontend dependencies"
+	cd services/nuxt3-shadcn && yarn install
+	@echo "Done"
+
+frontend-dev:
+	@echo "[Info] - Running frontend in development mode"
+	cd services/nuxt3-shadcn && yarn dev
+
+frontend-build:
+	@echo "[Info] - Building frontend"
+	cd services/nuxt3-shadcn && yarn build
+	@echo "Done"
+
+frontend-lint:
+	@echo "[Info] - Linting frontend code"
+	cd services/nuxt3-shadcn && yarn lint
+	@echo "Done"
+
+# Database migration commands
+.PHONY: db-migrate db-upgrade db-downgrade
+
+db-migrate:
+	@echo "[Info] - Creating new database migration"
+	cd services/backend && alembic revision --autogenerate -m "$(msg)"
+	@echo "Done"
+
+db-upgrade:
+	@echo "[Info] - Upgrading database to latest migration"
+	cd services/backend && alembic upgrade head
+	@echo "Done"
+
+db-downgrade:
+	@echo "[Info] - Downgrading database by one migration"
+	cd services/backend && alembic downgrade -1
+	@echo "Done"
