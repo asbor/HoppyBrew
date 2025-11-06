@@ -147,7 +147,7 @@ Example:
 ```yaml
 services:
   backend:
-    image: asbor/hoppybrew-backend:latest  # Replace 'asbor' with your username
+    image: <your-username>/hoppybrew-backend:latest  # Replace with your DockerHub username
 ```
 
 ## Additional Resources

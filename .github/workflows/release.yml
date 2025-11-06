@@ -241,8 +241,22 @@ jobs:
       - name: Append MCP analytics prompt
         id: augmented
         uses: actions/github-script@v7
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         with:
           script: |
+            const dockerhubUsername = process.env.DOCKERHUB_USERNAME;
+            const dockerImages = [
+              '### Docker Images',
+              '- `ghcr.io/${{ github.repository }}-backend:${{ github.ref_name }}`',
+              '- `ghcr.io/${{ github.repository }}-frontend:${{ github.ref_name }}`',
+            ];
+            
+            if (dockerhubUsername) {
+              dockerImages.push(`- \`${dockerhubUsername}/hoppybrew-backend:${{ github.ref_name }}\``);
+              dockerImages.push(`- \`${dockerhubUsername}/hoppybrew-frontend:${{ github.ref_name }}\``);
+            }
+            
             const analytics = [
               '### Automated Checks',
               '- Backend smoke tests: ✅',
@@ -250,15 +264,11 @@ jobs:
               '',
               '### Deployment Readiness',
               '- Docker images published to GitHub Container Registry',
-              '- Docker images published to DockerHub',
+              dockerhubUsername ? '- Docker images published to DockerHub' : '',
               '- Staging deployment status tracked in MCP',
               '',
-              '### Docker Images',
-              '- `ghcr.io/${{ github.repository }}-backend:${{ github.ref_name }}`',
-              '- `ghcr.io/${{ github.repository }}-frontend:${{ github.ref_name }}`',
-              '- `${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-backend:${{ github.ref_name }}`',
-              '- `${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-frontend:${{ github.ref_name }}`',
-            ].join('\n');
+              ...dockerImages,
+            ].filter(line => line !== '').join('\n');
 
             const body = `${core.getInput('body')}\n\n${analytics}`;
             core.setOutput('body', body);
