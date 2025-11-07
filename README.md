@@ -256,6 +256,95 @@ To stop the project, press `Ctrl + C` in the terminal.
 
 ## Docker Deployment
 
+### Using Pre-built Docker Images (Recommended for Unraid/Self-Hosting)
+
+HoppyBrew provides pre-built Docker images on both GitHub Container Registry and DockerHub. Using these images is the easiest way to deploy HoppyBrew, especially for Unraid servers and other self-hosted deployments.
+
+#### Available Images
+
+**DockerHub (Recommended for Unraid):**
+- Backend: `<dockerhub_username>/hoppybrew-backend:latest`
+- Frontend: `<dockerhub_username>/hoppybrew-frontend:latest`
+
+**GitHub Container Registry:**
+- Backend: `ghcr.io/asbor/hoppybrew-backend:latest`
+- Frontend: `ghcr.io/asbor/hoppybrew-frontend:latest`
+
+#### Quick Start with Docker Compose
+
+Create a `docker-compose.yml` file with the following content:
+
+```yaml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hoppybrew_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: <dockerhub_username>/hoppybrew-backend:latest
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: hoppybrew_db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: <dockerhub_username>/hoppybrew-frontend:latest
+    ports:
+      - "3000:3000"
+    environment:
+      API_BASE_URL: http://backend:8000
+      HOST: 0.0.0.0
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+```
+
+Then run:
+```sh
+docker-compose up -d
+```
+
+Access the application at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+
+#### Unraid Template
+
+For Unraid users, images are automatically pulled from DockerHub. Add the HoppyBrew template to your Community Applications.
+
+#### Version Tags
+
+Images are tagged with:
+- `latest` - Latest stable release from main branch
+- `vX.Y.Z` - Specific version releases (e.g., `v1.0.0`)
+- `X.Y.Z` - Semantic version without 'v' prefix
+- `X.Y` - Minor version (e.g., `1.0` for latest 1.0.x)
+- `X` - Major version (e.g., `1` for latest 1.x.x)
+- `<sha>` - Specific commit SHA
+
 ### Prerequisites for Docker Deployment
 
 To run the project using Docker, you need to have the following software installed on your machine:

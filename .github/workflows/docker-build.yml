@@ -67,8 +67,8 @@ jobs:
             echo "dockerhub_name=${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-${{ matrix.service.name }}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Docker meta
-        id: meta
+      - name: Docker meta (GHCR)
+        id: meta-ghcr
         uses: docker/metadata-action@v5
         with:
           images: |
@@ -80,27 +80,55 @@ jobs:
             type=sha
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push
-        id: build
+      - name: Docker meta (DockerHub)
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        id: meta-dockerhub
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.image.outputs.dockerhub_name }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha
+
+      - name: Build and push to GHCR
+        id: build-ghcr
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
           push: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
           load: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/') }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-ghcr.outputs.tags }}
+          labels: ${{ steps.meta-ghcr.outputs.labels }}
           platforms: linux/amd64
           cache-from: type=gha,scope=${{ matrix.service.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.service.name }}
 
+      - name: Build and push to DockerHub
+        if: ${{ (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        id: build-dockerhub
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
+          push: true
+          tags: ${{ steps.meta-dockerhub.outputs.tags }}
+          labels: ${{ steps.meta-dockerhub.outputs.labels }}
+          platforms: linux/amd64
+          cache-from: type=gha,scope=${{ matrix.service.name }}
+
       - name: Write image digest
         if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
-        run: echo "${{ steps.build.outputs.digest }}" > ${{ matrix.service.name }}-digest.txt
+        run: |
+          echo "${{ steps.build-ghcr.outputs.digest }}" > ${{ matrix.service.name }}-ghcr-digest.txt
+          if [ -n "${{ steps.build-dockerhub.outputs.digest }}" ]; then
+            echo "${{ steps.build-dockerhub.outputs.digest }}" > ${{ matrix.service.name }}-dockerhub-digest.txt
+          fi
 
       - name: Upload image digest
         if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.service.name }}-image-digest
-          path: ${{ matrix.service.name }}-digest.txt
+          path: ${{ matrix.service.name }}-*-digest.txt
