@@ -6,7 +6,7 @@ from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
 from typing import List, Optional
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 
 router = APIRouter()
 
@@ -133,7 +133,7 @@ async def update_water_profile(
     for key, value in update_data.items():
         setattr(profile, key, value)
 
-    profile.updated_at = datetime.now(UTC)
+    profile.updated_at = datetime.now(timezone.utc)
 
     db.commit()
     db.refresh(profile)

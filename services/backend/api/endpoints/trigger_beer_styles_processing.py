@@ -1,6 +1,6 @@
 # api/endpoints/trigger_beer_styles_processing.py
 
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel, ConfigDict
 from api.scripts.beer_styles_processing import scrape_and_process_beer_styles
@@ -28,7 +28,7 @@ def run_beer_styles_script():
 async def trigger_script(background_tasks: BackgroundTasks):
     """Queue the beer styles update job that scrapes and normalises BJCP data."""
     background_tasks.add_task(run_beer_styles_script)
-    task_id = f"refresh-beer-styles-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}"
+    task_id = f"refresh-beer-styles-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
     return BeerStyleRefreshResponse(
         message="Beer style refresh queued for processing.", task_id=task_id
     )
