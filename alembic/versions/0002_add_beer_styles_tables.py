@@ -8,6 +8,7 @@ Create Date: 2025-11-06 10:00:00.000000
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import Column, Integer, String, Boolean, Text, Numeric, DateTime, ForeignKey, Index, inspect
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
 
 # revision identifiers, used by Alembic.
@@ -126,7 +127,7 @@ def downgrade():
     
     # Drop beer_styles table and its indexes if they exist
     if 'beer_styles' in existing_tables:
-        # Drop indexes first (if they exist, SQLite doesn't error if they don't)
+        # Drop indexes first (if they exist)
         try:
             op.drop_index('idx_beer_style_ibu', 'beer_styles')
             op.drop_index('idx_beer_style_abv', 'beer_styles')
@@ -135,7 +136,7 @@ def downgrade():
             op.drop_index('idx_beer_style_guideline', 'beer_styles')
             op.drop_index('idx_beer_style_code', 'beer_styles')
             op.drop_index('idx_beer_style_name', 'beer_styles')
-        except:
+        except (OperationalError, ProgrammingError):
             pass  # Indexes might not exist
         
         op.drop_table('beer_styles')
@@ -146,7 +147,7 @@ def downgrade():
             op.drop_index('idx_category_code', 'style_categories')
             op.drop_index('idx_category_parent', 'style_categories')
             op.drop_index('idx_category_guideline', 'style_categories')
-        except:
+        except (OperationalError, ProgrammingError):
             pass  # Indexes might not exist
         
         op.drop_table('style_categories')
@@ -156,7 +157,7 @@ def downgrade():
         try:
             op.drop_index('idx_guideline_source_active', 'style_guideline_sources')
             op.drop_index('idx_guideline_source_name', 'style_guideline_sources')
-        except:
+        except (OperationalError, ProgrammingError):
             pass  # Indexes might not exist
         
         op.drop_table('style_guideline_sources')

@@ -11,6 +11,7 @@ Create Date: 2024-11-06 10:20:00.000000
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import Numeric, Boolean, DateTime, Text, String, inspect
+from sqlalchemy.exc import OperationalError, ProgrammingError, NoSuchTableError
 
 # revision identifiers, used by Alembic.
 revision = "0003"
@@ -38,7 +39,7 @@ def upgrade() -> None:
     try:
         columns = inspector.get_columns('water')
         existing_columns = {col['name'] for col in columns}
-    except:
+    except (NoSuchTableError, OperationalError):
         # Table might not exist yet
         pass
     
@@ -68,7 +69,7 @@ def upgrade() -> None:
                 
                 # Alter pH to use Decimal
                 batch_op.alter_column('ph', type_=Numeric(PH_PRECISION, PH_SCALE), nullable=True)
-            except:
+            except (OperationalError, ProgrammingError):
                 # Columns might already be the correct type
                 pass
 
@@ -82,7 +83,7 @@ def upgrade() -> None:
         if existing_columns:
             try:
                 batch_op.alter_column('notes', type_=Text, nullable=True)
-            except:
+            except (OperationalError, ProgrammingError):
                 pass  # Already Text
 
         # Add metadata columns if they don't exist
@@ -99,7 +100,7 @@ def upgrade() -> None:
         if existing_columns:
             try:
                 batch_op.alter_column('name', nullable=False)
-            except:
+            except (OperationalError, ProgrammingError):
                 pass  # Already not nullable
 
 
@@ -149,5 +150,5 @@ def downgrade() -> None:
             batch_op.alter_column('ph', type_=sa.Integer, nullable=True)
             batch_op.alter_column('notes', type_=String(255), nullable=True)
             batch_op.alter_column('name', nullable=True)
-        except:
+        except (OperationalError, ProgrammingError):
             pass  # Columns might not exist or already correct type
