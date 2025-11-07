@@ -1,24 +1,12 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional, List
-from enum import Enum
 from .batch_logs import BatchLog
 from .hops import InventoryHop
 from .fermentables import InventoryFermentable
 from .miscs import InventoryMisc
 from .yeasts import InventoryYeast
-
-
-class BatchStatus(str, Enum):
-    """Batch workflow status enum"""
-    PLANNING = "planning"
-    BREW_DAY = "brew_day"
-    PRIMARY_FERMENTATION = "primary_fermentation"
-    SECONDARY_FERMENTATION = "secondary_fermentation"
-    CONDITIONING = "conditioning"
-    PACKAGED = "packaged"
-    COMPLETED = "completed"
-    ARCHIVED = "archived"
+from Database.enums import BatchStatus
 
 
 BATCH_BASE_EXAMPLE = {
@@ -112,7 +100,7 @@ class BatchBase(BaseModel):
     batch_size: float
     brewer: str
     brew_date: datetime
-    status: Optional[BatchStatus] = BatchStatus.PLANNING
+    status: BatchStatus = BatchStatus.PLANNING
 
     model_config = ConfigDict(
         json_schema_extra={"example": BATCH_BASE_EXAMPLE}

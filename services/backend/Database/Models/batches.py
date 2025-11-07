@@ -6,19 +6,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from database import Base
 from datetime import datetime
-import enum
-
-
-class BatchStatus(str, enum.Enum):
-    """Batch workflow status enum"""
-    PLANNING = "planning"
-    BREW_DAY = "brew_day"
-    PRIMARY_FERMENTATION = "primary_fermentation"
-    SECONDARY_FERMENTATION = "secondary_fermentation"
-    CONDITIONING = "conditioning"
-    PACKAGED = "packaged"
-    COMPLETED = "completed"
-    ARCHIVED = "archived"
 
 
 class Batches(Base):
