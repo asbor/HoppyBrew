@@ -15,11 +15,13 @@ export default function useHelpers() {
  * Format utilities for consistent formatting across the app
  */
 export function useFormatters() {
+  const DEFAULT_LOCALE = 'en-GB';
+  
   /**
    * Generate a batch name from a recipe name and current date
    */
-  function generateBatchName(recipeName: string): string {
-    const date = new Date().toLocaleDateString('en-GB', {
+  function generateBatchName(recipeName: string, locale: string = DEFAULT_LOCALE): string {
+    const date = new Date().toLocaleDateString(locale, {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
@@ -30,7 +32,7 @@ export function useFormatters() {
   /**
    * Format a date string consistently
    */
-  function formatDate(dateString: string | undefined, locale: string = 'en-GB'): string {
+  function formatDate(dateString: string | undefined, locale: string = DEFAULT_LOCALE): string {
     if (!dateString) return 'N/A'
     return new Date(dateString).toLocaleDateString(locale, {
       day: '2-digit',

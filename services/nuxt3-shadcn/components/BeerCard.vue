@@ -13,11 +13,13 @@ import {
 const props = defineProps(["card"]);
 const emit = defineEmits(['startBrew', 'edit', 'delete']);
 
-// Truncate description to max 120 characters
+const DESCRIPTION_MAX_LENGTH = 120;
+
+// Truncate description to max length
 const truncatedDescription = computed(() => {
   const description = props.card.notes || props.card.taste_notes || '';
-  return description.length > 120 
-    ? description.substring(0, 120) + '...' 
+  return description.length > DESCRIPTION_MAX_LENGTH 
+    ? description.substring(0, DESCRIPTION_MAX_LENGTH) + '...' 
     : description;
 });
 

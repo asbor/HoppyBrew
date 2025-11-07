@@ -71,7 +71,10 @@ function clearLogs() {
 function downloadLogs() {
   if (!logContent.value) return
   
-  const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '')
+  // Create safe filename for Windows and other OSes
+  const now = new Date()
+  const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`
+  
   const blob = new Blob([logContent.value], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')

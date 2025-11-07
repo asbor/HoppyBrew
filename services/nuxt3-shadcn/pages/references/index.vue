@@ -247,7 +247,7 @@ onMounted(fetchReferences)
             <TableRow v-for="reference in filteredReferences" :key="reference.id">
               <TableCell>
                 <img 
-                  :src="reference.favicon_url || 'https://www.pivoteka-tabor.cz/favicon.ico'"
+                  :src="reference.favicon_url || DEFAULT_FAVICON_URL"
                   alt="Favicon" 
                   @error="handleFaviconError"
                   class="w-8 h-8 object-contain"
@@ -295,7 +295,7 @@ onMounted(fetchReferences)
         <CardHeader class="pb-3">
           <div class="flex items-start gap-3">
             <img 
-              :src="reference.favicon_url || 'https://www.pivoteka-tabor.cz/favicon.ico'"
+              :src="reference.favicon_url || DEFAULT_FAVICON_URL"
               alt="Favicon" 
               @error="handleFaviconError"
               class="w-12 h-12 object-contain shrink-0"
