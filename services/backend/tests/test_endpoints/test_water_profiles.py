@@ -25,7 +25,7 @@ def test_create_water_profile(client: TestClient):
     data = response.json()
     assert data["name"] == "Test Profile"
     assert data["profile_type"] == "source"
-    assert data["is_custom"] == True
+    assert data["is_custom"] is True
     assert "id" in data
     assert "created_at" in data
 
@@ -185,8 +185,8 @@ def test_duplicate_water_profile(client: TestClient):
     assert data["name"] == "Original Profile (Copy)"
     assert data["description"] == "Original description"
     assert float(data["calcium"]) == 100
-    assert data["is_custom"] == True
-    assert data["is_default"] == False
+    assert data["is_custom"] is True
+    assert data["is_default"] is False
 
 
 def test_duplicate_with_custom_name(client: TestClient):
@@ -295,13 +295,13 @@ def test_filter_by_is_default(client: TestClient, db_session):
     response = client.get("/water-profiles?is_default=true")
     assert response.status_code == 200
     data = response.json()
-    assert all(p["is_default"] == True for p in data)
+    assert all(p["is_default"] is True for p in data)
 
     # Filter by custom
     response = client.get("/water-profiles?is_default=false")
     assert response.status_code == 200
     data = response.json()
-    assert all(p["is_default"] == False for p in data)
+    assert all(p["is_default"] is False for p in data)
 
 
 def test_create_duplicate_name_fails(client: TestClient):

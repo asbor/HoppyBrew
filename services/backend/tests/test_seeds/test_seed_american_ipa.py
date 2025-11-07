@@ -2,7 +2,6 @@
 Tests for the American IPA seed script.
 """
 
-import pytest
 from sqlalchemy.orm import Session
 import Database.Models as models
 from seeds.seed_american_ipa import seed_american_ipa_recipe

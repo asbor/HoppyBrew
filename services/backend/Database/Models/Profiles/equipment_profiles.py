@@ -4,7 +4,6 @@ from sqlalchemy import (
     String,
     Boolean,
     ForeignKey,
-    Index,
     UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
