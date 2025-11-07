@@ -3,106 +3,104 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div>
-                <h1 class="text-3xl font-bold mb-2">Fermentable Inventory</h1>
-                <p class="text-muted-foreground">Manage your grains, extracts, and sugars</p>
+                <h1 class="text-3xl font-bold mb-2">Miscellaneous Inventory</h1>
+                <p class="text-muted-foreground">Manage spices, finings, water agents, and other additives</p>
             </div>
             <Button @click="showAddDialog = true" class="bg-primary hover:bg-primary/90">
                 <Plus class="mr-2 h-4 w-4" />
-                Add Fermentable
+                Add Misc Item
             </Button>
         </div>
 
         <!-- Search and Filter -->
         <div class="flex gap-4 mb-6">
             <div class="flex-1">
-                <Input v-model="searchQuery" placeholder="Search fermentables by name, type, origin..."
+                <Input v-model="searchQuery" placeholder="Search miscellaneous items by name, type, use..."
                     class="bg-card border-input" />
             </div>
             <Select v-model="filterType">
-                <SelectTrigger class="w-[180px] bg-card border-input">
+                <SelectTrigger class="w-[200px] bg-card border-input">
                     <SelectValue placeholder="Filter by type" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="grain">Grain</SelectItem>
-                    <SelectItem value="extract">Extract</SelectItem>
-                    <SelectItem value="sugar">Sugar</SelectItem>
+                    <SelectItem value="spice">Spice</SelectItem>
+                    <SelectItem value="fining">Fining</SelectItem>
+                    <SelectItem value="water agent">Water Agent</SelectItem>
+                    <SelectItem value="herb">Herb</SelectItem>
+                    <SelectItem value="flavor">Flavor</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
             </Select>
         </div>
 
         <!-- Loading State -->
-        <div v-if="fermentablesLoading" class="flex justify-center items-center py-12">
-            <div class="text-muted-foreground">Loading fermentables inventory...</div>
+        <div v-if="miscsLoading" class="flex justify-center items-center py-12">
+            <div class="text-muted-foreground">Loading miscellaneous inventory...</div>
         </div>
 
         <!-- Error State -->
-        <div v-else-if="fermentablesError"
+        <div v-else-if="miscsError"
             class="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded">
-            <p class="font-bold">Error loading fermentables</p>
-            <p>{{ fermentablesError }}</p>
+            <p class="font-bold">Error loading miscellaneous items</p>
+            <p>{{ miscsError }}</p>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="filteredFermentables.length === 0 && !searchQuery"
+        <div v-else-if="filteredMiscs.length === 0 && !searchQuery"
             class="text-center py-12 bg-card rounded-lg border border-border">
             <Package class="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 class="text-lg font-semibold mb-2">No fermentables in inventory</h3>
-            <p class="text-muted-foreground mb-4">Start by adding your first fermentable</p>
+            <h3 class="text-lg font-semibold mb-2">No miscellaneous items in inventory</h3>
+            <p class="text-muted-foreground mb-4">Start by adding your first item</p>
             <Button @click="showAddDialog = true" class="bg-primary hover:bg-primary/90">
                 <Plus class="mr-2 h-4 w-4" />
-                Add First Fermentable
+                Add First Item
             </Button>
         </div>
 
-        <!-- Fermentables Table -->
+        <!-- Miscs Table -->
         <div v-else class="bg-card rounded-lg border border-border overflow-hidden">
             <Table>
                 <TableHeader>
                     <TableRow class="hover:bg-transparent border-border">
                         <TableHead>Name</TableHead>
                         <TableHead>Type</TableHead>
-                        <TableHead>Color (EBC)</TableHead>
+                        <TableHead>Use</TableHead>
                         <TableHead>Amount</TableHead>
-                        <TableHead>Yield %</TableHead>
-                        <TableHead>Origin</TableHead>
+                        <TableHead>Use For</TableHead>
                         <TableHead>Supplier</TableHead>
                         <TableHead>Cost/Unit</TableHead>
                         <TableHead class="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow v-for="ferm in filteredFermentables" :key="ferm.id"
-                        class="border-border hover:bg-accent/50"
-                        :class="{ 'bg-destructive/10': isLowStock(ferm.amount) }">
-                        <TableCell class="font-medium">{{ ferm.name }}</TableCell>
+                    <TableRow v-for="misc in filteredMiscs" :key="misc.id" class="border-border hover:bg-accent/50"
+                        :class="{ 'bg-destructive/10': isLowStock(misc.amount) }">
+                        <TableCell class="font-medium">{{ misc.name }}</TableCell>
                         <TableCell>
-                            <Badge variant="outline">{{ ferm.type }}</Badge>
+                            <Badge variant="outline">{{ misc.type }}</Badge>
                         </TableCell>
                         <TableCell>
-                            <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded border border-border"
-                                    :style="{ backgroundColor: srmToRgb(ebcToSrm(ferm.color)) }"></div>
-                                {{ ferm.color?.toFixed(0) || 'N/A' }}
-                            </div>
+                            <Badge variant="secondary">{{ misc.use }}</Badge>
                         </TableCell>
                         <TableCell>
-                            <span :class="{ 'text-destructive font-bold': isLowStock(ferm.amount) }">
-                                {{ ferm.amount }} {{ ferm.unit }}
+                            <span :class="{ 'text-destructive font-bold': isLowStock(misc.amount) }">
+                                {{ misc.amount }} {{ misc.unit }}
                             </span>
                         </TableCell>
-                        <TableCell>{{ ferm.yield_potential?.toFixed(1) || 'N/A' }}%</TableCell>
-                        <TableCell>{{ ferm.origin || 'N/A' }}</TableCell>
-                        <TableCell>{{ ferm.supplier || 'N/A' }}</TableCell>
                         <TableCell>
-                            {{ ferm.cost_per_unit ? `€${ferm.cost_per_unit.toFixed(2)}` : 'N/A' }}
+                            <span class="text-sm text-muted-foreground">{{ misc.use_for || 'N/A' }}</span>
+                        </TableCell>
+                        <TableCell>{{ misc.supplier || 'N/A' }}</TableCell>
+                        <TableCell>
+                            {{ misc.cost_per_unit ? `€${misc.cost_per_unit.toFixed(2)}` : 'N/A' }}
                         </TableCell>
                         <TableCell class="text-right">
                             <div class="flex justify-end gap-2">
-                                <Button variant="ghost" size="sm" @click="editFermentable(ferm)">
+                                <Button variant="ghost" size="sm" @click="editMisc(misc)">
                                     <Edit class="h-4 w-4" />
                                 </Button>
-                                <Button variant="ghost" size="sm" @click="confirmDelete(ferm)"
+                                <Button variant="ghost" size="sm" @click="confirmDelete(misc)"
                                     class="text-destructive hover:text-destructive hover:bg-destructive/10">
                                     <Trash2 class="h-4 w-4" />
                                 </Button>
@@ -114,10 +112,10 @@
         </div>
 
         <!-- Summary Stats -->
-        <div v-if="fermentables.length > 0" class="grid grid-cols-4 gap-4 mt-6">
+        <div v-if="miscs.length > 0" class="grid grid-cols-4 gap-4 mt-6">
             <div class="bg-card rounded-lg border border-border p-4">
                 <div class="text-sm text-muted-foreground">Total Items</div>
-                <div class="text-2xl font-bold">{{ fermentables.length }}</div>
+                <div class="text-2xl font-bold">{{ miscs.length }}</div>
             </div>
             <div class="bg-card rounded-lg border border-border p-4">
                 <div class="text-sm text-muted-foreground">Low Stock Items</div>
@@ -128,8 +126,8 @@
                 <div class="text-2xl font-bold">€{{ totalValue.toFixed(2) }}</div>
             </div>
             <div class="bg-card rounded-lg border border-border p-4">
-                <div class="text-sm text-muted-foreground">Total Weight</div>
-                <div class="text-2xl font-bold">{{ totalWeight.toFixed(2) }} kg</div>
+                <div class="text-sm text-muted-foreground">Item Types</div>
+                <div class="text-2xl font-bold">{{ uniqueTypes }}</div>
             </div>
         </div>
 
@@ -137,12 +135,13 @@
         <Dialog v-model:open="showAddDialog">
             <DialogContent class="bg-card border-border max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle>{{ editingFermentable ? 'Edit Fermentable' : 'Add New Fermentable' }}</DialogTitle>
+                    <DialogTitle>{{ editingMisc ? 'Edit Miscellaneous Item' : 'Add New Miscellaneous Item' }}
+                    </DialogTitle>
                 </DialogHeader>
                 <div class="grid grid-cols-2 gap-4 py-4">
                     <div class="col-span-2">
                         <Label for="name">Name *</Label>
-                        <Input id="name" v-model="formData.name" placeholder="e.g., Pilsner Malt"
+                        <Input id="name" v-model="formData.name" placeholder="e.g., Irish Moss"
                             class="bg-background border-input" />
                     </div>
 
@@ -153,23 +152,36 @@
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="grain">Grain</SelectItem>
-                                <SelectItem value="extract">Extract</SelectItem>
-                                <SelectItem value="sugar">Sugar</SelectItem>
+                                <SelectItem value="spice">Spice</SelectItem>
+                                <SelectItem value="fining">Fining</SelectItem>
+                                <SelectItem value="water agent">Water Agent</SelectItem>
+                                <SelectItem value="herb">Herb</SelectItem>
+                                <SelectItem value="flavor">Flavor</SelectItem>
+                                <SelectItem value="other">Other</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
                     <div>
-                        <Label for="color">Color (EBC) *</Label>
-                        <Input id="color" v-model.number="formData.color" type="number" step="0.1"
-                            placeholder="e.g., 3.5" class="bg-background border-input" />
+                        <Label for="use">Use *</Label>
+                        <Select v-model="formData.use">
+                            <SelectTrigger class="bg-background border-input">
+                                <SelectValue placeholder="Select use" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="boil">Boil</SelectItem>
+                                <SelectItem value="mash">Mash</SelectItem>
+                                <SelectItem value="primary">Primary</SelectItem>
+                                <SelectItem value="secondary">Secondary</SelectItem>
+                                <SelectItem value="bottling">Bottling</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <div>
                         <Label for="amount">Amount *</Label>
                         <Input id="amount" v-model.number="formData.amount" type="number" step="0.1"
-                            placeholder="e.g., 25" class="bg-background border-input" />
+                            placeholder="e.g., 100" class="bg-background border-input" />
                     </div>
 
                     <div>
@@ -181,22 +193,19 @@
                             <SelectContent>
                                 <SelectItem value="g">Grams (g)</SelectItem>
                                 <SelectItem value="kg">Kilograms (kg)</SelectItem>
-                                <SelectItem value="oz">Ounces (oz)</SelectItem>
-                                <SelectItem value="lb">Pounds (lb)</SelectItem>
+                                <SelectItem value="ml">Milliliters (ml)</SelectItem>
+                                <SelectItem value="l">Liters (l)</SelectItem>
+                                <SelectItem value="tsp">Teaspoon (tsp)</SelectItem>
+                                <SelectItem value="tbsp">Tablespoon (tbsp)</SelectItem>
+                                <SelectItem value="items">Items</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
-                    <div>
-                        <Label for="yield_potential">Yield Potential (%)</Label>
-                        <Input id="yield_potential" v-model.number="formData.yield_potential" type="number" step="0.1"
-                            placeholder="e.g., 80" class="bg-background border-input" />
-                    </div>
-
-                    <div>
-                        <Label for="origin">Origin</Label>
-                        <Input id="origin" v-model="formData.origin" placeholder="e.g., Germany"
-                            class="bg-background border-input" />
+                    <div class="col-span-2">
+                        <Label for="use_for">Use For</Label>
+                        <Input id="use_for" v-model="formData.use_for"
+                            placeholder="e.g., Clarity, pH adjustment, flavor" class="bg-background border-input" />
                     </div>
 
                     <div>
@@ -208,7 +217,7 @@
                     <div>
                         <Label for="cost_per_unit">Cost per Unit (€)</Label>
                         <Input id="cost_per_unit" v-model.number="formData.cost_per_unit" type="number" step="0.01"
-                            placeholder="e.g., 2.50" class="bg-background border-input" />
+                            placeholder="e.g., 0.10" class="bg-background border-input" />
                     </div>
 
                     <div class="col-span-2">
@@ -219,8 +228,8 @@
                 </div>
                 <DialogFooter>
                     <Button variant="outline" @click="cancelEdit">Cancel</Button>
-                    <Button @click="saveFermentable" :disabled="!isFormValid" class="bg-primary hover:bg-primary/90">
-                        {{ editingFermentable ? 'Update' : 'Add' }} Fermentable
+                    <Button @click="saveMisc" :disabled="!isFormValid" class="bg-primary hover:bg-primary/90">
+                        {{ editingMisc ? 'Update' : 'Add' }} Item
                     </Button>
                 </DialogFooter>
             </DialogContent>
@@ -258,16 +267,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from '~/components/ui/select'
-import type { InventoryFermentable } from '~/composables/useInventory'
+import type { InventoryMisc } from '~/composables/useInventory'
 
 const {
-    fermentables,
-    fermentablesLoading,
-    fermentablesError,
-    fetchFermentables,
-    addFermentable,
-    updateFermentable,
-    removeFermentable
+    miscs,
+    miscsLoading,
+    miscsError,
+    fetchMiscs,
+    addMisc,
+    updateMisc,
+    removeMisc
 } = useInventory()
 
 // Search and filter
@@ -276,39 +285,39 @@ const filterType = ref('all')
 
 // Dialog state
 const showAddDialog = ref(false)
-const editingFermentable = ref<InventoryFermentable | null>(null)
+const editingMisc = ref<InventoryMisc | null>(null)
 
 // Form data
 const formData = ref({
     name: '',
-    type: 'grain',
-    color: 0,
+    type: 'spice',
+    use: 'boil',
     amount: 0,
-    unit: 'kg',
-    yield_potential: 0,
-    origin: '',
+    unit: 'g',
+    use_for: '',
     supplier: '',
     cost_per_unit: 0,
     notes: '',
 })
 
 // Computed
-const filteredFermentables = computed(() => {
-    let filtered = fermentables.value
+const filteredMiscs = computed(() => {
+    let filtered = miscs.value
 
     // Filter by type
     if (filterType.value !== 'all') {
-        filtered = filtered.filter(f => f.type === filterType.value)
+        filtered = filtered.filter(m => m.type === filterType.value)
     }
 
     // Filter by search
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(f =>
-            f.name.toLowerCase().includes(query) ||
-            f.origin?.toLowerCase().includes(query) ||
-            f.type?.toLowerCase().includes(query) ||
-            f.supplier?.toLowerCase().includes(query)
+        filtered = filtered.filter(m =>
+            m.name.toLowerCase().includes(query) ||
+            m.type?.toLowerCase().includes(query) ||
+            m.use?.toLowerCase().includes(query) ||
+            m.use_for?.toLowerCase().includes(query) ||
+            m.supplier?.toLowerCase().includes(query)
         )
     }
 
@@ -316,87 +325,56 @@ const filteredFermentables = computed(() => {
 })
 
 const lowStockCount = computed(() => {
-    return fermentables.value.filter(f => isLowStock(f.amount)).length
+    return miscs.value.filter(m => isLowStock(m.amount)).length
 })
 
 const totalValue = computed(() => {
-    return fermentables.value.reduce((total, f) => {
-        return total + (f.cost_per_unit || 0) * f.amount
+    return miscs.value.reduce((total, m) => {
+        return total + (m.cost_per_unit || 0) * m.amount
     }, 0)
 })
 
-const totalWeight = computed(() => {
-    return fermentables.value.reduce((total, f) => {
-        // Convert everything to kg
-        let kg = f.amount
-        if (f.unit === 'g') kg = f.amount / 1000
-        else if (f.unit === 'lb') kg = f.amount * 0.453592
-        else if (f.unit === 'oz') kg = f.amount * 0.0283495
-        return total + kg
-    }, 0)
+const uniqueTypes = computed(() => {
+    const types = new Set(miscs.value.map(m => m.type))
+    return types.size
 })
 
 const isFormValid = computed(() => {
     return formData.value.name &&
         formData.value.type &&
-        formData.value.color >= 0 &&
+        formData.value.use &&
         formData.value.amount > 0 &&
         formData.value.unit
 })
 
 // Methods
 function isLowStock(amount: number): boolean {
-    return amount < 1 // Less than 1 kg/lb
+    return amount < 10 // Less than 10 units (context dependent)
 }
 
-function ebcToSrm(ebc: number): number {
-    return ebc * 0.508
-}
-
-function srmToRgb(srm: number): string {
-    // SRM to RGB approximation for beer color
-    const colors = [
-        [255, 230, 153], [255, 216, 120], [255, 204, 102], [255, 191, 86],
-        [251, 177, 70], [248, 166, 53], [239, 148, 37], [230, 138, 20],
-        [216, 124, 15], [204, 113, 10], [197, 99, 8], [186, 87, 6],
-        [173, 74, 4], [160, 65, 3], [140, 50, 2], [119, 41, 1],
-        [104, 35, 1], [96, 28, 0], [89, 26, 0], [79, 23, 0],
-        [74, 21, 0], [69, 19, 0], [63, 17, 0], [58, 16, 0],
-        [54, 14, 0], [50, 13, 0], [46, 12, 0], [43, 11, 0],
-        [40, 10, 0], [37, 9, 0], [35, 8, 0], [33, 7, 0],
-        [30, 7, 0], [28, 6, 0], [27, 6, 0], [25, 5, 0],
-        [24, 5, 0], [22, 4, 0], [21, 4, 0], [20, 4, 0]
-    ]
-
-    const index = Math.min(Math.floor(srm), colors.length - 1)
-    const [r, g, b] = colors[index] || [0, 0, 0]
-    return `rgb(${r}, ${g}, ${b})`
-}
-
-function editFermentable(fermentable: InventoryFermentable) {
-    editingFermentable.value = fermentable
+function editMisc(misc: InventoryMisc) {
+    editingMisc.value = misc
     formData.value = {
-        name: fermentable.name,
-        type: fermentable.type,
-        color: fermentable.color,
-        amount: fermentable.amount,
-        unit: fermentable.unit,
-        yield_potential: fermentable.yield_potential || 0,
-        origin: fermentable.origin || '',
-        supplier: fermentable.supplier || '',
-        cost_per_unit: fermentable.cost_per_unit || 0,
-        notes: fermentable.notes || '',
+        name: misc.name,
+        type: misc.type,
+        use: misc.use,
+        amount: misc.amount,
+        unit: misc.unit,
+        use_for: misc.use_for || '',
+        supplier: misc.supplier || '',
+        cost_per_unit: misc.cost_per_unit || 0,
+        notes: misc.notes || '',
     }
     showAddDialog.value = true
 }
 
-async function saveFermentable() {
+async function saveMisc() {
     if (!isFormValid.value) return
 
-    if (editingFermentable.value) {
-        await updateFermentable(editingFermentable.value.id, formData.value)
+    if (editingMisc.value) {
+        await updateMisc(editingMisc.value.id, formData.value)
     } else {
-        await addFermentable(formData.value)
+        await addMisc(formData.value)
     }
 
     cancelEdit()
@@ -404,29 +382,28 @@ async function saveFermentable() {
 
 function cancelEdit() {
     showAddDialog.value = false
-    editingFermentable.value = null
+    editingMisc.value = null
     formData.value = {
         name: '',
-        type: 'grain',
-        color: 0,
+        type: 'spice',
+        use: 'boil',
         amount: 0,
-        unit: 'kg',
-        yield_potential: 0,
-        origin: '',
+        unit: 'g',
+        use_for: '',
         supplier: '',
         cost_per_unit: 0,
         notes: '',
     }
 }
 
-async function confirmDelete(fermentable: InventoryFermentable) {
-    if (confirm(`Are you sure you want to delete ${fermentable.name}?`)) {
-        await removeFermentable(fermentable.id)
+async function confirmDelete(misc: InventoryMisc) {
+    if (confirm(`Are you sure you want to delete ${misc.name}?`)) {
+        await removeMisc(misc.id)
     }
 }
 
 // Lifecycle
 onMounted(async () => {
-    await fetchFermentables()
+    await fetchMiscs()
 })
 </script>
