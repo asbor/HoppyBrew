@@ -184,7 +184,7 @@ const targetWater = ref({
 })
 
 const waterVolume = ref<number>(20) // Liters
-const mashGrainWeight = ref<number>(5) // kg for mash pH
+const grainWeight = ref<number>(5) // kg for mash pH
 
 // Brewing salts molecular weights and ion contributions
 const salts = {
@@ -272,7 +272,7 @@ const waterAdjustments = computed(() => {
 const mashPH = computed(() => {
   // Simplified mash pH calculation based on alkalinity and grain weight
   const alkalinity = waterAdjustments.value.finalWater.bicarbonate * 0.819 // Convert to CaCO3 equivalent
-  const grainAlkalinity = mashGrainWeight.value * 30 // Estimated grain contribution (varies by grain type)
+  const grainAlkalinity = grainWeight.value * 30 // Estimated grain contribution (varies by grain type)
   const residualAlkalinity = alkalinity - (waterAdjustments.value.finalWater.calcium / 3.5 + waterAdjustments.value.finalWater.magnesium / 7)
   
   // Rough pH estimation (actual depends on grain bill, water composition, etc.)
@@ -668,8 +668,8 @@ const mashPH = computed(() => {
                 <Input id="waterVolume" type="number" step="0.1" min="1" v-model.number="waterVolume" />
               </div>
               <div class="space-y-2">
-                <Label for="mashGrainWeight">Grain Weight (kg) - for pH estimation</Label>
-                <Input id="mashGrainWeight" type="number" step="0.1" min="0" v-model.number="mashGrainWeight" />
+                <Label for="grainWeight">Grain Weight (kg) - for pH estimation</Label>
+                <Input id="grainWeight" type="number" step="0.1" min="0" v-model.number="grainWeight" />
               </div>
             </div>
 
