@@ -162,7 +162,7 @@ jobs:
     steps:
       - name: Build summary
         id: summary
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const results = {
@@ -182,7 +182,7 @@ jobs:
             core.setOutput('failed', failed ? 'true' : 'false');
 
       - name: "MCP: Publish security analytics"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
           MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
@@ -222,7 +222,7 @@ jobs:
 
       - name: "MCP: Auto-issue for vulnerabilities"
         if: steps.summary.outputs.failed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { owner, repo } = context.repo;

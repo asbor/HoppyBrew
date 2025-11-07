@@ -195,7 +195,7 @@ jobs:
     steps:
       - name: Determine release tag
         id: tag
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const inputTag = core.getInput('tag');
@@ -219,7 +219,7 @@ jobs:
 
       - name: Generate release notes
         id: release-notes
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const tag = core.getInput('tag-name');
@@ -240,7 +240,7 @@ jobs:
 
       - name: Append MCP analytics prompt
         id: augmented
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         with:
@@ -313,7 +313,7 @@ jobs:
     steps:
       - name: Collate release summary
         id: summary
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const status = {
@@ -337,7 +337,7 @@ jobs:
             core.setOutput('failed', failed ? 'true' : 'false');
 
       - name: "MCP: Publish release analytics"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
           MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
@@ -375,7 +375,7 @@ jobs:
 
       - name: "MCP: Auto-issue for release failures"
         if: steps.summary.outputs.failed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = `Release pipeline failure for ${core.getInput('tag')}`;

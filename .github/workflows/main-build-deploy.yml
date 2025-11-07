@@ -264,7 +264,7 @@ jobs:
     steps:
       - name: Compile workflow summary
         id: summary
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const results = {
@@ -290,7 +290,7 @@ jobs:
             core.setOutput('failed', hasFailures ? 'true' : 'false');
 
       - name: "MCP: Publish deployment analytics"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
           MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
@@ -336,7 +336,7 @@ jobs:
 
       - name: "MCP: Auto-issue for pipeline failures"
         if: steps.summary.outputs.failed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           MARKDOWN: ${{ steps.summary.outputs.markdown }}
         with:
