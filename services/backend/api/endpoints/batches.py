@@ -222,12 +222,26 @@ async def create_batch(
 
 @router.get("/batches", response_model=List[schemas.Batch])
 async def get_all_batches(db: Session = Depends(get_db)):
-    batches = (
-        db.query(models.Batches)
-        .options(joinedload(models.Batches.recipe))
-        .all()
-    )
-    return batches
+    try:
+        batches = (
+            db.query(models.Batches)
+            .options(
+                joinedload(models.Batches.recipe),
+                joinedload(models.Batches.inventory_fermentables),
+                joinedload(models.Batches.inventory_hops),
+                joinedload(models.Batches.inventory_miscs),
+                joinedload(models.Batches.inventory_yeasts),
+                joinedload(models.Batches.batch_log),
+            )
+            .all()
+        )
+        return batches
+    except Exception as e:
+        logger.error(f"Error fetching batches: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching batches: {str(e)}"
+        )
 
 # Get a batch by ID
 
