@@ -14,11 +14,13 @@ import {
 } from '@/components/ui/table'
 import type { BatchStatus } from '@/composables/useBatches'
 
+const router = useRouter()
 const { batches, loading, error, fetchAll, remove } = useBatches()
 const { getBatchStatusColor } = useStatusColors()
 
 const searchQuery = ref('')
 const filterStatus = ref<BatchStatus | 'all'>('all')
+const viewMode = ref<'table' | 'cards'>('table')
 
 // Filtered batches based on search and status
 const filteredBatches = computed(() => {
@@ -39,6 +41,21 @@ const filteredBatches = computed(() => {
 
   return result
 })
+
+function handleEditBatch(batch: any) {
+  router.push(`/batches/${batch.id}`)
+}
+
+async function handleDeleteBatch(batch: any) {
+  if (!confirm(`Are you sure you want to delete "${batch.batch_name}"?`)) {
+    return
+  }
+
+  const result = await remove(batch.id)
+  if (result.error) {
+    alert(`Failed to delete batch: ${result.error.value}`)
+  }
+}
 
 async function deleteBatch(id: string) {
   if (!confirm('Are you sure you want to delete this batch?')) {
@@ -84,12 +101,32 @@ onMounted(async () => {
         <h1 class="text-3xl font-bold">Batches</h1>
         <p class="text-muted-foreground">Track your brewing batches and fermentation progress</p>
       </div>
-      <Button asChild>
-        <NuxtLink href="/batches/newBatch">
-          <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
-          New Batch
-        </NuxtLink>
-      </Button>
+      <div class="flex gap-3">
+        <div class="flex gap-1 border rounded-md">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            :class="{ 'bg-muted': viewMode === 'table' }"
+            @click="viewMode = 'table'"
+          >
+            <Icon name="mdi:table" class="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            :class="{ 'bg-muted': viewMode === 'cards' }"
+            @click="viewMode = 'cards'"
+          >
+            <Icon name="mdi:view-grid" class="h-4 w-4" />
+          </Button>
+        </div>
+        <Button asChild>
+          <NuxtLink href="/batches/newBatch">
+            <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+            New Batch
+          </NuxtLink>
+        </Button>
+      </div>
     </header>
 
     <!-- Search & Filters -->
@@ -158,8 +195,8 @@ onMounted(async () => {
       </CardFooter>
     </Card>
 
-    <!-- Batches Table -->
-    <Card v-else>
+    <!-- Batches Table View -->
+    <Card v-if="viewMode === 'table'">
       <CardHeader>
         <div class="flex items-center justify-between">
           <div>
@@ -219,5 +256,16 @@ onMounted(async () => {
         </Table>
       </CardContent>
     </Card>
+
+    <!-- Batches Card View -->
+    <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <BatchCard 
+        v-for="batch in filteredBatches" 
+        :key="batch.id"
+        :batch="batch"
+        @edit="handleEditBatch"
+        @delete="handleDeleteBatch"
+      />
+    </div>
   </div>
 </template>
