@@ -1,0 +1,109 @@
+METHOD	PATH	HANDLER	FILE:LINE	RESPONSE MODEL	SUMMARY
+POST	/batches	create_batch	services/backend/api/endpoints/batches.py:33	schemas.Batch	-
+GET	/batches	get_all_batches	services/backend/api/endpoints/batches.py:210	List[schemas.Batch]	-
+GET	/batches/{batch_id}	get_batch_by_id	services/backend/api/endpoints/batches.py:234	schemas.Batch	-
+PUT	/batches/{batch_id}	update_batch	services/backend/api/endpoints/batches.py:256	schemas.Batch	-
+DELETE	/batches/{batch_id}	delete_batch	services/backend/api/endpoints/batches.py:273	-	-
+GET	/style-guideline-sources	get_style_guideline_sources	services/backend/api/endpoints/beer_styles.py:23	List[schemas.StyleGuidelineSource]	List all style guideline sources
+GET	/style-guideline-sources/{source_id}	get_style_guideline_source	services/backend/api/endpoints/beer_styles.py:38	schemas.StyleGuidelineSource	Get a specific style guideline source
+POST	/style-guideline-sources	create_style_guideline_source	services/backend/api/endpoints/beer_styles.py:55	schemas.StyleGuidelineSource	Create a new style guideline source
+PUT	/style-guideline-sources/{source_id}	update_style_guideline_source	services/backend/api/endpoints/beer_styles.py:75	schemas.StyleGuidelineSource	Update a style guideline source
+DELETE	/style-guideline-sources/{source_id}	delete_style_guideline_source	services/backend/api/endpoints/beer_styles.py:103	-	Delete a style guideline source
+GET	/style-categories	get_style_categories	services/backend/api/endpoints/beer_styles.py:132	List[schemas.StyleCategory]	List all style categories
+GET	/style-categories/{category_id}	get_style_category	services/backend/api/endpoints/beer_styles.py:151	schemas.StyleCategory	Get a specific style category
+POST	/style-categories	create_style_category	services/backend/api/endpoints/beer_styles.py:162	schemas.StyleCategory	Create a new style category
+PUT	/style-categories/{category_id}	update_style_category	services/backend/api/endpoints/beer_styles.py:182	schemas.StyleCategory	Update a style category
+DELETE	/style-categories/{category_id}	delete_style_category	services/backend/api/endpoints/beer_styles.py:208	-	Delete a style category
+GET	/beer-styles	get_beer_styles	services/backend/api/endpoints/beer_styles.py:236	List[schemas.BeerStyle]	List all beer styles with filtering
+GET	/beer-styles/search	search_beer_styles	services/backend/api/endpoints/beer_styles.py:265	List[schemas.BeerStyle]	Search beer styles
+GET	/beer-styles/{style_id}	get_beer_style	services/backend/api/endpoints/beer_styles.py:349	schemas.BeerStyle	Get a specific beer style
+POST	/beer-styles	create_beer_style	services/backend/api/endpoints/beer_styles.py:368	schemas.BeerStyle	Create a new beer style (custom)
+PUT	/beer-styles/{style_id}	update_beer_style	services/backend/api/endpoints/beer_styles.py:388	schemas.BeerStyle	Update a beer style
+DELETE	/beer-styles/{style_id}	delete_beer_style	services/backend/api/endpoints/beer_styles.py:420	-	Delete a beer style
+GET	/devices	get_all_devices	services/backend/api/endpoints/devices.py:14	List[schemas.Device]	-
+GET	/devices/{device_id}	get_device	services/backend/api/endpoints/devices.py:26	schemas.Device	-
+POST	/devices	create_device	services/backend/api/endpoints/devices.py:40	schemas.Device	-
+PUT	/devices/{device_id}	update_device	services/backend/api/endpoints/devices.py:56	schemas.Device	-
+DELETE	/devices/{device_id}	delete_device	services/backend/api/endpoints/devices.py:82	schemas.Device	-
+GET	/equipment	get_equipment_profiles	services/backend/api/endpoints/equipment_profiles.py:15	List[dict]	-
+POST	/equipment	create_equipment_profile	services/backend/api/endpoints/equipment_profiles.py:57	dict	-
+GET	/equipment/{profile_id}	get_equipment_profile	services/backend/api/endpoints/equipment_profiles.py:110	dict	-
+PUT	/equipment/{profile_id}	update_equipment_profile	services/backend/api/endpoints/equipment_profiles.py:151	dict	-
+DELETE	/equipment/{profile_id}	delete_equipment_profile	services/backend/api/endpoints/equipment_profiles.py:220	dict	-
+GET	/recipes/fermentables	get_all_recipe_fermentables	services/backend/api/endpoints/fermentables.py:16	List[schemas.RecipeFermentable]	-
+GET	/inventory/fermentables	get_all_inventory_fermentables	services/backend/api/endpoints/fermentables.py:28	List[schemas.InventoryFermentable]	-
+GET	/inventory/fermentables/{fermentable_id}	get_inventory_fermentable	services/backend/api/endpoints/fermentables.py:37	schemas.InventoryFermentable	-
+DELETE	/inventory/fermentables/{id}	delete_inventory_fermentable	services/backend/api/endpoints/fermentables.py:49	schemas.InventoryFermentable	-
+GET	/fermentation-profiles	get_all_fermentation_profiles	services/backend/api/endpoints/fermentation_profiles.py:23	List[schemas.FermentationProfile]	List all fermentation profiles
+GET	/fermentation-profiles/{profile_id}	get_fermentation_profile	services/backend/api/endpoints/fermentation_profiles.py:37	schemas.FermentationProfile	Get a specific fermentation profile
+POST	/fermentation-profiles	create_fermentation_profile	services/backend/api/endpoints/fermentation_profiles.py:58	schemas.FermentationProfile	Create a new fermentation profile
+PUT	/fermentation-profiles/{profile_id}	update_fermentation_profile	services/backend/api/endpoints/fermentation_profiles.py:106	schemas.FermentationProfile	Update a fermentation profile
+DELETE	/fermentation-profiles/{profile_id}	delete_fermentation_profile	services/backend/api/endpoints/fermentation_profiles.py:142	-	Delete a fermentation profile
+GET	/fermentation-profiles/{profile_id}/steps	get_fermentation_steps	services/backend/api/endpoints/fermentation_profiles.py:164	List[schemas.FermentationStep]	Get steps for a fermentation profile
+POST	/fermentation-profiles/{profile_id}/steps	add_fermentation_step	services/backend/api/endpoints/fermentation_profiles.py:194	schemas.FermentationStep	Add a step to a fermentation profile
+PUT	/fermentation-steps/{step_id}	update_fermentation_step	services/backend/api/endpoints/fermentation_profiles.py:231	schemas.FermentationStep	Update a fermentation step
+DELETE	/fermentation-steps/{step_id}	delete_fermentation_step	services/backend/api/endpoints/fermentation_profiles.py:258	-	Delete a fermentation step
+GET	/health	health_check	services/backend/api/endpoints/health.py:27	HealthResponse	Health probe
+GET	/homeassistant/batches	get_batches_for_homeassistant	services/backend/api/endpoints/homeassistant.py:79	List[HomeAssistantBatchSensor]	Get all batches as HomeAssistant sensors
+GET	/homeassistant/batches/{batch_id}	get_batch_for_homeassistant	services/backend/api/endpoints/homeassistant.py:153	HomeAssistantBatchSensor	Get specific batch as HomeAssistant sensor
+GET	/homeassistant/summary	get_brewery_summary	services/backend/api/endpoints/homeassistant.py:223	-	Get brewery summary for HomeAssistant
+GET	/homeassistant/discovery/batch/{batch_id}	get_batch_mqtt_discovery	services/backend/api/endpoints/homeassistant.py:280	-	Get MQTT discovery configuration for a batch
+GET	/recipes/hops	get_all_recipe_hops	services/backend/api/endpoints/hops.py:16	List[schemas.RecipeHop]	-
+GET	/inventory/hops	get_all_inventory_hops	services/backend/api/endpoints/hops.py:25	List[schemas.InventoryHop]	-
+GET	/inventory/hops/{hop_id}	get_inventory_hop	services/backend/api/endpoints/hops.py:31	schemas.InventoryHop	-
+DELETE	/inventory/hops/{id}	delete_inventory_hop	services/backend/api/endpoints/hops.py:39	schemas.InventoryHop	-
+POST	/inventory/fermentables	create_inventory_fermentable	services/backend/api/endpoints/inventory_fermentables.py:14	schemas.InventoryFermentable	-
+PUT	/inventory/fermentables/{id}	update_inventory_fermentable	services/backend/api/endpoints/inventory_fermentables.py:29	schemas.InventoryFermentable	-
+POST	/inventory/hops	create_inventory_hop	services/backend/api/endpoints/inventory_hops.py:14	schemas.InventoryHop	-
+PUT	/inventory/hops/{id}	update_inventory_hop	services/backend/api/endpoints/inventory_hops.py:26	schemas.InventoryHop	-
+POST	/inventory/miscs	create_inventory_misc	services/backend/api/endpoints/inventory_miscs.py:14	schemas.InventoryMisc	-
+PUT	/inventory/miscs/{id}	update_inventory_misc	services/backend/api/endpoints/inventory_miscs.py:26	schemas.InventoryMisc	-
+POST	/inventory/yeasts	create_inventory_yeast	services/backend/api/endpoints/inventory_yeasts.py:14	schemas.InventoryYeast	-
+PUT	/inventory/yeasts/{id}	update_inventory_yeast	services/backend/api/endpoints/inventory_yeasts.py:28	schemas.InventoryYeast	-
+GET	/api/logs	get_logs	services/backend/api/endpoints/logs.py:26	LogContentResponse	Download backend logs
+GET	/mash	get_mash_profiles	services/backend/api/endpoints/mash_profiles.py:15	List[dict]	-
+POST	/mash	create_mash_profile	services/backend/api/endpoints/mash_profiles.py:46	dict	-
+GET	/mash/{profile_id}	get_mash_profile	services/backend/api/endpoints/mash_profiles.py:84	dict	-
+PUT	/mash/{profile_id}	update_mash_profile	services/backend/api/endpoints/mash_profiles.py:112	dict	-
+DELETE	/mash/{profile_id}	delete_mash_profile	services/backend/api/endpoints/mash_profiles.py:168	dict	-
+GET	/mash/{profile_id}/steps	get_mash_steps	services/backend/api/endpoints/mash_profiles.py:191	List[dict]	-
+POST	/mash/{profile_id}/steps	create_mash_step	services/backend/api/endpoints/mash_profiles.py:234	dict	-
+PUT	/mash/steps/{step_id}	update_mash_step	services/backend/api/endpoints/mash_profiles.py:276	dict	-
+DELETE	/mash/steps/{step_id}	delete_mash_step	services/backend/api/endpoints/mash_profiles.py:317	dict	-
+GET	/recipes/miscs	get_all_recipe_miscs	services/backend/api/endpoints/miscs.py:16	List[schemas.RecipeMisc]	-
+GET	/inventory/miscs	get_all_inventory_miscs	services/backend/api/endpoints/miscs.py:25	List[schemas.InventoryMisc]	-
+GET	/inventory/miscs/{misc_id}	get_inventory_misc	services/backend/api/endpoints/miscs.py:31	schemas.InventoryMisc	-
+DELETE	/inventory/miscs/{id}	delete_inventory_misc	services/backend/api/endpoints/miscs.py:39	schemas.InventoryMisc	-
+POST	/questions	create_questions	services/backend/api/endpoints/questions.py:13	question_schemas.QuestionWithID	-
+GET	/questions	get_all_questions	services/backend/api/endpoints/questions.py:43	List[question_schemas.QuestionWithID]	-
+DELETE	/questions/{question_id}	delete_question	services/backend/api/endpoints/questions.py:55	question_schemas.QuestionWithID	-
+GET	/recipes	get_all_recipes	services/backend/api/endpoints/recipes.py:127	List[schemas.Recipe]	-
+GET	/recipes/{recipe_id}	get_recipe_by_id	services/backend/api/endpoints/recipes.py:140	schemas.Recipe	-
+POST	/recipes	create_recipe	services/backend/api/endpoints/recipes.py:155	schemas.Recipe	-
+PUT	/recipes/{recipe_id}	update_recipe	services/backend/api/endpoints/recipes.py:202	schemas.Recipe	-
+DELETE	/recipes/{recipe_id}	delete_recipe	services/backend/api/endpoints/recipes.py:252	-	-
+POST	/recipes/{recipe_id}/scale	scale_recipe	services/backend/api/endpoints/recipes.py:272	schemas.RecipeScaleResponse	-
+POST	/references/import	import_references	services/backend/api/endpoints/references.py:58	ReferenceImportResponse	Import references from BeerXML
+GET	/references/export	export_references	services/backend/api/endpoints/references.py:98	-	-
+GET	/references	get_all_references	services/backend/api/endpoints/references.py:125	List[schemas.Reference]	-
+GET	/references/{reference_id}	get_reference	services/backend/api/endpoints/references.py:131	schemas.Reference	-
+POST	/references	create_reference	services/backend/api/endpoints/references.py:139	schemas.Reference	-
+DELETE	/references/{reference_id}	delete_reference	services/backend/api/endpoints/references.py:151	schemas.Reference	-
+PUT	/references/{reference_id}	update_reference	services/backend/api/endpoints/references.py:161	schemas.Reference	-
+GET	/style_guidelines	get_all_style_guidelines	services/backend/api/endpoints/style_guidelines.py:16	List[schemas.StyleGuidelineBase]	-
+GET	/style_guidelines/{guideline_id}	get_style_guideline	services/backend/api/endpoints/style_guidelines.py:25	schemas.StyleGuidelineBase	-
+POST	/style_guidelines	create_style_guideline	services/backend/api/endpoints/style_guidelines.py:35	schemas.StyleGuidelineBase	-
+DELETE	/style_guidelines/{id}	delete_style_guideline	services/backend/api/endpoints/style_guidelines.py:49	schemas.StyleGuidelineBase	-
+PUT	/style_guidelines/{id}	update_style_guideline	services/backend/api/endpoints/style_guidelines.py:59	schemas.StyleGuidelineBase	-
+GET	/styles	get_all_styles	services/backend/api/endpoints/styles.py:20	List[schemas.Style]	List beer style definitions
+POST	/refresh-beer-styles	trigger_script	services/backend/api/endpoints/trigger_beer_styles_processing.py:35	BeerStyleRefreshResponse	Refresh cached beer style data
+GET	/water-profiles	get_water_profiles	services/backend/api/endpoints/water_profiles.py:15	List[schemas.WaterProfile]	-
+POST	/water-profiles	create_water_profile	services/backend/api/endpoints/water_profiles.py:44	schemas.WaterProfile	-
+GET	/water-profiles/{profile_id}	get_water_profile	services/backend/api/endpoints/water_profiles.py:76	schemas.WaterProfile	-
+PUT	/water-profiles/{profile_id}	update_water_profile	services/backend/api/endpoints/water_profiles.py:89	schemas.WaterProfile	-
+DELETE	/water-profiles/{profile_id}	delete_water_profile	services/backend/api/endpoints/water_profiles.py:140	schemas.WaterProfile	-
+POST	/water-profiles/{profile_id}/duplicate	duplicate_water_profile	services/backend/api/endpoints/water_profiles.py:162	schemas.WaterProfile	-
+GET	/recipes/yeasts	get_all_recipe_yeasts	services/backend/api/endpoints/yeasts.py:16	List[schemas.RecipeYeast]	-
+GET	/inventory/yeasts	get_all_inventory_yeasts	services/backend/api/endpoints/yeasts.py:25	List[schemas.InventoryYeast]	-
+GET	/inventory/yeasts/{yeast_id}	get_inventory_yeast	services/backend/api/endpoints/yeasts.py:31	schemas.InventoryYeast	-
+DELETE	/inventory/yeasts/{id}	delete_inventory_yeast	services/backend/api/endpoints/yeasts.py:39	schemas.InventoryYeast	-
