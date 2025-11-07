@@ -252,7 +252,7 @@ async def get_batch_by_id(batch_id: int, db: Session = Depends(get_db)):
 
 @router.put("/batches/{batch_id}", response_model=schemas.Batch)
 async def update_batch(
-    batch_id: int, batch: schemas.BatchBase, db: Session = Depends(get_db)
+    batch_id: int, batch: schemas.BatchUpdate, db: Session = Depends(get_db)
 ):
     db_batch = (
         db.query(models.Batches).filter(models.Batches.id == batch_id).first()
@@ -261,7 +261,7 @@ async def update_batch(
         raise HTTPException(status_code=404, detail="Batch not found")
     # Update the batch
 
-    for key, value in batch.model_dump().items():
+    for key, value in batch.model_dump(exclude_unset=True).items():
         setattr(db_batch, key, value)
     db.commit()
     db.refresh(db_batch)
