@@ -20,7 +20,7 @@ config==0.5.1
 python-dotenv==1.2.1
 
 # Data Processing & Web Scraping
-pandas==2.2.2
+pandas==2.3.3
 requests==2.32.3
 beautifulsoup4==4.12.3
 bs4==0.0.2
