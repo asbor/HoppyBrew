@@ -18,12 +18,14 @@ class QuestionBase(BaseModel):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": QUESTION_BASE_EXAMPLE}
+        json_schema_extra={"example": QUESTION_BASE_EXAMPLE},
     )
+
+
 class QuestionWithID(QuestionBase):
     id: int
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={            "example": {**QUESTION_BASE_EXAMPLE, "id": 3},        }
+        json_schema_extra={"example": {**QUESTION_BASE_EXAMPLE, "id": 42}}
     )

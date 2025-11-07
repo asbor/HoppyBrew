@@ -9,8 +9,15 @@ class HealthResponse(BaseModel):
     detail: str
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "status": "ok",                "detail": "Database, cache, and background workers are healthy.",            }        }
+        json_schema_extra={
+            "example": {
+                "status": "ok",
+                "detail": "Database, cache, and background workers are healthy.",
+            }
+        }
     )
+
+
 @router.get(
     "/health",
     response_model=HealthResponse,
