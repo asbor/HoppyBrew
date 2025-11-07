@@ -13,7 +13,7 @@ from .recipes import (
     RecipeScaleRequest,
     RecipeScaleResponse,
 )
-from .batches import Batch, BatchCreate, BatchBase
+from .batches import Batch, BatchCreate, BatchBase, BatchUpdate
 from .batch_logs import BatchLogBase
 from .style_guidelines import StyleGuidelineBase, StyleGuidelineBaseCreate
 from .styles import StyleBase, Style
@@ -98,6 +98,7 @@ __all__ = [
     "Batch",
     "BatchCreate",
     "BatchBase",
+    "BatchUpdate",
     "BatchLogBase",
     "StyleGuidelineBase",
     "StyleGuidelineBaseCreate",

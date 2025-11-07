@@ -6,6 +6,8 @@ from .hops import InventoryHop
 from .fermentables import InventoryFermentable
 from .miscs import InventoryMisc
 from .yeasts import InventoryYeast
+from Database.enums import BatchStatus
+
 
 BATCH_BASE_EXAMPLE = {
     "batch_name": "Citrus IPA - March Run",
@@ -13,6 +15,7 @@ BATCH_BASE_EXAMPLE = {
     "batch_size": 20.0,
     "brewer": "Alex Brewer",
     "brew_date": "2024-03-21T08:00:00Z",
+    "status": "planning",
 }
 
 BATCH_FULL_EXAMPLE = {
@@ -21,6 +24,7 @@ BATCH_FULL_EXAMPLE = {
     "recipe_id": 42,
     "created_at": "2024-03-21T08:00:00Z",
     "updated_at": "2024-03-22T10:30:00Z",
+    "status": "primary_fermentation",
     "batch_log": {
         "id": 5,
         "log_entry": "Transferred to secondary fermenter.",
@@ -96,31 +100,51 @@ class BatchBase(BaseModel):
     batch_size: float
     brewer: str
     brew_date: datetime
+    status: BatchStatus = BatchStatus.PLANNING
 
     model_config = ConfigDict(
         json_schema_extra={"example": BATCH_BASE_EXAMPLE}
     )
+
+
 class BatchCreate(BatchBase):
     recipe_id: int
 
     model_config = ConfigDict(
-        json_schema_extra={"example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}}
+        json_schema_extra={
+            "example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}
+        }
     )
+
+
 class BatchUpdate(BaseModel):
     batch_name: Optional[str] = None
     batch_number: Optional[int] = None
     batch_size: Optional[float] = None
     brewer: Optional[str] = None
     brew_date: Optional[datetime] = None
+    status: Optional[BatchStatus] = None
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "batch_name": "Citrus IPA - March Run",                "batch_number": 2,                "batch_size": 21.0,                "brewer": "Alex Brewer",                "brew_date": "2024-03-28T08:00:00Z",            }        }
+        json_schema_extra={
+            "example": {
+                "batch_name": "Citrus IPA - March Run",
+                "batch_number": 2,
+                "batch_size": 21.0,
+                "brewer": "Alex Brewer",
+                "brew_date": "2024-03-28T08:00:00Z",
+                "status": "brew_day",
+            }
+        }
     )
+
+
 class Batch(BatchBase):
     id: int
     recipe_id: int
     created_at: datetime
     updated_at: datetime
+    status: BatchStatus
     batch_log: Optional[BatchLog] = None
     inventory_hops: List[InventoryHop]
     inventory_fermentables: List[InventoryFermentable]
