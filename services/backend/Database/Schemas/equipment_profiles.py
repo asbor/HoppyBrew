@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 EQUIPMENT_PROFILE_EXAMPLE = {
@@ -48,30 +48,31 @@ class EquipmentProfileBase(BaseModel):
 
     """
 
-    name: Optional[str]
-    version: Optional[int]
-    boil_size: Optional[int]
-    batch_size: Optional[int]
-    tun_volume: Optional[int]
-    tun_weight: Optional[int]
-    tun_specific_heat: Optional[int]
-    top_up_water: Optional[int]
-    trub_chiller_loss: Optional[int]
-    evap_rate: Optional[int]
-    boil_time: Optional[int]
-    calc_boil_volume: bool
-    lauter_deadspace: Optional[int]
-    top_up_kettle: Optional[int]
-    hop_utilization: Optional[int]
-    notes: Optional[str]
-    display_boil_size: Optional[str]
-    display_batch_size: Optional[str]
-    display_tun_volume: Optional[str]
-    display_tun_weight: Optional[str]
-    display_top_up_water: Optional[str]
-    display_trub_chiller_loss: Optional[str]
-    display_lauter_deadspace: Optional[str]
-    display_top_up_kettle: Optional[str]
+    name: Optional[str] = None
+    version: Optional[int] = None
+    boil_size: Optional[int] = None
+    batch_size: Optional[int] = None
+    tun_volume: Optional[int] = None
+    tun_weight: Optional[int] = None
+    tun_specific_heat: Optional[int] = None
+    top_up_water: Optional[int] = None
+    trub_chiller_loss: Optional[int] = None
+    evap_rate: Optional[int] = None
+    boil_time: Optional[int] = None
+    calc_boil_volume: bool = False
+    lauter_deadspace: Optional[int] = None
+    top_up_kettle: Optional[int] = None
+    hop_utilization: Optional[int] = None
+    notes: Optional[str] = None
+    display_boil_size: Optional[str] = None
+    display_batch_size: Optional[str] = None
+    display_tun_volume: Optional[str] = None
+    display_tun_weight: Optional[str] = None
+    display_top_up_water: Optional[str] = None
+    display_trub_chiller_loss: Optional[str] = None
+    display_lauter_deadspace: Optional[str] = None
+    display_top_up_kettle: Optional[str] = None
 
-    class Config:
-        schema_extra = {"example": EQUIPMENT_PROFILE_EXAMPLE}
+    model_config = ConfigDict(
+        json_schema_extra={"example": EQUIPMENT_PROFILE_EXAMPLE}
+    )

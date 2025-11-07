@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from database import engine, Base
 from api.router import router
 from fastapi.middleware.cors import CORSMiddleware
@@ -143,15 +143,9 @@ class ServiceStatus(BaseModel):
     message: str
     status: str
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "message": "Welcome to the HoppyBrew API",
-                "status": "online",
-            }
-        }
-
-
+    model_config = ConfigDict(
+        json_schema_extra={            "example": {                "message": "Welcome to the HoppyBrew API",                "status": "online",            }        }
+    )
 @app.get(
     "/",
     tags=["system"],

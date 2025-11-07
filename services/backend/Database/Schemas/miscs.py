@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 MISC_BASE_EXAMPLE = {
@@ -31,22 +31,23 @@ class MiscBase(BaseModel):
     display_time: Optional[str] = None
     batch_size: Optional[int] = None
 
-    class Config:
-        from_attributes = True  # Pydantic v2: support ORM models
-        schema_extra = {"example": MISC_BASE_EXAMPLE}
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={"example": MISC_BASE_EXAMPLE},
+    )
 
 
 class RecipeMisc(MiscBase):
     recipe_id: int
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": {**MISC_BASE_EXAMPLE, "recipe_id": 12}}
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={"example": {**MISC_BASE_EXAMPLE, "recipe_id": 12}},
+    )
 
 
 class InventoryMiscBase(MiscBase):
-    class Config:
-        schema_extra = {"example": MISC_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": MISC_BASE_EXAMPLE})
 
 
 class InventoryMiscCreate(InventoryMiscBase):
@@ -57,6 +58,7 @@ class InventoryMisc(InventoryMiscBase):
     id: int
     batch_id: Optional[int] = None  # Allow batch_id to be None
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": {**MISC_BASE_EXAMPLE, "id": 15, "batch_id": 5}}
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={"example": {**MISC_BASE_EXAMPLE, "id": 15, "batch_id": 5}},
+    )

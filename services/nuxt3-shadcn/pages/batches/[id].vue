@@ -40,7 +40,7 @@
             </Badge>
           </div>
           <p class="text-muted-foreground">
-            Batch #{{ currentBatch.batch_number }} • {{ currentBatch.batch_size }}L • 
+            Batch #{{ currentBatch.batch_number }} • {{ currentBatch.batch_size }}L •
             Brewed {{ formatDate(currentBatch.brew_date || currentBatch.created_at) }}
           </p>
         </div>
@@ -59,10 +59,7 @@
       <!-- Batch Phase Navigation -->
       <Card>
         <CardContent class="p-6">
-          <BatchPhaseNavigation 
-            :current-phase="currentBatch.status" 
-            @phase-change="handlePhaseChange"
-          />
+          <BatchPhaseNavigation :current-phase="currentBatch.status" @phase-change="handlePhaseChange" />
         </CardContent>
       </Card>
 
@@ -70,56 +67,35 @@
       <div class="grid gap-6">
         <!-- Planning Phase -->
         <template v-if="currentBatch.status === 'planning'">
-          <BatchPlanningPhase 
-            :batch="currentBatch" 
-            @start-brew="startBrewDay"
-            @update-batch="handleBatchUpdate"
-          />
+          <BatchPlanningPhase :batch="currentBatch" @start-brew="startBrewDay" @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Brew Day Phase -->
         <template v-else-if="currentBatch.status === 'brew_day'">
-          <BatchBrewingPhase 
-            :batch="currentBatch"
-            @start-fermentation="startFermentation"
-            @update-batch="handleBatchUpdate"
-          />
+          <BatchBrewingPhase :batch="currentBatch" @start-fermentation="startFermentation"
+            @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Fermentation Phases -->
         <template v-else-if="['primary_fermentation', 'secondary_fermentation'].includes(currentBatch.status)">
-          <BatchFermentationPhase 
-            :batch="currentBatch"
-            @start-conditioning="startConditioning"
-            @update-batch="handleBatchUpdate"
-          />
+          <BatchFermentationPhase :batch="currentBatch" @start-conditioning="startConditioning"
+            @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Conditioning Phase -->
         <template v-else-if="currentBatch.status === 'conditioning'">
-          <BatchConditioningPhase 
-            :batch="currentBatch"
-            @package-batch="packageBatch"
-            @update-batch="handleBatchUpdate"
-          />
+          <BatchConditioningPhase :batch="currentBatch" @package-batch="packageBatch"
+            @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Packaged Phase -->
         <template v-else-if="currentBatch.status === 'packaged'">
-          <BatchPackagedPhase 
-            :batch="currentBatch"
-            @complete-batch="completeBatch"
-            @update-batch="handleBatchUpdate"
-          />
+          <BatchPackagedPhase :batch="currentBatch" @complete-batch="completeBatch" @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Completed Phase -->
         <template v-else-if="['completed', 'archived'].includes(currentBatch.status)">
-          <BatchCompletedPhase 
-            :batch="currentBatch"
-            @archive-batch="archiveBatch"
-            @update-batch="handleBatchUpdate"
-          />
+          <BatchCompletedPhase :batch="currentBatch" @archive-batch="archiveBatch" @update-batch="handleBatchUpdate" />
         </template>
       </div>
 
@@ -149,25 +125,13 @@
       </Card>
 
       <!-- Edit Batch Dialog -->
-      <BatchEditDialog 
-        v-model:open="showEditDialog"
-        :batch="currentBatch"
-        @save="handleBatchUpdate"
-      />
+      <BatchEditDialog v-model:open="showEditDialog" :batch="currentBatch" @save="handleBatchUpdate" />
 
       <!-- Add Reading Dialog -->
-      <BatchReadingDialog 
-        v-model:open="showReadingDialog"
-        :batch-id="currentBatch.id"
-        @save="handleReadingAdded"
-      />
+      <BatchReadingDialog v-model:open="showReadingDialog" :batch-id="currentBatch.id" @save="handleReadingAdded" />
 
       <!-- Add Note Dialog -->
-      <BatchNoteDialog 
-        v-model:open="showNoteDialog"
-        :batch-id="currentBatch.id"
-        @save="handleNoteAdded"
-      />
+      <BatchNoteDialog v-model:open="showNoteDialog" :batch-id="currentBatch.id" @save="handleNoteAdded" />
     </template>
   </div>
 </template>
@@ -215,6 +179,7 @@ const fetchBatch = async () => {
 
 // Format helpers
 const formatStatus = (status: string) => {
+  if (!status) return 'N/A'
   return status.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
 }
 
@@ -222,7 +187,7 @@ const formatDate = (date: string | Date) => {
   if (!date) return 'N/A'
   return new Date(date).toLocaleDateString('en-GB', {
     day: '2-digit',
-    month: '2-digit', 
+    month: '2-digit',
     year: 'numeric'
   })
 }
@@ -299,7 +264,7 @@ const duplicateBatch = async () => {
     delete newBatchData.id
     delete newBatchData.created_at
     delete newBatchData.updated_at
-    
+
     // Navigate to create batch with pre-filled data
     router.push({
       path: '/batches/newBatch',
@@ -342,8 +307,10 @@ useHead({
   .sticky {
     position: static !important;
   }
-  
-  nav, button, .no-print {
+
+  nav,
+  button,
+  .no-print {
     display: none !important;
   }
 }

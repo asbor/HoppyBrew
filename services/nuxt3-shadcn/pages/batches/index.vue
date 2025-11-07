@@ -53,17 +53,17 @@ async function deleteBatch(id: string) {
 
 function formatDate(dateString: string | undefined) {
   if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleDateString('en-GB', { 
-    day: '2-digit', 
-    month: '2-digit', 
-    year: 'numeric' 
+  return new Date(dateString).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
   })
 }
 
 function calculateDaysInStage(batch: any) {
   const statusDate = batch.fermentation_start_date || batch.brew_date || batch.created_at
   if (!statusDate) return 0
-  
+
   const now = new Date()
   const start = new Date(statusDate)
   const diffTime = Math.abs(now.getTime() - start.getTime())
@@ -95,55 +95,35 @@ onMounted(async () => {
     <!-- Search & Filters -->
     <div class="flex flex-col md:flex-row gap-4">
       <div class="flex-1">
-        <Input
-          v-model="searchQuery"
-          placeholder="Search batches by name..."
-          class="max-w-md"
-        >
-          <template #prefix>
-            <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
-          </template>
+        <Input v-model="searchQuery" placeholder="Search batches by name..." class="max-w-md">
+        <template #prefix>
+          <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
+        </template>
         </Input>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <Button 
-          variant="outline" 
-          size="sm"
-          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
-          @click="filterStatus = 'all'"
-        >
+        <Button variant="outline" size="sm" :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
+          @click="filterStatus = 'all'">
           All
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'primary_fermentation' }"
-          @click="filterStatus = 'primary_fermentation'"
-        >
+          @click="filterStatus = 'primary_fermentation'">
           Fermenting
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'conditioning' }"
-          @click="filterStatus = 'conditioning'"
-        >
+          @click="filterStatus = 'conditioning'">
           Conditioning
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'packaged' }"
-          @click="filterStatus = 'packaged'"
-        >
+          @click="filterStatus = 'packaged'">
           Packaged
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'completed' }"
-          @click="filterStatus = 'completed'"
-        >
+          @click="filterStatus = 'completed'">
           Completed
         </Button>
       </div>
@@ -214,7 +194,7 @@ onMounted(async () => {
               </TableCell>
               <TableCell>
                 <Badge :class="getBatchStatusColor(batch.status)" class="text-white">
-                  {{ batch.status.replace(/_/g, ' ') }}
+                  {{ batch.status ? batch.status.replace(/_/g, ' ') : 'N/A' }}
                 </Badge>
               </TableCell>
               <TableCell>{{ batch.batch_size }} L</TableCell>
@@ -229,12 +209,8 @@ onMounted(async () => {
                     <Icon name="mdi:pencil" class="h-4 w-4" />
                   </NuxtLink>
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  @click="deleteBatch(batch.id)"
-                  class="text-destructive hover:text-destructive"
-                >
+                <Button variant="ghost" size="sm" @click="deleteBatch(batch.id)"
+                  class="text-destructive hover:text-destructive">
                   <Icon name="mdi:delete" class="h-4 w-4" />
                 </Button>
               </TableCell>

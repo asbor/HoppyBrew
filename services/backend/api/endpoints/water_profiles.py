@@ -6,14 +6,14 @@ from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, UTC
 
 router = APIRouter()
 
 
 @router.get("/water-profiles", response_model=List[schemas.WaterProfile])
 async def get_water_profiles(
-    profile_type: Optional[str] = Query(None, regex="^(source|target)$"),
+    profile_type: Optional[str] = Query(None, pattern="^(source|target)$"),
     style_category: Optional[str] = None,
     is_default: Optional[bool] = None,
     db: Session = Depends(get_db)
@@ -133,7 +133,7 @@ async def update_water_profile(
     for key, value in update_data.items():
         setattr(profile, key, value)
 
-    profile.updated_at = datetime.utcnow()
+    profile.updated_at = datetime.now(UTC)
 
     db.commit()
     db.refresh(profile)

@@ -173,7 +173,7 @@ async def create_recipe(
         )
     # Exclude the related fields when creating the Recipes instance
     db_recipe = models.Recipes(
-        **recipe.dict(exclude={"hops", "fermentables", "yeasts", "miscs"})
+        **recipe.model_dump(exclude={"hops", "fermentables", "yeasts", "miscs"})
     )
     db.add(db_recipe)
     db.commit()
@@ -181,25 +181,25 @@ async def create_recipe(
     # Add hops to the recipe
 
     for hop_data in recipe.hops:
-        db_hop = models.RecipeHop(**hop_data.dict(), recipe_id=db_recipe.id)
+        db_hop = models.RecipeHop(**hop_data.model_dump(), recipe_id=db_recipe.id)
         db.add(db_hop)
     # Add fermentables to the recipe
 
     for fermentable_data in recipe.fermentables:
         db_fermentable = models.RecipeFermentable(
-            **fermentable_data.dict(), recipe_id=db_recipe.id
+            **fermentable_data.model_dump(), recipe_id=db_recipe.id
         )
         db.add(db_fermentable)
     # Add miscs to the recipe
 
     for misc_data in recipe.miscs:
-        db_misc = models.RecipeMisc(**misc_data.dict(), recipe_id=db_recipe.id)
+        db_misc = models.RecipeMisc(**misc_data.model_dump(), recipe_id=db_recipe.id)
         db.add(db_misc)
     # Add yeasts to the recipe
 
     for yeast_data in recipe.yeasts:
         db_yeast = models.RecipeYeast(
-            **yeast_data.dict(), recipe_id=db_recipe.id
+            **yeast_data.model_dump(), recipe_id=db_recipe.id
         )
         db.add(db_yeast)
     db.commit()
@@ -223,7 +223,7 @@ async def update_recipe(
         raise HTTPException(status_code=404, detail="Recipe not found")
     # Update the recipe
 
-    for key, value in recipe.dict(
+    for key, value in recipe.model_dump(
         exclude={"hops", "fermentables", "yeasts", "miscs"}
     ).items():
         setattr(db_recipe, key, value)
@@ -233,7 +233,7 @@ async def update_recipe(
         models.RecipeHop.recipe_id == recipe_id
     ).delete()
     for hop_data in recipe.hops:
-        db_hop = models.RecipeHop(**hop_data.dict(), recipe_id=recipe_id)
+        db_hop = models.RecipeHop(**hop_data.model_dump(), recipe_id=recipe_id)
         db.add(db_hop)
     # Update fermentables
 
@@ -242,7 +242,7 @@ async def update_recipe(
     ).delete()
     for fermentable_data in recipe.fermentables:
         db_fermentable = models.RecipeFermentable(
-            **fermentable_data.dict(), recipe_id=recipe_id
+            **fermentable_data.model_dump(), recipe_id=recipe_id
         )
         db.add(db_fermentable)
     # Update miscs
@@ -251,7 +251,7 @@ async def update_recipe(
         models.RecipeMisc.recipe_id == recipe_id
     ).delete()
     for misc_data in recipe.miscs:
-        db_misc = models.RecipeMisc(**misc_data.dict(), recipe_id=recipe_id)
+        db_misc = models.RecipeMisc(**misc_data.model_dump(), recipe_id=recipe_id)
         db.add(db_misc)
     # Update yeasts
 
@@ -259,7 +259,7 @@ async def update_recipe(
         models.RecipeYeast.recipe_id == recipe_id
     ).delete()
     for yeast_data in recipe.yeasts:
-        db_yeast = models.RecipeYeast(**yeast_data.dict(), recipe_id=recipe_id)
+        db_yeast = models.RecipeYeast(**yeast_data.model_dump(), recipe_id=recipe_id)
         db.add(db_yeast)
     db.commit()
     return _fetch_recipe(db, recipe_id)
@@ -331,7 +331,7 @@ async def scale_recipe(
 
     scale_factor = target_batch_size / original_batch_size
 
-    scaled_recipe_data = recipe_model.dict()
+    scaled_recipe_data = recipe_model.model_dump()
     scaled_recipe_data["batch_size"] = target_batch_size
     scaled_recipe_data["boil_size"] = (
         payload.target_boil_size
@@ -340,24 +340,24 @@ async def scale_recipe(
     )
 
     scaled_recipe_data["hops"] = [
-        {**hop.dict(), "amount": _scale_value(hop.amount, scale_factor)}
+        {**hop.model_dump(), "amount": _scale_value(hop.amount, scale_factor)}
         for hop in recipe_model.hops
     ]
     scaled_recipe_data["fermentables"] = [
         {
-            **fermentable.dict(),
+            **fermentable.model_dump(),
             "amount": _scale_value(fermentable.amount, scale_factor),
         }
         for fermentable in recipe_model.fermentables
     ]
     scaled_recipe_data["yeasts"] = [
-        {**yeast.dict(), "amount": _scale_value(yeast.amount, scale_factor)}
+        {**yeast.model_dump(), "amount": _scale_value(yeast.amount, scale_factor)}
         for yeast in recipe_model.yeasts
     ]
 
     scaled_miscs = []
     for misc in recipe_model.miscs:
-        misc_data = misc.dict()
+        misc_data = misc.model_dump()
         misc_data["amount"] = _scale_value(misc_data.get("amount"), scale_factor)
         if misc_data.get("batch_size") is not None:
             misc_data["batch_size"] = _scale_value(

@@ -15,7 +15,7 @@ async def create_inventory_misc(
     misc: schemas.InventoryMiscCreate, db: Session = Depends(get_db)
 ):
     try:
-        db_misc = models.InventoryMisc(**misc.dict())
+        db_misc = models.InventoryMisc(**misc.model_dump())
         db.add(db_misc)
         db.commit()
         db.refresh(db_misc)
@@ -35,7 +35,7 @@ async def update_inventory_misc(
     )
     if not db_misc:
         raise HTTPException(status_code=404, detail="Misc not found")
-    for key, value in misc.dict().items():
+    for key, value in misc.model_dump().items():
         setattr(db_misc, key, value)
     db.commit()
     db.refresh(db_misc)

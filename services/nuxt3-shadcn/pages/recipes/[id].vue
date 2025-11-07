@@ -16,7 +16,8 @@
         <form @submit.prevent="updateRecipe">
           <!-- Three columns -->
           <div class="grid grid-cols-3 gap-4">
-            <RecipeBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Recipe Info</h3>
               <div>
                 <label for="name" class="text-foreground">Name:</label>
                 <input type="text" id="name" v-model="recipe.name" required placeholder="Optional"
@@ -32,9 +33,10 @@
                 <input type="text" id="type" v-model="recipe.type" required placeholder="Optional"
                   class="border border-input rounded-lg p-2 w-full">
               </div>
-            </RecipeBlock>
+            </div>
 
-            <EquipmentBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Equipment</h3>
               <div>
                 <label for="batch_size" class="text-foreground">Batch Size:</label>
                 <input type="number" id="batch_size" v-model="recipe.batch_size" required placeholder="Optional"
@@ -55,9 +57,10 @@
                 <input type="number" id="efficiency" v-model="recipe.efficiency" required placeholder="Optional"
                   class="border border-input rounded-lg p-2 w-full">
               </div>
-            </EquipmentBlock>
+            </div>
 
-            <StyleBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Style</h3>
               <div>
                 <label for="abv" class="text-foreground">ABV:</label>
                 <input type="number" id="abv" v-model="recipe.abv" required placeholder="Optional"
@@ -83,11 +86,12 @@
                 <input type="number" id="est_color" v-model="recipe.est_color" required placeholder="Optional"
                   class="border border-input rounded-lg p-2 w-full">
               </div>
-            </StyleBlock>
+            </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
-            <FermentablesBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Fermentables</h3>
               <div>
                 <label for="fermentables" class="text-foreground">Fermentables:</label>
                 <div v-for="fermentable in recipe.fermentables" :key="fermentable.id">
@@ -95,9 +99,10 @@
                     class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
-            </FermentablesBlock>
+            </div>
 
-            <HopsBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Hops</h3>
               <div>
                 <label for="hops" class="text-foreground">Hops:</label>
                 <div v-for="hop in recipe.hops" :key="hop.id">
@@ -105,9 +110,10 @@
                     class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
-            </HopsBlock>
+            </div>
 
-            <MiscsBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Miscs</h3>
               <div>
                 <label for="miscs" class="text-foreground">Miscs:</label>
                 <div v-for="misc in recipe.miscs" :key="misc.id">
@@ -115,9 +121,10 @@
                     class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
-            </MiscsBlock>
+            </div>
 
-            <YeastBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Yeasts</h3>
               <div>
                 <label for="yeasts" class="text-foreground">Yeasts:</label>
                 <div v-for="yeast in recipe.yeasts" :key="yeast.id">
@@ -125,47 +132,49 @@
                     class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
-            </YeastBlock>
+            </div>
 
-            <MashBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Mash</h3>
               <div>
                 <label for="mash" class="text-foreground">Mash:</label>
                 <input type="text" id="mash" v-model="recipe.mash" required placeholder="Optional"
                   class="border border-input rounded-lg p-2 w-full">
               </div>
-            </MashBlock>
+            </div>
 
-            <FermentationBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Fermentation</h3>
               <div>
                 <label for="fermentation" class="text-foreground">Fermentation:</label>
                 <input type="text" id="fermentation" v-model="recipe.fermentation" required placeholder="Optional"
                   class="border border-input rounded-lg p-2 w-full">
               </div>
-            </FermentationBlock>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 gap-4">
-            <WaterBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Water</h3>
               <div>
                 <label for="water" class="text-foreground">Water:</label>
                 <input type="text" id="water" v-model="recipe.water" required placeholder="Optional"
                   class="border border-input rounded-lg p-2 w-full">
               </div>
-            </WaterBlock>
+            </div>
 
-            <NotesBlock class="border-2 p-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Notes</h3>
               <div>
                 <label for="notes" class="text-foreground">Notes:</label>
                 <textarea id="notes" v-model="recipe.notes" required placeholder="Optional"
                   class="border border-input rounded-lg p-2 w-full"></textarea>
               </div>
-            </NotesBlock>
+            </div>
           </div>
         </form>
       </div>
-    </main>
-
-    <!-- Footer -->
+    </main> <!-- Footer -->
     <footer class="flex justify-end gap-4 mt-8">
       <Button @click="updateRecipe">Save</Button>
       <Button @click="cancel">Cancel</Button>

@@ -39,7 +39,7 @@ from .water_profiles import (
     WaterProfileUpdate,
     WaterProfile,
 )
-from .mash_profiles import MashProfileBase
+from .mash_profiles import MashProfileBase, MashStepBase
 from .fermentables import (
     FermentableBase,
     RecipeFermentable,
@@ -122,6 +122,7 @@ __all__ = [
     "WaterProfileUpdate",
     "WaterProfile",
     "MashProfileBase",
+    "MashStepBase",
     "FermentableBase",
     "RecipeFermentable",
     "InventoryFermentableBase",

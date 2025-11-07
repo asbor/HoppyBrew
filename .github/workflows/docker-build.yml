@@ -56,12 +56,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Derive image name
+      - name: Derive image names
         id: image
         shell: bash
         run: |
-          IMAGE_NAME="${{ github.repository }}-${{ matrix.service.name }}"
-          echo "name=ghcr.io/${IMAGE_NAME,,}" >> "$GITHUB_OUTPUT"
+          GHCR_IMAGE_NAME="${{ github.repository }}-${{ matrix.service.name }}"
+          echo "ghcr_name=ghcr.io/${GHCR_IMAGE_NAME,,}" >> "$GITHUB_OUTPUT"
+          
           if [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
             echo "dockerhub_name=${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-${{ matrix.service.name }}" >> "$GITHUB_OUTPUT"
           fi
@@ -70,11 +71,14 @@ jobs:
         id: meta-ghcr
         uses: docker/metadata-action@v5
         with:
-          images: ${{ steps.image.outputs.name }}
+          images: |
+            ${{ steps.image.outputs.ghcr_name }}
+            ${{ steps.image.outputs.dockerhub_name }}
           tags: |
             type=ref,event=branch
             type=ref,event=tag
             type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Docker meta (DockerHub)
         if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}

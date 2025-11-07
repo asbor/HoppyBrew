@@ -22,7 +22,7 @@
             <Icon size="24" :name="isDark ? 'bx:bx-moon' : 'bx:bx-sun'" />
             <span>Toggle Color Mode</span>
           </button>
-          <CheckDatabaseConnection v-if="false" />
+          <CheckDatabaseConnection />
         </div>
       </div>
     </footer>
