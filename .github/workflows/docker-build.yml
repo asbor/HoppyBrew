@@ -93,7 +93,7 @@ jobs:
 
       - name: Build and push to GHCR
         id: build-ghcr
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
@@ -108,7 +108,7 @@ jobs:
       - name: Build and push to DockerHub
         if: ${{ (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
         id: build-dockerhub
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
