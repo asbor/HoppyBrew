@@ -7,7 +7,7 @@ Create Date: 2025-11-06 10:00:00.000000
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy import Column, Integer, String, Boolean, Text, Numeric, DateTime, ForeignKey, Index, inspect
+from sqlalchemy import Column, Integer, String, Boolean, Text, Numeric, DateTime, ForeignKey, Index
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
 
