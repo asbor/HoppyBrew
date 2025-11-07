@@ -9,6 +9,11 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.vue --max-warnings=0",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx,.vue --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "typecheck": "vue-tsc --noEmit",
     "test": "vitest",
     "test:unit": "vitest --run",
     "test:e2e": "playwright test",
@@ -44,9 +49,17 @@
     "@playwright/test": "^1.44.1",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vue/test-utils": "^2.4.5",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-nuxt": "^4.0.0",
+    "eslint-plugin-vue": "^9.26.0",
     "jsdom": "^24.0.0",
     "nuxt-icon": "^0.6.10",
+    "prettier": "^3.3.3",
     "typescript": "^5.4.5",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "vue-tsc": "^2.0.19"
   }
 }

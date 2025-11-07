@@ -21,4 +21,12 @@ test.describe('Library page', () => {
     await expect(page.getByText('Water: A Comprehensive Guide for Brewers')).toBeVisible()
     await expect(page.getByText('Designing Great Beers', { exact: true })).toHaveCount(0)
   })
+
+  test('toggles between card and table layouts', async ({ page }) => {
+    const toggle = page.getByRole('button', { name: 'Toggle library view' })
+    await toggle.click()
+    await expect(page.getByRole('table')).toBeVisible()
+    await toggle.click()
+    await expect(page.getByRole('table')).toHaveCount(0)
+  })
 })

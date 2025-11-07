@@ -30,10 +30,13 @@ class Device(Base):
     device_type = Column(String, nullable=False)  # ispindel, tilt, etc.
     description = Column(Text, nullable=True)
     api_endpoint = Column(String, nullable=True)  # Endpoint to receive data
-    api_token = Column(String, nullable=True)  # DEPRECATED: Use api_token_encrypted
-    api_token_encrypted = Column(Text, nullable=True)  # Encrypted storage for API tokens
+    # DEPRECATED: Use api_token_encrypted
+    api_token = Column(String, nullable=True)
+    # Encrypted storage for API tokens
+    api_token_encrypted = Column(Text, nullable=True)
     token_salt = Column(String(64), nullable=True)  # Salt for token encryption
-    calibration_data = Column(JSON, nullable=True)  # Device-specific calibration
+    # Device-specific calibration
+    calibration_data = Column(JSON, nullable=True)
     configuration = Column(JSON, nullable=True)  # Additional device settings
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

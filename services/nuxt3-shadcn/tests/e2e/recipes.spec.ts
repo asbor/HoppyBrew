@@ -26,4 +26,10 @@ test.describe('Recipes page', () => {
     await expect(page.getByRole('cell', { name: /Vienna Lager/i })).toBeVisible()
     await expect(page.getByRole('cell', { name: /West Coast IPA/i })).toHaveCount(0)
   })
+
+  test('navigates to the recipe card view', async ({ page }) => {
+    await page.getByRole('link', { name: 'Card View' }).click()
+    await expect(page).toHaveURL(/\/recipes\/recipeCardWindow$/)
+    await expect(page.getByRole('link', { name: 'Table View' })).toBeVisible()
+  })
 })

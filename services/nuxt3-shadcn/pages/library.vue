@@ -249,6 +249,7 @@ onMounted(() => {
       <div class="flex gap-2">
         <Button 
           @click="viewMode = viewMode === 'cards' ? 'table' : 'cards'"
+          aria-label="Toggle library view"
           variant="outline"
           size="sm"
         >

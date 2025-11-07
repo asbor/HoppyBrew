@@ -19,12 +19,15 @@ depends_on = None
 def upgrade() -> None:
     """Add encrypted token storage and deprecate plaintext api_token"""
     # Add new encrypted token field
-    op.add_column('devices', sa.Column('api_token_encrypted', sa.Text, nullable=True))
-    op.add_column('devices', sa.Column('token_salt', sa.String(64), nullable=True))
-    
+    op.add_column('devices', sa.Column(
+        'api_token_encrypted', sa.Text, nullable=True))
+    op.add_column('devices', sa.Column(
+        'token_salt', sa.String(64), nullable=True))
+
     # Add index for better performance on token lookups
-    op.create_index('idx_devices_token_encrypted', 'devices', ['api_token_encrypted'])
-    
+    op.create_index('idx_devices_token_encrypted',
+                    'devices', ['api_token_encrypted'])
+
     # Note: In production, you would:
     # 1. Migrate existing api_token values to encrypted storage
     # 2. Clear plaintext api_token values after migration

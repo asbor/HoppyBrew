@@ -1,155 +1,268 @@
-name: E2E Tests (Playwright)
+name: Playwright E2E
 
 on:
-    push:
-        branches:
-            - main
-            - develop
-            - "feature/**"
-            - "bugfix/**"
-            - "agent/**"
-        paths:
-            - "services/nuxt3-shadcn/**"
-            - ".github/workflows/e2e-tests.yml"
-    pull_request:
-        paths:
-            - "services/nuxt3-shadcn/**"
-            - ".github/workflows/e2e-tests.yml"
-    workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20
 
 concurrency:
-    group: e2e-tests-${{ github.ref }}
-    cancel-in-progress: true
-
-permissions:
-    contents: read
-    checks: write
+  group: playwright-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-    e2e-tests:
-        name: E2E Tests
-        runs-on: ubuntu-latest
-        timeout-minutes: 30
+  e2e:
+    name: Local dev server / ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    env:
+      API_BASE_URL: http://127.0.0.1:8000
+      BACKEND_PORT: 8000
+      FRONTEND_PORT: 3000
+      CI_STATE_DIR: ${{ github.workspace }}/.ci
+      NUXT_TELEMETRY_DISABLED: '1'
+    defaults:
+      run:
+        working-directory: services/nuxt3-shadcn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-        strategy:
-            fail-fast: false
-            matrix:
-                browser: [chromium, firefox, webkit]
+      - name: Check previous Playwright run status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'e2e-tests.yml',
+              status: 'completed',
+              per_page: 1
+            })
+            const latest = data.workflow_runs?.[0]
+            if (!latest) {
+              core.info('No previous Playwright workflow run found.')
+            } else {
+              core.info(`Previous Playwright run ${latest.id} concluded with ${latest.conclusion}`)
+              if (latest.conclusion !== 'success') {
+                core.warning(`Previous Playwright workflow failed (${latest.conclusion}). Review ${latest.html_url}`)
+              }
+            }
 
-        defaults:
-            run:
-                working-directory: services/nuxt3-shadcn
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+          cache-dependency-path: services/nuxt3-shadcn/yarn.lock
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+      - name: Setup Python
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "20"
-                  cache: npm
-                  cache-dependency-path: services/nuxt3-shadcn/package-lock.json
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('services/backend/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ steps.setup-python.outputs.python-version }}-
 
-            - name: Install dependencies
-              run: npm ci
+      - name: Install backend dependencies
+        working-directory: services/backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-            - name: Install Playwright browsers
-              run: npx playwright install ${{ matrix.browser }}
+      - name: Install frontend dependencies
+        run: yarn install --frozen-lockfile
 
-            - name: Install system dependencies
-              run: npx playwright install-deps ${{ matrix.browser }}
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ matrix.browser }}-${{ hashFiles('services/nuxt3-shadcn/package.json', 'services/nuxt3-shadcn/yarn.lock') }}
 
-            - name: Set up backend service
-              run: |
-                  # Start backend in background for E2E tests
-                  cd ../backend
-                  pip install -r requirements.txt
-                  python -m pytest --version # Ensure backend dependencies work
-                  nohup python main.py &
-                  echo "Backend started"
+      - name: Install Playwright browsers
+        run: |
+          npx playwright install --with-deps ${{ matrix.browser }}
+          npx playwright --version
 
-                  # Wait for backend to be ready
-                  timeout 60 bash -c 'until curl -f http://localhost:5000/health || curl -f http://localhost:8000/health; do sleep 2; done'
-              env:
-                  PYTHONPATH: ${{ github.workspace }}/services/backend
+      - name: Start backend API
+        working-directory: services/backend
+        env:
+          TESTING: '1'
+          TEST_DATABASE_URL: sqlite:///./tmp_test.db
+          LOG_FILE: ${{ env.CI_STATE_DIR }}/backend.log
+        run: |
+          mkdir -p "$CI_STATE_DIR"
+          nohup python -m uvicorn main:app --host 0.0.0.0 --port "$BACKEND_PORT" > "$CI_STATE_DIR/backend.log" 2>&1 &
+          echo $! > "$CI_STATE_DIR/backend.pid"
 
-            - name: Run Playwright tests
-              run: npx playwright test --project=${{ matrix.browser }}
-              env:
-                  CI: true
+      - name: Wait for backend healthcheck
+        working-directory: .
+        run: |
+          set -e
+          for i in {1..40}; do
+            if curl -sSf "http://127.0.0.1:${BACKEND_PORT}/health" > /dev/null; then
+              echo "Backend is live"
+              exit 0
+            fi
+            echo "Backend not ready yet (attempt ${i}/40)"
+            sleep 3
+          done
+          echo "Backend never became ready" >&2
+          if [ -f "$CI_STATE_DIR/backend.log" ]; then
+            echo "--- backend log tail ---"
+            tail -n 200 "$CI_STATE_DIR/backend.log" || true
+          fi
+          exit 1
 
-            - name: Upload test results
-              uses: actions/upload-artifact@v4
-              if: always()
-              with:
-                  name: playwright-results-${{ matrix.browser }}
-                  path: |
-                      services/nuxt3-shadcn/test-results/
-                      services/nuxt3-shadcn/playwright-report/
-                  retention-days: 7
+      - name: Run Playwright tests
+        run: npx playwright test --project=${{ matrix.browser }}
 
-            - name: Upload Playwright HTML report
-              uses: actions/upload-artifact@v4
-              if: always()
-              with:
-                  name: playwright-report-${{ matrix.browser }}
-                  path: services/nuxt3-shadcn/playwright-report/
-                  retention-days: 7
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: services/nuxt3-shadcn/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
 
-    mobile-e2e:
-        name: Mobile E2E Tests
-        runs-on: ubuntu-latest
-        timeout-minutes: 25
+      - name: Upload backend logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-log-${{ matrix.browser }}
+          path: .ci/backend.log
+          if-no-files-found: ignore
+          retention-days: 7
 
-        defaults:
-            run:
-                working-directory: services/nuxt3-shadcn
+      - name: Stop backend API
+        if: always()
+        working-directory: .
+        run: |
+          if [ -f "$CI_STATE_DIR/backend.pid" ]; then
+            kill "$(cat "$CI_STATE_DIR/backend.pid")" 2>/dev/null || true
+            rm -f "$CI_STATE_DIR/backend.pid"
+          fi
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+  pages-preview:
+    name: Deploy Pages preview
+    needs: e2e
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: services/nuxt3-shadcn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: "20"
-                  cache: npm
-                  cache-dependency-path: services/nuxt3-shadcn/package-lock.json
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+          cache-dependency-path: services/nuxt3-shadcn/yarn.lock
 
-            - name: Install dependencies
-              run: npm ci
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-            - name: Install Playwright browsers
-              run: npx playwright install chromium
+      - name: Build static site
+        run: yarn generate
 
-            - name: Install system dependencies
-              run: npx playwright install-deps chromium
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-            - name: Set up backend service
-              run: |
-                  # Start backend in background for mobile tests
-                  cd ../backend
-                  pip install -r requirements.txt
-                  nohup python main.py &
-                  echo "Backend started for mobile tests"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: services/nuxt3-shadcn/.output/public
 
-                  # Wait for backend to be ready
-                  timeout 60 bash -c 'until curl -f http://localhost:5000/health || curl -f http://localhost:8000/health; do sleep 2; done'
-              env:
-                  PYTHONPATH: ${{ github.workspace }}/services/backend
+      - name: Deploy to GitHub Pages (preview)
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          preview: true
 
-            - name: Run mobile Playwright tests
-              run: npx playwright test --project="Mobile Chrome" --project="Mobile Safari"
-              env:
-                  CI: true
+  preview-tests:
+    name: Preview smoke (chromium)
+    needs: pages-preview
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BASE_URL: ${{ needs.pages-preview.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: services/nuxt3-shadcn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Upload mobile test results
-              uses: actions/upload-artifact@v4
-              if: always()
-              with:
-                  name: playwright-mobile-results
-                  path: |
-                      services/nuxt3-shadcn/test-results/
-                      services/nuxt3-shadcn/playwright-report/
-                  retention-days: 7
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+          cache-dependency-path: services/nuxt3-shadcn/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('services/nuxt3-shadcn/package.json', 'services/nuxt3-shadcn/yarn.lock') }}
+
+      - name: Install Playwright browsers
+        run: |
+          npx playwright install --with-deps chromium
+          npx playwright --version
+
+      - name: Wait for preview to become ready
+        run: |
+          echo "Waiting for $PLAYWRIGHT_BASE_URL"
+          for i in {1..20}; do
+            if curl -sSf "$PLAYWRIGHT_BASE_URL" > /dev/null; then
+              echo "Preview is live"
+              exit 0
+            fi
+            echo "Preview not ready yet, retrying..."
+            sleep 10
+          done
+          echo "Preview never became ready" >&2
+          exit 1
+
+      - name: Run Playwright tests
+        run: npx playwright test --project=chromium
+
+      - name: Upload preview Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-preview
+          path: services/nuxt3-shadcn/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7

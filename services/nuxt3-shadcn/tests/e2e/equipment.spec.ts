@@ -26,4 +26,15 @@ test.describe('Equipment profiles page', () => {
     await page.getByRole('button', { name: 'Cancel' }).click()
     await expect(page.getByRole('heading', { name: 'Create Equipment Profile' })).toHaveCount(0)
   })
+
+  test('duplicates an equipment profile with copy suffix', async ({ page }) => {
+    const [request] = await Promise.all([
+      page.waitForRequest(req => req.url().includes('/equipment') && req.method() === 'POST'),
+      page.getByTitle('Duplicate').first().click()
+    ])
+
+    const payload = request.postDataJSON()
+    await expect(page.getByTitle('Duplicate').first()).toBeVisible()
+    expect(payload.name).toContain('(Copy)')
+  })
 })
