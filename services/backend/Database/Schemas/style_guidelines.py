@@ -39,8 +39,18 @@ class StyleGuidelineBase(BaseModel):
     ibu: Optional[str] = None
     ebc: Optional[str] = None
 
-    model_config = ConfigDict(json_schema_extra={"example": STYLE_GUIDELINE_EXAMPLE})
+    model_config = ConfigDict(from_attributes=True, json_schema_extra={
+                              "example": STYLE_GUIDELINE_EXAMPLE})
 
 
 class StyleGuidelineBaseCreate(StyleGuidelineBase):
-    model_config = ConfigDict(json_schema_extra={"example": STYLE_GUIDELINE_EXAMPLE})
+    model_config = ConfigDict(from_attributes=True, json_schema_extra={
+                              "example": STYLE_GUIDELINE_EXAMPLE})
+
+
+class StyleGuideline(StyleGuidelineBase):
+    """StyleGuideline schema with ID for responses"""
+    id: Optional[int] = None
+
+    model_config = ConfigDict(from_attributes=True, json_schema_extra={
+                              "example": {**STYLE_GUIDELINE_EXAMPLE, "id": 1}})
