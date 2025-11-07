@@ -23,7 +23,6 @@ from .endpoints import (
     trigger_beer_styles_processing,
     homeassistant,
     devices,
-
 )
 
 # create the router and include all the routers from the endpoints folder
@@ -54,9 +53,7 @@ router.include_router(users.router, tags=["user"])
 
 # Include the script router
 
-router.include_router(
-    trigger_beer_styles_processing.router, tags=["refresh-beer-styles"]
-)
+router.include_router(trigger_beer_styles_processing.router, tags=["refresh-beer-styles"])
 
 # Include the HomeAssistant integration router
 

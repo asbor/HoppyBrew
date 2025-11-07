@@ -74,7 +74,7 @@ class RecipeFermentable(FermentableBase):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {**FERMENTABLE_BASE_EXAMPLE, "recipe_id": 12}}
+        json_schema_extra={"example": {**FERMENTABLE_BASE_EXAMPLE, "recipe_id": 12}},
     )
 
 
@@ -108,5 +108,5 @@ class InventoryFermentable(InventoryFermentableBase):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {**INVENTORY_FERMENTABLE_EXAMPLE, "id": 3, "batch_id": 7}}
+        json_schema_extra={"example": {**INVENTORY_FERMENTABLE_EXAMPLE, "id": 3, "batch_id": 7}},
     )

@@ -58,4 +58,5 @@ class Styles(Base):
     recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
     recipe = relationship("Recipes", back_populates="style_profile")
 
+
 # TODO: batch_id = Column(Integer, ForeignKey('batches.id'))

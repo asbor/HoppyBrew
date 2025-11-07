@@ -6,9 +6,7 @@ from datetime import datetime
 
 class BatchLogs(Base):
     __tablename__ = "batch_logs"
-    __table_args__ = (
-        Index("ix_batch_logs_batch_id", "batch_id"),
-    )
+    __table_args__ = (Index("ix_batch_logs_batch_id", "batch_id"),)
     id = Column(Integer, primary_key=True, index=True)
     batch_id = Column(
         Integer,

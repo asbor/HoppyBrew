@@ -24,7 +24,7 @@ MASH_STEP_EXAMPLE = {
     "step_time": 60,
     "ramp_time": 2,
     "description": "Main conversion step",
-    "display_step_temp": "66 °C"
+    "display_step_temp": "66 °C",
 }
 
 
@@ -32,6 +32,7 @@ class MashStepBase(BaseModel):
     """
     Schema for mash step data.
     """
+
     name: Optional[str] = None
     version: Optional[int] = None
     type: Optional[str] = None

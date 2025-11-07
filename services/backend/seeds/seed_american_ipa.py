@@ -26,12 +26,12 @@ logger = get_logger("SeedAmericanIPA")
 def seed_american_ipa_recipe() -> int:
     """
     Create the American IPA (BJCP 21A) recipe in the database.
-    
+
     Returns:
         int: The ID of the created recipe, or the existing recipe ID if it already exists.
     """
     session: Session = SessionLocal()
-    
+
     try:
         # Check if the recipe already exists
         existing_recipe = (
@@ -39,11 +39,11 @@ def seed_american_ipa_recipe() -> int:
             .filter(models.Recipes.name == "American IPA (BJCP 21A)")
             .first()
         )
-        
+
         if existing_recipe:
             logger.info("American IPA recipe already exists with ID: %d", existing_recipe.id)
             return existing_recipe.id
-        
+
         # Create the main recipe
         recipe = models.Recipes(
             name="American IPA (BJCP 21A)",
@@ -75,10 +75,10 @@ def seed_american_ipa_recipe() -> int:
             display_og="1.063",
             display_fg="1.014",
         )
-        
+
         session.add(recipe)
         session.flush()  # Get the recipe ID
-        
+
         # Add fermentables (malts)
         # For a 25L batch targeting OG 1.063, we need approximately 5.5-6 kg of base malt
         # with some specialty malts for balance
@@ -124,10 +124,10 @@ def seed_american_ipa_recipe() -> int:
                 notes="Adds malt complexity and slight sweetness",
             ),
         ]
-        
+
         for fermentable in fermentables:
             session.add(fermentable)
-        
+
         # Add hops for American IPA character
         # Targeting 55 IBU with citrus/fruity New World hops
         hops = [
@@ -202,10 +202,10 @@ def seed_american_ipa_recipe() -> int:
                 display_time="5 days",
             ),
         ]
-        
+
         for hop in hops:
             session.add(hop)
-        
+
         # Add yeast - clean American ale yeast with low esters
         yeast = models.RecipeYeast(
             recipe_id=recipe.id,
@@ -225,9 +225,9 @@ def seed_american_ipa_recipe() -> int:
             max_reuse=5,
             add_to_secondary=False,
         )
-        
+
         session.add(yeast)
-        
+
         # Add optional misc ingredients for clarity
         miscs = [
             models.RecipeMisc(
@@ -249,14 +249,14 @@ def seed_american_ipa_recipe() -> int:
                 notes="Supports healthy yeast fermentation",
             ),
         ]
-        
+
         for misc in miscs:
             session.add(misc)
-        
+
         session.commit()
         logger.info("Successfully created American IPA recipe with ID: %d", recipe.id)
         return recipe.id
-        
+
     except Exception as e:
         session.rollback()
         logger.error("Failed to create American IPA recipe: %s", str(e))

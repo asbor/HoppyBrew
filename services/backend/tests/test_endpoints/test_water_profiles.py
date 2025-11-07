@@ -18,10 +18,10 @@ def test_create_water_profile(client: TestClient):
         "sulfate": 50,
         "bicarbonate": 100,
     }
-    
+
     response = client.post("/water-profiles", json=profile_data)
     assert response.status_code == 201
-    
+
     data = response.json()
     assert data["name"] == "Test Profile"
     assert data["profile_type"] == "source"
@@ -39,10 +39,10 @@ def test_get_all_water_profiles(client: TestClient):
         "calcium": 50,
     }
     client.post("/water-profiles", json=profile_data)
-    
+
     response = client.get("/water-profiles")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert isinstance(data, list)
     assert len(data) > 0
@@ -59,11 +59,11 @@ def test_get_water_profile_by_id(client: TestClient):
     }
     create_response = client.post("/water-profiles", json=profile_data)
     profile_id = create_response.json()["id"]
-    
+
     # Get the profile
     response = client.get(f"/water-profiles/{profile_id}")
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["id"] == profile_id
     assert data["name"] == "Test Profile 2"
@@ -86,7 +86,7 @@ def test_update_water_profile(client: TestClient):
     }
     create_response = client.post("/water-profiles", json=profile_data)
     profile_id = create_response.json()["id"]
-    
+
     # Update the profile
     update_data = {
         "name": "Updated Test Profile",
@@ -94,7 +94,7 @@ def test_update_water_profile(client: TestClient):
     }
     response = client.put(f"/water-profiles/{profile_id}", json=update_data)
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["name"] == "Updated Test Profile"
     assert float(data["calcium"]) == 75
@@ -103,7 +103,7 @@ def test_update_water_profile(client: TestClient):
 def test_update_default_profile_fails(client: TestClient, db_session):
     """Test that updating a default profile is prevented."""
     from Database.Models.Profiles.water_profiles import WaterProfiles
-    
+
     # Create a default profile
     default_profile = WaterProfiles(
         name="Default Profile",
@@ -115,7 +115,7 @@ def test_update_default_profile_fails(client: TestClient, db_session):
     db_session.add(default_profile)
     db_session.commit()
     db_session.refresh(default_profile)
-    
+
     # Try to update it
     update_data = {"name": "Should Fail"}
     response = client.put(f"/water-profiles/{default_profile.id}", json=update_data)
@@ -132,11 +132,11 @@ def test_delete_water_profile(client: TestClient):
     }
     create_response = client.post("/water-profiles", json=profile_data)
     profile_id = create_response.json()["id"]
-    
+
     # Delete the profile
     response = client.delete(f"/water-profiles/{profile_id}")
     assert response.status_code == 200
-    
+
     # Verify it's gone
     get_response = client.get(f"/water-profiles/{profile_id}")
     assert get_response.status_code == 404
@@ -145,7 +145,7 @@ def test_delete_water_profile(client: TestClient):
 def test_delete_default_profile_fails(client: TestClient, db_session):
     """Test that deleting a default profile is prevented."""
     from Database.Models.Profiles.water_profiles import WaterProfiles
-    
+
     # Create a default profile
     default_profile = WaterProfiles(
         name="Default Profile 2",
@@ -157,7 +157,7 @@ def test_delete_default_profile_fails(client: TestClient, db_session):
     db_session.add(default_profile)
     db_session.commit()
     db_session.refresh(default_profile)
-    
+
     # Try to delete it
     response = client.delete(f"/water-profiles/{default_profile.id}")
     assert response.status_code == 403
@@ -176,11 +176,11 @@ def test_duplicate_water_profile(client: TestClient):
     }
     create_response = client.post("/water-profiles", json=profile_data)
     profile_id = create_response.json()["id"]
-    
+
     # Duplicate it
     response = client.post(f"/water-profiles/{profile_id}/duplicate")
     assert response.status_code == 201
-    
+
     data = response.json()
     assert data["name"] == "Original Profile (Copy)"
     assert data["description"] == "Original description"
@@ -198,14 +198,13 @@ def test_duplicate_with_custom_name(client: TestClient):
     }
     create_response = client.post("/water-profiles", json=profile_data)
     profile_id = create_response.json()["id"]
-    
+
     # Duplicate with custom name
     response = client.post(
-        f"/water-profiles/{profile_id}/duplicate",
-        params={"new_name": "My Custom Duplicate"}
+        f"/water-profiles/{profile_id}/duplicate", params={"new_name": "My Custom Duplicate"}
     )
     assert response.status_code == 201
-    
+
     data = response.json()
     assert data["name"] == "My Custom Duplicate"
 
@@ -213,21 +212,27 @@ def test_duplicate_with_custom_name(client: TestClient):
 def test_filter_by_profile_type(client: TestClient):
     """Test filtering profiles by type."""
     # Create profiles of different types
-    client.post("/water-profiles", json={
-        "name": "Source Profile",
-        "profile_type": "source",
-    })
-    client.post("/water-profiles", json={
-        "name": "Target Profile",
-        "profile_type": "target",
-    })
-    
+    client.post(
+        "/water-profiles",
+        json={
+            "name": "Source Profile",
+            "profile_type": "source",
+        },
+    )
+    client.post(
+        "/water-profiles",
+        json={
+            "name": "Target Profile",
+            "profile_type": "target",
+        },
+    )
+
     # Filter by source
     response = client.get("/water-profiles?profile_type=source")
     assert response.status_code == 200
     data = response.json()
     assert all(p["profile_type"] == "source" for p in data)
-    
+
     # Filter by target
     response = client.get("/water-profiles?profile_type=target")
     assert response.status_code == 200
@@ -238,17 +243,23 @@ def test_filter_by_profile_type(client: TestClient):
 def test_filter_by_style_category(client: TestClient):
     """Test filtering profiles by style category."""
     # Create profiles with different style categories
-    client.post("/water-profiles", json={
-        "name": "IPA Profile",
-        "profile_type": "target",
-        "style_category": "IPA",
-    })
-    client.post("/water-profiles", json={
-        "name": "Stout Profile",
-        "profile_type": "target",
-        "style_category": "Stout",
-    })
-    
+    client.post(
+        "/water-profiles",
+        json={
+            "name": "IPA Profile",
+            "profile_type": "target",
+            "style_category": "IPA",
+        },
+    )
+    client.post(
+        "/water-profiles",
+        json={
+            "name": "Stout Profile",
+            "profile_type": "target",
+            "style_category": "Stout",
+        },
+    )
+
     # Filter by IPA
     response = client.get("/water-profiles?style_category=IPA")
     assert response.status_code == 200
@@ -259,7 +270,7 @@ def test_filter_by_style_category(client: TestClient):
 def test_filter_by_is_default(client: TestClient, db_session):
     """Test filtering profiles by default status."""
     from Database.Models.Profiles.water_profiles import WaterProfiles
-    
+
     # Create a default profile
     default_profile = WaterProfiles(
         name="Default Profile 3",
@@ -269,20 +280,23 @@ def test_filter_by_is_default(client: TestClient, db_session):
     )
     db_session.add(default_profile)
     db_session.commit()
-    
+
     # Create a custom profile
-    client.post("/water-profiles", json={
-        "name": "Custom Profile",
-        "profile_type": "source",
-        "is_custom": True,
-    })
-    
+    client.post(
+        "/water-profiles",
+        json={
+            "name": "Custom Profile",
+            "profile_type": "source",
+            "is_custom": True,
+        },
+    )
+
     # Filter by default
     response = client.get("/water-profiles?is_default=true")
     assert response.status_code == 200
     data = response.json()
     assert all(p["is_default"] == True for p in data)
-    
+
     # Filter by custom
     response = client.get("/water-profiles?is_default=false")
     assert response.status_code == 200
@@ -296,11 +310,11 @@ def test_create_duplicate_name_fails(client: TestClient):
         "name": "Duplicate Test",
         "profile_type": "source",
     }
-    
+
     # Create first profile
     response1 = client.post("/water-profiles", json=profile_data)
     assert response1.status_code == 201
-    
+
     # Try to create duplicate
     response2 = client.post("/water-profiles", json=profile_data)
     assert response2.status_code == 400

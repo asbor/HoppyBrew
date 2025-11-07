@@ -12,14 +12,12 @@ router = APIRouter()
 
 
 @router.get("/equipment", response_model=List[dict])
-async def get_equipment_profiles(
-    db: Session = Depends(get_db)
-):
+async def get_equipment_profiles(db: Session = Depends(get_db)):
     """
     List all equipment profiles.
     """
     profiles = db.query(models.EquipmentProfiles).order_by(models.EquipmentProfiles.name).all()
-    
+
     # Convert to dict to match frontend expectations
     result = []
     for profile in profiles:
@@ -51,34 +49,34 @@ async def get_equipment_profiles(
             "display_top_up_kettle": profile.display_top_up_kettle,
         }
         result.append(profile_dict)
-    
+
     return result
 
 
 @router.post("/equipment", response_model=dict, status_code=201)
 async def create_equipment_profile(
-    profile: schemas.EquipmentProfileBase,
-    db: Session = Depends(get_db)
+    profile: schemas.EquipmentProfileBase, db: Session = Depends(get_db)
 ):
     """
     Create a new equipment profile.
     """
     # Check if profile with same name already exists
-    existing = db.query(models.EquipmentProfiles).filter(
-        models.EquipmentProfiles.name == profile.name
-    ).first()
+    existing = (
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.name == profile.name)
+        .first()
+    )
 
     if existing:
         raise HTTPException(
-            status_code=400,
-            detail=f"Equipment profile with name '{profile.name}' already exists"
+            status_code=400, detail=f"Equipment profile with name '{profile.name}' already exists"
         )
 
     db_profile = models.EquipmentProfiles(**profile.model_dump())
     db.add(db_profile)
     db.commit()
     db.refresh(db_profile)
-    
+
     return {
         "id": str(db_profile.id),
         "name": db_profile.name,
@@ -109,16 +107,13 @@ async def create_equipment_profile(
 
 
 @router.get("/equipment/{profile_id}", response_model=dict)
-async def get_equipment_profile(
-    profile_id: int,
-    db: Session = Depends(get_db)
-):
+async def get_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
     """
     Get a specific equipment profile by ID.
     """
-    profile = db.query(models.EquipmentProfiles).filter(
-        models.EquipmentProfiles.id == profile_id
-    ).first()
+    profile = (
+        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Equipment profile not found")
@@ -154,31 +149,33 @@ async def get_equipment_profile(
 
 @router.put("/equipment/{profile_id}", response_model=dict)
 async def update_equipment_profile(
-    profile_id: int,
-    profile_update: schemas.EquipmentProfileBase,
-    db: Session = Depends(get_db)
+    profile_id: int, profile_update: schemas.EquipmentProfileBase, db: Session = Depends(get_db)
 ):
     """
     Update an existing equipment profile.
     """
-    profile = db.query(models.EquipmentProfiles).filter(
-        models.EquipmentProfiles.id == profile_id
-    ).first()
+    profile = (
+        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Equipment profile not found")
 
     # Check for name conflicts if name is being updated
     if profile_update.name and profile_update.name != profile.name:
-        existing = db.query(models.EquipmentProfiles).filter(
-            models.EquipmentProfiles.name == profile_update.name,
-            models.EquipmentProfiles.id != profile_id
-        ).first()
+        existing = (
+            db.query(models.EquipmentProfiles)
+            .filter(
+                models.EquipmentProfiles.name == profile_update.name,
+                models.EquipmentProfiles.id != profile_id,
+            )
+            .first()
+        )
 
         if existing:
             raise HTTPException(
                 status_code=400,
-                detail=f"Equipment profile with name '{profile_update.name}' already exists"
+                detail=f"Equipment profile with name '{profile_update.name}' already exists",
             )
 
     # Update only provided fields
@@ -189,7 +186,7 @@ async def update_equipment_profile(
 
     db.commit()
     db.refresh(profile)
-    
+
     return {
         "id": str(profile.id),
         "name": profile.name,
@@ -220,25 +217,22 @@ async def update_equipment_profile(
 
 
 @router.delete("/equipment/{profile_id}", response_model=dict)
-async def delete_equipment_profile(
-    profile_id: int,
-    db: Session = Depends(get_db)
-):
+async def delete_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
     """
     Delete an equipment profile.
     """
-    profile = db.query(models.EquipmentProfiles).filter(
-        models.EquipmentProfiles.id == profile_id
-    ).first()
+    profile = (
+        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Equipment profile not found")
 
     db.delete(profile)
     db.commit()
-    
+
     return {
         "id": str(profile.id),
         "name": profile.name,
-        "message": "Equipment profile deleted successfully"
+        "message": "Equipment profile deleted successfully",
     }

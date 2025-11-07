@@ -40,8 +40,7 @@ class YeastBase(BaseModel):
     add_to_secondary: Optional[bool] = None
 
     model_config = ConfigDict(
-        from_attributes=True,
-        json_schema_extra={"example": YEAST_BASE_EXAMPLE}
+        from_attributes=True, json_schema_extra={"example": YEAST_BASE_EXAMPLE}
     )
 
 
@@ -49,15 +48,12 @@ class RecipeYeast(YeastBase):
     recipe_id: int
 
     model_config = ConfigDict(
-        from_attributes=True,
-        json_schema_extra={"example": {**YEAST_BASE_EXAMPLE, "recipe_id": 12}}
+        from_attributes=True, json_schema_extra={"example": {**YEAST_BASE_EXAMPLE, "recipe_id": 12}}
     )
 
 
 class InventoryYeastBase(YeastBase):
-    model_config = ConfigDict(
-        json_schema_extra={"example": YEAST_BASE_EXAMPLE}
-    )
+    model_config = ConfigDict(json_schema_extra={"example": YEAST_BASE_EXAMPLE})
 
 
 class InventoryYeastCreate(InventoryYeastBase):
@@ -70,5 +66,5 @@ class InventoryYeast(InventoryYeastBase):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {**YEAST_BASE_EXAMPLE, "id": 22, "batch_id": 5}}
+        json_schema_extra={"example": {**YEAST_BASE_EXAMPLE, "id": 22, "batch_id": 5}},
     )

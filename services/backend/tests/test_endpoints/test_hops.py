@@ -24,11 +24,13 @@ def test_create_inventory_hop(client):
             "notes": "Test notes",
             "display_amount": "10 grams",
             "inventory": "5 units",
-            "display_time": "60 minutes"
-        }
+            "display_time": "60 minutes",
+        },
     )
-    assert response.status_code == 200, f'''
-    Unexpected status code: {response.status_code}'''
+    assert (
+        response.status_code == 200
+    ), f"""
+    Unexpected status code: {response.status_code}"""
 
     hop = response.json()
     assert hop["name"] == "Test Hop"
@@ -52,13 +54,15 @@ def test_get_all_inventory_hops(client):
             "notes": "Test notes",
             "display_amount": "10 grams",
             "inventory": "5 units",
-            "display_time": "60 minutes"
-        }
+            "display_time": "60 minutes",
+        },
     )
     # Get all inventory hops
     response = client.get("/inventory/hops")
-    assert response.status_code == 200, f'''
-    Unexpected status code: {response.status_code}'''
+    assert (
+        response.status_code == 200
+    ), f"""
+    Unexpected status code: {response.status_code}"""
 
     hops = response.json()
     assert isinstance(hops, list)
@@ -83,16 +87,18 @@ def test_get_inventory_hop(client):
             "notes": "Test notes",
             "display_amount": "10 grams",
             "inventory": "5 units",
-            "display_time": "60 minutes"
-        }
+            "display_time": "60 minutes",
+        },
     )
     hop = response.json()
     hop_id = hop["id"]
 
     # Fetch the created inventory hop
     response = client.get(f"/inventory/hops/{hop_id}")
-    assert response.status_code == 200, f'''
-    Unexpected status code: {response.status_code}'''
+    assert (
+        response.status_code == 200
+    ), f"""
+    Unexpected status code: {response.status_code}"""
 
     hop = response.json()
     assert hop["name"] == "Test Hop"
@@ -116,8 +122,8 @@ def test_update_inventory_hop(client):
             "notes": "Test notes",
             "display_amount": "10 grams",
             "inventory": "5 units",
-            "display_time": "60 minutes"
-        }
+            "display_time": "60 minutes",
+        },
     )
     hop = response.json()
     hop_id = hop["id"]
@@ -139,11 +145,13 @@ def test_update_inventory_hop(client):
             "notes": "Updated test notes",
             "display_amount": "15 grams",
             "inventory": "10 units",
-            "display_time": "30 minutes"
-        }
+            "display_time": "30 minutes",
+        },
     )
-    assert response.status_code == 200, f'''
-    Unexpected status code: {response.status_code}'''
+    assert (
+        response.status_code == 200
+    ), f"""
+    Unexpected status code: {response.status_code}"""
 
     hop = response.json()
     assert hop["name"] == "Updated Test Hop"
@@ -167,21 +175,25 @@ def test_delete_inventory_hop(client):
             "notes": "Test notes",
             "display_amount": "10 grams",
             "inventory": "5 units",
-            "display_time": "60 minutes"
-        }
+            "display_time": "60 minutes",
+        },
     )
     hop = response.json()
     hop_id = hop["id"]
 
     # Delete the created inventory hop
     response = client.delete(f"/inventory/hops/{hop_id}")
-    assert response.status_code == 200, f'''
-    Unexpected status code: {response.status_code}'''
+    assert (
+        response.status_code == 200
+    ), f"""
+    Unexpected status code: {response.status_code}"""
 
     # Verify the hop was deleted
     response = client.get(f"/inventory/hops/{hop_id}")
-    assert response.status_code == 404, f'''
-    Unexpected status code: {response.status_code}'''
+    assert (
+        response.status_code == 404
+    ), f"""
+    Unexpected status code: {response.status_code}"""
 
 
 if __name__ == "__main__":

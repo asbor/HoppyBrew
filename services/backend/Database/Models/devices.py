@@ -6,17 +6,17 @@ from database import Base
 class Device(Base):
     """
     Description:
-    
+
     This class represents the Device table in the database.
     It stores configuration for external brewing devices such as iSpindel.
-    
+
     The iSpindel is a smart hydrometer that measures specific gravity,
     temperature, and battery level during fermentation.
-    
+
     Relationships:
-    
+
     - ONE device can be associated with ZERO or MANY batches
-    
+
     Notes:
     - Device types include: ispindel, tilt, etc.
     - Configuration data is stored as JSON for flexibility
@@ -24,7 +24,7 @@ class Device(Base):
     """
 
     __tablename__ = "devices"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     device_type = Column(String, nullable=False)  # ispindel, tilt, etc.

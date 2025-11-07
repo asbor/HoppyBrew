@@ -21,11 +21,7 @@ def create_base_recipe(client, db_session, name="Test Recipe"):
     response = client.post("/recipes", json=payload)
     assert response.status_code == 200, response.text
 
-    recipe = (
-        db_session.query(models.Recipes)
-        .filter(models.Recipes.name == name)
-        .one()
-    )
+    recipe = db_session.query(models.Recipes).filter(models.Recipes.name == name).one()
     return recipe.id
 
 
@@ -101,24 +97,10 @@ def test_delete_batch_removes_inventory(client, db_session):
     missing = client.get(f"/batches/{batch_id}")
     assert missing.status_code == 404
 
-    assert (
-        db_session.query(models.InventoryHop).filter_by(batch_id=batch_id).count()
-        == 0
-    )
-    assert (
-        db_session.query(models.InventoryFermentable)
-        .filter_by(batch_id=batch_id)
-        .count()
-        == 0
-    )
-    assert (
-        db_session.query(models.InventoryMisc).filter_by(batch_id=batch_id).count()
-        == 0
-    )
-    assert (
-        db_session.query(models.InventoryYeast).filter_by(batch_id=batch_id).count()
-        == 0
-    )
+    assert db_session.query(models.InventoryHop).filter_by(batch_id=batch_id).count() == 0
+    assert db_session.query(models.InventoryFermentable).filter_by(batch_id=batch_id).count() == 0
+    assert db_session.query(models.InventoryMisc).filter_by(batch_id=batch_id).count() == 0
+    assert db_session.query(models.InventoryYeast).filter_by(batch_id=batch_id).count() == 0
 
 
 def test_get_all_batches_returns_empty_list_when_no_batches(client):
@@ -135,9 +117,9 @@ def test_get_all_batches_returns_list_with_inventory(client, db_session):
     response = client.get("/batches")
     assert response.status_code == 200
     batches = response.json()
-    
+
     assert len(batches) == 2
-    
+
     # Verify each batch has the required inventory relationships loaded
     for batch in batches:
         assert "inventory_hops" in batch

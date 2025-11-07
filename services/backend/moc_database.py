@@ -11,6 +11,7 @@ class Todo(BaseModel):
     name: str
     completed: bool
 
+
 # Mock database
 
 

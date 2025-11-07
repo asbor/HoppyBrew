@@ -21,9 +21,7 @@ load_dotenv()
 IS_TESTING = os.getenv("TESTING", "0") == "1"
 logger.info(f"IS_TESTING: {IS_TESTING}")
 if IS_TESTING:
-    SQLALCHEMY_DATABASE_URL = os.getenv(
-        "TEST_DATABASE_URL", "sqlite:///./test_fermentables.db"
-    )
+    SQLALCHEMY_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite:///./test_fermentables.db")
 else:
     SQLALCHEMY_DATABASE_URL = f'postgresql://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@{os.getenv("DATABASE_HOST")}:{os.getenv("DATABASE_PORT")}/{os.getenv("DATABASE_NAME")}'
 
@@ -53,7 +51,7 @@ else:
                 port=os.getenv("DATABASE_PORT"),
                 user=os.getenv("DATABASE_USER"),
                 password=os.getenv("DATABASE_PASSWORD"),
-                database="postgres"  # Connect to default database first
+                database="postgres",  # Connect to default database first
             )
             conn.close()
             logger.info("PostgreSQL is available")

@@ -112,4 +112,3 @@ def calculate_srm_morey(
 
     mcu = (grain_weight * color) / batch_volume
     return 1.4922 * math.pow(mcu, 0.6859)
-

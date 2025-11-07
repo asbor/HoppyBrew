@@ -32,10 +32,8 @@ logger.debug(f"Environment variable TESTING set to: {os.environ['TESTING']}")
 # Database setup for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_fermentables.db"
 logger.debug(f"SQLALCHEMY_DATABASE_URL set to: {SQLALCHEMY_DATABASE_URL}")
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={
-                       "check_same_thread": False})
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def override_get_db():
@@ -79,7 +77,7 @@ def sample_batch(client, db_session):
     from Database.Models.recipes import Recipes
     from Database.Models.batches import Batches
     from datetime import datetime
-    
+
     # Create a recipe first
     recipe = Recipes(
         name="Test IPA",
@@ -94,7 +92,7 @@ def sample_batch(client, db_session):
     db_session.add(recipe)
     db_session.commit()
     db_session.refresh(recipe)
-    
+
     # Create a batch
     batch = Batches(
         recipe_id=recipe.id,
@@ -109,7 +107,7 @@ def sample_batch(client, db_session):
     db_session.add(batch)
     db_session.commit()
     db_session.refresh(batch)
-    
+
     return {
         "id": batch.id,
         "recipe_id": recipe.id,

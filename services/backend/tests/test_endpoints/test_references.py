@@ -7,9 +7,7 @@ def mock_favicon_url(url):
 
 
 def test_create_and_get_reference(client, monkeypatch):
-    monkeypatch.setattr(
-        "api.endpoints.references.fetch_favicon", mock_favicon_url
-    )
+    monkeypatch.setattr("api.endpoints.references.fetch_favicon", mock_favicon_url)
     payload = {
         "name": "Example Reference",
         "url": "http://example.com",
@@ -28,9 +26,7 @@ def test_create_and_get_reference(client, monkeypatch):
 
 
 def test_import_references_creates_records(client, db_session, monkeypatch):
-    monkeypatch.setattr(
-        "api.endpoints.references.fetch_favicon", mock_favicon_url
-    )
+    monkeypatch.setattr("api.endpoints.references.fetch_favicon", mock_favicon_url)
     xml_content = b"""
         <references>
             <reference>
@@ -57,9 +53,7 @@ def test_import_references_creates_records(client, db_session, monkeypatch):
 
 
 def test_export_references_returns_xml(client, monkeypatch):
-    monkeypatch.setattr(
-        "api.endpoints.references.fetch_favicon", mock_favicon_url
-    )
+    monkeypatch.setattr("api.endpoints.references.fetch_favicon", mock_favicon_url)
     client.post(
         "/references",
         json={
@@ -72,10 +66,7 @@ def test_export_references_returns_xml(client, monkeypatch):
 
     response = client.get("/references/export")
     assert response.status_code == 200
-    assert (
-        response.headers["Content-Disposition"]
-        == "attachment; filename=references.xml"
-    )
+    assert response.headers["Content-Disposition"] == "attachment; filename=references.xml"
 
     xml_text = response.content.decode("utf-8")
     assert "<name>Export Ref</name>" in xml_text

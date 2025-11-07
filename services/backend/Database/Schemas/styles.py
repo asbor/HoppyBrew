@@ -92,15 +92,16 @@ class StyleBase(BaseModel):
 
     model_config = ConfigDict(
         from_attributes=True,  # Pydantic v2: support ORM models
-        json_schema_extra={"example": STYLE_BASE_EXAMPLE}
+        json_schema_extra={"example": STYLE_BASE_EXAMPLE},
     )
 
 
 class Style(StyleBase):
     """Style schema with ID for responses"""
+
     id: Optional[int] = None
 
     model_config = ConfigDict(
         from_attributes=True,  # Pydantic v2: support ORM models
-        json_schema_extra={"example": {**STYLE_BASE_EXAMPLE, "id": 1}}
+        json_schema_extra={"example": {**STYLE_BASE_EXAMPLE, "id": 1}},
     )

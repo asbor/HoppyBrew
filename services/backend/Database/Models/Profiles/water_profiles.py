@@ -36,7 +36,7 @@ class WaterProfiles(Base):
     description = Column(Text, nullable=True)
 
     # Profile categorization
-    profile_type = Column(String(50), nullable=False, default='source')  # 'source' or 'target'
+    profile_type = Column(String(50), nullable=False, default="source")  # 'source' or 'target'
     style_category = Column(String(100), nullable=True)
 
     # Ion concentrations (ppm) - using Numeric for precise decimal values
@@ -68,5 +68,6 @@ class WaterProfiles(Base):
     # Relationships
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="water_profiles")
+
 
 # TODO: batch_id = Column(Integer, ForeignKey('batches.id'))

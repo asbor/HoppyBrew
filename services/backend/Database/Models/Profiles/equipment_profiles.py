@@ -28,9 +28,7 @@ class EquipmentProfiles(Base):
     """
 
     __tablename__ = "equipment"
-    __table_args__ = (
-        UniqueConstraint("name", name="uq_equipment_name"),
-    )
+    __table_args__ = (UniqueConstraint("name", name="uq_equipment_name"),)
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=True)
     version = Column(Integer, nullable=True)
@@ -60,5 +58,6 @@ class EquipmentProfiles(Base):
 
     recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
     recipe = relationship("Recipes", back_populates="equipment_profiles")
+
 
 # TODO: batch_id = Column(Integer, ForeignKey('batches.id'))

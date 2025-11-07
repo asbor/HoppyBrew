@@ -148,13 +148,13 @@ async def global_exception_handler(request: Request, exc: Exception):
     This prevents CORS errors from masking the actual backend errors.
     """
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
-    
+
     # Create a JSON response with CORS headers
     response = JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": "Internal Server Error"},
     )
-    
+
     # Add CORS headers manually to ensure they're present
     origin = request.headers.get("origin", "").lower()
     # Normalize origins list for case-insensitive comparison
@@ -165,7 +165,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"
-    
+
     return response
 
 
@@ -174,8 +174,15 @@ class ServiceStatus(BaseModel):
     status: str
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "message": "Welcome to the HoppyBrew API",                "status": "online",            }        }
+        json_schema_extra={
+            "example": {
+                "message": "Welcome to the HoppyBrew API",
+                "status": "online",
+            }
+        }
     )
+
+
 @app.get(
     "/",
     tags=["system"],

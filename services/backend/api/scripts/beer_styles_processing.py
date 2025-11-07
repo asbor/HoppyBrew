@@ -16,14 +16,12 @@ logger = get_logger("WebScraper")
 def scrape_and_process_beer_styles():
     logger.info("Scraping data from Brewers Association website")
     page_to_scrape = requests.get(
-        '''https://www.brewersassociation.org/resources
-        /brewers-association-beer-style-guidelines/'''
+        """https://www.brewersassociation.org/resources
+        /brewers-association-beer-style-guidelines/"""
     )
     soup = BeautifulSoup(page_to_scrape.text, "html.parser")
     beer_styles_section = soup.find("section", id="beer-styles")
-    beer_style_groups = beer_styles_section.findAll(
-        "div", class_="beer-style-group"
-    )
+    beer_style_groups = beer_styles_section.findAll("div", class_="beer-style-group")
     styles_data = []
     for beer_style_group in beer_style_groups:
         block_heading = "Unknown"
@@ -33,13 +31,9 @@ def scrape_and_process_beer_styles():
                 origin_heading = element
                 block_heading = origin_heading.text.strip()
                 circle_image = (
-                    origin_heading.find("img")["src"]
-                    if origin_heading.find("img")
-                    else None
+                    origin_heading.find("img")["src"] if origin_heading.find("img") else None
                 )
-            elif element.name == "div" and "beer-style" in element.get(
-                "class", []
-            ):
+            elif element.name == "div" and "beer-style" in element.get("class", []):
                 style_data = parse_beer_style(element)
                 if style_data:
                     style_data["block_heading"] = block_heading
@@ -65,17 +59,8 @@ def parse_beer_style(beer_style):
     for detail in details[1:]:  # Skip the first item since it's the name
         strong_tag = detail.find("strong")
         if strong_tag:
-            key = (
-                strong_tag.text.strip()
-                .replace(":", "")
-                .replace(" ", "_")
-                .lower()
-            )
-            value = (
-                strong_tag.next_sibling.strip()
-                if strong_tag.next_sibling
-                else ""
-            )
+            key = strong_tag.text.strip().replace(":", "").replace(" ", "_").lower()
+            value = strong_tag.next_sibling.strip() if strong_tag.next_sibling else ""
             style_data[key] = value
     # Extract horizontal details
 
@@ -85,17 +70,8 @@ def parse_beer_style(beer_style):
         for item in horizontal_items:
             strong_tag = item.find("strong")
             if strong_tag:
-                key = (
-                    strong_tag.text.strip()
-                    .replace(":", "")
-                    .replace(" ", "_")
-                    .lower()
-                )
-                value = (
-                    strong_tag.next_sibling.strip()
-                    if strong_tag.next_sibling
-                    else ""
-                )
+                key = strong_tag.text.strip().replace(":", "").replace(" ", "_").lower()
+                value = strong_tag.next_sibling.strip() if strong_tag.next_sibling else ""
                 style_data[key] = value
     return style_data
 
@@ -108,14 +84,10 @@ def store_in_db(styles_data):
             category=style.get("category"),
             color=style.get("color"),
             clarity=style.get("clarity"),
-            perceived_malt_and_aroma=style.get(
-                "perceived_malt_aroma_&_flavor"
-            ),
+            perceived_malt_and_aroma=style.get("perceived_malt_aroma_&_flavor"),
             perceived_hop_and_aroma=style.get("perceived_hop_aroma_&_flavor"),
             perceived_bitterness=style.get("perceived_bitterness"),
-            fermentation_characteristics=style.get(
-                "fermentation_characteristics"
-            ),
+            fermentation_characteristics=style.get("fermentation_characteristics"),
             body=style.get("body"),
             additional_notes=style.get("additional_notes"),
             og=style.get("original_gravity_(°plato)"),

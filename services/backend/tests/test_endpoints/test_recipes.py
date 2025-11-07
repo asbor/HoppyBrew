@@ -81,30 +81,18 @@ def test_create_recipe_persists_related_ingredients(client, db_session):
 
     assert created["name"] == payload["name"]
 
-    assert (
-        db_session.query(models.RecipeHop)
-        .filter(models.RecipeHop.recipe_id == recipe_id)
-        .count()
-        == len(payload["hops"])
-    )
-    assert (
-        db_session.query(models.RecipeFermentable)
-        .filter(models.RecipeFermentable.recipe_id == recipe_id)
-        .count()
-        == len(payload["fermentables"])
-    )
-    assert (
-        db_session.query(models.RecipeMisc)
-        .filter(models.RecipeMisc.recipe_id == recipe_id)
-        .count()
-        == len(payload["miscs"])
-    )
-    assert (
-        db_session.query(models.RecipeYeast)
-        .filter(models.RecipeYeast.recipe_id == recipe_id)
-        .count()
-        == len(payload["yeasts"])
-    )
+    assert db_session.query(models.RecipeHop).filter(
+        models.RecipeHop.recipe_id == recipe_id
+    ).count() == len(payload["hops"])
+    assert db_session.query(models.RecipeFermentable).filter(
+        models.RecipeFermentable.recipe_id == recipe_id
+    ).count() == len(payload["fermentables"])
+    assert db_session.query(models.RecipeMisc).filter(
+        models.RecipeMisc.recipe_id == recipe_id
+    ).count() == len(payload["miscs"])
+    assert db_session.query(models.RecipeYeast).filter(
+        models.RecipeYeast.recipe_id == recipe_id
+    ).count() == len(payload["yeasts"])
 
 
 def test_get_recipe_by_id_returns_full_payload(client):
@@ -189,9 +177,7 @@ def test_update_recipe_replaces_ingredients(client, db_session):
     assert [misc["name"] for misc in updated["miscs"]] == ["Whirlfloc Tablet"]
 
     assert (
-        db_session.query(models.RecipeHop)
-        .filter(models.RecipeHop.recipe_id == recipe_id)
-        .count()
+        db_session.query(models.RecipeHop).filter(models.RecipeHop.recipe_id == recipe_id).count()
         == 1
     )
 
@@ -213,16 +199,9 @@ def test_delete_recipe_removes_related_rows(client, db_session):
     missing = client.get(f"/recipes/{recipe_id}")
     assert missing.status_code == 404
 
+    assert db_session.query(models.Recipes).filter(models.Recipes.id == recipe_id).count() == 0
     assert (
-        db_session.query(models.Recipes)
-        .filter(models.Recipes.id == recipe_id)
-        .count()
-        == 0
-    )
-    assert (
-        db_session.query(models.RecipeHop)
-        .filter(models.RecipeHop.recipe_id == recipe_id)
-        .count()
+        db_session.query(models.RecipeHop).filter(models.RecipeHop.recipe_id == recipe_id).count()
         == 0
     )
     assert (
@@ -232,9 +211,7 @@ def test_delete_recipe_removes_related_rows(client, db_session):
         == 0
     )
     assert (
-        db_session.query(models.RecipeMisc)
-        .filter(models.RecipeMisc.recipe_id == recipe_id)
-        .count()
+        db_session.query(models.RecipeMisc).filter(models.RecipeMisc.recipe_id == recipe_id).count()
         == 0
     )
     assert (
@@ -262,9 +239,7 @@ def test_scale_recipe_endpoint_returns_scaled_payload(client):
     data = response.json()
     assert data["original_batch_size"] == pytest.approx(original_batch)
     assert data["target_batch_size"] == pytest.approx(target_batch_size)
-    assert data["scale_factor"] == pytest.approx(
-        target_batch_size / original_batch
-    )
+    assert data["scale_factor"] == pytest.approx(target_batch_size / original_batch)
 
     scaled_recipe = data["scaled_recipe"]
     assert scaled_recipe["batch_size"] == pytest.approx(target_batch_size)
