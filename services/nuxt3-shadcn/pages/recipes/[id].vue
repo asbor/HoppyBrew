@@ -37,144 +37,144 @@
 
             <div class="border-2 p-4">
               <h3 class="text-lg font-semibold mb-3 text-foreground">Equipment</h3>
-                <div>
-                  <label for="batch_size" class="text-foreground">Batch Size:</label>
-                  <input type="number" id="batch_size" v-model="recipe.batch_size" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-                <div>
-                  <label for="boil_size" class="text-foreground">Boil Size:</label>
-                  <input type="number" id="boil_size" v-model="recipe.boil_size" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-                <div>
-                  <label for="boil_time" class="text-foreground">Boil Time:</label>
-                  <input type="number" id="boil_time" v-model="recipe.boil_time" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-                <div>
-                  <label for="efficiency" class="text-foreground">Efficiency:</label>
-                  <input type="number" id="efficiency" v-model="recipe.efficiency" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
+              <div>
+                <label for="batch_size" class="text-foreground">Batch Size:</label>
+                <input type="number" id="batch_size" v-model="recipe.batch_size" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
               </div>
+              <div>
+                <label for="boil_size" class="text-foreground">Boil Size:</label>
+                <input type="number" id="boil_size" v-model="recipe.boil_size" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+              <div>
+                <label for="boil_time" class="text-foreground">Boil Time:</label>
+                <input type="number" id="boil_time" v-model="recipe.boil_time" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+              <div>
+                <label for="efficiency" class="text-foreground">Efficiency:</label>
+                <input type="number" id="efficiency" v-model="recipe.efficiency" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+            </div>
 
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Style</h3>
-                <div>
-                  <label for="abv" class="text-foreground">ABV:</label>
-                  <input type="number" id="abv" v-model="recipe.abv" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-                <div>
-                  <label for="og" class="text-foreground">OG:</label>
-                  <input type="number" id="og" v-model="recipe.og" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-                <div>
-                  <label for="fg" class="text-foreground">FG:</label>
-                  <input type="number" id="fg" v-model="recipe.fg" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-                <div>
-                  <label for="ibu" class="text-foreground">IBU:</label>
-                  <input type="number" id="ibu" v-model="recipe.ibu" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-                <div>
-                  <label for="est_color" class="text-foreground">EBC:</label>
-                  <input type="number" id="est_color" v-model="recipe.est_color" required placeholder="Optional"
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Style</h3>
+              <div>
+                <label for="abv" class="text-foreground">ABV:</label>
+                <input type="number" id="abv" v-model="recipe.abv" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+              <div>
+                <label for="og" class="text-foreground">OG:</label>
+                <input type="number" id="og" v-model="recipe.og" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+              <div>
+                <label for="fg" class="text-foreground">FG:</label>
+                <input type="number" id="fg" v-model="recipe.fg" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+              <div>
+                <label for="ibu" class="text-foreground">IBU:</label>
+                <input type="number" id="ibu" v-model="recipe.ibu" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+              <div>
+                <label for="est_color" class="text-foreground">EBC:</label>
+                <input type="number" id="est_color" v-model="recipe.est_color" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Fermentables</h3>
+              <div>
+                <label for="fermentables" class="text-foreground">Fermentables:</label>
+                <div v-for="fermentable in recipe.fermentables" :key="fermentable.id">
+                  <input type="text" v-model="fermentable.name" required placeholder="Optional"
                     class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Fermentables</h3>
-                <div>
-                  <label for="fermentables" class="text-foreground">Fermentables:</label>
-                  <div v-for="fermentable in recipe.fermentables" :key="fermentable.id">
-                    <input type="text" v-model="fermentable.name" required placeholder="Optional"
-                      class="border border-input rounded-lg p-2 w-full">
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Hops</h3>
-                <div>
-                  <label for="hops" class="text-foreground">Hops:</label>
-                  <div v-for="hop in recipe.hops" :key="hop.id">
-                    <input type="text" v-model="hop.name" required placeholder="Optional"
-                      class="border border-input rounded-lg p-2 w-full">
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Miscs</h3>
-                <div>
-                  <label for="miscs" class="text-foreground">Miscs:</label>
-                  <div v-for="misc in recipe.miscs" :key="misc.id">
-                    <input type="text" v-model="misc.name" required placeholder="Optional"
-                      class="border border-input rounded-lg p-2 w-full">
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Yeasts</h3>
-                <div>
-                  <label for="yeasts" class="text-foreground">Yeasts:</label>
-                  <div v-for="yeast in recipe.yeasts" :key="yeast.id">
-                    <input type="text" v-model="yeast.name" required placeholder="Optional"
-                      class="border border-input rounded-lg p-2 w-full">
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Mash</h3>
-                <div>
-                  <label for="mash" class="text-foreground">Mash:</label>
-                  <input type="text" id="mash" v-model="recipe.mash" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full">
-                </div>
-              </div>
-
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Fermentation</h3>
-                <div>
-                  <label for="fermentation" class="text-foreground">Fermentation:</label>
-                  <input type="text" id="fermentation" v-model="recipe.fermentation" required placeholder="Optional"
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Hops</h3>
+              <div>
+                <label for="hops" class="text-foreground">Hops:</label>
+                <div v-for="hop in recipe.hops" :key="hop.id">
+                  <input type="text" v-model="hop.name" required placeholder="Optional"
                     class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 gap-4">
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Water</h3>
-                <div>
-                  <label for="water" class="text-foreground">Water:</label>
-                  <input type="text" id="water" v-model="recipe.water" required placeholder="Optional"
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Miscs</h3>
+              <div>
+                <label for="miscs" class="text-foreground">Miscs:</label>
+                <div v-for="misc in recipe.miscs" :key="misc.id">
+                  <input type="text" v-model="misc.name" required placeholder="Optional"
                     class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
+            </div>
 
-              <div class="border-2 p-4">
-                <h3 class="text-lg font-semibold mb-3 text-foreground">Notes</h3>
-                <div>
-                  <label for="notes" class="text-foreground">Notes:</label>
-                  <textarea id="notes" v-model="recipe.notes" required placeholder="Optional"
-                    class="border border-input rounded-lg p-2 w-full"></textarea>
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Yeasts</h3>
+              <div>
+                <label for="yeasts" class="text-foreground">Yeasts:</label>
+                <div v-for="yeast in recipe.yeasts" :key="yeast.id">
+                  <input type="text" v-model="yeast.name" required placeholder="Optional"
+                    class="border border-input rounded-lg p-2 w-full">
                 </div>
               </div>
             </div>
-          </form>
-        </div>
-      </main>    <!-- Footer -->
+
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Mash</h3>
+              <div>
+                <label for="mash" class="text-foreground">Mash:</label>
+                <input type="text" id="mash" v-model="recipe.mash" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+            </div>
+
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Fermentation</h3>
+              <div>
+                <label for="fermentation" class="text-foreground">Fermentation:</label>
+                <input type="text" id="fermentation" v-model="recipe.fermentation" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4">
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Water</h3>
+              <div>
+                <label for="water" class="text-foreground">Water:</label>
+                <input type="text" id="water" v-model="recipe.water" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full">
+              </div>
+            </div>
+
+            <div class="border-2 p-4">
+              <h3 class="text-lg font-semibold mb-3 text-foreground">Notes</h3>
+              <div>
+                <label for="notes" class="text-foreground">Notes:</label>
+                <textarea id="notes" v-model="recipe.notes" required placeholder="Optional"
+                  class="border border-input rounded-lg p-2 w-full"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main> <!-- Footer -->
     <footer class="flex justify-end gap-4 mt-8">
       <Button @click="updateRecipe">Save</Button>
       <Button @click="cancel">Cancel</Button>
