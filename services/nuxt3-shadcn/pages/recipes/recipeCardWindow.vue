@@ -1,128 +1,253 @@
 <script setup lang="ts">
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
-import { ref, onMounted } from 'vue';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
+} from '@/components/ui/dialog'
+import type { Recipe } from '@/composables/useRecipes'
+import type { BatchCreate } from '@/composables/useBatches'
 
-// Define interface for recipe 
-interface Recipe {
-    id: string;
-    name: string;
-    type: string;
-    brewer: string;
-    asst_brewer: string;
-    batch_size: number;
-    boil_size: number;
-    boil_time: number;
-    efficiency: number;
-    mash: string;
-    notes: string;
-    taste_notes: string;
-    taste_rating: number;
-    og: number;
-    fg: number;
-    carbonation: string;
-    fermentation_stages: number;
-    primary_age: number;
-    primary_temp: number;
-    secondary_age: number;
-    secondary_temp: number;
-    tertiary_age: number;
-    age: number;
-    age_temp: number;
-    carbonation_used: string;
-    carbonation_date: string;
-    est_og: number;
-    est_fg: number;
-    est_color: number;
-    ibu: number;
-    ibu_method: string;
-    est_abv: number;
-    abv: number;
-    actual_efficiency: number;
-    calories: number;
-    display_batch_size: string;
-    display_boil_size: string;
-    display_og: string;
-    display_fg: string;
-    display_primary_temp: string;
-    display_secondary_temp: string;
-    display_tertiary_temp: string;
-    display_age_temp: string;
+const router = useRouter()
+const { recipes, loading, error, fetchAll, remove } = useRecipes()
+const { create: createBatch, loading: batchLoading } = useBatches()
 
+const searchQuery = ref('')
+
+// Start Brew Dialog state
+const showStartBrewDialog = ref(false)
+const selectedRecipe = ref<Recipe | null>(null)
+const batchForm = ref<Partial<BatchCreate>>({
+  batch_name: '',
+  batch_number: 1,
+  batch_size: 0,
+  brewer: '',
+  brew_date: new Date().toISOString().split('T')[0]
+})
+
+// Filtered recipes based on search
+const filteredRecipes = computed(() => {
+  if (!searchQuery.value) return recipes.value
+  
+  const query = searchQuery.value.toLowerCase()
+  return recipes.value.filter(recipe =>
+    recipe.name.toLowerCase().includes(query) ||
+    recipe.type.toLowerCase().includes(query) ||
+    recipe.brewer?.toLowerCase().includes(query)
+  )
+})
+
+function handleStartBrew(recipe: Recipe) {
+  selectedRecipe.value = recipe
+  batchForm.value = {
+    batch_name: `${recipe.name} - ${new Date().toLocaleDateString()}`,
+    batch_number: 1,
+    batch_size: recipe.batch_size,
+    brewer: recipe.brewer || '',
+    brew_date: new Date().toISOString().split('T')[0]
+  }
+  showStartBrewDialog.value = true
 }
 
-const recipes = ref<Recipe[]>([]);
-const selectedRecipe = ref<Recipe | null>(null);
-
-async function fetchRecipes() {
-    try {
-        const response = await fetch('http://localhost:8000/recipes', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Failed to fetch recipes');
-        }
-        const data = await response.json();
-        recipes.value = data;
-    } catch (error) {
-        console.error(error);
-    }
+function handleEdit(recipe: Recipe) {
+  router.push(`/recipes/${recipe.id}`)
 }
 
-function deleteRecipe(id: string) {
-    if (!confirm('Are you sure you want to delete this recipe?')) {
-        return;
-    }
+async function handleDelete(recipe: Recipe) {
+  if (!confirm(`Are you sure you want to delete "${recipe.name}"?`)) {
+    return
+  }
 
-    // Delete the recipe
-    fetch(`http://localhost:8000/recipes/${id}`, {
-        method: 'DELETE',
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Failed to delete recipe');
-            }
-            // Remove the deleted recipe from the list
-            recipes.value = recipes.value.filter((recipe) => recipe.id !== id);
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+  const result = await remove(recipe.id)
+  if (result.error) {
+    alert(`Failed to delete recipe: ${result.error.value}`)
+  }
 }
 
-onMounted(fetchRecipes);
+async function confirmStartBrew() {
+  if (!selectedRecipe.value) return
+  
+  const batchData: BatchCreate = {
+    recipe_id: selectedRecipe.value.id,
+    batch_name: batchForm.value.batch_name || `${selectedRecipe.value.name} Batch`,
+    batch_number: batchForm.value.batch_number || 1,
+    batch_size: batchForm.value.batch_size || selectedRecipe.value.batch_size,
+    brewer: batchForm.value.brewer || selectedRecipe.value.brewer || 'Unknown',
+    brew_date: batchForm.value.brew_date || new Date().toISOString()
+  }
+  
+  const result = await createBatch(batchData)
+  
+  if (!result.error.value && result.data.value) {
+    showStartBrewDialog.value = false
+    // Navigate to the new batch detail page
+    router.push(`/batches/${result.data.value.id}`)
+  } else {
+    alert(`Failed to create batch: ${result.error.value}`)
+  }
+}
+
+onMounted(async () => {
+  await fetchAll()
+})
 </script>
 
 <template>
-    <div class="grid w-full gap-4">
-        <header class="flex items-start justify-between">
-            <div class="grow">
-                <h1>Recipe</h1>
-            </div>
-            <ProductNewDialog />
-            <BeerXMLImportRecipeDialog />
-        </header>
-        <main class="grid w-full gap-4">
+    <div class="space-y-6">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <input type="text" placeholder="Search for recipe"
-                    class="w-full p-2 border border-neutral-200 rounded bg-neutral-200" />
+                <h1 class="text-3xl font-bold">Recipes</h1>
+                <p class="text-muted-foreground">Your personal brewing recipe library</p>
             </div>
-            <div class="grid gap-4 lg:grid-cols-4">
-                <BeerCard v-for='( recipe, index ) in recipes' :card="recipe" :key='index' />
+            <div class="flex gap-3">
+                <Button asChild variant="outline">
+                    <NuxtLink href="/recipes">
+                        <Icon name="mdi:table" class="mr-2 h-4 w-4" />
+                        Table View
+                    </NuxtLink>
+                </Button>
+                <ProductNewDialog />
+                <BeerXMLImportRecipeDialog />
+            </div>
+        </header>
+        
+        <main class="space-y-4">
+            <!-- Search Bar -->
+            <div>
+                <Input 
+                    v-model="searchQuery"
+                    type="text" 
+                    placeholder="Search for recipe by name, type, or brewer..."
+                    class="max-w-md"
+                >
+                    <template #prefix>
+                        <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
+                    </template>
+                </Input>
+            </div>
+            
+            <!-- Loading State -->
+            <div v-if="loading" class="text-center py-12">
+                <p class="text-muted-foreground">Loading recipes...</p>
+            </div>
+
+            <!-- Error State -->
+            <div v-else-if="error" class="text-center py-12">
+                <p class="text-destructive">Error loading recipes: {{ error }}</p>
+            </div>
+
+            <!-- Empty State -->
+            <div v-else-if="filteredRecipes.length === 0" class="text-center py-12">
+                <Icon name="mdi:book-open-page-variant" class="mx-auto h-12 w-12 text-muted-foreground" />
+                <h3 class="mt-4 text-lg font-semibold">No recipes found</h3>
+                <p class="text-muted-foreground">
+                    {{ searchQuery ? 'Try a different search term' : 'Start building your recipe library' }}
+                </p>
+            </div>
+
+            <!-- Recipe Cards Grid -->
+            <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <BeerCard 
+                    v-for="recipe in filteredRecipes" 
+                    :card="recipe" 
+                    :key="recipe.id"
+                    @start-brew="handleStartBrew"
+                    @edit="handleEdit"
+                    @delete="handleDelete"
+                />
             </div>
         </main>
-        <footer>
 
-        </footer>
+        <!-- Start Brew Dialog -->
+        <Dialog v-model:open="showStartBrewDialog">
+            <DialogContent class="sm:max-w-[500px]">
+                <DialogHeader>
+                    <DialogTitle>Start New Brew Batch</DialogTitle>
+                    <DialogDescription>
+                        Create a new batch from "{{ selectedRecipe?.name }}" and begin brewing
+                    </DialogDescription>
+                </DialogHeader>
+                
+                <div class="space-y-4 py-4">
+                    <div class="space-y-2">
+                        <Label for="batch_name">Batch Name</Label>
+                        <Input 
+                            id="batch_name" 
+                            v-model="batchForm.batch_name" 
+                            placeholder="My IPA - Batch 1"
+                            required
+                        />
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <Label for="batch_number">Batch Number</Label>
+                            <Input 
+                                id="batch_number" 
+                                v-model.number="batchForm.batch_number" 
+                                type="number"
+                                min="1"
+                                required
+                            />
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <Label for="batch_size_form">Batch Size (L)</Label>
+                            <Input 
+                                id="batch_size_form" 
+                                v-model.number="batchForm.batch_size" 
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <Label for="batch_brewer">Brewer</Label>
+                        <Input 
+                            id="batch_brewer" 
+                            v-model="batchForm.brewer" 
+                            placeholder="Brewer name"
+                            required
+                        />
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <Label for="brew_date">Brew Date</Label>
+                        <Input 
+                            id="brew_date" 
+                            v-model="batchForm.brew_date" 
+                            type="date"
+                            required
+                        />
+                    </div>
+                </div>
+                
+                <DialogFooter>
+                    <Button 
+                        type="button" 
+                        variant="outline" 
+                        @click="showStartBrewDialog = false"
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        type="button" 
+                        @click="confirmStartBrew"
+                        :disabled="batchLoading"
+                    >
+                        <Icon v-if="batchLoading" name="mdi:loading" class="mr-2 h-4 w-4 animate-spin" />
+                        Start Brewing
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </div>
 </template>
