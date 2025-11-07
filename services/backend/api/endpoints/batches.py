@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session, joinedload
 from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
+from Database.enums import BatchStatus
 from datetime import datetime
 from typing import List
 import re
@@ -105,7 +106,9 @@ async def create_batch(
             batch_size=batch.batch_size,
             brewer=batch.brewer,
             brew_date=batch.brew_date,
-            status=batch.status.value if batch.status else 'planning',
+            status=(batch.status.value
+                    if batch.status
+                    else BatchStatus.PLANNING.value),
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )

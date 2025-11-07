@@ -6,6 +6,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from database import Base
 from datetime import datetime
+from Database.enums import BatchStatus as BatchStatusEnum
 
 
 class Batches(Base):
@@ -24,7 +25,7 @@ class Batches(Base):
     batch_size = Column(Float, nullable=False)
     status = Column(
         String(50),
-        default='planning',
+        default=BatchStatusEnum.PLANNING.value,
         nullable=False
     )
     created_at = Column(DateTime, default=datetime.now)
