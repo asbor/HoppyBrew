@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 BATCH_LOG_EXAMPLE = {
@@ -9,27 +9,20 @@ BATCH_LOG_EXAMPLE = {
 class BatchLogBase(BaseModel):
     log_entry: str
 
-    class Config:
-        schema_extra = {"example": BATCH_LOG_EXAMPLE}
-
-
+    model_config = ConfigDict(
+        json_schema_extra={"example": BATCH_LOG_EXAMPLE}
+    )
 class BatchLogCreate(BatchLogBase):
     batch_id: int
 
-    class Config:
-        schema_extra = {"example": {**BATCH_LOG_EXAMPLE, "batch_id": 11}}
-
-
+    model_config = ConfigDict(
+        json_schema_extra={"example": {**BATCH_LOG_EXAMPLE, "batch_id": 11}}
+    )
 class BatchLog(BatchLogBase):
     id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
-        schema_extra = {
-            "example": {
-                **BATCH_LOG_EXAMPLE,
-                "id": 5,
-                "created_at": "2024-03-22T09:00:00Z",
-            }
-        }
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={            "example": {                **BATCH_LOG_EXAMPLE,                "id": 5,                "created_at": "2024-03-22T09:00:00Z",            }        }
+    )

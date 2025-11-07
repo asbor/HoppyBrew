@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 EQUIPMENT_PROFILE_EXAMPLE = {
@@ -73,5 +73,6 @@ class EquipmentProfileBase(BaseModel):
     display_lauter_deadspace: Optional[str] = None
     display_top_up_kettle: Optional[str] = None
 
-    class Config:
-        schema_extra = {"example": EQUIPMENT_PROFILE_EXAMPLE}
+    model_config = ConfigDict(
+        json_schema_extra={"example": EQUIPMENT_PROFILE_EXAMPLE}
+    )

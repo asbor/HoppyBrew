@@ -14,7 +14,7 @@ from typing import List
 import xml.etree.ElementTree as ET
 from fastapi.responses import StreamingResponse
 import io
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 try:
     import requests
 except ImportError:  # pragma: no cover - fallback when requests is unavailable
@@ -37,16 +37,9 @@ class ReferenceImportResponse(BaseModel):
     imported_records: int
     skipped_records: int
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "message": "References imported successfully",
-                "imported_records": 12,
-                "skipped_records": 2,
-            }
-        }
-
-
+    model_config = ConfigDict(
+        json_schema_extra={            "example": {                "message": "References imported successfully",                "imported_records": 12,                "skipped_records": 2,            }        }
+    )
 @router.post(
     "/references/import",
     response_model=ReferenceImportResponse,

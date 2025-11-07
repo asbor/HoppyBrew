@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class User(BaseModel):
@@ -20,10 +20,6 @@ class User(BaseModel):
     username: str
     password: str
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "username": "brewmaster",
-                "password": "S3curePassw0rd!",
-            }
-        }
+    model_config = ConfigDict(
+        json_schema_extra={            "example": {                "username": "brewmaster",                "password": "S3curePassw0rd!",            }        }
+    )
