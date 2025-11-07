@@ -1,11 +1,25 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional, List
+from enum import Enum
 from .batch_logs import BatchLog
 from .hops import InventoryHop
 from .fermentables import InventoryFermentable
 from .miscs import InventoryMisc
 from .yeasts import InventoryYeast
+
+
+class BatchStatus(str, Enum):
+    """Batch workflow status enum"""
+    PLANNING = "planning"
+    BREW_DAY = "brew_day"
+    PRIMARY_FERMENTATION = "primary_fermentation"
+    SECONDARY_FERMENTATION = "secondary_fermentation"
+    CONDITIONING = "conditioning"
+    PACKAGED = "packaged"
+    COMPLETED = "completed"
+    ARCHIVED = "archived"
+
 
 BATCH_BASE_EXAMPLE = {
     "batch_name": "Citrus IPA - March Run",
@@ -13,6 +27,7 @@ BATCH_BASE_EXAMPLE = {
     "batch_size": 20.0,
     "brewer": "Alex Brewer",
     "brew_date": "2024-03-21T08:00:00Z",
+    "status": "planning",
 }
 
 BATCH_FULL_EXAMPLE = {
@@ -21,6 +36,7 @@ BATCH_FULL_EXAMPLE = {
     "recipe_id": 42,
     "created_at": "2024-03-21T08:00:00Z",
     "updated_at": "2024-03-22T10:30:00Z",
+    "status": "primary_fermentation",
     "batch_log": {
         "id": 5,
         "log_entry": "Transferred to secondary fermenter.",
@@ -96,6 +112,7 @@ class BatchBase(BaseModel):
     batch_size: float
     brewer: str
     brew_date: datetime
+    status: Optional[BatchStatus] = BatchStatus.PLANNING
 
     model_config = ConfigDict(
         json_schema_extra={"example": BATCH_BASE_EXAMPLE}
@@ -112,15 +129,17 @@ class BatchUpdate(BaseModel):
     batch_size: Optional[float] = None
     brewer: Optional[str] = None
     brew_date: Optional[datetime] = None
+    status: Optional[BatchStatus] = None
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "batch_name": "Citrus IPA - March Run",                "batch_number": 2,                "batch_size": 21.0,                "brewer": "Alex Brewer",                "brew_date": "2024-03-28T08:00:00Z",            }        }
+        json_schema_extra={            "example": {                "batch_name": "Citrus IPA - March Run",                "batch_number": 2,                "batch_size": 21.0,                "brewer": "Alex Brewer",                "brew_date": "2024-03-28T08:00:00Z",                "status": "brew_day",            }        }
     )
 class Batch(BatchBase):
     id: int
     recipe_id: int
     created_at: datetime
     updated_at: datetime
+    status: BatchStatus
     batch_log: Optional[BatchLog] = None
     inventory_hops: List[InventoryHop]
     inventory_fermentables: List[InventoryFermentable]

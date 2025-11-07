@@ -105,6 +105,7 @@ async def create_batch(
             batch_size=batch.batch_size,
             brewer=batch.brewer,
             brew_date=batch.brew_date,
+            status=batch.status if hasattr(batch, 'status') and batch.status else models.BatchStatus.PLANNING,
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
