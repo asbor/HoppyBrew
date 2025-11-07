@@ -156,9 +156,12 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
     
     # Add CORS headers manually to ensure they're present
-    origin = request.headers.get("origin")
-    if origin in origins:
-        response.headers["Access-Control-Allow-Origin"] = origin
+    origin = request.headers.get("origin", "").lower()
+    # Normalize origins list for case-insensitive comparison
+    normalized_origins = [o.lower() for o in origins]
+    if origin and origin in normalized_origins:
+        # Use the original case from the request
+        response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin", "")
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"

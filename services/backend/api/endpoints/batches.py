@@ -240,7 +240,7 @@ async def get_all_batches(db: Session = Depends(get_db)):
         logger.error(f"Error fetching batches: {e}", exc_info=True)
         raise HTTPException(
             status_code=500,
-            detail=f"Error fetching batches: {str(e)}"
+            detail="Error fetching batches"
         )
 
 # Get a batch by ID
