@@ -71,14 +71,11 @@ This document organizes work based on the **COMPREHENSIVE_WORKFLOW_ANALYSIS** an
 - [ ] Add inventory availability check
 
 ### Frontend - Inventory Pages
-- [ ] Create /inventory/hops index page with CRUD
-- [ ] Create /inventory/fermentables index page with CRUD
-- [ ] Create /inventory/yeasts index page with CRUD
-- [ ] Create /inventory/miscs index page with CRUD
-- [ ] Add cost tracking (EUR) to all inventory forms
-- [ ] Add low stock indicators and alerts
-- [ ] Add supplier information management
-- [ ] Use useInventory composable throughout
+- [-] Create Inventory Pages
+  - ✅ inventory/hops - Complete with CRUD, search, low stock warnings, expiry tracking
+  - ✅ inventory/fermentables - Complete with CRUD, search, color visualization, low stock warnings
+  - ⏳ inventory/yeasts - TODO: Build with temperature ranges, attenuation, flocculation
+  - ⏳ inventory/miscs - TODO: Build with usage tracking, water agents, spices
 
 ### Frontend - Profile Pages
 - [ ] Create /profiles/equipment page (CRUD for equipment profiles)
