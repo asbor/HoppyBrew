@@ -2,8 +2,8 @@ from __future__ import annotations
 
 """Enhance water profiles table with profile management features.
 
-Revision ID: 0002_water_profiles_enhancement
-Revises: 0001
+Revision ID: 0003_water_profiles_enhancement
+Revises: 0002
 Create Date: 2024-11-06 10:20:00.000000
 
 """
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 from sqlalchemy import Numeric, Boolean, DateTime, Text, String
 
 # revision identifiers, used by Alembic.
-revision = "0002"
-down_revision = "0001"
+revision = "0003"
+down_revision = "0002"
 branch_labels = None
 depends_on = None
 
