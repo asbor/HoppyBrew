@@ -22,6 +22,8 @@ This document organizes work based on the **COMPREHENSIVE_WORKFLOW_ANALYSIS** an
 - [x] Primary keys made non-nullable (StyleGuidelines, Styles)
 - [x] Placeholder modules fixed (export/import_references)
 - [x] Alembic migrations and seed scripts ready
+- [x] **Added batches.status column** - Fixed 500 error on /batches endpoint
+- [x] **Created comprehensive seed data** - 10 recipes, 4 batches, 32 inventory items
 
 ### Frontend Improvements
 - [x] Fixed null pointer crashes in Dashboard and Batches pages (batch.status handling)
