@@ -1,40 +1,35 @@
-# Install the FastAPI framework
-fastapi
+# Core Framework
+fastapi==0.111.0
+python-multipart==0.0.9
+uvicorn==0.30.1
 
-# Install python-multipart for form data
-python-multipart
+# ORM & Database
+SQLAlchemy==2.0.30
+sqlalchemy-utils==0.41.2
+psycopg2-binary==2.9.9
+alembic==1.13.2
 
-# Install the Uvicorn server
-uvicorn
+# Data Validation
+pydantic==2.7.3
+pydantic-settings==2.3.1
+pydantic-extra-types==2.8.0
+email-validator==2.1.1
 
-# Install the SQLAlchemy ORM
-SQLAlchemy
+# Configuration & Environment
+config==0.5.1
+python-dotenv==1.0.1
 
-# Install fastapi-utils
-sqlalchemy-utils
+# Data Processing & Web Scraping
+pandas==2.2.2
+requests==2.32.3
+beautifulsoup4==4.12.3
+bs4==0.0.2
 
-# Install pydantic
-pydantic
-pydantic[email]
+# Testing
+pytest==8.2.2
+httpx==0.27.0
+selenium==4.21.0
 
-# Install psycopg2-binary
-psycopg2-binary 
+# Code Quality
+flake8==7.1.0
 
-# Install alembic
-alembic
-
-# Install config
-config~=0.5.1
-python-dotenv
-pandas
-requests
-beautifulsoup4
-
-# Install flake8 for linting
-flake8
-
-# Install pytest for testing
-pytest
-httpx  # Required for FastAPI TestClient
-
-selenium
