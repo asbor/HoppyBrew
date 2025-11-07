@@ -117,12 +117,18 @@ class BatchBase(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={"example": BATCH_BASE_EXAMPLE}
     )
+
+
 class BatchCreate(BatchBase):
     recipe_id: int
 
     model_config = ConfigDict(
-        json_schema_extra={"example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}}
+        json_schema_extra={
+            "example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}
+        }
     )
+
+
 class BatchUpdate(BaseModel):
     batch_name: Optional[str] = None
     batch_number: Optional[int] = None
@@ -132,8 +138,19 @@ class BatchUpdate(BaseModel):
     status: Optional[BatchStatus] = None
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "batch_name": "Citrus IPA - March Run",                "batch_number": 2,                "batch_size": 21.0,                "brewer": "Alex Brewer",                "brew_date": "2024-03-28T08:00:00Z",                "status": "brew_day",            }        }
+        json_schema_extra={
+            "example": {
+                "batch_name": "Citrus IPA - March Run",
+                "batch_number": 2,
+                "batch_size": 21.0,
+                "brewer": "Alex Brewer",
+                "brew_date": "2024-03-28T08:00:00Z",
+                "status": "brew_day",
+            }
+        }
     )
+
+
 class Batch(BatchBase):
     id: int
     recipe_id: int

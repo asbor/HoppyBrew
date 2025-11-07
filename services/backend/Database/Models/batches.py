@@ -1,6 +1,8 @@
 # services/backend/Database/Models/batches.py
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, Index, Enum
+from sqlalchemy import (
+    Column, Integer, String, ForeignKey, Float, DateTime, Index
+)
 from sqlalchemy.orm import relationship
 from database import Base
 from datetime import datetime
@@ -23,7 +25,10 @@ class Batches(Base):
     __tablename__ = "batches"
     __table_args__ = (
         Index("ix_batches_recipe_id", "recipe_id"),
-        Index("ix_batches_recipe_id_batch_number", "recipe_id", "batch_number"),
+        Index(
+            "ix_batches_recipe_id_batch_number",
+            "recipe_id", "batch_number"
+        ),
         Index("ix_batches_status", "status"),
     )
     id = Column(Integer, primary_key=True, index=True)
