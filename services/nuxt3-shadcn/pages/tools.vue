@@ -163,6 +163,123 @@ const yeastCells = computed(() => {
     packages: Math.ceil(totalCells / 100000) // Assuming 100B cells per package
   }
 })
+
+// Water Adjustment Calculator
+const sourceWater = ref({
+  calcium: 50,
+  magnesium: 10,
+  sodium: 15,
+  chloride: 60,
+  sulfate: 120,
+  bicarbonate: 80
+})
+
+const targetWater = ref({
+  calcium: 100,
+  magnesium: 15,
+  sodium: 20,
+  chloride: 100,
+  sulfate: 200,
+  bicarbonate: 40
+})
+
+const waterVolume = ref<number>(20) // Liters
+const mashGrainWeight = ref<number>(5) // kg for mash pH
+
+// Brewing salts molecular weights and ion contributions
+const salts = {
+  'gypsum': { name: 'Gypsum (CaSO4·2H2O)', calcium: 23.3, sulfate: 55.8, mw: 172.2 },
+  'calcium_chloride': { name: 'Calcium Chloride (CaCl2)', calcium: 27.3, chloride: 48.0, mw: 147 },
+  'epsom': { name: 'Epsom Salt (MgSO4·7H2O)', magnesium: 9.9, sulfate: 39.0, mw: 246.5 },
+  'table_salt': { name: 'Table Salt (NaCl)', sodium: 39.3, chloride: 60.7, mw: 58.4 },
+  'baking_soda': { name: 'Baking Soda (NaHCO3)', sodium: 27.4, bicarbonate: 72.6, mw: 84 },
+  'chalk': { name: 'Chalk (CaCO3)', calcium: 40.0, bicarbonate: 0, mw: 100 }
+}
+
+const waterAdjustments = computed(() => {
+  const adjustments: { [key: string]: number } = {}
+  const results = { ...sourceWater.value }
+  
+  // Calculate differences needed
+  const deltaCa = targetWater.value.calcium - sourceWater.value.calcium
+  const deltaMg = targetWater.value.magnesium - sourceWater.value.magnesium
+  const deltaNa = targetWater.value.sodium - sourceWater.value.sodium
+  const deltaCl = targetWater.value.chloride - sourceWater.value.chloride
+  const deltaSO4 = targetWater.value.sulfate - sourceWater.value.sulfate
+  const deltaHCO3 = targetWater.value.bicarbonate - sourceWater.value.bicarbonate
+  
+  // Initialize salt additions
+  adjustments.gypsum = 0
+  adjustments.calcium_chloride = 0
+  adjustments.epsom = 0
+  adjustments.table_salt = 0
+  adjustments.baking_soda = 0
+  
+  // Calculate salt additions (simplified approach - prioritize gypsum for Ca+SO4, CaCl2 for Ca+Cl)
+  if (deltaCa > 0 && deltaSO4 > 0) {
+    // Use gypsum for calcium and sulfate
+    const gypsumNeeded = Math.min(deltaCa / salts.gypsum.calcium, deltaSO4 / salts.gypsum.sulfate)
+    adjustments.gypsum = gypsumNeeded * waterVolume.value
+    results.calcium += gypsumNeeded * salts.gypsum.calcium
+    results.sulfate += gypsumNeeded * salts.gypsum.sulfate
+  }
+  
+  // Remaining calcium needs
+  const remainingCa = targetWater.value.calcium - results.calcium
+  if (remainingCa > 0 && deltaCl > 0) {
+    const cacl2Needed = Math.min(remainingCa / salts.calcium_chloride.calcium, deltaCl / salts.calcium_chloride.chloride)
+    adjustments.calcium_chloride = cacl2Needed * waterVolume.value
+    results.calcium += cacl2Needed * salts.calcium_chloride.calcium
+    results.chloride += cacl2Needed * salts.calcium_chloride.chloride
+  }
+  
+  // Magnesium adjustment
+  if (deltaMg > 0) {
+    adjustments.epsom = (deltaMg / salts.epsom.magnesium) * waterVolume.value
+    results.magnesium += deltaMg
+    results.sulfate += (deltaMg / salts.epsom.magnesium) * salts.epsom.sulfate
+  }
+  
+  // Sodium adjustment
+  if (deltaNa > 0) {
+    if (deltaHCO3 > 0) {
+      // Prefer baking soda if bicarbonate is also needed
+      const sodaNeeded = Math.min(deltaNa / salts.baking_soda.sodium, deltaHCO3 / salts.baking_soda.bicarbonate)
+      adjustments.baking_soda = sodaNeeded * waterVolume.value
+      results.sodium += sodaNeeded * salts.baking_soda.sodium
+      results.bicarbonate += sodaNeeded * salts.baking_soda.bicarbonate
+      
+      // Remaining sodium with table salt
+      const remainingNa = targetWater.value.sodium - results.sodium
+      if (remainingNa > 0) {
+        adjustments.table_salt = (remainingNa / salts.table_salt.sodium) * waterVolume.value
+        results.sodium += remainingNa
+        results.chloride += (remainingNa / salts.table_salt.sodium) * salts.table_salt.chloride
+      }
+    } else {
+      adjustments.table_salt = (deltaNa / salts.table_salt.sodium) * waterVolume.value
+      results.sodium += deltaNa
+      results.chloride += (deltaNa / salts.table_salt.sodium) * salts.table_salt.chloride
+    }
+  }
+  
+  return {
+    salts: adjustments,
+    finalWater: results
+  }
+})
+
+const mashPH = computed(() => {
+  // Simplified mash pH calculation based on alkalinity and grain weight
+  const alkalinity = waterAdjustments.value.finalWater.bicarbonate * 0.819 // Convert to CaCO3 equivalent
+  const grainAlkalinity = mashGrainWeight.value * 30 // Estimated grain contribution (varies by grain type)
+  const residualAlkalinity = alkalinity - (waterAdjustments.value.finalWater.calcium / 3.5 + waterAdjustments.value.finalWater.magnesium / 7)
+  
+  // Rough pH estimation (actual depends on grain bill, water composition, etc.)
+  const estimatedPH = 5.8 - ((residualAlkalinity - grainAlkalinity) / 50)
+  
+  return Math.max(4.5, Math.min(6.5, estimatedPH)).toFixed(2)
+})
 </script>
 
 <template>
@@ -175,7 +292,7 @@ const yeastCells = computed(() => {
     </div>
 
     <Tabs default-value="abv" class="w-full">
-      <TabsList class="grid w-full grid-cols-3 lg:grid-cols-7">
+      <TabsList class="grid w-full grid-cols-4 lg:grid-cols-8">
         <TabsTrigger value="abv">ABV</TabsTrigger>
         <TabsTrigger value="ibu">IBU</TabsTrigger>
         <TabsTrigger value="srm">SRM</TabsTrigger>
@@ -183,6 +300,7 @@ const yeastCells = computed(() => {
         <TabsTrigger value="strike">Strike Water</TabsTrigger>
         <TabsTrigger value="dilution">Dilution</TabsTrigger>
         <TabsTrigger value="yeast">Yeast</TabsTrigger>
+        <TabsTrigger value="water">Water Adjust</TabsTrigger>
       </TabsList>
 
       <!-- ABV Calculator -->
@@ -470,6 +588,182 @@ const yeastCells = computed(() => {
           </CardContent>
         </Card>
       </TabsContent>
+
+      <!-- Water Adjustment Calculator -->
+      <TabsContent value="water">
+        <Card>
+          <CardHeader>
+            <CardTitle>Water Adjustment Calculator</CardTitle>
+            <CardDescription>Calculate brewing salt additions to achieve target water profile</CardDescription>
+          </CardHeader>
+          <CardContent class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Source Water Profile -->
+              <div>
+                <h3 class="text-lg font-semibold mb-3">Source Water Profile (ppm)</h3>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-2">
+                    <Label for="srcCa">Calcium (Ca²⁺)</Label>
+                    <Input id="srcCa" type="number" min="0" v-model.number="sourceWater.calcium" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="srcMg">Magnesium (Mg²⁺)</Label>
+                    <Input id="srcMg" type="number" min="0" v-model.number="sourceWater.magnesium" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="srcNa">Sodium (Na⁺)</Label>
+                    <Input id="srcNa" type="number" min="0" v-model.number="sourceWater.sodium" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="srcCl">Chloride (Cl⁻)</Label>
+                    <Input id="srcCl" type="number" min="0" v-model.number="sourceWater.chloride" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="srcSO4">Sulfate (SO₄²⁻)</Label>
+                    <Input id="srcSO4" type="number" min="0" v-model.number="sourceWater.sulfate" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="srcHCO3">Bicarbonate (HCO₃⁻)</Label>
+                    <Input id="srcHCO3" type="number" min="0" v-model.number="sourceWater.bicarbonate" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Target Water Profile -->
+              <div>
+                <h3 class="text-lg font-semibold mb-3">Target Water Profile (ppm)</h3>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-2">
+                    <Label for="tgtCa">Calcium (Ca²⁺)</Label>
+                    <Input id="tgtCa" type="number" min="0" v-model.number="targetWater.calcium" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="tgtMg">Magnesium (Mg²⁺)</Label>
+                    <Input id="tgtMg" type="number" min="0" v-model.number="targetWater.magnesium" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="tgtNa">Sodium (Na⁺)</Label>
+                    <Input id="tgtNa" type="number" min="0" v-model.number="targetWater.sodium" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="tgtCl">Chloride (Cl⁻)</Label>
+                    <Input id="tgtCl" type="number" min="0" v-model.number="targetWater.chloride" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="tgtSO4">Sulfate (SO₄²⁻)</Label>
+                    <Input id="tgtSO4" type="number" min="0" v-model.number="targetWater.sulfate" />
+                  </div>
+                  <div class="space-y-2">
+                    <Label for="tgtHCO3">Bicarbonate (HCO₃⁻)</Label>
+                    <Input id="tgtHCO3" type="number" min="0" v-model.number="targetWater.bicarbonate" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Batch Parameters -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+              <div class="space-y-2">
+                <Label for="waterVolume">Water Volume (L)</Label>
+                <Input id="waterVolume" type="number" step="0.1" min="1" v-model.number="waterVolume" />
+              </div>
+              <div class="space-y-2">
+                <Label for="mashGrainWeight">Grain Weight (kg) - for pH estimation</Label>
+                <Input id="mashGrainWeight" type="number" step="0.1" min="0" v-model.number="mashGrainWeight" />
+              </div>
+            </div>
+
+            <!-- Results -->
+            <div class="pt-4 border-t space-y-4">
+              <h3 class="text-lg font-semibold">Salt Additions Required</h3>
+              
+              <!-- Salt Additions Table -->
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div v-for="(amount, salt) in waterAdjustments.salts" :key="salt" 
+                       class="bg-white p-3 rounded border">
+                    <div class="font-semibold text-sm">{{ salts[salt as keyof typeof salts].name }}</div>
+                    <div class="text-2xl font-bold text-primary">
+                      {{ amount.toFixed(2) }} g
+                    </div>
+                    <div class="text-sm text-muted-foreground">
+                      {{ (amount * 1000 / waterVolume).toFixed(1) }} mg/L
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Final Water Profile -->
+              <div class="space-y-3">
+                <h4 class="font-semibold">Calculated Final Water Profile</h4>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-sm">
+                  <div class="text-center p-2 bg-blue-50 rounded">
+                    <div class="font-medium">Ca²⁺</div>
+                    <div class="text-xl font-bold">{{ waterAdjustments.finalWater.calcium.toFixed(0) }}</div>
+                    <div class="text-xs text-muted-foreground">ppm</div>
+                  </div>
+                  <div class="text-center p-2 bg-green-50 rounded">
+                    <div class="font-medium">Mg²⁺</div>
+                    <div class="text-xl font-bold">{{ waterAdjustments.finalWater.magnesium.toFixed(0) }}</div>
+                    <div class="text-xs text-muted-foreground">ppm</div>
+                  </div>
+                  <div class="text-center p-2 bg-yellow-50 rounded">
+                    <div class="font-medium">Na⁺</div>
+                    <div class="text-xl font-bold">{{ waterAdjustments.finalWater.sodium.toFixed(0) }}</div>
+                    <div class="text-xs text-muted-foreground">ppm</div>
+                  </div>
+                  <div class="text-center p-2 bg-orange-50 rounded">
+                    <div class="font-medium">Cl⁻</div>
+                    <div class="text-xl font-bold">{{ waterAdjustments.finalWater.chloride.toFixed(0) }}</div>
+                    <div class="text-xs text-muted-foreground">ppm</div>
+                  </div>
+                  <div class="text-center p-2 bg-red-50 rounded">
+                    <div class="font-medium">SO₄²⁻</div>
+                    <div class="text-xl font-bold">{{ waterAdjustments.finalWater.sulfate.toFixed(0) }}</div>
+                    <div class="text-xs text-muted-foreground">ppm</div>
+                  </div>
+                  <div class="text-center p-2 bg-purple-50 rounded">
+                    <div class="font-medium">HCO₃⁻</div>
+                    <div class="text-xl font-bold">{{ waterAdjustments.finalWater.bicarbonate.toFixed(0) }}</div>
+                    <div class="text-xs text-muted-foreground">ppm</div>
+                  </div>
+                </div>
+
+                <!-- Key Ratios & pH -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div class="text-center p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+                    <div class="font-medium text-sm">SO₄:Cl Ratio</div>
+                    <div class="text-2xl font-bold text-blue-700">
+                      {{ waterAdjustments.finalWater.chloride > 0 ? 
+                           (waterAdjustments.finalWater.sulfate / waterAdjustments.finalWater.chloride).toFixed(2) : 
+                           '∞' }}
+                    </div>
+                    <div class="text-xs text-blue-600">
+                      {{ waterAdjustments.finalWater.sulfate / waterAdjustments.finalWater.chloride > 1.5 ? 'Hoppy/Bitter' : 
+                         waterAdjustments.finalWater.sulfate / waterAdjustments.finalWater.chloride < 0.6 ? 'Malty/Sweet' : 'Balanced' }}
+                    </div>
+                  </div>
+                  <div class="text-center p-3 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
+                    <div class="font-medium text-sm">Estimated Mash pH</div>
+                    <div class="text-2xl font-bold text-green-700">{{ mashPH }}</div>
+                    <div class="text-xs text-green-600">
+                      {{ parseFloat(mashPH) >= 5.2 && parseFloat(mashPH) <= 5.6 ? 'Optimal' : 'Check Recipe' }}
+                    </div>
+                  </div>
+                  <div class="text-center p-3 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg">
+                    <div class="font-medium text-sm">Total Hardness</div>
+                    <div class="text-2xl font-bold text-amber-700">
+                      {{ (waterAdjustments.finalWater.calcium * 2.5 + waterAdjustments.finalWater.magnesium * 4.1).toFixed(0) }}
+                    </div>
+                    <div class="text-xs text-amber-600">ppm CaCO₃</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </TabsContent>
+
     </Tabs>
   </div>
 </template>

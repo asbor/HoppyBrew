@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, Dict, Any
 from datetime import datetime
 
@@ -10,13 +10,13 @@ DEVICE_BASE_EXAMPLE = {
     "api_token": "secret-token-123",
     "calibration_data": {
         "polynomial": [0.0, 0.0, 0.0, 1.0],  # Calibration polynomial coefficients
-        "temp_correction": True
+        "temp_correction": True,
     },
     "configuration": {
         "update_interval": 900,  # 15 minutes in seconds
-        "battery_warning_threshold": 3.5
+        "battery_warning_threshold": 3.5,
     },
-    "is_active": True
+    "is_active": True,
 }
 
 
@@ -30,13 +30,11 @@ class DeviceBase(BaseModel):
     configuration: Optional[Dict[str, Any]] = None
     is_active: bool = True
 
-    class Config:
-        schema_extra = {"example": DEVICE_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": DEVICE_BASE_EXAMPLE})
 
 
 class DeviceCreate(DeviceBase):
-    class Config:
-        schema_extra = {"example": DEVICE_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": DEVICE_BASE_EXAMPLE})
 
 
 class DeviceUpdate(BaseModel):
@@ -49,13 +47,9 @@ class DeviceUpdate(BaseModel):
     configuration: Optional[Dict[str, Any]] = None
     is_active: Optional[bool] = None
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "name": "Updated iSpindel Name",
-                "is_active": False
-            }
-        }
+    model_config = ConfigDict(
+        json_schema_extra={"example": {"name": "Updated iSpindel Name", "is_active": False}}
+    )
 
 
 class DeviceInDBBase(DeviceBase):
@@ -63,16 +57,17 @@ class DeviceInDBBase(DeviceBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
-        schema_extra = {
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
             "example": {
                 **DEVICE_BASE_EXAMPLE,
                 "id": 1,
                 "created_at": "2024-03-01T10:00:00Z",
                 "updated_at": "2024-03-15T09:30:00Z",
             }
-        }
+        },
+    )
 
 
 class Device(DeviceInDBBase):

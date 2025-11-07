@@ -15,7 +15,7 @@ async def create_inventory_yeast(
     yeast: schemas.InventoryYeastCreate, db: Session = Depends(get_db)
 ):
     try:
-        db_yeast = models.InventoryYeast(**yeast.dict())
+        db_yeast = models.InventoryYeast(**yeast.model_dump())
         db.add(db_yeast)
         db.commit()
         db.refresh(db_yeast)
@@ -28,16 +28,11 @@ async def create_inventory_yeast(
 async def update_inventory_yeast(
     id: int, yeast: schemas.InventoryYeastCreate, db: Session = Depends(get_db)
 ):
-    db_yeast = (
-        db.query(models.InventoryYeast)
-        .filter(models.InventoryYeast.id == id)
-        .first()
-    )
+    db_yeast = db.query(models.InventoryYeast).filter(models.InventoryYeast.id == id).first()
     if not db_yeast:
         raise HTTPException(status_code=404, detail="Yeast not found")
-    for key, value in yeast.dict().items():
+    for key, value in yeast.model_dump().items():
         setattr(db_yeast, key, value)
     db.commit()
     db.refresh(db_yeast)
     return db_yeast
-

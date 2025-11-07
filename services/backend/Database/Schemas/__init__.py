@@ -13,7 +13,7 @@ from .recipes import (
     RecipeScaleRequest,
     RecipeScaleResponse,
 )
-from .batches import Batch, BatchCreate, BatchBase
+from .batches import Batch, BatchCreate, BatchBase, BatchUpdate
 from .batch_logs import BatchLogBase
 from .style_guidelines import StyleGuidelineBase, StyleGuidelineBaseCreate, StyleGuideline
 from .styles import StyleBase, Style
@@ -39,7 +39,7 @@ from .water_profiles import (
     WaterProfileUpdate,
     WaterProfile,
 )
-from .mash_profiles import MashProfileBase
+from .mash_profiles import MashProfileBase, MashStepBase
 from .fermentables import (
     FermentableBase,
     RecipeFermentable,
@@ -98,6 +98,7 @@ __all__ = [
     "Batch",
     "BatchCreate",
     "BatchBase",
+    "BatchUpdate",
     "BatchLogBase",
     "StyleGuidelineBase",
     "StyleGuidelineBaseCreate",
@@ -123,6 +124,7 @@ __all__ = [
     "WaterProfileUpdate",
     "WaterProfile",
     "MashProfileBase",
+    "MashStepBase",
     "FermentableBase",
     "RecipeFermentable",
     "InventoryFermentableBase",

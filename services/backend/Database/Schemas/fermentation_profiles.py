@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 from decimal import Decimal
@@ -8,9 +8,7 @@ from decimal import Decimal
 class FermentationStepBase(BaseModel):
     """Base schema for fermentation step"""
 
-    step_order: int = Field(
-        ..., description="Order of the step in the fermentation process"
-    )
+    step_order: int = Field(..., description="Order of the step in the fermentation process")
     name: Optional[str] = Field(None, description="Name of the fermentation step")
     step_type: str = Field(
         default="primary",
@@ -26,8 +24,7 @@ class FermentationStepBase(BaseModel):
     )
     notes: Optional[str] = Field(None, description="Additional notes for the step")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FermentationStepCreate(FermentationStepBase):
@@ -48,8 +45,7 @@ class FermentationStepUpdate(BaseModel):
     pressure_psi: Optional[Decimal] = None
     notes: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FermentationStep(FermentationStepBase):
@@ -59,11 +55,9 @@ class FermentationStep(FermentationStepBase):
     fermentation_profile_id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
-# Fermentation Profile Schemas
 class FermentationProfileBase(BaseModel):
     """Base schema for fermentation profile"""
 
@@ -72,12 +66,9 @@ class FermentationProfileBase(BaseModel):
     is_pressurized: bool = Field(
         default=False, description="Whether the profile uses pressurized fermentation"
     )
-    is_template: bool = Field(
-        default=False, description="Whether this is a template profile"
-    )
+    is_template: bool = Field(default=False, description="Whether this is a template profile")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FermentationProfileCreate(FermentationProfileBase):
@@ -96,8 +87,7 @@ class FermentationProfileUpdate(BaseModel):
     is_pressurized: Optional[bool] = None
     is_template: Optional[bool] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FermentationProfile(FermentationProfileBase):
@@ -108,11 +98,9 @@ class FermentationProfile(FermentationProfileBase):
     updated_at: datetime
     steps: List[FermentationStep] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
-# Example data for documentation
 FERMENTATION_PROFILE_EXAMPLE = {
     "name": "Standard Ale",
     "description": "Basic ale fermentation profile with primary and conditioning phases",

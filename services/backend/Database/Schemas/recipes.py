@@ -1,6 +1,6 @@
 # Database/Schemas/recipes_hops.py
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from .hops import HopBase
 from .fermentables import FermentableBase
@@ -126,8 +126,7 @@ class RecipeBase(BaseModel):
     miscs: List[MiscBase] = Field(default_factory=list)
     yeasts: List[YeastBase] = Field(default_factory=list)
 
-    class Config:
-        schema_extra = {"example": RECIPE_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": RECIPE_BASE_EXAMPLE})
 
 
 class Recipe(RecipeBase):
@@ -135,16 +134,17 @@ class Recipe(RecipeBase):
     is_batch: Optional[bool] = False
     origin_recipe_id: Optional[int] = None
 
-    class Config:
-        from_attributes = True  # Pydantic v2: renamed from orm_mode
-        schema_extra = {
+    model_config = ConfigDict(
+        from_attributes=True,  # Pydantic v2: renamed from orm_mode
+        json_schema_extra={
             "example": {
                 **RECIPE_BASE_EXAMPLE,
                 "id": 42,
                 "is_batch": False,
                 "origin_recipe_id": None,
             }
-        }
+        },
+    )
 
 
 class RecipeMetrics(BaseModel):
@@ -157,8 +157,7 @@ class RecipeScaleRequest(BaseModel):
     target_batch_size: float = Field(..., gt=0)
     target_boil_size: Optional[float] = Field(None, gt=0)
 
-    class Config:
-        schema_extra = {"example": RECIPE_SCALE_REQUEST_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": RECIPE_SCALE_REQUEST_EXAMPLE})
 
 
 class RecipeScaleResponse(BaseModel):
@@ -168,5 +167,4 @@ class RecipeScaleResponse(BaseModel):
     scaled_recipe: Recipe
     metrics: RecipeMetrics
 
-    class Config:
-        schema_extra = {"example": RECIPE_SCALE_RESPONSE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": RECIPE_SCALE_RESPONSE_EXAMPLE})

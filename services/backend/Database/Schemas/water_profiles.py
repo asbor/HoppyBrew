@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
 from datetime import datetime
 from decimal import Decimal
@@ -42,7 +42,7 @@ class WaterProfileBase(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
-    profile_type: str = Field(default='source', pattern='^(source|target)$')
+    profile_type: str = Field(default="source", pattern="^(source|target)$")
     style_category: Optional[str] = Field(None, max_length=100)
 
     # Ion concentrations (ppm)
@@ -65,8 +65,7 @@ class WaterProfileBase(BaseModel):
     display_amount: Optional[str] = None
     inventory: Optional[int] = None
 
-    class Config:
-        json_schema_extra = {"example": WATER_PROFILE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": WATER_PROFILE_EXAMPLE})
 
 
 class WaterProfileCreate(WaterProfileBase):
@@ -74,8 +73,7 @@ class WaterProfileCreate(WaterProfileBase):
 
     is_custom: bool = Field(default=True)
 
-    class Config:
-        json_schema_extra = {"example": WATER_PROFILE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": WATER_PROFILE_EXAMPLE})
 
 
 class WaterProfileUpdate(BaseModel):
@@ -83,7 +81,7 @@ class WaterProfileUpdate(BaseModel):
 
     name: Optional[str] = Field(None, min_length=1, max_length=255)
     description: Optional[str] = None
-    profile_type: Optional[str] = Field(None, pattern='^(source|target)$')
+    profile_type: Optional[str] = Field(None, pattern="^(source|target)$")
     style_category: Optional[str] = Field(None, max_length=100)
 
     # Ion concentrations (ppm)
@@ -116,23 +114,26 @@ class WaterProfile(WaterProfileBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
-        json_schema_extra = {"example": {
-            "id": 1,
-            "name": "Amber Balanced",
-            "description": "Balanced water profile for amber ales",
-            "profile_type": "target",
-            "style_category": "Amber Ales",
-            "calcium": 50,
-            "magnesium": 10,
-            "sodium": 15,
-            "chloride": 63,
-            "sulfate": 75,
-            "bicarbonate": 40,
-            "ph": 7.0,
-            "is_default": True,
-            "is_custom": False,
-            "created_at": "2024-01-01T00:00:00",
-            "updated_at": "2024-01-01T00:00:00"
-        }}
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "example": {
+                "id": 1,
+                "name": "Amber Balanced",
+                "description": "Balanced water profile for amber ales",
+                "profile_type": "target",
+                "style_category": "Amber Ales",
+                "calcium": 50,
+                "magnesium": 10,
+                "sodium": 15,
+                "chloride": 63,
+                "sulfate": 75,
+                "bicarbonate": 40,
+                "ph": 7.0,
+                "is_default": True,
+                "is_custom": False,
+                "created_at": "2024-01-01T00:00:00",
+                "updated_at": "2024-01-01T00:00:00",
+            }
+        },
+    )

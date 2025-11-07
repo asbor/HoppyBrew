@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, Ind
 from sqlalchemy.orm import relationship
 from database import Base
 from datetime import datetime
+from Database.enums import BatchStatus as BatchStatusEnum
 
 
 class Batches(Base):
@@ -11,15 +12,15 @@ class Batches(Base):
     __table_args__ = (
         Index("ix_batches_recipe_id", "recipe_id"),
         Index("ix_batches_recipe_id_batch_number", "recipe_id", "batch_number"),
+        Index("ix_batches_status", "status"),
     )
     id = Column(Integer, primary_key=True, index=True)
     batch_name = Column(String, nullable=False)
     batch_number = Column(Integer, nullable=False)
     batch_size = Column(Float, nullable=False)
+    status = Column(String(50), default=BatchStatusEnum.PLANNING.value, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime,
-                        default=datetime.now,
-                        onupdate=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     brewer = Column(String, nullable=False)
     brew_date = Column(DateTime, nullable=False)
     # Relationships:

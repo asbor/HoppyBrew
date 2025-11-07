@@ -14,11 +14,13 @@ import {
 } from '@/components/ui/table'
 import type { BatchStatus } from '@/composables/useBatches'
 
+const router = useRouter()
 const { batches, loading, error, fetchAll, remove } = useBatches()
 const { getBatchStatusColor } = useStatusColors()
 
 const searchQuery = ref('')
 const filterStatus = ref<BatchStatus | 'all'>('all')
+const viewMode = ref<'table' | 'cards'>('table')
 
 // Filtered batches based on search and status
 const filteredBatches = computed(() => {
@@ -40,6 +42,21 @@ const filteredBatches = computed(() => {
   return result
 })
 
+function handleEditBatch(batch: any) {
+  router.push(`/batches/${batch.id}`)
+}
+
+async function handleDeleteBatch(batch: any) {
+  if (!confirm(`Are you sure you want to delete "${batch.batch_name}"?`)) {
+    return
+  }
+
+  const result = await remove(batch.id)
+  if (result.error) {
+    alert(`Failed to delete batch: ${result.error.value}`)
+  }
+}
+
 async function deleteBatch(id: string) {
   if (!confirm('Are you sure you want to delete this batch?')) {
     return
@@ -53,17 +70,17 @@ async function deleteBatch(id: string) {
 
 function formatDate(dateString: string | undefined) {
   if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleDateString('en-GB', { 
-    day: '2-digit', 
-    month: '2-digit', 
-    year: 'numeric' 
+  return new Date(dateString).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
   })
 }
 
 function calculateDaysInStage(batch: any) {
   const statusDate = batch.fermentation_start_date || batch.brew_date || batch.created_at
   if (!statusDate) return 0
-  
+
   const now = new Date()
   const start = new Date(statusDate)
   const diffTime = Math.abs(now.getTime() - start.getTime())
@@ -84,66 +101,66 @@ onMounted(async () => {
         <h1 class="text-3xl font-bold">Batches</h1>
         <p class="text-muted-foreground">Track your brewing batches and fermentation progress</p>
       </div>
-      <Button asChild>
-        <NuxtLink href="/batches/newBatch">
-          <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
-          New Batch
-        </NuxtLink>
-      </Button>
+      <div class="flex gap-3">
+        <div class="flex gap-1 border rounded-md">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            :class="{ 'bg-muted': viewMode === 'table' }"
+            @click="viewMode = 'table'"
+          >
+            <Icon name="mdi:table" class="h-4 w-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            :class="{ 'bg-muted': viewMode === 'cards' }"
+            @click="viewMode = 'cards'"
+          >
+            <Icon name="mdi:view-grid" class="h-4 w-4" />
+          </Button>
+        </div>
+        <Button asChild>
+          <NuxtLink href="/batches/newBatch">
+            <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
+            New Batch
+          </NuxtLink>
+        </Button>
+      </div>
     </header>
 
     <!-- Search & Filters -->
     <div class="flex flex-col md:flex-row gap-4">
       <div class="flex-1">
-        <Input
-          v-model="searchQuery"
-          placeholder="Search batches by name..."
-          class="max-w-md"
-        >
-          <template #prefix>
-            <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
-          </template>
+        <Input v-model="searchQuery" placeholder="Search batches by name..." class="max-w-md">
+        <template #prefix>
+          <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
+        </template>
         </Input>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <Button 
-          variant="outline" 
-          size="sm"
-          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
-          @click="filterStatus = 'all'"
-        >
+        <Button variant="outline" size="sm" :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
+          @click="filterStatus = 'all'">
           All
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'primary_fermentation' }"
-          @click="filterStatus = 'primary_fermentation'"
-        >
+          @click="filterStatus = 'primary_fermentation'">
           Fermenting
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'conditioning' }"
-          @click="filterStatus = 'conditioning'"
-        >
+          @click="filterStatus = 'conditioning'">
           Conditioning
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'packaged' }"
-          @click="filterStatus = 'packaged'"
-        >
+          @click="filterStatus = 'packaged'">
           Packaged
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm"
+        <Button variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'completed' }"
-          @click="filterStatus = 'completed'"
-        >
+          @click="filterStatus = 'completed'">
           Completed
         </Button>
       </div>
@@ -178,8 +195,8 @@ onMounted(async () => {
       </CardFooter>
     </Card>
 
-    <!-- Batches Table -->
-    <Card v-else>
+    <!-- Batches Table View -->
+    <Card v-if="viewMode === 'table'">
       <CardHeader>
         <div class="flex items-center justify-between">
           <div>
@@ -214,7 +231,7 @@ onMounted(async () => {
               </TableCell>
               <TableCell>
                 <Badge :class="getBatchStatusColor(batch.status)" class="text-white">
-                  {{ batch.status.replace(/_/g, ' ') }}
+                  {{ batch.status ? batch.status.replace(/_/g, ' ') : 'N/A' }}
                 </Badge>
               </TableCell>
               <TableCell>{{ batch.batch_size }} L</TableCell>
@@ -229,12 +246,8 @@ onMounted(async () => {
                     <Icon name="mdi:pencil" class="h-4 w-4" />
                   </NuxtLink>
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  @click="deleteBatch(batch.id)"
-                  class="text-destructive hover:text-destructive"
-                >
+                <Button variant="ghost" size="sm" @click="deleteBatch(batch.id)"
+                  class="text-destructive hover:text-destructive">
                   <Icon name="mdi:delete" class="h-4 w-4" />
                 </Button>
               </TableCell>
@@ -243,5 +256,16 @@ onMounted(async () => {
         </Table>
       </CardContent>
     </Card>
+
+    <!-- Batches Card View -->
+    <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <BatchCard 
+        v-for="batch in filteredBatches" 
+        :key="batch.id"
+        :batch="batch"
+        @edit="handleEditBatch"
+        @delete="handleDeleteBatch"
+      />
+    </div>
   </div>
 </template>

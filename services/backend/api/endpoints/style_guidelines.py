@@ -24,18 +24,12 @@ async def get_all_style_guidelines(db: Session = Depends(get_db)):
     "/style_guidelines/{guideline_id}",
     response_model=schemas.StyleGuideline,
 )
-async def get_style_guideline(
-    guideline_id: int, db: Session = Depends(get_db)
-):
+async def get_style_guideline(guideline_id: int, db: Session = Depends(get_db)):
     guideline = (
-        db.query(models.StyleGuidelines)
-        .filter(models.StyleGuidelines.id == guideline_id)
-        .first()
+        db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == guideline_id).first()
     )
     if not guideline:
-        raise HTTPException(
-            status_code=404, detail="Style Guideline not found"
-        )
+        raise HTTPException(status_code=404, detail="Style Guideline not found")
     return guideline
 
 
@@ -44,7 +38,7 @@ async def create_style_guideline(
     guideline: schemas.StyleGuidelineBaseCreate, db: Session = Depends(get_db)
 ):
     try:
-        db_guideline = models.StyleGuidelines(**guideline.dict())
+        db_guideline = models.StyleGuidelines(**guideline.model_dump())
         db.add(db_guideline)
         db.commit()
         db.refresh(db_guideline)
@@ -57,15 +51,9 @@ async def create_style_guideline(
     "/style_guidelines/{id}", response_model=schemas.StyleGuideline
 )
 async def delete_style_guideline(id: int, db: Session = Depends(get_db)):
-    guideline = (
-        db.query(models.StyleGuidelines)
-        .filter(models.StyleGuidelines.id == id)
-        .first()
-    )
+    guideline = db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == id).first()
     if not guideline:
-        raise HTTPException(
-            status_code=404, detail="Style Guideline not found"
-        )
+        raise HTTPException(status_code=404, detail="Style Guideline not found")
     db.delete(guideline)
     db.commit()
     return guideline
@@ -79,16 +67,10 @@ async def update_style_guideline(
     guideline: schemas.StyleGuidelineBaseCreate,
     db: Session = Depends(get_db),
 ):
-    db_guideline = (
-        db.query(models.StyleGuidelines)
-        .filter(models.StyleGuidelines.id == id)
-        .first()
-    )
+    db_guideline = db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == id).first()
     if not db_guideline:
-        raise HTTPException(
-            status_code=404, detail="Style Guideline not found"
-        )
-    for key, value in guideline.dict().items():
+        raise HTTPException(status_code=404, detail="Style Guideline not found")
+    for key, value in guideline.model_dump().items():
         setattr(db_guideline, key, value)
     db.commit()
     db.refresh(db_guideline)

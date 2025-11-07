@@ -102,6 +102,13 @@ yarn-error.log*
 .nuxt/
 .output/
 dist/
+# Playwright artifacts
+playwright-report/
+test-results/
+blob-report/
+*.trace.zip
+playwright/.cache/
+services/nuxt3-shadcn/playwright/.cache/
 
 # IDE
 .idea/

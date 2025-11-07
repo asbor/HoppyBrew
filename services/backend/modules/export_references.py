@@ -16,7 +16,7 @@ from database import SessionLocal, SQLALCHEMY_DATABASE_URL
 def export_references(xml_file, session=None):
     """
     Export references from the database to an XML file.
-    
+
     Args:
         xml_file: Path to the output XML file
         session: Optional SQLAlchemy session (creates one if not provided)
@@ -25,7 +25,7 @@ def export_references(xml_file, session=None):
     if session is None:
         session = SessionLocal()
         close_session = True
-    
+
     try:
         references = session.query(References).all()
         root = ET.Element("references")
@@ -34,16 +34,10 @@ def export_references(xml_file, session=None):
             ET.SubElement(ref_element, "id").text = str(reference.id)
             ET.SubElement(ref_element, "name").text = reference.name
             ET.SubElement(ref_element, "url").text = reference.url
-            ET.SubElement(ref_element, "description").text = (
-                reference.description or ""
-            )
+            ET.SubElement(ref_element, "description").text = reference.description or ""
             ET.SubElement(ref_element, "category").text = reference.category or ""
-            ET.SubElement(ref_element, "favicon_url").text = (
-                reference.favicon_url or ""
-            )
-            ET.SubElement(ref_element, "created_at").text = (
-                reference.created_at.isoformat()
-            )
+            ET.SubElement(ref_element, "favicon_url").text = reference.favicon_url or ""
+            ET.SubElement(ref_element, "created_at").text = reference.created_at.isoformat()
             ET.SubElement(ref_element, "updated_at").text = (
                 reference.updated_at.isoformat() if reference.updated_at else ""
             )

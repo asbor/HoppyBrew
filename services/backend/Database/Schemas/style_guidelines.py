@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 STYLE_GUIDELINE_EXAMPLE = {
@@ -39,21 +39,18 @@ class StyleGuidelineBase(BaseModel):
     ibu: Optional[str] = None
     ebc: Optional[str] = None
 
-    class Config:
-        from_attributes = True  # Pydantic v2: support ORM models
-        schema_extra = {"example": STYLE_GUIDELINE_EXAMPLE}
+    model_config = ConfigDict(from_attributes=True, json_schema_extra={
+                              "example": STYLE_GUIDELINE_EXAMPLE})
 
 
 class StyleGuidelineBaseCreate(StyleGuidelineBase):
-    class Config:
-        from_attributes = True  # Pydantic v2: support ORM models
-        schema_extra = {"example": STYLE_GUIDELINE_EXAMPLE}
+    model_config = ConfigDict(from_attributes=True, json_schema_extra={
+                              "example": STYLE_GUIDELINE_EXAMPLE})
 
 
 class StyleGuideline(StyleGuidelineBase):
     """StyleGuideline schema with ID for responses"""
     id: Optional[int] = None
 
-    class Config:
-        from_attributes = True  # Pydantic v2: support ORM models
-        schema_extra = {"example": {**STYLE_GUIDELINE_EXAMPLE, "id": 1}}
+    model_config = ConfigDict(from_attributes=True, json_schema_extra={
+                              "example": {**STYLE_GUIDELINE_EXAMPLE, "id": 1}})

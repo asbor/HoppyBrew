@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button'
 
 const { recipes, loading: recipesLoading, fetchAll: fetchRecipes } = useRecipes()
 const { batches, loading: batchesLoading, fetchAll: fetchBatches, getActiveBatches } = useBatches()
-const { 
+const {
   hops, fermentables, yeasts, miscs,
   fetchHops, fetchFermentables, fetchYeasts, fetchMiscs,
-  getLowStockItems 
+  getLowStockItems
 } = useInventory()
 const { getBatchStatusColor } = useStatusColors()
 
@@ -19,14 +19,14 @@ const error = ref<string | null>(null)
 const stats = computed(() => {
   const activeBatches = getActiveBatches()
   const lowStock = getLowStockItems(50) // threshold: 50g/ml
-  
+
   return {
     totalRecipes: recipes.value.length,
     activeBatches: activeBatches.length,
     totalInventoryItems: hops.value.length + fermentables.value.length + yeasts.value.length + miscs.value.length,
     lowStockCount: lowStock.total,
-    lastBrewDate: batches.value.length > 0 
-      ? batches.value.sort((a, b) => new Date(b.brew_date || b.created_at).getTime() - new Date(a.brew_date || a.created_at).getTime())[0].brew_date 
+    lastBrewDate: batches.value.length > 0
+      ? batches.value.sort((a, b) => new Date(b.brew_date || b.created_at).getTime() - new Date(a.brew_date || a.created_at).getTime())[0].brew_date
       : null,
   }
 })
@@ -58,10 +58,10 @@ const lowStockItems = computed(() => {
 
 function formatDate(dateString: string | undefined) {
   if (!dateString) return 'N/A'
-  return new Date(dateString).toLocaleDateString('en-GB', { 
-    day: '2-digit', 
-    month: '2-digit', 
-    year: 'numeric' 
+  return new Date(dateString).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
   })
 }
 
@@ -186,7 +186,7 @@ onMounted(async () => {
                   <p class="text-ha-sm text-muted-foreground">{{ formatDate(batch.brew_date || batch.created_at) }}</p>
                 </div>
                 <Badge :class="getBatchStatusColor(batch.status)" class="text-white">
-                  {{ batch.status.replace(/_/g, ' ') }}
+                  {{ batch.status ? batch.status.replace(/_/g, ' ') : 'N/A' }}
                 </Badge>
               </div>
             </div>

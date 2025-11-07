@@ -11,11 +11,9 @@ from .miscs import router
 
 
 @router.post("/inventory/miscs", response_model=schemas.InventoryMisc)
-async def create_inventory_misc(
-    misc: schemas.InventoryMiscCreate, db: Session = Depends(get_db)
-):
+async def create_inventory_misc(misc: schemas.InventoryMiscCreate, db: Session = Depends(get_db)):
     try:
-        db_misc = models.InventoryMisc(**misc.dict())
+        db_misc = models.InventoryMisc(**misc.model_dump())
         db.add(db_misc)
         db.commit()
         db.refresh(db_misc)
@@ -28,16 +26,11 @@ async def create_inventory_misc(
 async def update_inventory_misc(
     id: int, misc: schemas.InventoryMiscCreate, db: Session = Depends(get_db)
 ):
-    db_misc = (
-        db.query(models.InventoryMisc)
-        .filter(models.InventoryMisc.id == id)
-        .first()
-    )
+    db_misc = db.query(models.InventoryMisc).filter(models.InventoryMisc.id == id).first()
     if not db_misc:
         raise HTTPException(status_code=404, detail="Misc not found")
-    for key, value in misc.dict().items():
+    for key, value in misc.model_dump().items():
         setattr(db_misc, key, value)
     db.commit()
     db.refresh(db_misc)
     return db_misc
-

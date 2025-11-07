@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -18,18 +18,15 @@ class ReferenceBase(BaseModel):
     category: Optional[str] = None
     favicon_url: Optional[str] = None
 
-    class Config:
-        schema_extra = {"example": REFERENCE_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": REFERENCE_BASE_EXAMPLE})
 
 
 class ReferenceCreate(ReferenceBase):
-    class Config:
-        schema_extra = {"example": REFERENCE_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": REFERENCE_BASE_EXAMPLE})
 
 
 class ReferenceUpdate(ReferenceBase):
-    class Config:
-        schema_extra = {"example": REFERENCE_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": REFERENCE_BASE_EXAMPLE})
 
 
 class ReferenceInDBBase(ReferenceBase):
@@ -37,16 +34,17 @@ class ReferenceInDBBase(ReferenceBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
-        schema_extra = {
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
             "example": {
                 **REFERENCE_BASE_EXAMPLE,
                 "id": 8,
                 "created_at": "2024-03-01T10:00:00Z",
                 "updated_at": "2024-03-15T09:30:00Z",
             }
-        }
+        },
+    )
 
 
 class Reference(ReferenceInDBBase):

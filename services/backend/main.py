@@ -1,5 +1,6 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict
 from database import engine, Base
 from api.router import router
 from fastapi.middleware.cors import CORSMiddleware
@@ -139,17 +140,47 @@ app.add_middleware(
 )
 
 
+# Add exception handler for all unhandled exceptions to ensure CORS headers are present
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """
+    Global exception handler that ensures CORS headers are included in error responses.
+    This prevents CORS errors from masking the actual backend errors.
+    """
+    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+
+    # Create a JSON response with CORS headers
+    response = JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "Internal Server Error"},
+    )
+
+    # Add CORS headers manually to ensure they're present
+    origin = request.headers.get("origin", "").lower()
+    # Normalize origins list for case-insensitive comparison
+    normalized_origins = [o.lower() for o in origins]
+    if origin and origin in normalized_origins:
+        # Use the original case from the request
+        response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin", "")
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+
+    return response
+
+
 class ServiceStatus(BaseModel):
     message: str
     status: str
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "message": "Welcome to the HoppyBrew API",
                 "status": "online",
             }
         }
+    )
 
 
 @app.get(

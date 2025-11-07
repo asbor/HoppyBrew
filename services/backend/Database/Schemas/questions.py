@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List
 from .choices import ChoiceBase
 
@@ -16,16 +16,15 @@ class QuestionBase(BaseModel):
     question_text: str
     choices: List[ChoiceBase]
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": QUESTION_BASE_EXAMPLE}
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={"example": QUESTION_BASE_EXAMPLE},
+    )
 
 
 class QuestionWithID(QuestionBase):
     id: int
 
-    class Config:
-        orm_mode = True
-        schema_extra = {
-            "example": {**QUESTION_BASE_EXAMPLE, "id": 3},
-        }
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_extra={"example": {**QUESTION_BASE_EXAMPLE, "id": 42}}
+    )

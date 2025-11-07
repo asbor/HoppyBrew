@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 HOP_BASE_EXAMPLE = {
@@ -35,22 +35,19 @@ class HopBase(BaseModel):
     inventory: Optional[str] = None
     display_time: Optional[str] = None
 
-    class Config:
-        from_attributes = True  # Pydantic v2: support ORM models
-        schema_extra = {"example": HOP_BASE_EXAMPLE}
+    model_config = ConfigDict(from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE})
 
 
 class RecipeHop(HopBase):
     recipe_id: int
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": {**HOP_BASE_EXAMPLE, "recipe_id": 1}}
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "recipe_id": 1}}
+    )
 
 
 class InventoryHopBase(HopBase):
-    class Config:
-        schema_extra = {"example": HOP_BASE_EXAMPLE}
+    model_config = ConfigDict(json_schema_extra={"example": HOP_BASE_EXAMPLE})
 
 
 class InventoryHopCreate(InventoryHopBase):
@@ -61,6 +58,7 @@ class InventoryHop(InventoryHopBase):
     id: int
     batch_id: Optional[int] = None  # Allow batch_id to be None
 
-    class Config:
-        orm_mode = True
-        schema_extra = {"example": {**HOP_BASE_EXAMPLE, "id": 7, "batch_id": 3}}
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "id": 7, "batch_id": 3}},
+    )

@@ -16,7 +16,7 @@ from database import SessionLocal, SQLALCHEMY_DATABASE_URL
 def import_references(xml_file, session=None):
     """
     Import references from an XML file to the database.
-    
+
     Args:
         xml_file: Path to the input XML file
         session: Optional SQLAlchemy session (creates one if not provided)
@@ -25,7 +25,7 @@ def import_references(xml_file, session=None):
     if session is None:
         session = SessionLocal()
         close_session = True
-    
+
     try:
         tree = ET.parse(xml_file)
         root = tree.getroot()

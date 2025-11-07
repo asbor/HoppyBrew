@@ -120,6 +120,8 @@ jobs:
             image: frontend
     env:
       IMAGE_TAG: ${{ github.sha }}
+      GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -136,15 +138,22 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.service.image }}:${{ env.IMAGE_TAG }}
 
       - name: Log in to GHCR
-        if: ${{ secrets.GHCR_USERNAME != '' && secrets.GHCR_TOKEN != '' }}
+        if: ${{ env.GHCR_USERNAME != '' && env.GHCR_TOKEN != '' }}
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.GHCR_USERNAME }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          username: ${{ env.GHCR_USERNAME }}
+          password: ${{ env.GHCR_TOKEN }}
 
-      - name: Push image
-        if: ${{ secrets.GHCR_USERNAME != '' && secrets.GHCR_TOKEN != '' }}
+      - name: Log in to DockerHub
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push image to GHCR
+        if: ${{ env.GHCR_USERNAME != '' && env.GHCR_TOKEN != '' }}
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.service.context }}
@@ -155,11 +164,27 @@ jobs:
             ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.service.image }}:latest
           provenance: false
 
+      - name: Push image to DockerHub
+        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-${{ matrix.service.image }}:${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-${{ matrix.service.image }}:latest
+          provenance: false
+
       - name: Emit image metadata
         id: meta
         run: |
           echo "image=${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.service.image }}:${{ env.IMAGE_TAG }}" >> "$GITHUB_OUTPUT"
-          echo "pushed=$([[ -n \"${{ secrets.GHCR_TOKEN }}\" && -n \"${{ secrets.GHCR_USERNAME }}\" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "ghcr_pushed=$([[ -n \"${{ env.GHCR_TOKEN }}\" && -n \"${{ env.GHCR_USERNAME }}\" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "dockerhub_pushed=$([[ -n \"${{ secrets.DOCKERHUB_TOKEN }}\" && -n \"${{ secrets.DOCKERHUB_USERNAME }}\" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          if [[ -n "${{ secrets.DOCKERHUB_USERNAME }}" ]]; then
+            echo "dockerhub_image=${{ secrets.DOCKERHUB_USERNAME }}/hoppybrew-${{ matrix.service.image }}:${{ env.IMAGE_TAG }}" >> "$GITHUB_OUTPUT"
+          fi
 
   deploy-staging:
     name: Staging Deployment
@@ -167,6 +192,8 @@ jobs:
     needs: docker-build
     environment:
       name: staging
+    env:
+      STAGING_KUBE_CONFIG: ${{ secrets.STAGING_KUBE_CONFIG }}
     outputs:
       message: ${{ steps.status.outputs.message }}
       deployment_status: ${{ steps.status.outputs.status }}
@@ -195,18 +222,18 @@ jobs:
         shell: bash
 
       - name: Configure kubeconfig
-        if: ${{ secrets.STAGING_KUBE_CONFIG != '' && steps.manifest.outputs.has_manifests == 'true' }}
+        if: ${{ env.STAGING_KUBE_CONFIG != '' && steps.manifest.outputs.has_manifests == 'true' }}
         run: |
           mkdir -p "$HOME/.kube"
-          echo "${{ secrets.STAGING_KUBE_CONFIG }}" | base64 --decode > "$HOME/.kube/config"
+          echo "${{ env.STAGING_KUBE_CONFIG }}" | base64 --decode > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
 
       - name: Apply manifests
-        if: ${{ secrets.STAGING_KUBE_CONFIG != '' && steps.manifest.outputs.has_manifests == 'true' }}
+        if: ${{ env.STAGING_KUBE_CONFIG != '' && steps.manifest.outputs.has_manifests == 'true' }}
         run: kubectl apply -k deploy
 
       - name: Wait for rollout
-        if: ${{ secrets.STAGING_KUBE_CONFIG != '' && steps.manifest.outputs.has_manifests == 'true' }}
+        if: ${{ env.STAGING_KUBE_CONFIG != '' && steps.manifest.outputs.has_manifests == 'true' }}
         run: |
           kubectl rollout status deployment/backend --timeout=120s
           kubectl rollout status deployment/frontend --timeout=120s
@@ -214,7 +241,7 @@ jobs:
       - name: Record deployment status
         id: status
         run: |
-          if [ -z "${{ secrets.STAGING_KUBE_CONFIG }}" ]; then
+          if [ -z "${{ env.STAGING_KUBE_CONFIG }}" ]; then
             echo "status=skipped" >> "$GITHUB_OUTPUT"
             echo "message=Staging deployment skipped; credentials not configured." >> "$GITHUB_OUTPUT"
           elif [ "${{ steps.manifest.outputs.has_manifests }}" != "true" ]; then
@@ -237,7 +264,7 @@ jobs:
     steps:
       - name: Compile workflow summary
         id: summary
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const results = {
@@ -263,11 +290,12 @@ jobs:
             core.setOutput('failed', hasFailures ? 'true' : 'false');
 
       - name: "MCP: Publish deployment analytics"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           MCP_SERVER_URL: ${{ secrets.MCP_SERVER_URL }}
           MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
           STAGING_MESSAGE: ${{ needs.deploy-staging.outputs.message }}
+          SUMMARY: ${{ steps.summary.outputs.markdown }}
         with:
           script: |
             const url = process.env.MCP_SERVER_URL;
@@ -280,7 +308,7 @@ jobs:
               repository: context.repo,
               workflow: 'main-build-deploy',
               commit: context.sha,
-              summary: core.getInput('summary'),
+              summary: process.env.SUMMARY,
               stages: {
                 backendQuality: '${{ needs.backend-quality.result }}',
                 frontendQuality: '${{ needs.frontend-quality.result }}',
@@ -305,11 +333,12 @@ jobs:
             } else {
               core.info('MCP analytics dispatched successfully.');
             }
-          summary: ${{ steps.summary.outputs.markdown }}
 
       - name: "MCP: Auto-issue for pipeline failures"
         if: steps.summary.outputs.failed == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
+        env:
+          MARKDOWN: ${{ steps.summary.outputs.markdown }}
         with:
           script: |
             const title = `Main pipeline failure for ${context.sha.substring(0, 7)}`;
@@ -317,7 +346,7 @@ jobs:
             const body = [
               'Automated MCP alert for main branch pipeline failure.',
               '',
-              core.getInput('markdown'),
+              process.env.MARKDOWN,
               '',
               '_Generated automatically by the CI/CD pipeline._',
             ].join('\n');
