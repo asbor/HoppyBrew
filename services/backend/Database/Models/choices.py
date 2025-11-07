@@ -10,5 +10,6 @@ class Choices(Base):
     id = Column(Integer, primary_key=True, index=True)
     choice_text = Column(String, index=True)
     is_correct = Column(Boolean, default=False)
-    question_id = Column(Integer, ForeignKey("questions.id"))
+    question_id = Column(Integer, ForeignKey(
+        "questions.id", ondelete="CASCADE"))
     question = relationship("Questions", back_populates="choices")

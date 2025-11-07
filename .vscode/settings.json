@@ -6,5 +6,7 @@
   "python.testing.nosetestsEnabled": false,
   "python.testing.pytestEnabled": true,
   "python.envFile": "${workspaceFolder}/.env",
-  "python.pythonPath": "${workspaceFolder}/services/backend/.venv/bin/python"
+  "python.pythonPath": "${workspaceFolder}/services/backend/.venv/bin/python",
+  "github.copilot.chat.confirmationMode": "off",
+  "github.copilot.chat.allowAutomaticEdits": true
 }
