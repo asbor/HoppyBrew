@@ -34,7 +34,7 @@
     "lucide-vue-next": "^0.368.0",
     "nuxt": "^3.11.2",
     "nuxt-highcharts": "^3.1.1",
-    "nuxt-socket-io": "^3.0.10",
+    "nuxt-socket-io": "^3.0.13",
     "radix-vue": "^1.7.3",
     "shadcn-nuxt": "^0.10.4",
     "tailwind-merge": "^3.3.1",
