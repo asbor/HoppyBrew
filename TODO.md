@@ -45,12 +45,13 @@ This document organizes work based on the **COMPREHENSIVE_WORKFLOW_ANALYSIS** an
 ## 🔴 HIGH PRIORITY - Current Sprint
 
 ### Database & Backend
-- [ ] **Add comprehensive seed data** ⚠️ BLOCKING
-  - [ ] 10+ sample recipes (IPA, Stout, Lager, Pale Ale, Porter, Wheat, etc.)
-  - [ ] 50+ inventory items with quantities and costs (EUR)
-  - [ ] Sample batches in different stages (all with proper status field)
-  - [ ] Equipment profiles (Grainfather, Anvil, BIAB)
-  - [ ] Water profiles (soft, hard, balanced)
+- [x] **Add comprehensive seed data** ✅ COMPLETED
+  - [x] 10 diverse sample recipes (American IPA, Irish Stout, German Pilsner, Hefeweizen, English Bitter, Belgian Dubbel, American Pale Ale, Porter, Kolsch, West Coast IPA)
+  - [x] 27+ recipe ingredients (fermentables, hops, yeasts, miscs)
+  - [x] 4 sample batches in different stages (planning, primary_fermentation, conditioning)
+  - [x] 3 equipment profiles (Grainfather G30, Anvil Foundry, BIAB)
+  - [x] 4 water profiles (soft, balanced, hoppy IPA, malty stout)
+  - [x] All batches with proper inventory allocation
 - [ ] Introduce service/repository layer to reduce CRUD duplication
 - [ ] Extend Makefile for linting, tests, formatters
 
@@ -201,11 +202,11 @@ These are on the todo list above and don't affect functionality.
 
 ## 🚀 Immediate Next Actions
 
-1. **Resolve TODO.md merge conflict** (this file)
-2. **Add comprehensive seed data** to enable proper testing
-3. **Build Recipe Detail components** to eliminate console warnings
-4. **Create Inventory CRUD pages** for ingredient management
-5. **Build Profile management pages** for equipment/mash/water/fermentation
+1. ~~**Resolve TODO.md merge conflict**~~ ✅ COMPLETED
+2. ~~**Add comprehensive seed data**~~ ✅ COMPLETED
+3. **Test inventory pages** with real seed data (hops, fermentables, yeasts, miscs)
+4. **Build Recipe Detail components** to eliminate console warnings
+5. **Create Profile management pages** for equipment/mash/water/fermentation
 
 ---
 
