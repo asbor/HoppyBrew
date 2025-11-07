@@ -115,7 +115,7 @@ def downgrade() -> None:
     try:
         columns = inspector.get_columns('water')
         existing_columns = {col['name'] for col in columns}
-    except:
+    except (NoSuchTableError, OperationalError):
         return  # Table doesn't exist, nothing to downgrade
 
     with op.batch_alter_table('water', schema=None) as batch_op:
