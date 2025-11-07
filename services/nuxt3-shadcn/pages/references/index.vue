@@ -24,6 +24,8 @@ interface Reference {
   favicon_url: string
 }
 
+const DEFAULT_FAVICON_URL = 'https://static-00.iconduck.com/assets.00/unknown-icon-2048x2048-6wlnie9m.png'
+
 const api = useApi()
 const router = useRouter()
 
@@ -101,7 +103,7 @@ async function deleteReference(id: number) {
 
 function handleFaviconError(event: Event) {
   const target = event.target as HTMLImageElement
-  target.src = 'https://static-00.iconduck.com/assets.00/unknown-icon-2048x2048-6wlnie9m.png'
+  target.src = DEFAULT_FAVICON_URL
 }
 
 function openUrl(url: string) {

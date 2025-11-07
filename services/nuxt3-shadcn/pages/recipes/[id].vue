@@ -17,6 +17,7 @@ const route = useRoute()
 const router = useRouter()
 const { fetchOne, update, loading: recipeLoading, error: recipeError } = useRecipes()
 const { create: createBatch, loading: batchLoading } = useBatches()
+const { generateBatchName } = useFormatters()
 
 const recipeId = route.params.id as string
 const recipe = ref<Recipe | null>(null)
@@ -38,7 +39,7 @@ onMounted(async () => {
   if (result.data.value) {
     recipe.value = result.data.value
     // Pre-fill batch form with recipe defaults
-    batchForm.value.batch_name = `${recipe.value.name} - ${new Date().toLocaleDateString()}`
+    batchForm.value.batch_name = generateBatchName(recipe.value.name)
     batchForm.value.batch_size = recipe.value.batch_size
     batchForm.value.brewer = recipe.value.brewer || ''
   }
@@ -62,7 +63,7 @@ function handleCancel() {
 function openStartBrewDialog() {
   if (recipe.value) {
     // Refresh batch form with latest recipe data
-    batchForm.value.batch_name = `${recipe.value.name} - ${new Date().toLocaleDateString()}`
+    batchForm.value.batch_name = generateBatchName(recipe.value.name)
     batchForm.value.batch_size = recipe.value.batch_size
     batchForm.value.brewer = recipe.value.brewer || ''
   }

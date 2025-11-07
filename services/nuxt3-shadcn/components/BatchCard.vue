@@ -18,6 +18,7 @@ const props = defineProps<{
 const emit = defineEmits(['edit', 'delete']);
 
 const { getBatchStatusColor } = useStatusColors();
+const { formatDate } = useFormatters();
 
 // Calculate days in current stage
 const daysInStage = computed(() => {
@@ -33,12 +34,7 @@ const daysInStage = computed(() => {
 // Format brew date
 const formattedBrewDate = computed(() => {
   const dateString = props.batch.brew_date || props.batch.created_at;
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  return formatDate(dateString);
 });
 
 function handleEdit() {

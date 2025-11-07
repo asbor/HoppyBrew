@@ -71,11 +71,12 @@ function clearLogs() {
 function downloadLogs() {
   if (!logContent.value) return
   
+  const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '')
   const blob = new Blob([logContent.value], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `hoppybrew-logs-${new Date().toISOString()}.txt`
+  a.download = `hoppybrew-logs-${timestamp}.txt`
   a.click()
   URL.revokeObjectURL(url)
 }

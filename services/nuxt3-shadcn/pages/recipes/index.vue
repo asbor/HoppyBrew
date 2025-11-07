@@ -27,6 +27,7 @@ import type { BatchCreate } from '@/composables/useBatches'
 const router = useRouter()
 const { recipes, loading, error, fetchAll, remove } = useRecipes()
 const { create: createBatch, loading: batchLoading } = useBatches()
+const { generateBatchName } = useFormatters()
 
 const searchQuery = ref('')
 const viewMode = ref<'table' | 'cards'>('table')
@@ -73,7 +74,7 @@ function formatNumber(value: number | undefined | null, decimals: number = 1): s
 function openStartBrewDialog(recipe: Recipe) {
   selectedRecipe.value = recipe
   batchForm.value = {
-    batch_name: `${recipe.name} - ${new Date().toLocaleDateString()}`,
+    batch_name: generateBatchName(recipe.name),
     batch_number: 1,
     batch_size: recipe.batch_size,
     brewer: recipe.brewer || '',
