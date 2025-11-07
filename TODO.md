@@ -71,11 +71,11 @@ This document organizes work based on the **COMPREHENSIVE_WORKFLOW_ANALYSIS** an
 - [ ] Add inventory availability check
 
 ### Frontend - Inventory Pages
-- [-] Create Inventory Pages
-  - ✅ inventory/hops - Complete with CRUD, search, low stock warnings, expiry tracking
-  - ✅ inventory/fermentables - Complete with CRUD, search, color visualization, low stock warnings
-  - ⏳ inventory/yeasts - TODO: Build with temperature ranges, attenuation, flocculation
-  - ⏳ inventory/miscs - TODO: Build with usage tracking, water agents, spices
+- [x] Create Inventory Pages
+  - ✅ inventory/hops - Complete with CRUD, search, filtering, low stock/expiry warnings
+  - ✅ inventory/fermentables - Complete with color visualization, yield tracking
+  - ✅ inventory/yeasts - Complete with temperature ranges, attenuation, flocculation
+  - ✅ inventory/miscs - Complete with type/use tracking, flexible units
 
 ### Frontend - Profile Pages
 - [ ] Create /profiles/equipment page (CRUD for equipment profiles)
