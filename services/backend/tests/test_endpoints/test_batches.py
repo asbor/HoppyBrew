@@ -119,3 +119,32 @@ def test_delete_batch_removes_inventory(client, db_session):
         db_session.query(models.InventoryYeast).filter_by(batch_id=batch_id).count()
         == 0
     )
+
+
+def test_get_all_batches_returns_empty_list_when_no_batches(client):
+    response = client.get("/batches")
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+def test_get_all_batches_returns_list_with_inventory(client, db_session):
+    recipe_id = create_base_recipe(client, db_session, name="List Recipe")
+    client.post("/batches", json=build_batch_payload(recipe_id, "001"))
+    client.post("/batches", json=build_batch_payload(recipe_id, "002"))
+
+    response = client.get("/batches")
+    assert response.status_code == 200
+    batches = response.json()
+    
+    assert len(batches) == 2
+    
+    # Verify each batch has the required inventory relationships loaded
+    for batch in batches:
+        assert "inventory_hops" in batch
+        assert "inventory_fermentables" in batch
+        assert "inventory_miscs" in batch
+        assert "inventory_yeasts" in batch
+        assert isinstance(batch["inventory_hops"], list)
+        assert isinstance(batch["inventory_fermentables"], list)
+        assert isinstance(batch["inventory_miscs"], list)
+        assert isinstance(batch["inventory_yeasts"], list)
