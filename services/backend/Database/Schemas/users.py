@@ -21,5 +21,10 @@ class User(BaseModel):
     password: str
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "username": "brewmaster",                "password": "S3curePassw0rd!",            }        }
+        json_schema_extra={
+            "example": {
+                "username": "brewmaster",
+                "password": "S3curePassw0rd!",
+            }
+        }
     )

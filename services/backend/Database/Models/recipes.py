@@ -14,9 +14,7 @@ class Recipes(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     is_batch = Column(Boolean, default=False)
-    origin_recipe_id = Column(Integer,
-                              ForeignKey("recipes.id"),
-                              nullable=True)
+    origin_recipe_id = Column(Integer, ForeignKey("recipes.id"), nullable=True)
     origin_recipe = relationship(
         "Recipes",
         remote_side=[id],

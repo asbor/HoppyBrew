@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text, Index
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -57,5 +57,6 @@ class Styles(Base):
 
     recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
     recipe = relationship("Recipes", back_populates="style_profile")
+
 
 # TODO: batch_id = Column(Integer, ForeignKey('batches.id'))

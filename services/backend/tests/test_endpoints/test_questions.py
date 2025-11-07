@@ -17,8 +17,8 @@ def test_create_and_get_all_questions(client):
     )
     assert (
         response.status_code == 200
-    ), f'''Unexpected status code: {response.status_code},
-    response: {response.json()}'''
+    ), f"""Unexpected status code: {response.status_code},
+    response: {response.json()}"""
 
     response.json()["id"]
     # Get all questions
@@ -26,16 +26,15 @@ def test_create_and_get_all_questions(client):
     response = client.get("/questions")
     assert (
         response.status_code == 200
-    ), f'''Unexpected status code: {response.status_code},
-    response: {response.json()}'''
+    ), f"""Unexpected status code: {response.status_code},
+    response: {response.json()}"""
 
     assert len(response.json()) == 1
     question = response.json()[0]
     assert question["question_text"] == "What is the capital of France?"
     assert len(question["choices"]) == 3
     assert any(
-        choice["choice_text"] == "Paris" and choice["is_correct"]
-        for choice in question["choices"]
+        choice["choice_text"] == "Paris" and choice["is_correct"] for choice in question["choices"]
     )
 
 
@@ -55,8 +54,8 @@ def test_delete_question(client):
     )
     assert (
         response.status_code == 200
-    ), f'''Unexpected status code: {response.status_code},
-    response: {response.json()}'''
+    ), f"""Unexpected status code: {response.status_code},
+    response: {response.json()}"""
 
     question_id = response.json()["id"]
     # Delete the question
@@ -64,15 +63,15 @@ def test_delete_question(client):
     response = client.delete(f"/questions/{question_id}")
     assert (
         response.status_code == 200
-    ), f'''Unexpected status code: {response.status_code},
-    response: {response.json()}'''
+    ), f"""Unexpected status code: {response.status_code},
+    response: {response.json()}"""
 
     # Ensure the question is deleted
 
     response = client.get("/questions")
     assert (
         response.status_code == 200
-    ), f'''Unexpected status code: {response.status_code},
-    response: {response.json()}'''
+    ), f"""Unexpected status code: {response.status_code},
+    response: {response.json()}"""
 
     assert not any(q["id"] == question_id for q in response.json())

@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 from fastapi.responses import StreamingResponse
 import io
 from pydantic import BaseModel, ConfigDict
+
 try:
     import requests
 except ImportError:  # pragma: no cover - fallback when requests is unavailable
@@ -38,17 +39,23 @@ class ReferenceImportResponse(BaseModel):
     skipped_records: int
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "message": "References imported successfully",                "imported_records": 12,                "skipped_records": 2,            }        }
+        json_schema_extra={
+            "example": {
+                "message": "References imported successfully",
+                "imported_records": 12,
+                "skipped_records": 2,
+            }
+        }
     )
+
+
 @router.post(
     "/references/import",
     response_model=ReferenceImportResponse,
     summary="Import references from BeerXML",
     response_description="Outcome of the import operation summarising processed records.",
 )
-async def import_references(
-    db: Session = Depends(get_db), file: UploadFile = File(...)
-):
+async def import_references(db: Session = Depends(get_db), file: UploadFile = File(...)):
     contents = await file.read()
     try:
         tree = ET.ElementTree(ET.fromstring(contents))
@@ -96,16 +103,10 @@ async def export_references(db: Session = Depends(get_db)):
         ET.SubElement(ref_element, "id").text = str(reference.id)
         ET.SubElement(ref_element, "name").text = reference.name
         ET.SubElement(ref_element, "url").text = reference.url
-        ET.SubElement(ref_element, "description").text = (
-            reference.description or ""
-        )
+        ET.SubElement(ref_element, "description").text = reference.description or ""
         ET.SubElement(ref_element, "category").text = reference.category or ""
-        ET.SubElement(ref_element, "favicon_url").text = (
-            reference.favicon_url or ""
-        )
-        ET.SubElement(ref_element, "created_at").text = (
-            reference.created_at.isoformat()
-        )
+        ET.SubElement(ref_element, "favicon_url").text = reference.favicon_url or ""
+        ET.SubElement(ref_element, "created_at").text = reference.created_at.isoformat()
         ET.SubElement(ref_element, "updated_at").text = (
             reference.updated_at.isoformat() if reference.updated_at else ""
         )
@@ -128,20 +129,14 @@ async def get_all_references(db: Session = Depends(get_db)):
 
 @router.get("/references/{reference_id}", response_model=schemas.Reference)
 async def get_reference(reference_id: int, db: Session = Depends(get_db)):
-    reference = (
-        db.query(models.References)
-        .filter(models.References.id == reference_id)
-        .first()
-    )
+    reference = db.query(models.References).filter(models.References.id == reference_id).first()
     if not reference:
         raise HTTPException(status_code=404, detail="Reference not found")
     return reference
 
 
 @router.post("/references", response_model=schemas.Reference)
-async def create_reference(
-    reference: schemas.ReferenceCreate, db: Session = Depends(get_db)
-):
+async def create_reference(reference: schemas.ReferenceCreate, db: Session = Depends(get_db)):
     favicon_url = fetch_favicon(reference.url)
     reference_data = reference.model_dump()
     reference_data["favicon_url"] = favicon_url
@@ -154,11 +149,7 @@ async def create_reference(
 
 @router.delete("/references/{reference_id}", response_model=schemas.Reference)
 async def delete_reference(reference_id: int, db: Session = Depends(get_db)):
-    reference = (
-        db.query(models.References)
-        .filter(models.References.id == reference_id)
-        .first()
-    )
+    reference = db.query(models.References).filter(models.References.id == reference_id).first()
     if not reference:
         raise HTTPException(status_code=404, detail="Reference not found")
     db.delete(reference)
@@ -172,11 +163,7 @@ async def update_reference(
     reference: schemas.ReferenceUpdate,
     db: Session = Depends(get_db),
 ):
-    db_reference = (
-        db.query(models.References)
-        .filter(models.References.id == reference_id)
-        .first()
-    )
+    db_reference = db.query(models.References).filter(models.References.id == reference_id).first()
     if not db_reference:
         raise HTTPException(status_code=404, detail="Reference not found")
     for key, value in reference.model_dump().items():
@@ -185,6 +172,7 @@ async def update_reference(
     db.refresh(db_reference)
     return db_reference
 
+
 # Helper function to fetch favicon URL
 
 
@@ -192,9 +180,7 @@ def fetch_favicon(url: str) -> str:
     parsed_url = urlparse(url)
     base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
     google_favicon_url = (
-        f"http://www.google.com/s2/favicons?domain={parsed_url.netloc}"
-        if parsed_url.netloc
-        else ""
+        f"http://www.google.com/s2/favicons?domain={parsed_url.netloc}" if parsed_url.netloc else ""
     )
     if not parsed_url.scheme or not parsed_url.netloc or requests is None:
         return google_favicon_url

@@ -7,14 +7,14 @@ from database import Base
 class StyleGuidelineSource(Base):
     """
     Represents different style guideline sources (BJCP, Brewers Association, etc.)
-    
+
     Relationships:
     - ONE guideline source can have MANY categories
     - ONE guideline source can have MANY beer styles
     """
-    
+
     __tablename__ = "style_guideline_sources"
-    
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)  # e.g., "BJCP 2021", "Brewers Association 2025"
     year = Column(Integer, nullable=True)
@@ -23,14 +23,16 @@ class StyleGuidelineSource(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
+
     # Relationships
-    categories = relationship("StyleCategory", back_populates="guideline_source", cascade="all, delete-orphan")
+    categories = relationship(
+        "StyleCategory", back_populates="guideline_source", cascade="all, delete-orphan"
+    )
     beer_styles = relationship("BeerStyle", back_populates="guideline_source")
-    
+
     __table_args__ = (
-        Index('idx_guideline_source_name', 'name'),
-        Index('idx_guideline_source_active', 'is_active'),
+        Index("idx_guideline_source_name", "name"),
+        Index("idx_guideline_source_active", "is_active"),
     )
 
 
@@ -60,7 +62,7 @@ class StyleGuidelines(Base):
     abv = Column(String(255), nullable=True)
     ibu = Column(String(255), nullable=True)
     ebc = Column(String(255), nullable=True)
-    
+
     # Legacy relationship - kept for backward compatibility
     recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
     recipe = relationship("Recipes", back_populates="style_guideline")

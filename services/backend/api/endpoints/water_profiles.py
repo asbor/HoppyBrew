@@ -16,7 +16,7 @@ async def get_water_profiles(
     profile_type: Optional[str] = Query(None, pattern="^(source|target)$"),
     style_category: Optional[str] = None,
     is_default: Optional[bool] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     List all water profiles with optional filtering.
@@ -41,10 +41,7 @@ async def get_water_profiles(
 
 
 @router.post("/water-profiles", response_model=schemas.WaterProfile, status_code=201)
-async def create_water_profile(
-    profile: schemas.WaterProfileCreate,
-    db: Session = Depends(get_db)
-):
+async def create_water_profile(profile: schemas.WaterProfileCreate, db: Session = Depends(get_db)):
     """
     Create a new water profile.
 
@@ -53,15 +50,19 @@ async def create_water_profile(
     - **calcium**, **magnesium**, **sodium**, **chloride**, **sulfate**, **bicarbonate**: Ion concentrations in ppm
     """
     # Check if profile with same name and type already exists
-    existing = db.query(models.WaterProfiles).filter(
-        models.WaterProfiles.name == profile.name,
-        models.WaterProfiles.profile_type == profile.profile_type
-    ).first()
+    existing = (
+        db.query(models.WaterProfiles)
+        .filter(
+            models.WaterProfiles.name == profile.name,
+            models.WaterProfiles.profile_type == profile.profile_type,
+        )
+        .first()
+    )
 
     if existing:
         raise HTTPException(
             status_code=400,
-            detail=f"Water profile with name '{profile.name}' and type '{profile.profile_type}' already exists"
+            detail=f"Water profile with name '{profile.name}' and type '{profile.profile_type}' already exists",
         )
 
     db_profile = models.WaterProfiles(**profile.model_dump())
@@ -72,16 +73,11 @@ async def create_water_profile(
 
 
 @router.get("/water-profiles/{profile_id}", response_model=schemas.WaterProfile)
-async def get_water_profile(
-    profile_id: int,
-    db: Session = Depends(get_db)
-):
+async def get_water_profile(profile_id: int, db: Session = Depends(get_db)):
     """
     Get a specific water profile by ID.
     """
-    profile = db.query(models.WaterProfiles).filter(
-        models.WaterProfiles.id == profile_id
-    ).first()
+    profile = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
 
     if not profile:
         raise HTTPException(status_code=404, detail="Water profile not found")
@@ -91,18 +87,14 @@ async def get_water_profile(
 
 @router.put("/water-profiles/{profile_id}", response_model=schemas.WaterProfile)
 async def update_water_profile(
-    profile_id: int,
-    profile_update: schemas.WaterProfileUpdate,
-    db: Session = Depends(get_db)
+    profile_id: int, profile_update: schemas.WaterProfileUpdate, db: Session = Depends(get_db)
 ):
     """
     Update an existing water profile.
 
     Only custom profiles can be updated. Default profiles are read-only.
     """
-    profile = db.query(models.WaterProfiles).filter(
-        models.WaterProfiles.id == profile_id
-    ).first()
+    profile = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
 
     if not profile:
         raise HTTPException(status_code=404, detail="Water profile not found")
@@ -110,24 +102,28 @@ async def update_water_profile(
     if profile.is_default:
         raise HTTPException(
             status_code=403,
-            detail="Cannot update default profiles. Duplicate the profile to make changes."
+            detail="Cannot update default profiles. Duplicate the profile to make changes.",
         )
 
     # Update only provided fields
     update_data = profile_update.model_dump(exclude_unset=True)
 
     # Check for name conflicts if name is being updated
-    if 'name' in update_data and update_data['name'] != profile.name:
-        existing = db.query(models.WaterProfiles).filter(
-            models.WaterProfiles.name == update_data['name'],
-            models.WaterProfiles.profile_type == profile.profile_type,
-            models.WaterProfiles.id != profile_id
-        ).first()
+    if "name" in update_data and update_data["name"] != profile.name:
+        existing = (
+            db.query(models.WaterProfiles)
+            .filter(
+                models.WaterProfiles.name == update_data["name"],
+                models.WaterProfiles.profile_type == profile.profile_type,
+                models.WaterProfiles.id != profile_id,
+            )
+            .first()
+        )
 
         if existing:
             raise HTTPException(
                 status_code=400,
-                detail=f"Water profile with name '{update_data['name']}' already exists"
+                detail=f"Water profile with name '{update_data['name']}' already exists",
             )
 
     for key, value in update_data.items():
@@ -141,47 +137,39 @@ async def update_water_profile(
 
 
 @router.delete("/water-profiles/{profile_id}", response_model=schemas.WaterProfile)
-async def delete_water_profile(
-    profile_id: int,
-    db: Session = Depends(get_db)
-):
+async def delete_water_profile(profile_id: int, db: Session = Depends(get_db)):
     """
     Delete a water profile.
 
     Only custom profiles can be deleted. Default profiles are protected.
     """
-    profile = db.query(models.WaterProfiles).filter(
-        models.WaterProfiles.id == profile_id
-    ).first()
+    profile = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
 
     if not profile:
         raise HTTPException(status_code=404, detail="Water profile not found")
 
     if profile.is_default:
-        raise HTTPException(
-            status_code=403,
-            detail="Cannot delete default profiles"
-        )
+        raise HTTPException(status_code=403, detail="Cannot delete default profiles")
 
     db.delete(profile)
     db.commit()
     return profile
 
 
-@router.post("/water-profiles/{profile_id}/duplicate", response_model=schemas.WaterProfile, status_code=201)
+@router.post(
+    "/water-profiles/{profile_id}/duplicate", response_model=schemas.WaterProfile, status_code=201
+)
 async def duplicate_water_profile(
     profile_id: int,
     new_name: Optional[str] = Query(None, description="Name for the duplicated profile"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Duplicate an existing water profile.
 
     This is useful for creating custom variants of default profiles.
     """
-    original = db.query(models.WaterProfiles).filter(
-        models.WaterProfiles.id == profile_id
-    ).first()
+    original = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
 
     if not original:
         raise HTTPException(status_code=404, detail="Water profile not found")
@@ -192,10 +180,14 @@ async def duplicate_water_profile(
     # Check if name already exists
     counter = 1
     final_name = duplicate_name
-    while db.query(models.WaterProfiles).filter(
-        models.WaterProfiles.name == final_name,
-        models.WaterProfiles.profile_type == original.profile_type
-    ).first():
+    while (
+        db.query(models.WaterProfiles)
+        .filter(
+            models.WaterProfiles.name == final_name,
+            models.WaterProfiles.profile_type == original.profile_type,
+        )
+        .first()
+    ):
         final_name = f"{duplicate_name} {counter}"
         counter += 1
 

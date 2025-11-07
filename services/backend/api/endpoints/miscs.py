@@ -17,6 +17,7 @@ async def get_all_recipe_miscs(db: Session = Depends(get_db)):
     miscs = db.query(models.RecipeMisc).all()
     return miscs
 
+
 # Inventory Miscs Endpoints
 
 
@@ -28,11 +29,7 @@ async def get_all_inventory_miscs(db: Session = Depends(get_db)):
 
 @router.get("/inventory/miscs/{misc_id}", response_model=schemas.InventoryMisc)
 async def get_inventory_misc(misc_id: int, db: Session = Depends(get_db)):
-    misc = (
-        db.query(models.InventoryMisc)
-        .filter(models.InventoryMisc.id == misc_id)
-        .first()
-    )
+    misc = db.query(models.InventoryMisc).filter(models.InventoryMisc.id == misc_id).first()
     if not misc:
         raise HTTPException(status_code=404, detail="Misc not found")
     return misc
@@ -40,11 +37,7 @@ async def get_inventory_misc(misc_id: int, db: Session = Depends(get_db)):
 
 @router.delete("/inventory/miscs/{id}", response_model=schemas.InventoryMisc)
 async def delete_inventory_misc(id: int, db: Session = Depends(get_db)):
-    misc = (
-        db.query(models.InventoryMisc)
-        .filter(models.InventoryMisc.id == id)
-        .first()
-    )
+    misc = db.query(models.InventoryMisc).filter(models.InventoryMisc.id == id).first()
     if not misc:
         raise HTTPException(status_code=404, detail="Misc not found")
     db.delete(misc)

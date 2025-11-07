@@ -34,9 +34,11 @@ def test_create_fermentable(client):
     # Print the response for debugging
     print(response.json())
 
-    assert response.status_code == 200, f'''
+    assert (
+        response.status_code == 200
+    ), f"""
     Unexpected status code: {response.status_code},
-    response: {response.json()}'''
+    response: {response.json()}"""
 
     fermentable = response.json()
     assert fermentable["name"] == "Test Fermentable"

@@ -13,6 +13,5 @@ class ChoiceBase(BaseModel):
     is_correct: bool
 
     model_config = ConfigDict(
-        from_attributes=True,
-        json_schema_extra={"example": CHOICE_BASE_EXAMPLE}
+        from_attributes=True, json_schema_extra={"example": CHOICE_BASE_EXAMPLE}
     )

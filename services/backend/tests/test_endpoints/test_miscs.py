@@ -25,7 +25,9 @@ def test_create_misc(client):
         },
     )
 
-    assert response.status_code == 200, f'''
+    assert (
+        response.status_code == 200
+    ), f'''
     Unexpected status code: {response.status_code},
     response: {response.json()}"'''
 
@@ -61,7 +63,7 @@ def test_get_all_miscs(client):
             "inventory": 100,
             "display_time": "15min",
             "batch_size": 20,
-        }
+        },
     )
     response = client.get("/inventory/miscs")
     assert response.status_code == 200

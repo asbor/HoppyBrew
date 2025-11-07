@@ -14,7 +14,7 @@ router = APIRouter()
 async def get_all_devices(db: Session = Depends(get_db)):
     """
     Get all configured devices.
-    
+
     Returns a list of all external devices configured in the system,
     including iSpindel, Tilt, and other brewing monitoring devices.
     """
@@ -26,27 +26,21 @@ async def get_all_devices(db: Session = Depends(get_db)):
 async def get_device(device_id: int, db: Session = Depends(get_db)):
     """
     Get a specific device by ID.
-    
+
     Returns detailed information about a specific device including
     its configuration and calibration data.
     """
-    device = (
-        db.query(models.Device)
-        .filter(models.Device.id == device_id)
-        .first()
-    )
+    device = db.query(models.Device).filter(models.Device.id == device_id).first()
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
     return device
 
 
 @router.post("/devices", response_model=schemas.Device)
-async def create_device(
-    device: schemas.DeviceCreate, db: Session = Depends(get_db)
-):
+async def create_device(device: schemas.DeviceCreate, db: Session = Depends(get_db)):
     """
     Create a new device configuration.
-    
+
     Creates a new external device configuration in the system.
     Supports various device types including iSpindel and Tilt hydrometers.
     """
@@ -66,23 +60,19 @@ async def update_device(
 ):
     """
     Update an existing device configuration.
-    
+
     Updates the configuration, calibration data, or other settings
     for an existing device. Only provided fields will be updated.
     """
-    db_device = (
-        db.query(models.Device)
-        .filter(models.Device.id == device_id)
-        .first()
-    )
+    db_device = db.query(models.Device).filter(models.Device.id == device_id).first()
     if not db_device:
         raise HTTPException(status_code=404, detail="Device not found")
-    
+
     # Only update fields that were provided
     update_data = device.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_device, key, value)
-    
+
     db.commit()
     db.refresh(db_device)
     return db_device
@@ -92,17 +82,13 @@ async def update_device(
 async def delete_device(device_id: int, db: Session = Depends(get_db)):
     """
     Delete a device configuration.
-    
+
     Removes a device configuration from the system. This cannot be undone.
     """
-    device = (
-        db.query(models.Device)
-        .filter(models.Device.id == device_id)
-        .first()
-    )
+    device = db.query(models.Device).filter(models.Device.id == device_id).first()
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
-    
+
     db.delete(device)
     db.commit()
     return device

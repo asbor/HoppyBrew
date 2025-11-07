@@ -13,8 +13,15 @@ class BeerStyleRefreshResponse(BaseModel):
     task_id: str
 
     model_config = ConfigDict(
-        json_schema_extra={            "example": {                "message": "Beer style refresh queued for processing.",                "task_id": "refresh-beer-styles-20240321T101500Z",            }        }
+        json_schema_extra={
+            "example": {
+                "message": "Beer style refresh queued for processing.",
+                "task_id": "refresh-beer-styles-20240321T101500Z",
+            }
+        }
     )
+
+
 def run_beer_styles_script():
     scrape_and_process_beer_styles()
 

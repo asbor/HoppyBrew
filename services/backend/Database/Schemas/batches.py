@@ -102,18 +102,14 @@ class BatchBase(BaseModel):
     brew_date: datetime
     status: BatchStatus = BatchStatus.PLANNING
 
-    model_config = ConfigDict(
-        json_schema_extra={"example": BATCH_BASE_EXAMPLE}
-    )
+    model_config = ConfigDict(json_schema_extra={"example": BATCH_BASE_EXAMPLE})
 
 
 class BatchCreate(BatchBase):
     recipe_id: int
 
     model_config = ConfigDict(
-        json_schema_extra={
-            "example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}
-        }
+        json_schema_extra={"example": {**BATCH_BASE_EXAMPLE, "recipe_id": 42}}
     )
 
 
@@ -152,6 +148,5 @@ class Batch(BatchBase):
     inventory_yeasts: List[InventoryYeast]
 
     model_config = ConfigDict(
-        from_attributes=True,
-        json_schema_extra={"example": BATCH_FULL_EXAMPLE}
+        from_attributes=True, json_schema_extra={"example": BATCH_FULL_EXAMPLE}
     )

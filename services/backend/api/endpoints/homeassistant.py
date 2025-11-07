@@ -23,6 +23,7 @@ UNKNOWN_RECIPE_NAME = "Unknown"
 
 class HomeAssistantBatchSensor(BaseModel):
     """Batch sensor data formatted for HomeAssistant"""
+
     entity_id: str
     name: str
     state: str
@@ -34,6 +35,7 @@ class HomeAssistantBatchSensor(BaseModel):
 
 class HomeAssistantDiscoveryConfig(BaseModel):
     """HomeAssistant MQTT Discovery configuration"""
+
     name: str
     state_topic: str
     value_template: str
@@ -50,10 +52,10 @@ def calculate_batch_age(created_at: datetime) -> int:
 def determine_batch_state(batch_age_days: int) -> str:
     """
     Determine batch state based on age in days.
-    
+
     Args:
         batch_age_days: Age of the batch in days
-        
+
     Returns:
         State string: "brewing", "fermenting", "conditioning", or "ready"
     """
@@ -77,9 +79,9 @@ def determine_batch_state(batch_age_days: int) -> str:
 async def get_batches_for_homeassistant(db: Session = Depends(get_db)):
     """
     Returns all active batches in a format optimized for HomeAssistant REST sensors.
-    
+
     This endpoint can be used with HomeAssistant's RESTful sensor platform:
-    
+
     ```yaml
     sensor:
       - platform: rest
@@ -101,13 +103,13 @@ async def get_batches_for_homeassistant(db: Session = Depends(get_db)):
         )
         .all()
     )
-    
+
     sensors = []
     for batch in batches:
         # Calculate batch age and state
         batch_age_days = calculate_batch_age(batch.created_at)
         state = determine_batch_state(batch_age_days)
-        
+
         # Build attributes
         attributes = {
             "batch_id": batch.id,
@@ -122,13 +124,13 @@ async def get_batches_for_homeassistant(db: Session = Depends(get_db)):
             "recipe_id": batch.recipe_id,
             "recipe_name": batch.recipe.name if batch.recipe else UNKNOWN_RECIPE_NAME,
         }
-        
+
         # Add latest log activity if available
         if batch.batch_log:
             attributes["last_activity"] = batch.batch_log.activity
             attributes["last_activity_time"] = batch.batch_log.timestamp.isoformat()
             attributes["notes"] = batch.batch_log.notes
-        
+
         sensor = HomeAssistantBatchSensor(
             entity_id=f"sensor.hoppybrew_batch_{batch.id}",
             name=f"HoppyBrew - {batch.batch_name}",
@@ -137,7 +139,7 @@ async def get_batches_for_homeassistant(db: Session = Depends(get_db)):
             icon="mdi:beer" if state == "ready" else "mdi:flask",
         )
         sensors.append(sensor)
-    
+
     return sensors
 
 
@@ -148,15 +150,12 @@ async def get_batches_for_homeassistant(db: Session = Depends(get_db)):
     response_description="Single batch formatted for HomeAssistant",
     tags=["homeassistant"],
 )
-async def get_batch_for_homeassistant(
-    batch_id: int, 
-    db: Session = Depends(get_db)
-):
+async def get_batch_for_homeassistant(batch_id: int, db: Session = Depends(get_db)):
     """
     Returns a specific batch in HomeAssistant sensor format.
-    
+
     Useful for creating individual sensors per batch:
-    
+
     ```yaml
     sensor:
       - platform: rest
@@ -179,13 +178,13 @@ async def get_batch_for_homeassistant(
         .filter(models.Batches.id == batch_id)
         .first()
     )
-    
+
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
-    
+
     batch_age_days = calculate_batch_age(batch.created_at)
     state = determine_batch_state(batch_age_days)
-    
+
     attributes = {
         "batch_id": batch.id,
         "batch_number": batch.batch_number,
@@ -200,12 +199,12 @@ async def get_batch_for_homeassistant(
         "recipe_id": batch.recipe_id,
         "recipe_name": batch.recipe.name if batch.recipe else UNKNOWN_RECIPE_NAME,
     }
-    
+
     if batch.batch_log:
         attributes["last_activity"] = batch.batch_log.activity
         attributes["last_activity_time"] = batch.batch_log.timestamp.isoformat()
         attributes["notes"] = batch.batch_log.notes
-    
+
     return HomeAssistantBatchSensor(
         entity_id=f"sensor.hoppybrew_batch_{batch.id}",
         name=f"HoppyBrew - {batch.batch_name}",
@@ -224,7 +223,7 @@ async def get_batch_for_homeassistant(
 async def get_brewery_summary(db: Session = Depends(get_db)):
     """
     Returns a summary of the brewery status for HomeAssistant dashboard.
-    
+
     Example configuration:
     ```yaml
     sensor:
@@ -240,17 +239,17 @@ async def get_brewery_summary(db: Session = Depends(get_db)):
     ```
     """
     batches = db.query(models.Batches).all()
-    
+
     total_batches = len(batches)
     brewing_count = 0
     fermenting_count = 0
     conditioning_count = 0
     ready_count = 0
-    
+
     for batch in batches:
         batch_age_days = calculate_batch_age(batch.created_at)
         state = determine_batch_state(batch_age_days)
-        
+
         if state == "brewing":
             brewing_count += 1
         elif state == "fermenting":
@@ -259,7 +258,7 @@ async def get_brewery_summary(db: Session = Depends(get_db)):
             conditioning_count += 1
         else:
             ready_count += 1
-    
+
     return {
         "active_batches": total_batches,
         "total_batches": total_batches,
@@ -278,27 +277,20 @@ async def get_brewery_summary(db: Session = Depends(get_db)):
     response_description="MQTT discovery JSON for HomeAssistant",
     tags=["homeassistant"],
 )
-async def get_batch_mqtt_discovery(
-    batch_id: int,
-    db: Session = Depends(get_db)
-):
+async def get_batch_mqtt_discovery(batch_id: int, db: Session = Depends(get_db)):
     """
     Returns MQTT discovery configuration for automatic sensor setup.
-    
+
     This endpoint generates the configuration that would be published to:
     `homeassistant/sensor/hoppybrew_batch_{batch_id}/config`
-    
+
     For manual MQTT setup, publish this JSON to the topic above.
     """
-    batch = (
-        db.query(models.Batches)
-        .filter(models.Batches.id == batch_id)
-        .first()
-    )
-    
+    batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
+
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
-    
+
     discovery_config = {
         "name": f"HoppyBrew Batch {batch.batch_name}",
         "state_topic": f"hoppybrew/batch/{batch_id}/state",
@@ -314,5 +306,5 @@ async def get_batch_mqtt_discovery(
         "icon": "mdi:beer",
         "device_class": None,
     }
-    
+
     return discovery_config
