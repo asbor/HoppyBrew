@@ -16,4 +16,6 @@ def test_styles_endpoint_returns_seeded_style(client, db_session):
 
     payload = response.json()
     assert isinstance(payload, list)
-    assert any(item["id"] == style.id and item["name"] == "Test Style" for item in payload)
+    assert any(
+        item["id"] == style.id and item["name"] == "Test Style" for item in payload
+    )

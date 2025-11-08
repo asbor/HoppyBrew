@@ -13,7 +13,7 @@ class FermentationReadings(Base):
         Index("ix_fermentation_readings_timestamp", "timestamp"),
         Index("ix_fermentation_readings_batch_timestamp", "batch_id", "timestamp"),
     )
-    
+
     id = Column(Integer, primary_key=True, index=True)
     batch_id = Column(
         Integer,
@@ -26,6 +26,6 @@ class FermentationReadings(Base):
     ph = Column(Float, nullable=True)  # pH reading
     notes = Column(Text, nullable=True)  # User notes
     created_at = Column(DateTime, default=datetime.now, nullable=False)
-    
+
     # Relationship to Batches
     batch = relationship("Batches", back_populates="fermentation_readings")

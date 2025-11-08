@@ -20,7 +20,11 @@ from .batch_workflow_history import (
     BatchWorkflowHistoryCreate,
     StatusUpdateRequest,
 )
-from .style_guidelines import StyleGuidelineBase, StyleGuidelineBaseCreate, StyleGuideline
+from .style_guidelines import (
+    StyleGuidelineBase,
+    StyleGuidelineBaseCreate,
+    StyleGuideline,
+)
 from .styles import StyleBase, Style
 from .beer_styles import (
     StyleGuidelineSourceBase,

@@ -35,11 +35,14 @@ class HopBase(BaseModel):
     inventory: Optional[str] = None
     display_time: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE})
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE}
+    )
 
 
 class RecipeHopBase(HopBase):
     """Schema for recipe hops with additional fields"""
+
     stage: Optional[str] = None  # mash/boil/fermentation
     duration: Optional[int] = None  # duration in minutes
 
@@ -49,7 +52,8 @@ class RecipeHop(RecipeHopBase):
     recipe_id: int
 
     model_config = ConfigDict(
-        from_attributes=True, json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "id": 1, "recipe_id": 1}}
+        from_attributes=True,
+        json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "id": 1, "recipe_id": 1}},
     )
 
 

@@ -25,7 +25,9 @@ router = APIRouter()
 
 
 class ABVRequest(BaseModel):
-    original_gravity: float = Field(..., gt=0, description="Original gravity (e.g., 1.050)")
+    original_gravity: float = Field(
+        ..., gt=0, description="Original gravity (e.g., 1.050)"
+    )
     final_gravity: float = Field(..., gt=0, description="Final gravity (e.g., 1.010)")
 
     model_config = ConfigDict(
@@ -42,7 +44,9 @@ class ABVResponse(BaseModel):
 
 
 class IBURequest(BaseModel):
-    alpha_acid: float = Field(..., ge=0, description="Alpha acid percentage (e.g., 12.0)")
+    alpha_acid: float = Field(
+        ..., ge=0, description="Alpha acid percentage (e.g., 12.0)"
+    )
     weight_oz: float = Field(..., ge=0, description="Hop weight in ounces")
     boil_time_min: float = Field(..., ge=0, description="Boil time in minutes")
     batch_size_gal: float = Field(..., gt=0, description="Batch size in gallons")
@@ -91,8 +95,12 @@ class SRMResponse(BaseModel):
 
 class StrikeWaterRequest(BaseModel):
     grain_weight_lbs: float = Field(..., gt=0, description="Grain weight in pounds")
-    mash_temp_f: float = Field(..., gt=0, description="Target mash temperature in Fahrenheit")
-    grain_temp_f: float = Field(..., ge=0, description="Current grain temperature in Fahrenheit")
+    mash_temp_f: float = Field(
+        ..., gt=0, description="Target mash temperature in Fahrenheit"
+    )
+    grain_temp_f: float = Field(
+        ..., ge=0, description="Current grain temperature in Fahrenheit"
+    )
     water_to_grain_ratio: float = Field(
         1.25, gt=0, description="Water to grain ratio in quarts per pound"
     )
@@ -111,7 +119,9 @@ class StrikeWaterRequest(BaseModel):
 
 class StrikeWaterResponse(BaseModel):
     volume_quarts: float = Field(..., description="Strike water volume in quarts")
-    temperature_f: float = Field(..., description="Strike water temperature in Fahrenheit")
+    temperature_f: float = Field(
+        ..., description="Strike water temperature in Fahrenheit"
+    )
 
     model_config = ConfigDict(
         json_schema_extra={"example": {"volume_quarts": 13.75, "temperature_f": 164.2}}
@@ -175,14 +185,20 @@ class YeastStarterResponse(BaseModel):
 
     model_config = ConfigDict(
         json_schema_extra={
-            "example": {"cells_needed_billions": 188.7, "packages": 3, "starter_size_ml": 1000}
+            "example": {
+                "cells_needed_billions": 188.7,
+                "packages": 3,
+                "starter_size_ml": 1000,
+            }
         }
     )
 
 
 class DilutionRequest(BaseModel):
     current_og: float = Field(..., gt=0, description="Current original gravity")
-    current_volume_gal: float = Field(..., gt=0, description="Current volume in gallons")
+    current_volume_gal: float = Field(
+        ..., gt=0, description="Current volume in gallons"
+    )
     target_og: float = Field(..., gt=0, description="Target original gravity")
 
     model_config = ConfigDict(
@@ -201,7 +217,9 @@ class DilutionResponse(BaseModel):
     final_volume_gal: float = Field(..., description="Final volume in gallons")
 
     model_config = ConfigDict(
-        json_schema_extra={"example": {"water_to_add_gal": 1.0, "final_volume_gal": 6.0}}
+        json_schema_extra={
+            "example": {"water_to_add_gal": 1.0, "final_volume_gal": 6.0}
+        }
     )
 
 
@@ -218,9 +236,7 @@ class CarbonationResponse(BaseModel):
     psi: float = Field(..., description="Pressure in PSI")
     bar: float = Field(..., description="Pressure in bar")
 
-    model_config = ConfigDict(
-        json_schema_extra={"example": {"psi": 12.5, "bar": 0.86}}
-    )
+    model_config = ConfigDict(json_schema_extra={"example": {"psi": 12.5, "bar": 0.86}})
 
 
 class WaterChemistryRequest(BaseModel):

@@ -21,7 +21,9 @@ def configure_logger():
     logger.setLevel(logging.DEBUG)
     # Log format
 
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
 
     # Console handler (always works)
     console_handler = logging.StreamHandler()
@@ -32,7 +34,9 @@ def configure_logger():
     # File handler (only if writable)
     try:
         log_file = os.environ.get("LOG_FILE", "/tmp/hoppybrew.log")
-        file_handler = RotatingFileHandler(log_file, maxBytes=1024 * 1024, backupCount=10)
+        file_handler = RotatingFileHandler(
+            log_file, maxBytes=1024 * 1024, backupCount=10
+        )
         file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)

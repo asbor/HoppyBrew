@@ -14,7 +14,7 @@ class BatchWorkflowHistory(Base):
         Index("ix_batch_workflow_history_batch_id", "batch_id"),
         Index("ix_batch_workflow_history_changed_at", "changed_at"),
     )
-    
+
     id = Column(Integer, primary_key=True, index=True)
     batch_id = Column(
         Integer,
@@ -25,6 +25,6 @@ class BatchWorkflowHistory(Base):
     to_status = Column(String(50), nullable=False)
     changed_at = Column(DateTime, default=datetime.now, nullable=False)
     notes = Column(String, nullable=True)
-    
+
     # Relationship to Batches
     batch = relationship("Batches", back_populates="workflow_history")

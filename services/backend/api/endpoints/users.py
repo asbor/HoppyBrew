@@ -4,10 +4,21 @@ from typing import Annotated, List
 from sqlalchemy.orm import Session
 from database import get_db
 from Database.Models.users import Users, UserRole
-from Database.Schemas.auth import UserCreate, UserResponse, UserUpdate, Token, LoginRequest
+from Database.Schemas.auth import (
+    UserCreate,
+    UserResponse,
+    UserUpdate,
+    Token,
+    LoginRequest,
+)
 from auth import (
-    get_password_hash, authenticate_user, create_access_token, get_current_active_user,
-    require_admin, require_brewer, ACCESS_TOKEN_EXPIRE_MINUTES
+    get_password_hash,
+    authenticate_user,
+    create_access_token,
+    get_current_active_user,
+    require_admin,
+    require_brewer,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 from datetime import timedelta
 
@@ -17,20 +28,21 @@ router = APIRouter()
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
-@router.post("/auth/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/auth/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+)
 def register_user(user: UserCreate, db: db_dependency):
     """Register a new user"""
     # Check if user already exists
     if db.query(Users).filter(Users.username == user.username).first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already registered"
+            detail="Username already registered",
         )
 
     if db.query(Users).filter(Users.email == user.email).first():
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
 
     # Create new user
@@ -42,7 +54,7 @@ def register_user(user: UserCreate, db: db_dependency):
         first_name=user.first_name,
         last_name=user.last_name,
         role=user.role,
-        is_active=user.is_active
+        is_active=user.is_active,
     )
 
     db.add(db_user)
@@ -53,7 +65,9 @@ def register_user(user: UserCreate, db: db_dependency):
 
 
 @router.post("/auth/token", response_model=Token)
-def login_for_access_token(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()):
+def login_for_access_token(
+    db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()
+):
     """Login and get access token"""
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
@@ -83,40 +97,44 @@ def list_users(db: db_dependency, current_user: Users = Depends(require_admin)):
 
 
 @router.get("/users/{user_id}", response_model=UserResponse)
-def get_user(user_id: int, db: db_dependency, current_user: Users = Depends(get_current_active_user)):
+def get_user(
+    user_id: int,
+    db: db_dependency,
+    current_user: Users = Depends(get_current_active_user),
+):
     """Get user by ID"""
     # Users can only see their own profile unless they're admin
     if current_user.role != UserRole.admin and current_user.id != user_id:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not enough permissions"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
         )
 
     user = db.query(Users).filter(Users.id == user_id).first()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
     return user
 
 
 @router.put("/users/{user_id}", response_model=UserResponse)
-def update_user(user_id: int, user_update: UserUpdate, db: db_dependency,
-                current_user: Users = Depends(get_current_active_user)):
+def update_user(
+    user_id: int,
+    user_update: UserUpdate,
+    db: db_dependency,
+    current_user: Users = Depends(get_current_active_user),
+):
     """Update user information"""
     # Users can only update their own profile unless they're admin
     if current_user.role != UserRole.admin and current_user.id != user_id:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not enough permissions"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
         )
 
     user = db.query(Users).filter(Users.id == user_id).first()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
 
     # Update fields that were provided
@@ -124,8 +142,7 @@ def update_user(user_id: int, user_update: UserUpdate, db: db_dependency,
 
     # Hash password if provided
     if "password" in update_data:
-        update_data["hashed_password"] = get_password_hash(
-            update_data.pop("password"))
+        update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
 
     for field, value in update_data.items():
         setattr(user, field, value)
@@ -136,17 +153,19 @@ def update_user(user_id: int, user_update: UserUpdate, db: db_dependency,
 
 
 @router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(user_id: int, db: db_dependency, current_user: Users = Depends(require_admin)):
+def delete_user(
+    user_id: int, db: db_dependency, current_user: Users = Depends(require_admin)
+):
     """Delete user (admin only)"""
     user = db.query(Users).filter(Users.id == user_id).first()
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
 
     db.delete(user)
     db.commit()
+
 
 # Protected endpoint examples
 

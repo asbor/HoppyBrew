@@ -33,7 +33,10 @@ def upgrade() -> None:
         sa.Column("configuration", sa.JSON(), nullable=True),
         sa.Column("is_active", sa.Boolean(), nullable=True, server_default="true"),
         sa.Column(
-            "created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=True
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=True,
         ),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),

@@ -14,9 +14,9 @@ class RecipeVersionBase(BaseModel):
         json_schema_extra={
             "example": {
                 "version_name": "v1.2 - Increased hop profile",
-                "notes": "Adjusted Cascade addition from 1.5 oz to 2.0 oz for more citrus character"
+                "notes": "Adjusted Cascade addition from 1.5 oz to 2.0 oz for more citrus character",
             }
-        }
+        },
     )
 
 
@@ -41,7 +41,7 @@ class RecipeVersion(RecipeVersionBase):
                 "version_name": "v1.2 - Increased hop profile",
                 "notes": "Adjusted Cascade addition from 1.5 oz to 2.0 oz for more citrus character",
                 "created_at": "2024-03-15T10:30:00Z",
-                "recipe_snapshot": '{"name":"Test Recipe","version":2,...}'
+                "recipe_snapshot": '{"name":"Test Recipe","version":2,...}',
             }
-        }
+        },
     )

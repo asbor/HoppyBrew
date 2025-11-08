@@ -16,7 +16,9 @@ async def get_equipment_profiles(db: Session = Depends(get_db)):
     """
     List all equipment profiles.
     """
-    profiles = db.query(models.EquipmentProfiles).order_by(models.EquipmentProfiles.name).all()
+    profiles = (
+        db.query(models.EquipmentProfiles).order_by(models.EquipmentProfiles.name).all()
+    )
 
     # Convert to dict to match frontend expectations
     result = []
@@ -69,7 +71,8 @@ async def create_equipment_profile(
 
     if existing:
         raise HTTPException(
-            status_code=400, detail=f"Equipment profile with name '{profile.name}' already exists"
+            status_code=400,
+            detail=f"Equipment profile with name '{profile.name}' already exists",
         )
 
     db_profile = models.EquipmentProfiles(**profile.model_dump())
@@ -112,7 +115,9 @@ async def get_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
     Get a specific equipment profile by ID.
     """
     profile = (
-        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.id == profile_id)
+        .first()
     )
 
     if not profile:
@@ -149,13 +154,17 @@ async def get_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
 
 @router.put("/equipment/{profile_id}", response_model=dict)
 async def update_equipment_profile(
-    profile_id: int, profile_update: schemas.EquipmentProfileBase, db: Session = Depends(get_db)
+    profile_id: int,
+    profile_update: schemas.EquipmentProfileBase,
+    db: Session = Depends(get_db),
 ):
     """
     Update an existing equipment profile.
     """
     profile = (
-        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.id == profile_id)
+        .first()
     )
 
     if not profile:
@@ -222,7 +231,9 @@ async def delete_equipment_profile(profile_id: int, db: Session = Depends(get_db
     Delete an equipment profile.
     """
     profile = (
-        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.id == profile_id)
+        .first()
     )
 
     if not profile:

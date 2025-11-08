@@ -21,7 +21,11 @@ FERMENTATION_READING_FULL_EXAMPLE = {
 }
 
 CHART_DATA_EXAMPLE = {
-    "timestamps": ["2024-03-21T14:30:00Z", "2024-03-22T14:30:00Z", "2024-03-23T14:30:00Z"],
+    "timestamps": [
+        "2024-03-21T14:30:00Z",
+        "2024-03-22T14:30:00Z",
+        "2024-03-23T14:30:00Z",
+    ],
     "gravity": [1.048, 1.032, 1.020],
     "temperature": [18.5, 19.0, 18.8],
     "ph": [5.4, 5.2, 5.1],
@@ -32,12 +36,18 @@ CHART_DATA_EXAMPLE = {
 
 class FermentationReadingBase(BaseModel):
     timestamp: datetime = Field(..., description="Time when the reading was taken")
-    gravity: Optional[float] = Field(None, description="Specific gravity reading (e.g., 1.048)")
-    temperature: Optional[float] = Field(None, description="Temperature in degrees Celsius")
+    gravity: Optional[float] = Field(
+        None, description="Specific gravity reading (e.g., 1.048)"
+    )
+    temperature: Optional[float] = Field(
+        None, description="Temperature in degrees Celsius"
+    )
     ph: Optional[float] = Field(None, description="pH level of the fermenting beer")
     notes: Optional[str] = Field(None, description="Additional notes about the reading")
 
-    model_config = ConfigDict(json_schema_extra={"example": FERMENTATION_READING_BASE_EXAMPLE})
+    model_config = ConfigDict(
+        json_schema_extra={"example": FERMENTATION_READING_BASE_EXAMPLE}
+    )
 
 
 class FermentationReadingCreate(FermentationReadingBase):
@@ -69,16 +79,22 @@ class FermentationReading(FermentationReadingBase):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": FERMENTATION_READING_FULL_EXAMPLE}
+        json_schema_extra={"example": FERMENTATION_READING_FULL_EXAMPLE},
     )
 
 
 class FermentationChartData(BaseModel):
-    timestamps: list[str] = Field(..., description="List of reading timestamps in ISO format")
+    timestamps: list[str] = Field(
+        ..., description="List of reading timestamps in ISO format"
+    )
     gravity: list[Optional[float]] = Field(..., description="List of gravity readings")
-    temperature: list[Optional[float]] = Field(..., description="List of temperature readings")
+    temperature: list[Optional[float]] = Field(
+        ..., description="List of temperature readings"
+    )
     ph: list[Optional[float]] = Field(..., description="List of pH readings")
     abv: list[float] = Field(..., description="Calculated ABV at each reading")
-    attenuation: list[float] = Field(..., description="Calculated attenuation percentage at each reading")
+    attenuation: list[float] = Field(
+        ..., description="Calculated attenuation percentage at each reading"
+    )
 
     model_config = ConfigDict(json_schema_extra={"example": CHART_DATA_EXAMPLE})

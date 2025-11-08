@@ -1,6 +1,7 @@
 """
 Test authentication endpoints
 """
+
 import pytest
 from fastapi.testclient import TestClient
 from auth import get_password_hash
@@ -15,7 +16,7 @@ def test_user_registration(client):
         "password": "testpassword123",
         "first_name": "Test",
         "last_name": "User",
-        "role": "viewer"
+        "role": "viewer",
     }
 
     response = client.post("/auth/register", json=user_data)
@@ -35,15 +36,14 @@ def test_user_login(client, db_session):
         email="login@example.com",
         hashed_password=hashed_password,
         role=UserRole.viewer,
-        is_active=True
+        is_active=True,
     )
     db_session.add(user)
     db_session.commit()
 
     # Test login
     response = client.post(
-        "/auth/token",
-        data={"username": "loginuser", "password": "testpassword123"}
+        "/auth/token", data={"username": "loginuser", "password": "testpassword123"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -60,23 +60,19 @@ def test_get_current_user(client, db_session):
         email="current@example.com",
         hashed_password=hashed_password,
         role=UserRole.brewer,
-        is_active=True
+        is_active=True,
     )
     db_session.add(user)
     db_session.commit()
 
     # Login to get token
     response = client.post(
-        "/auth/token",
-        data={"username": "currentuser", "password": "testpassword123"}
+        "/auth/token", data={"username": "currentuser", "password": "testpassword123"}
     )
     token = response.json()["access_token"]
 
     # Test getting current user
-    response = client.get(
-        "/auth/me",
-        headers={"Authorization": f"Bearer {token}"}
-    )
+    response = client.get("/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
     assert data["username"] == "currentuser"
@@ -98,21 +94,17 @@ def test_admin_endpoint_requires_admin_role(client, db_session):
         email="regular@example.com",
         hashed_password=hashed_password,
         role=UserRole.viewer,
-        is_active=True
+        is_active=True,
     )
     db_session.add(user)
     db_session.commit()
 
     # Login as regular user
     response = client.post(
-        "/auth/token",
-        data={"username": "regularuser", "password": "testpassword123"}
+        "/auth/token", data={"username": "regularuser", "password": "testpassword123"}
     )
     token = response.json()["access_token"]
 
     # Try to access admin endpoint
-    response = client.get(
-        "/admin/test",
-        headers={"Authorization": f"Bearer {token}"}
-    )
+    response = client.get("/admin/test", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 403

@@ -37,7 +37,9 @@ def export_references(xml_file, session=None):
             ET.SubElement(ref_element, "description").text = reference.description or ""
             ET.SubElement(ref_element, "category").text = reference.category or ""
             ET.SubElement(ref_element, "favicon_url").text = reference.favicon_url or ""
-            ET.SubElement(ref_element, "created_at").text = reference.created_at.isoformat()
+            ET.SubElement(ref_element, "created_at").text = (
+                reference.created_at.isoformat()
+            )
             ET.SubElement(ref_element, "updated_at").text = (
                 reference.updated_at.isoformat() if reference.updated_at else ""
             )

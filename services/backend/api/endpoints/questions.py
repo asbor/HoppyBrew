@@ -10,7 +10,9 @@ router = APIRouter()
 
 
 @router.post("/questions", response_model=question_schemas.QuestionWithID)
-async def create_questions(question: question_schemas.QuestionBase, db: Session = Depends(get_db)):
+async def create_questions(
+    question: question_schemas.QuestionBase, db: Session = Depends(get_db)
+):
     try:
         # Create the main question entry
 
@@ -51,7 +53,9 @@ async def get_all_questions(db: Session = Depends(get_db)):
     return questions
 
 
-@router.delete("/questions/{question_id}", response_model=question_schemas.QuestionWithID)
+@router.delete(
+    "/questions/{question_id}", response_model=question_schemas.QuestionWithID
+)
 async def delete_question(question_id: int, db: Session = Depends(get_db)):
     question = (
         db.query(question_models.Questions)

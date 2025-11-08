@@ -201,7 +201,8 @@ def test_duplicate_with_custom_name(client: TestClient):
 
     # Duplicate with custom name
     response = client.post(
-        f"/water-profiles/{profile_id}/duplicate", params={"new_name": "My Custom Duplicate"}
+        f"/water-profiles/{profile_id}/duplicate",
+        params={"new_name": "My Custom Duplicate"},
     )
     assert response.status_code == 201
 

@@ -8,7 +8,9 @@ from decimal import Decimal
 class FermentationStepBase(BaseModel):
     """Base schema for fermentation step"""
 
-    step_order: int = Field(..., description="Order of the step in the fermentation process")
+    step_order: int = Field(
+        ..., description="Order of the step in the fermentation process"
+    )
     name: Optional[str] = Field(None, description="Name of the fermentation step")
     step_type: str = Field(
         default="primary",
@@ -66,7 +68,9 @@ class FermentationProfileBase(BaseModel):
     is_pressurized: bool = Field(
         default=False, description="Whether the profile uses pressurized fermentation"
     )
-    is_template: bool = Field(default=False, description="Whether this is a template profile")
+    is_template: bool = Field(
+        default=False, description="Whether this is a template profile"
+    )
 
     model_config = ConfigDict(from_attributes=True)
 

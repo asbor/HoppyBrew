@@ -34,7 +34,8 @@ def test_create_and_get_all_questions(client):
     assert question["question_text"] == "What is the capital of France?"
     assert len(question["choices"]) == 3
     assert any(
-        choice["choice_text"] == "Paris" and choice["is_correct"] for choice in question["choices"]
+        choice["choice_text"] == "Paris" and choice["is_correct"]
+        for choice in question["choices"]
     )
 
 

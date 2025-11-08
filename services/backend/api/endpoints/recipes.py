@@ -34,7 +34,9 @@ def _with_relationships(query):
 
 def _fetch_recipe(db: Session, recipe_id: int):
     return (
-        _with_relationships(db.query(models.Recipes)).filter(models.Recipes.id == recipe_id).first()
+        _with_relationships(db.query(models.Recipes))
+        .filter(models.Recipes.id == recipe_id)
+        .first()
     )
 
 
@@ -159,9 +161,13 @@ async def create_recipe(recipe: schemas.RecipeBase, db: Session = Depends(get_db
     """
     # Check if the recipe already exists
 
-    existing_recipe = db.query(models.Recipes).filter(models.Recipes.name == recipe.name).first()
+    existing_recipe = (
+        db.query(models.Recipes).filter(models.Recipes.name == recipe.name).first()
+    )
     if existing_recipe:
-        raise HTTPException(status_code=400, detail="Recipe with this name already exists")
+        raise HTTPException(
+            status_code=400, detail="Recipe with this name already exists"
+        )
     # Exclude the related fields when creating the Recipes instance
     db_recipe = models.Recipes(
         **recipe.model_dump(exclude={"hops", "fermentables", "yeasts", "miscs"})
@@ -199,7 +205,9 @@ async def create_recipe(recipe: schemas.RecipeBase, db: Session = Depends(get_db
 
 
 @router.put("/recipes/{recipe_id}", response_model=schemas.Recipe)
-async def update_recipe(recipe_id: int, recipe: schemas.RecipeBase, db: Session = Depends(get_db)):
+async def update_recipe(
+    recipe_id: int, recipe: schemas.RecipeBase, db: Session = Depends(get_db)
+):
     """
     This endpoint updates a recipe by its ID.
 
@@ -231,13 +239,17 @@ async def update_recipe(recipe_id: int, recipe: schemas.RecipeBase, db: Session 
         db.add(db_fermentable)
     # Update miscs
 
-    db.query(models.RecipeMisc).filter(models.RecipeMisc.recipe_id == recipe_id).delete()
+    db.query(models.RecipeMisc).filter(
+        models.RecipeMisc.recipe_id == recipe_id
+    ).delete()
     for misc_data in recipe.miscs:
         db_misc = models.RecipeMisc(**misc_data.model_dump(), recipe_id=recipe_id)
         db.add(db_misc)
     # Update yeasts
 
-    db.query(models.RecipeYeast).filter(models.RecipeYeast.recipe_id == recipe_id).delete()
+    db.query(models.RecipeYeast).filter(
+        models.RecipeYeast.recipe_id == recipe_id
+    ).delete()
     for yeast_data in recipe.yeasts:
         db_yeast = models.RecipeYeast(**yeast_data.model_dump(), recipe_id=recipe_id)
         db.add(db_yeast)
@@ -261,8 +273,12 @@ async def delete_recipe(recipe_id: int, db: Session = Depends(get_db)):
     db.query(models.RecipeFermentable).filter(
         models.RecipeFermentable.recipe_id == recipe_id
     ).delete()
-    db.query(models.RecipeMisc).filter(models.RecipeMisc.recipe_id == recipe_id).delete()
-    db.query(models.RecipeYeast).filter(models.RecipeYeast.recipe_id == recipe_id).delete()
+    db.query(models.RecipeMisc).filter(
+        models.RecipeMisc.recipe_id == recipe_id
+    ).delete()
+    db.query(models.RecipeYeast).filter(
+        models.RecipeYeast.recipe_id == recipe_id
+    ).delete()
     db.delete(db_recipe)
     db.commit()
     return {"message": "Recipe deleted successfully"}
@@ -331,7 +347,9 @@ async def scale_recipe(
         misc_data = misc.model_dump()
         misc_data["amount"] = _scale_value(misc_data.get("amount"), scale_factor)
         if misc_data.get("batch_size") is not None:
-            misc_data["batch_size"] = _scale_value(misc_data.get("batch_size"), scale_factor)
+            misc_data["batch_size"] = _scale_value(
+                misc_data.get("batch_size"), scale_factor
+            )
         scaled_miscs.append(misc_data)
     scaled_recipe_data["miscs"] = scaled_miscs
 
@@ -394,7 +412,10 @@ async def update_hop_in_recipe(
     """Update a hop ingredient in a recipe"""
     db_hop = (
         db.query(models.RecipeHop)
-        .filter(models.RecipeHop.id == ingredient_id, models.RecipeHop.recipe_id == recipe_id)
+        .filter(
+            models.RecipeHop.id == ingredient_id,
+            models.RecipeHop.recipe_id == recipe_id,
+        )
         .first()
     )
     if not db_hop:
@@ -417,7 +438,10 @@ async def delete_hop_from_recipe(
     """Delete a hop ingredient from a recipe"""
     db_hop = (
         db.query(models.RecipeHop)
-        .filter(models.RecipeHop.id == ingredient_id, models.RecipeHop.recipe_id == recipe_id)
+        .filter(
+            models.RecipeHop.id == ingredient_id,
+            models.RecipeHop.recipe_id == recipe_id,
+        )
         .first()
     )
     if not db_hop:
@@ -439,7 +463,9 @@ async def add_fermentable_to_recipe(
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
-    db_fermentable = models.RecipeFermentable(**fermentable.model_dump(), recipe_id=recipe_id)
+    db_fermentable = models.RecipeFermentable(
+        **fermentable.model_dump(), recipe_id=recipe_id
+    )
     db.add(db_fermentable)
     db.commit()
     db.refresh(db_fermentable)
@@ -694,4 +720,3 @@ async def get_recipe_versions(
     )
 
     return versions
-

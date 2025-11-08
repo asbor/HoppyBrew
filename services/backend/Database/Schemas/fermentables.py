@@ -71,6 +71,7 @@ class FermentableBase(BaseModel):
 
 class RecipeFermentableBase(FermentableBase):
     """Schema for recipe fermentables with additional fields"""
+
     stage: Optional[str] = None  # mash/boil/fermentation
     duration: Optional[int] = None  # duration in minutes
 
@@ -81,7 +82,9 @@ class RecipeFermentable(RecipeFermentableBase):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {**FERMENTABLE_BASE_EXAMPLE, "id": 1, "recipe_id": 12}},
+        json_schema_extra={
+            "example": {**FERMENTABLE_BASE_EXAMPLE, "id": 1, "recipe_id": 12}
+        },
     )
 
 
@@ -102,7 +105,9 @@ class InventoryFermentableBase(FermentableBase):
     display_time: Optional[str] = None  # Specific to all
     batch_size: Optional[float] = None  # Specific to miscs
 
-    model_config = ConfigDict(json_schema_extra={"example": INVENTORY_FERMENTABLE_EXAMPLE})
+    model_config = ConfigDict(
+        json_schema_extra={"example": INVENTORY_FERMENTABLE_EXAMPLE}
+    )
 
 
 class InventoryFermentableCreate(InventoryFermentableBase):
@@ -115,5 +120,7 @@ class InventoryFermentable(InventoryFermentableBase):
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {**INVENTORY_FERMENTABLE_EXAMPLE, "id": 3, "batch_id": 7}},
+        json_schema_extra={
+            "example": {**INVENTORY_FERMENTABLE_EXAMPLE, "id": 3, "batch_id": 7}
+        },
     )

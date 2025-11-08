@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, DateTime, Index
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Boolean,
+    Text,
+    DateTime,
+    Index,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -16,13 +25,17 @@ class StyleGuidelineSource(Base):
     __tablename__ = "style_guideline_sources"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(255), nullable=False)  # e.g., "BJCP 2021", "Brewers Association 2025"
+    name = Column(
+        String(255), nullable=False
+    )  # e.g., "BJCP 2021", "Brewers Association 2025"
     year = Column(Integer, nullable=True)
     abbreviation = Column(String(20), nullable=True)  # e.g., "BJCP", "BA"
     description = Column(Text, nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
 
     # Relationships
     categories = relationship(
