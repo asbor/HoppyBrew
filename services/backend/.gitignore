@@ -15,6 +15,11 @@ venv/
 env/
 ENV/
 
+# Environment files - contains sensitive data
+.env
+.env.local
+.env.production
+
 # IDEs
 .vscode/
 .idea/
@@ -23,7 +28,20 @@ ENV/
 
 # Logs
 *.log
+logs/
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Upload directories
+uploads/
+
+# Backup files
+backup/
+*.bak
+
+# Test coverage
+.coverage
+.pytest_cache/
+htmlcov/

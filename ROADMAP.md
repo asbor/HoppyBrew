@@ -22,7 +22,7 @@ This roadmap outlines how to evolve HoppyBrew from its semester-project baseline
 
 **Key actions**
 - Repair PostgreSQL connection string handling, confirm migrations/migrations strategy, and eliminate blocking database polling loops.
-- Remove template/config placeholders in README and setup docs; publish `.env.example`.
+- ✅ Remove template/config placeholders in README and setup docs; publish `.env.example` - COMPLETED
 - Audit and prune dead code (placeholder modules, scripts that run on import).
 - Capture a “current architecture” snapshot (system diagram, API inventory) for the coordinator.
 

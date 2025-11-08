@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict
@@ -5,6 +6,7 @@ from database import engine, Base
 from api.router import router
 from fastapi.middleware.cors import CORSMiddleware
 from logger_config import get_logger
+from config import settings
 
 tags_metadata = [
     {
@@ -83,6 +85,10 @@ tags_metadata = [
         "name": "homeassistant",
         "description": "HomeAssistant integration endpoints for monitoring brewing batches.",
     },
+    {
+        "name": "calculators",
+        "description": "Brewing calculation utilities for strike water, ABV, priming sugar, yeast starters, and more.",
+    },
 ]
 
 # Get logger instance
@@ -91,8 +97,12 @@ logger = get_logger("Main")
 
 # Connect to the database (bind the engine)
 # Create the tables in the database (create_all)
-logger.info("Connecting to the database and creating tables")
-Base.metadata.create_all(bind=engine, checkfirst=True)
+# Only create tables if not in testing mode
+if os.getenv("TESTING", "0") != "1":
+    logger.info("Connecting to the database and creating tables")
+    Base.metadata.create_all(bind=engine, checkfirst=True)
+else:
+    logger.info("Testing mode detected - skipping automatic table creation")
 
 # Create the FastAPI app and include the router from the endpoints folder
 
@@ -127,16 +137,12 @@ app.include_router(router)
 
 # Add CORS middleware to allow requests from the frontend
 
-origins = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=settings.cors_origins_list,
+    allow_credentials=settings.CORS_ALLOW_CREDENTIALS,
+    allow_methods=settings.CORS_ALLOW_METHODS,
+    allow_headers=settings.CORS_ALLOW_HEADERS,
 )
 
 
@@ -158,10 +164,11 @@ async def global_exception_handler(request: Request, exc: Exception):
     # Add CORS headers manually to ensure they're present
     origin = request.headers.get("origin", "").lower()
     # Normalize origins list for case-insensitive comparison
-    normalized_origins = [o.lower() for o in origins]
+    normalized_origins = [o.lower() for o in settings.cors_origins_list]
     if origin and origin in normalized_origins:
         # Use the original case from the request
-        response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin", "")
+        response.headers["Access-Control-Allow-Origin"] = request.headers.get(
+            "origin", "")
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"

@@ -131,3 +131,4 @@ Thumbs.db
 *.tar
 *.zip
 .pytest_cache/
+.worktrees/

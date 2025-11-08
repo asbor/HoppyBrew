@@ -1,45 +1,132 @@
-@startuml
+@startuml Inventory_Management
 
-!include documents/docs/plantuml/ERD/ingredients/Hop.puml
-!include documents/docs/plantuml/ERD/ingredients/Misc.puml
-!include documents/docs/plantuml/ERD/ingredients/Yeast.puml
-!include documents/docs/plantuml/ERD/ingredients/Fermentable/Adjunct.puml 
-!include documents/docs/plantuml/ERD/ingredients/Fermentable/DryExtract.puml 
-'!include documents/docs/plantuml/ERD/ingredients/Fermentable/Fermentable_Category.puml 
-!include documents/docs/plantuml/ERD/ingredients/Fermentable/Grain.puml 
-!include documents/docs/plantuml/ERD/ingredients/Fermentable/LiquidExtract.puml 
-!include documents/docs/plantuml/ERD/ingredients/Fermentable/Other.puml 
-!include documents/docs/plantuml/ERD/ingredients/Fermentable/Sugar.puml
-
-!include documents/docs/plantuml/ERD/ingredients/Fermentable.puml
+' Inventory Management System ERD
+' Shows how inventory is tracked for different ingredient types
 
 class "Inventory" as Inventory {
     + id : uuid
     --
     ..General..
-
-    ..Inventory..
+    ingredient_type : string
+    ingredient_id : uuid
     quantity : decimal
+    unit : string
     cost : decimal
-    ==Relations==
-    {static} hop_id : uuid
-    {static} yeast_id : uuid
-    {static} misc_id : uuid
-    {static} fermentable_id : uuid
-    {static} adjunct_id : uuid
-    {static} dry_extract_id : uuid
-    {static} liquid_extract_id : uuid
-    {static} sugar_id : uuid
-    {static} other_id : uuid
+    purchase_date : date
+    expiration_date : date
+    supplier : string
+    lot_number : string
+    notes : string
+    ..Status..
+    is_active : boolean
+    last_updated : timestamp
 }
 
-Inventory --{ Grain
-Inventory --{ Sugar 
-Inventory --{ LiquidExtract 
-Inventory --{ DryExtract 
-Inventory --{ Adjunct 
-Inventory --{ Other 
-Inventory --{ Hops
-Inventory --{ Yeast
-Inventory --{ Misc
+class "Hops" as Hops {
+    + id : uuid
+    --
+    name : string
+    origin : string
+    alpha : decimal
+    beta : decimal
+    type : string
+    form : string
+    harvest_year : int
+}
+
+class "Fermentables" as Fermentables {
+    + id : uuid
+    --
+    name : string
+    type : string
+    color : decimal
+    potential : decimal
+    max_percentage : decimal
+    must_mash : boolean
+    protein : decimal
+    moisture : decimal
+}
+
+class "Yeasts" as Yeasts {
+    + id : uuid
+    --
+    name : string
+    laboratory : string
+    product_id : string
+    type : string
+    form : string
+    attenuation : decimal
+    flocculation : string
+    temperature_min : decimal
+    temperature_max : decimal
+}
+
+class "Adjuncts" as Adjuncts {
+    + id : uuid
+    --
+    name : string
+    type : string
+    use_for : string
+    notes : string
+}
+
+class "DryExtract" as DryExtract {
+    + id : uuid
+    --
+    name : string
+    potential : decimal
+    color : decimal
+    is_mashed : boolean
+}
+
+class "LiquidExtract" as LiquidExtract {
+    + id : uuid
+    --
+    name : string
+    potential : decimal
+    color : decimal
+    is_late_extract : boolean
+}
+
+class "Sugar" as Sugar {
+    + id : uuid
+    --
+    name : string
+    potential : decimal
+    color : decimal
+    is_extract : boolean
+}
+
+class "Other" as Other {
+    + id : uuid
+    --
+    name : string
+    type : string
+    use_for : string
+    notes : string
+}
+
+class "Misc" as Misc {
+    + id : uuid
+    --
+    name : string
+    type : string
+    use : string
+    time : int
+    amount_is_weight : boolean
+}
+
+' Relationships - Inventory tracks all ingredient types
+Inventory ||--o{ Hops : tracks
+Inventory ||--o{ Fermentables : tracks
+Inventory ||--o{ Yeasts : tracks
+Inventory ||--o{ Adjuncts : tracks
+Inventory ||--o{ DryExtract : tracks
+Inventory ||--o{ LiquidExtract : tracks
+Inventory ||--o{ Sugar : tracks
+Inventory ||--o{ Other : tracks
+Inventory ||--o{ Misc : tracks
+
+note right of Inventory : "Polymorphic relationship\nbased on ingredient_type\nand ingredient_id fields"
+
 @enduml

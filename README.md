@@ -640,7 +640,7 @@ Project Link: [HoppyBrew](https://github.com/asbor/HoppyBrew)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Special thanks to the open-source community and the developers of the technologies used in this project.
+This project is an original AI-assisted development showcasing modern brewing management technology.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

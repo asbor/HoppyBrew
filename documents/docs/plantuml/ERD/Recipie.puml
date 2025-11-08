@@ -1,29 +1,180 @@
 
-@startuml
-!include documents/docs/plantuml/ERD/ingredients/Fermentable.puml
-!include documents/docs/plantuml/ERD/ingredients/Hop.puml
-!include documents/docs/plantuml/ERD/ingredients/Misc.puml
-!include documents/docs/plantuml/ERD/ingredients/Yeast.puml
+@startuml Recipe_Management
 
-!include documents/docs/plantuml/ERD/Profiles/EquipmentProfile.puml
-!include documents/docs/plantuml/ERD/Profiles/FermentationProfile.puml
-!include documents/docs/plantuml/ERD/Profiles/MashProfile.puml
-!include documents/docs/plantuml/ERD/Profiles/WaterProfile.puml
+' Recipe Management System ERD
+' Shows the core recipe structure and ingredient relationships
 
-class "Recepie" as Recepie {
+class "Recipe" as Recipe {
     + id : uuid
     --
     ..General..
     name : string
     version : int
     author : string
-    asst_brewer : string
-    type : RecipeType
+    assistant_brewer : string
+    type : string
+    style : string
     ..Properties..
+    batch_size : decimal
+    boil_time : int
+    efficiency : decimal
+    notes : string
+    ..Calculated Values..
+    original_gravity : decimal
+    final_gravity : decimal
+    abv : decimal
+    ibu : decimal
+    srm : decimal
+    calories : decimal
+    ..Dates..
+    created_date : timestamp
+    brew_date : date
+    fermentation_date : date
+    conditioning_date : date
+}
+
+class "Recipe_Fermentables" as RecipeFermentables {
+    + recipe_id : uuid
+    + fermentable_id : uuid
+    --
+    amount : decimal
+    percentage : decimal
+    late_extract : boolean
+    time : int
+}
+
+class "Recipe_Hops" as RecipeHops {
+    + recipe_id : uuid
+    + hop_id : uuid
+    --
+    amount : decimal
+    time : int
+    usage : string
+    form : string
+    alpha : decimal
+    display_amount : string
+    display_time : string
+}
+
+class "Recipe_Yeasts" as RecipeYeasts {
+    + recipe_id : uuid
+    + yeast_id : uuid
+    --
+    amount : decimal
+    starter : boolean
+    times_cultured : int
+    add_to_secondary : boolean
+    display_amount : string
+}
+
+class "Recipe_Miscs" as RecipeMiscs {
+    + recipe_id : uuid
+    + misc_id : uuid
+    --
+    amount : decimal
+    time : int
+    use : string
+    amount_is_weight : boolean
+    display_amount : string
+    display_time : string
+}
+
+class "Fermentables" as Fermentables {
+    + id : uuid
+    --
+    name : string
+    type : string
+    origin : string
+    supplier : string
+    color : decimal
+    potential : decimal
+    max_percentage : decimal
+    must_mash : boolean
+}
+
+class "Hops" as Hops {
+    + id : uuid
+    --
+    name : string
+    origin : string
+    alpha : decimal
+    beta : decimal
+    type : string
+    usage : string
+    form : string
+}
+
+class "Yeasts" as Yeasts {
+    + id : uuid
+    --
+    name : string
+    laboratory : string
+    product_id : string
+    type : string
+    form : string
+    attenuation : decimal
+    flocculation : string
+}
+
+class "Miscs" as Miscs {
+    + id : uuid
+    --
+    name : string
+    type : string
+    use : string
     notes : string
 }
 
-Enum "RecipeType" {
+class "Equipment_Profiles" as EquipmentProfiles {
+    + id : uuid
+    --
+    name : string
+    batch_size : decimal
+    boil_size : decimal
+    efficiency : decimal
+    boil_time : int
+    calc_boil_volume : boolean
+}
+
+class "Water_Profiles" as WaterProfiles {
+    + id : uuid
+    --
+    name : string
+    calcium : decimal
+    magnesium : decimal
+    sodium : decimal
+    chloride : decimal
+    sulfate : decimal
+    bicarbonate : decimal
+}
+
+class "Mash_Profiles" as MashProfiles {
+    + id : uuid
+    --
+    name : string
+    grain_temp : decimal
+    tun_temp : decimal
+    sparge_temp : decimal
+    ph : decimal
+    tun_weight : decimal
+    tun_specific_heat : decimal
+}
+
+class "Fermentation_Profiles" as FermentationProfiles {
+    + id : uuid
+    --
+    name : string
+    primary_age : int
+    primary_temp : decimal
+    secondary_age : int
+    secondary_temp : decimal
+    tertiary_age : int
+    tertiary_temp : decimal
+    age : int
+    age_temp : decimal
+}
+
+enum "RecipeType" {
     All_Grain
     Extract
     Partial_Mash
@@ -35,14 +186,21 @@ Enum "RecipeType" {
     Other
 }
 
-Recepie -- RecipeType
-Recepie -- EquipmentProfile
-Recepie -- TargetStyle
-Recepie --{ Fermentable
-Recepie --{ Hops
-Recepie --{ Misc
-Recepie --{ Yeast
-Recepie -- MashProfile
-Recepie -- FermentationProfile
-Recepie -- WaterProfile
+' Relationships
+Recipe ||--o{ RecipeFermentables : contains
+Recipe ||--o{ RecipeHops : contains
+Recipe ||--o{ RecipeYeasts : contains
+Recipe ||--o{ RecipeMiscs : contains
+
+RecipeFermentables }o--|| Fermentables : uses
+RecipeHops }o--|| Hops : uses
+RecipeYeasts }o--|| Yeasts : uses
+RecipeMiscs }o--|| Miscs : uses
+
+Recipe }o--|| EquipmentProfiles : uses
+Recipe }o--|| WaterProfiles : uses
+Recipe }o--|| MashProfiles : uses
+Recipe }o--|| FermentationProfiles : uses
+Recipe -- RecipeType : has_type
+
 @enduml

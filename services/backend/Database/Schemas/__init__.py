@@ -15,6 +15,11 @@ from .recipes import (
 )
 from .batches import Batch, BatchCreate, BatchBase, BatchUpdate
 from .batch_logs import BatchLogBase
+from .batch_workflow_history import (
+    BatchWorkflowHistory,
+    BatchWorkflowHistoryCreate,
+    StatusUpdateRequest,
+)
 from .style_guidelines import StyleGuidelineBase, StyleGuidelineBaseCreate, StyleGuideline
 from .styles import StyleBase, Style
 from .beer_styles import (
@@ -111,6 +116,9 @@ __all__ = [
     "BatchBase",
     "BatchUpdate",
     "BatchLogBase",
+    "BatchWorkflowHistory",
+    "BatchWorkflowHistoryCreate",
+    "StatusUpdateRequest",
     "StyleGuidelineBase",
     "StyleGuidelineBaseCreate",
     "StyleGuideline",

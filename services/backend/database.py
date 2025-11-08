@@ -2,28 +2,23 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
 import os
 import time
 from logger_config import get_logger
+from config import settings
 
 # Get logger instance
 
 logger = get_logger("Setup")
-
-# Load environment variables
-
-logger.info("Loading environment variables")
-load_dotenv()
 
 # Determine if we are in testing mode
 
 IS_TESTING = os.getenv("TESTING", "0") == "1"
 logger.info(f"IS_TESTING: {IS_TESTING}")
 if IS_TESTING:
-    SQLALCHEMY_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite:///./test_fermentables.db")
+    SQLALCHEMY_DATABASE_URL = settings.TEST_DATABASE_URL
 else:
-    SQLALCHEMY_DATABASE_URL = f'postgresql://{os.getenv("DATABASE_USER")}:{os.getenv("DATABASE_PASSWORD")}@{os.getenv("DATABASE_HOST")}:{os.getenv("DATABASE_PORT")}/{os.getenv("DATABASE_NAME")}'
+    SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
 # Connect to the database
 
@@ -47,10 +42,10 @@ else:
     for i in range(max_retries):
         try:
             conn = psycopg2.connect(
-                host=os.getenv("DATABASE_HOST"),
-                port=os.getenv("DATABASE_PORT"),
-                user=os.getenv("DATABASE_USER"),
-                password=os.getenv("DATABASE_PASSWORD"),
+                host=settings.DATABASE_HOST,
+                port=settings.DATABASE_PORT,
+                user=settings.DATABASE_USER,
+                password=settings.DATABASE_PASSWORD,
                 database="postgres",  # Connect to default database first
             )
             conn.close()

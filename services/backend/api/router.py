@@ -23,6 +23,7 @@ from .endpoints import (
     trigger_beer_styles_processing,
     homeassistant,
     devices,
+    calculators,
 )
 
 # create the router and include all the routers from the endpoints folder
@@ -58,3 +59,7 @@ router.include_router(trigger_beer_styles_processing.router, tags=["refresh-beer
 # Include the HomeAssistant integration router
 
 router.include_router(homeassistant.router, tags=["homeassistant"])
+
+# Include the calculators router
+
+router.include_router(calculators.router, tags=["calculators"])

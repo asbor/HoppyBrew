@@ -1,5 +1,148 @@
-@startuml ERD HoppyBrew
-!include documents/docs/plantuml/ERD/Inventory.puml
-!include documents/docs/plantuml/ERD/Recipie.puml
-!include documents/docs/plantuml/ERD/TargetStyle.puml
+@startuml ERD_HoppyBrew
+
+' Main HoppyBrew Database ERD
+' This diagram shows the core entities and relationships in the brewing application
+
+' Core Recipe Entity
+class "Recipes" as Recipes {
+    + id : uuid
+    --
+    ..General..
+    name : string
+    description : string
+    style : string
+    batch_size : decimal
+    boil_time : int
+    efficiency : decimal
+    notes : string
+    ..Calculations..
+    original_gravity : decimal
+    final_gravity : decimal
+    abv : decimal
+    ibu : decimal
+    srm : decimal
+}
+
+' Ingredient Categories
+class "Hops" as Hops {
+    + id : uuid
+    --
+    name : string
+    origin : string
+    alpha : decimal
+    type : string
+    usage : string
+}
+
+class "Fermentables" as Fermentables {
+    + id : uuid
+    --
+    name : string
+    type : string
+    color : decimal
+    potential : decimal
+    max_percentage : decimal
+}
+
+class "Yeasts" as Yeasts {
+    + id : uuid
+    --
+    name : string
+    type : string
+    laboratory : string
+    attenuation : decimal
+    temperature_range : string
+}
+
+class "Water_Profiles" as WaterProfiles {
+    + id : uuid
+    --
+    name : string
+    calcium : decimal
+    magnesium : decimal
+    sodium : decimal
+    chloride : decimal
+    sulfate : decimal
+    bicarbonate : decimal
+}
+
+class "Equipment_Profiles" as EquipmentProfiles {
+    + id : uuid
+    --
+    name : string
+    batch_size : decimal
+    boil_size : decimal
+    efficiency : decimal
+    boil_time : int
+}
+
+class "Style_Guidelines" as StyleGuidelines {
+    + id : uuid
+    --
+    block_heading : string
+    category : string
+    og_min : string
+    og_max : string
+    fg_min : string
+    fg_max : string
+    abv_min : string
+    abv_max : string
+    ibu_min : string
+    ibu_max : string
+}
+
+' Recipe Ingredient Relationships
+class "Recipe_Hops" as RecipeHops {
+    + recipe_id : uuid
+    + hop_id : uuid
+    --
+    amount : decimal
+    time : int
+    usage : string
+}
+
+class "Recipe_Fermentables" as RecipeFermentables {
+    + recipe_id : uuid
+    + fermentable_id : uuid
+    --
+    amount : decimal
+    percentage : decimal
+}
+
+class "Recipe_Yeasts" as RecipeYeasts {
+    + recipe_id : uuid
+    + yeast_id : uuid
+    --
+    amount : decimal
+    starter : boolean
+}
+
+' Inventory Management
+class "Inventory" as Inventory {
+    + id : uuid
+    --
+    ingredient_type : string
+    ingredient_id : uuid
+    quantity : decimal
+    cost : decimal
+    purchase_date : date
+    expiration_date : date
+}
+
+' Relationships
+Recipes ||--o{ RecipeHops : contains
+Recipes ||--o{ RecipeFermentables : contains  
+Recipes ||--o{ RecipeYeasts : contains
+Recipes }o--|| StyleGuidelines : follows
+Recipes }o--|| WaterProfiles : uses
+Recipes }o--|| EquipmentProfiles : brewed_with
+
+RecipeHops }o--|| Hops : uses
+RecipeFermentables }o--|| Fermentables : uses
+RecipeYeasts }o--|| Yeasts : uses
+
+Inventory ||--o{ Hops : tracks
+Inventory ||--o{ Fermentables : tracks
+Inventory ||--o{ Yeasts : tracks
+
 @enduml
