@@ -326,6 +326,24 @@ export const useInventory = () => {
     }
   }
 
+  // Check inventory availability for a recipe
+  async function checkInventoryAvailability(recipeId: string) {
+    const response = await api.get(`/batches/check-inventory-availability/${recipeId}`)
+    return response
+  }
+
+  // Consume ingredients for a batch
+  async function consumeIngredients(batchId: string, ingredients: any[]) {
+    const response = await api.post(`/batches/${batchId}/consume-ingredients`, { ingredients })
+    return response
+  }
+
+  // Get ingredient tracking for a batch
+  async function getIngredientTracking(batchId: string) {
+    const response = await api.get(`/batches/${batchId}/ingredient-tracking`)
+    return response
+  }
+
   return {
     // Hops
     hops,
@@ -365,5 +383,8 @@ export const useInventory = () => {
     
     // Utility
     getLowStockItems,
+    checkInventoryAvailability,
+    consumeIngredients,
+    getIngredientTracking,
   }
 }
