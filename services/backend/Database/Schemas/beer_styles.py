@@ -16,8 +16,6 @@ class StyleGuidelineSourceBase(BaseModel):
 class StyleGuidelineSourceCreate(StyleGuidelineSourceBase):
     """Schema for creating a new style guideline source"""
 
-    pass
-
 
 class StyleGuidelineSourceUpdate(BaseModel):
     """Schema for updating a style guideline source"""
@@ -51,8 +49,6 @@ class StyleCategoryBase(BaseModel):
 
 class StyleCategoryCreate(StyleCategoryBase):
     """Schema for creating a new style category"""
-
-    pass
 
 
 class StyleCategoryUpdate(BaseModel):
@@ -113,8 +109,6 @@ class BeerStyleBase(BaseModel):
 
 class BeerStyleCreate(BeerStyleBase):
     """Schema for creating a new beer style"""
-
-    pass
 
 
 class BeerStyleUpdate(BaseModel):

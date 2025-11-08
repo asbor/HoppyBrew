@@ -24,7 +24,9 @@ def upgrade() -> None:
     # Add status column with default value
     op.add_column(
         "batches",
-        sa.Column("status", sa.String(length=50), nullable=False, server_default="planning"),
+        sa.Column(
+            "status", sa.String(length=50), nullable=False, server_default="planning"
+        ),
     )
 
     # Create index on status for faster filtering

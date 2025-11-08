@@ -104,7 +104,9 @@ def calculate_srm_morey(
         batch_size_gal: Batch size in gallons.
     """
     color = _coerce_positive(grain_color, "grain_color", allow_zero=True)
-    grain_weight = _coerce_positive(grain_weight_lbs, "grain_weight_lbs", allow_zero=True)
+    grain_weight = _coerce_positive(
+        grain_weight_lbs, "grain_weight_lbs", allow_zero=True
+    )
     batch_volume = _coerce_positive(batch_size_gal, "batch_size_gal")
 
     if color == 0 or grain_weight == 0:

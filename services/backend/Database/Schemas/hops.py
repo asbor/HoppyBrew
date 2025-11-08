@@ -35,14 +35,17 @@ class HopBase(BaseModel):
     inventory: Optional[str] = None
     display_time: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE})
+    model_config = ConfigDict(
+        from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE}
+    )
 
 
 class RecipeHop(HopBase):
     recipe_id: int
 
     model_config = ConfigDict(
-        from_attributes=True, json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "recipe_id": 1}}
+        from_attributes=True,
+        json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "recipe_id": 1}},
     )
 
 

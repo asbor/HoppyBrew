@@ -2,8 +2,6 @@
 Test CORS headers are present in responses, including error responses.
 """
 
-import pytest
-
 
 def test_cors_headers_on_successful_request(client):
     """Test that CORS headers are present on successful requests"""
@@ -15,7 +13,9 @@ def test_cors_headers_on_successful_request(client):
 
 def test_cors_headers_on_404_error(client):
     """Test that CORS headers are present on 404 errors"""
-    response = client.get("/nonexistent-endpoint", headers={"Origin": "http://localhost:3000"})
+    response = client.get(
+        "/nonexistent-endpoint", headers={"Origin": "http://localhost:3000"}
+    )
     assert response.status_code == 404
     # CORS middleware should add headers even for 404 errors
     assert "access-control-allow-origin" in response.headers

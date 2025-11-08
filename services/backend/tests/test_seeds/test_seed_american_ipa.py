@@ -14,7 +14,9 @@ def test_seed_american_ipa_creates_recipe(db_session: Session):
     assert recipe_id is not None
     assert recipe_id > 0
 
-    recipe = db_session.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    recipe = (
+        db_session.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    )
     assert recipe is not None
     assert recipe.name == "American IPA (BJCP 21A)"
     assert recipe.batch_size == 25.0
@@ -54,7 +56,11 @@ def test_seed_american_ipa_creates_hops(db_session: Session):
     """Test that the seed script creates the hops."""
     recipe_id = seed_american_ipa_recipe()
 
-    hops = db_session.query(models.RecipeHop).filter(models.RecipeHop.recipe_id == recipe_id).all()
+    hops = (
+        db_session.query(models.RecipeHop)
+        .filter(models.RecipeHop.recipe_id == recipe_id)
+        .all()
+    )
 
     assert len(hops) == 5
 
@@ -71,7 +77,9 @@ def test_seed_american_ipa_creates_yeast(db_session: Session):
     recipe_id = seed_american_ipa_recipe()
 
     yeasts = (
-        db_session.query(models.RecipeYeast).filter(models.RecipeYeast.recipe_id == recipe_id).all()
+        db_session.query(models.RecipeYeast)
+        .filter(models.RecipeYeast.recipe_id == recipe_id)
+        .all()
     )
 
     assert len(yeasts) == 1
@@ -88,7 +96,9 @@ def test_seed_american_ipa_creates_miscs(db_session: Session):
     recipe_id = seed_american_ipa_recipe()
 
     miscs = (
-        db_session.query(models.RecipeMisc).filter(models.RecipeMisc.recipe_id == recipe_id).all()
+        db_session.query(models.RecipeMisc)
+        .filter(models.RecipeMisc.recipe_id == recipe_id)
+        .all()
     )
 
     assert len(miscs) == 2

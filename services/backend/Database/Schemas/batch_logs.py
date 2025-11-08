@@ -15,7 +15,9 @@ class BatchLogBase(BaseModel):
 class BatchLogCreate(BatchLogBase):
     batch_id: int
 
-    model_config = ConfigDict(json_schema_extra={"example": {**BATCH_LOG_EXAMPLE, "batch_id": 11}})
+    model_config = ConfigDict(
+        json_schema_extra={"example": {**BATCH_LOG_EXAMPLE, "batch_id": 11}}
+    )
 
 
 class BatchLog(BatchLogBase):

@@ -161,7 +161,9 @@ async def global_exception_handler(request: Request, exc: Exception):
     normalized_origins = [o.lower() for o in origins]
     if origin and origin in normalized_origins:
         # Use the original case from the request
-        response.headers["Access-Control-Allow-Origin"] = request.headers.get("origin", "")
+        response.headers["Access-Control-Allow-Origin"] = request.headers.get(
+            "origin", ""
+        )
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"

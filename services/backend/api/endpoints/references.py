@@ -55,7 +55,9 @@ class ReferenceImportResponse(BaseModel):
     summary="Import references from BeerXML",
     response_description="Outcome of the import operation summarising processed records.",
 )
-async def import_references(db: Session = Depends(get_db), file: UploadFile = File(...)):
+async def import_references(
+    db: Session = Depends(get_db), file: UploadFile = File(...)
+):
     contents = await file.read()
     try:
         tree = ET.ElementTree(ET.fromstring(contents))
@@ -129,14 +131,18 @@ async def get_all_references(db: Session = Depends(get_db)):
 
 @router.get("/references/{reference_id}", response_model=schemas.Reference)
 async def get_reference(reference_id: int, db: Session = Depends(get_db)):
-    reference = db.query(models.References).filter(models.References.id == reference_id).first()
+    reference = (
+        db.query(models.References).filter(models.References.id == reference_id).first()
+    )
     if not reference:
         raise HTTPException(status_code=404, detail="Reference not found")
     return reference
 
 
 @router.post("/references", response_model=schemas.Reference)
-async def create_reference(reference: schemas.ReferenceCreate, db: Session = Depends(get_db)):
+async def create_reference(
+    reference: schemas.ReferenceCreate, db: Session = Depends(get_db)
+):
     favicon_url = fetch_favicon(reference.url)
     reference_data = reference.model_dump()
     reference_data["favicon_url"] = favicon_url
@@ -149,7 +155,9 @@ async def create_reference(reference: schemas.ReferenceCreate, db: Session = Dep
 
 @router.delete("/references/{reference_id}", response_model=schemas.Reference)
 async def delete_reference(reference_id: int, db: Session = Depends(get_db)):
-    reference = db.query(models.References).filter(models.References.id == reference_id).first()
+    reference = (
+        db.query(models.References).filter(models.References.id == reference_id).first()
+    )
     if not reference:
         raise HTTPException(status_code=404, detail="Reference not found")
     db.delete(reference)
@@ -163,7 +171,9 @@ async def update_reference(
     reference: schemas.ReferenceUpdate,
     db: Session = Depends(get_db),
 ):
-    db_reference = db.query(models.References).filter(models.References.id == reference_id).first()
+    db_reference = (
+        db.query(models.References).filter(models.References.id == reference_id).first()
+    )
     if not db_reference:
         raise HTTPException(status_code=404, detail="Reference not found")
     for key, value in reference.model_dump().items():
@@ -180,7 +190,9 @@ def fetch_favicon(url: str) -> str:
     parsed_url = urlparse(url)
     base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
     google_favicon_url = (
-        f"http://www.google.com/s2/favicons?domain={parsed_url.netloc}" if parsed_url.netloc else ""
+        f"http://www.google.com/s2/favicons?domain={parsed_url.netloc}"
+        if parsed_url.netloc
+        else ""
     )
     if not parsed_url.scheme or not parsed_url.netloc or requests is None:
         return google_favicon_url

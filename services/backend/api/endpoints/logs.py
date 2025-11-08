@@ -30,4 +30,6 @@ async def get_logs():
             log_content = file.read()
         return LogContentResponse(log_content=log_content)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read log file: {e}") from e
+        raise HTTPException(
+            status_code=500, detail=f"Failed to read log file: {e}"
+        ) from e

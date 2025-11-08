@@ -66,7 +66,9 @@ def test_export_references_returns_xml(client, monkeypatch):
 
     response = client.get("/references/export")
     assert response.status_code == 200
-    assert response.headers["Content-Disposition"] == "attachment; filename=references.xml"
+    assert (
+        response.headers["Content-Disposition"] == "attachment; filename=references.xml"
+    )
 
     xml_text = response.content.decode("utf-8")
     assert "<name>Export Ref</name>" in xml_text

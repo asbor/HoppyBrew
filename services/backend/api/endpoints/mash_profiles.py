@@ -1,12 +1,11 @@
 # api/endpoints/mash_profiles.py
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
-from typing import List, Optional
-from datetime import datetime
+from typing import List
 
 router = APIRouter()
 
@@ -43,18 +42,23 @@ async def get_mash_profiles(db: Session = Depends(get_db)):
 
 
 @router.post("/mash", response_model=dict, status_code=201)
-async def create_mash_profile(profile: schemas.MashProfileBase, db: Session = Depends(get_db)):
+async def create_mash_profile(
+    profile: schemas.MashProfileBase, db: Session = Depends(get_db)
+):
     """
     Create a new mash profile.
     """
     # Check if profile with same name already exists
     existing = (
-        db.query(models.MashProfiles).filter(models.MashProfiles.name == profile.name).first()
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.name == profile.name)
+        .first()
     )
 
     if existing:
         raise HTTPException(
-            status_code=400, detail=f"Mash profile with name '{profile.name}' already exists"
+            status_code=400,
+            detail=f"Mash profile with name '{profile.name}' already exists",
         )
 
     db_profile = models.MashProfiles(**profile.model_dump())
@@ -85,7 +89,11 @@ async def get_mash_profile(profile_id: int, db: Session = Depends(get_db)):
     """
     Get a specific mash profile by ID.
     """
-    profile = db.query(models.MashProfiles).filter(models.MashProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Mash profile not found")
@@ -110,12 +118,18 @@ async def get_mash_profile(profile_id: int, db: Session = Depends(get_db)):
 
 @router.put("/mash/{profile_id}", response_model=dict)
 async def update_mash_profile(
-    profile_id: int, profile_update: schemas.MashProfileBase, db: Session = Depends(get_db)
+    profile_id: int,
+    profile_update: schemas.MashProfileBase,
+    db: Session = Depends(get_db),
 ):
     """
     Update an existing mash profile.
     """
-    profile = db.query(models.MashProfiles).filter(models.MashProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Mash profile not found")
@@ -169,7 +183,11 @@ async def delete_mash_profile(profile_id: int, db: Session = Depends(get_db)):
     """
     Delete a mash profile.
     """
-    profile = db.query(models.MashProfiles).filter(models.MashProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Mash profile not found")
@@ -193,7 +211,11 @@ async def get_mash_steps(profile_id: int, db: Session = Depends(get_db)):
     Get all mash steps for a specific mash profile.
     """
     # First verify the profile exists
-    profile = db.query(models.MashProfiles).filter(models.MashProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Mash profile not found")
@@ -238,7 +260,11 @@ async def create_mash_step(
     Add a new step to a mash profile.
     """
     # First verify the profile exists
-    profile = db.query(models.MashProfiles).filter(models.MashProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Mash profile not found")
@@ -326,4 +352,8 @@ async def delete_mash_step(step_id: int, db: Session = Depends(get_db)):
     db.delete(step)
     db.commit()
 
-    return {"id": step.id, "name": step.name, "message": "Mash step deleted successfully"}
+    return {
+        "id": step.id,
+        "name": step.name,
+        "message": "Mash step deleted successfully",
+    }

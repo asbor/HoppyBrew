@@ -157,7 +157,9 @@ class RecipeScaleRequest(BaseModel):
     target_batch_size: float = Field(..., gt=0)
     target_boil_size: Optional[float] = Field(None, gt=0)
 
-    model_config = ConfigDict(json_schema_extra={"example": RECIPE_SCALE_REQUEST_EXAMPLE})
+    model_config = ConfigDict(
+        json_schema_extra={"example": RECIPE_SCALE_REQUEST_EXAMPLE}
+    )
 
 
 class RecipeScaleResponse(BaseModel):
@@ -167,4 +169,6 @@ class RecipeScaleResponse(BaseModel):
     scaled_recipe: Recipe
     metrics: RecipeMetrics
 
-    model_config = ConfigDict(json_schema_extra={"example": RECIPE_SCALE_RESPONSE_EXAMPLE})
+    model_config = ConfigDict(
+        json_schema_extra={"example": RECIPE_SCALE_RESPONSE_EXAMPLE}
+    )

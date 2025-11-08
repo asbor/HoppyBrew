@@ -35,7 +35,9 @@ class FermentationProfiles(Base):
     description = Column(String, nullable=True)
     is_pressurized = Column(Boolean, default=False)
     is_template = Column(Boolean, default=False)
-    created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
+    created_at = Column(
+        TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
+    )
     updated_at = Column(
         TIMESTAMP,
         server_default=text("CURRENT_TIMESTAMP"),
@@ -80,7 +82,9 @@ class FermentationSteps(Base):
     ramp_days = Column(Integer, default=0)
     pressure_psi = Column(DECIMAL(5, 2), nullable=True)
     notes = Column(String, nullable=True)
-    created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False)
+    created_at = Column(
+        TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False
+    )
 
     # Relationships
     profile = relationship("FermentationProfiles", back_populates="steps")

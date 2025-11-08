@@ -31,7 +31,9 @@ def scrape_and_process_beer_styles():
                 origin_heading = element
                 block_heading = origin_heading.text.strip()
                 circle_image = (
-                    origin_heading.find("img")["src"] if origin_heading.find("img") else None
+                    origin_heading.find("img")["src"]
+                    if origin_heading.find("img")
+                    else None
                 )
             elif element.name == "div" and "beer-style" in element.get("class", []):
                 style_data = parse_beer_style(element)
@@ -71,7 +73,9 @@ def parse_beer_style(beer_style):
             strong_tag = item.find("strong")
             if strong_tag:
                 key = strong_tag.text.strip().replace(":", "").replace(" ", "_").lower()
-                value = strong_tag.next_sibling.strip() if strong_tag.next_sibling else ""
+                value = (
+                    strong_tag.next_sibling.strip() if strong_tag.next_sibling else ""
+                )
                 style_data[key] = value
     return style_data
 

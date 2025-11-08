@@ -2,7 +2,9 @@ from unittest.mock import mock_open, patch
 
 
 def test_get_logs_returns_file_contents(client):
-    with patch("api.endpoints.logs.open", mock_open(read_data="log entry"), create=True):
+    with patch(
+        "api.endpoints.logs.open", mock_open(read_data="log entry"), create=True
+    ):
         response = client.get("/api/logs")
 
     assert response.status_code == 200

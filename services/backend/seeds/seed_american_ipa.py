@@ -41,7 +41,9 @@ def seed_american_ipa_recipe() -> int:
         )
 
         if existing_recipe:
-            logger.info("American IPA recipe already exists with ID: %d", existing_recipe.id)
+            logger.info(
+                "American IPA recipe already exists with ID: %d", existing_recipe.id
+            )
             return existing_recipe.id
 
         # Create the main recipe

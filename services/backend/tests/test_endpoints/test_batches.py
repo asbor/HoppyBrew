@@ -97,10 +97,22 @@ def test_delete_batch_removes_inventory(client, db_session):
     missing = client.get(f"/batches/{batch_id}")
     assert missing.status_code == 404
 
-    assert db_session.query(models.InventoryHop).filter_by(batch_id=batch_id).count() == 0
-    assert db_session.query(models.InventoryFermentable).filter_by(batch_id=batch_id).count() == 0
-    assert db_session.query(models.InventoryMisc).filter_by(batch_id=batch_id).count() == 0
-    assert db_session.query(models.InventoryYeast).filter_by(batch_id=batch_id).count() == 0
+    assert (
+        db_session.query(models.InventoryHop).filter_by(batch_id=batch_id).count() == 0
+    )
+    assert (
+        db_session.query(models.InventoryFermentable)
+        .filter_by(batch_id=batch_id)
+        .count()
+        == 0
+    )
+    assert (
+        db_session.query(models.InventoryMisc).filter_by(batch_id=batch_id).count() == 0
+    )
+    assert (
+        db_session.query(models.InventoryYeast).filter_by(batch_id=batch_id).count()
+        == 0
+    )
 
 
 def test_get_all_batches_returns_empty_list_when_no_batches(client):

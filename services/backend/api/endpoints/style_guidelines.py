@@ -24,7 +24,9 @@ async def get_all_style_guidelines(db: Session = Depends(get_db)):
 )
 async def get_style_guideline(guideline_id: int, db: Session = Depends(get_db)):
     guideline = (
-        db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == guideline_id).first()
+        db.query(models.StyleGuidelines)
+        .filter(models.StyleGuidelines.id == guideline_id)
+        .first()
     )
     if not guideline:
         raise HTTPException(status_code=404, detail="Style Guideline not found")
@@ -47,7 +49,9 @@ async def create_style_guideline(
 
 @router.delete("/style_guidelines/{id}", response_model=schemas.StyleGuidelineBase)
 async def delete_style_guideline(id: int, db: Session = Depends(get_db)):
-    guideline = db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == id).first()
+    guideline = (
+        db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == id).first()
+    )
     if not guideline:
         raise HTTPException(status_code=404, detail="Style Guideline not found")
     db.delete(guideline)
@@ -61,7 +65,9 @@ async def update_style_guideline(
     guideline: schemas.StyleGuidelineBaseCreate,
     db: Session = Depends(get_db),
 ):
-    db_guideline = db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == id).first()
+    db_guideline = (
+        db.query(models.StyleGuidelines).filter(models.StyleGuidelines.id == id).first()
+    )
     if not db_guideline:
         raise HTTPException(status_code=404, detail="Style Guideline not found")
     for key, value in guideline.model_dump().items():

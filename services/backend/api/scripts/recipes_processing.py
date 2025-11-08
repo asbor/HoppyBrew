@@ -26,7 +26,11 @@ def scrape_and_process_recipes():
     for recipe in recipes:
         title = recipe.find("h2").text.strip()
         link = base_url + recipe.find("a")["href"]
-        summary = recipe.find("p").text.strip() if recipe.find("p") else "No summary available"
+        summary = (
+            recipe.find("p").text.strip()
+            if recipe.find("p")
+            else "No summary available"
+        )
         recipes_data.append({"title": title, "link": link, "summary": summary})
     if recipes_data:
         logger.info("Storing data in the database")

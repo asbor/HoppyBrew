@@ -32,7 +32,9 @@ async def update_inventory_fermentable(
     db: Session = Depends(get_db),
 ):
     db_fermentable = (
-        db.query(models.InventoryFermentable).filter(models.InventoryFermentable.id == id).first()
+        db.query(models.InventoryFermentable)
+        .filter(models.InventoryFermentable.id == id)
+        .first()
     )
     if not db_fermentable:
         raise HTTPException(status_code=404, detail="Fermentable not found")

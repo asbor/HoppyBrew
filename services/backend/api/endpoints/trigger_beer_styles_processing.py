@@ -35,7 +35,9 @@ def run_beer_styles_script():
 async def trigger_script(background_tasks: BackgroundTasks):
     """Queue the beer styles update job that scrapes and normalises BJCP data."""
     background_tasks.add_task(run_beer_styles_script)
-    task_id = f"refresh-beer-styles-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    task_id = (
+        f"refresh-beer-styles-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    )
     return BeerStyleRefreshResponse(
         message="Beer style refresh queued for processing.", task_id=task_id
     )

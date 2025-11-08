@@ -128,7 +128,9 @@ async def create_batch(batch: schemas.BatchCreate, db: Session = Depends(get_db)
                 time=hop.time,
                 notes=hop.notes,
                 display_amount=(hop.display_amount if hop.display_amount else ""),
-                inventory=(parse_numeric_value(hop.inventory) if hop.inventory else 0.0),
+                inventory=(
+                    parse_numeric_value(hop.inventory) if hop.inventory else 0.0
+                ),
                 display_time=hop.display_time if hop.display_time else "",
                 batch_id=db_batch.id,
             )
@@ -167,7 +169,9 @@ async def create_batch(batch: schemas.BatchCreate, db: Session = Depends(get_db)
                 amount=misc.amount,
                 time=misc.time,
                 display_amount=(misc.display_amount if misc.display_amount else ""),
-                inventory=(parse_numeric_value(misc.inventory) if misc.inventory else 0.0),
+                inventory=(
+                    parse_numeric_value(misc.inventory) if misc.inventory else 0.0
+                ),
                 display_time=misc.display_time if misc.display_time else "",
                 batch_size=misc.batch_size,
                 batch_id=db_batch.id,
@@ -253,7 +257,9 @@ async def get_batch_by_id(batch_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/batches/{batch_id}", response_model=schemas.Batch)
-async def update_batch(batch_id: int, batch: schemas.BatchUpdate, db: Session = Depends(get_db)):
+async def update_batch(
+    batch_id: int, batch: schemas.BatchUpdate, db: Session = Depends(get_db)
+):
     db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
     if not db_batch:
         raise HTTPException(status_code=404, detail="Batch not found")
@@ -276,12 +282,18 @@ async def delete_batch(batch_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Batch not found")
     # Delete related inventory items
 
-    db.query(models.InventoryHop).filter(models.InventoryHop.batch_id == batch_id).delete()
+    db.query(models.InventoryHop).filter(
+        models.InventoryHop.batch_id == batch_id
+    ).delete()
     db.query(models.InventoryFermentable).filter(
         models.InventoryFermentable.batch_id == batch_id
     ).delete()
-    db.query(models.InventoryMisc).filter(models.InventoryMisc.batch_id == batch_id).delete()
-    db.query(models.InventoryYeast).filter(models.InventoryYeast.batch_id == batch_id).delete()
+    db.query(models.InventoryMisc).filter(
+        models.InventoryMisc.batch_id == batch_id
+    ).delete()
+    db.query(models.InventoryYeast).filter(
+        models.InventoryYeast.batch_id == batch_id
+    ).delete()
     # Delete the batch
 
     db.delete(db_batch)
