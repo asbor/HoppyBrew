@@ -487,9 +487,18 @@ To run the project using Docker Compose, follow the steps below:
 2. **Run the Docker Compose stack**
 
     ```sh
-    docker-compose up
+    # Export your user ID and group ID to match host permissions
+    export HOST_UID=$(id -u) && export HOST_GID=$(id -g) && docker-compose up
     ```
-    This command will first build the Docker image for the application and then run the Docker Compose stack with the specified services.
+    
+    This command will:
+    - Set the HOST_UID and HOST_GID environment variables to match your host user
+    - Build the Docker images with the correct user permissions
+    - Run the Docker Compose stack with the specified services
+    
+    **Note:** Setting HOST_UID and HOST_GID ensures that files created by the containers have the same ownership as your host user, preventing permission issues when mounting volumes.
+    
+    If you don't set these variables, the containers will use the default UID/GID of 1000.
 
 
 ## FAQ

@@ -1,0 +1,28 @@
+# Ignore node_modules to prevent permission issues
+node_modules/
+
+# Ignore build outputs that will be regenerated
+.nuxt/
+.output/
+dist/
+
+# Ignore cache directories
+.cache/
+
+# Ignore local environment files
+.env
+.env.*
+!.env.example
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore OS files
+.DS_Store
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
