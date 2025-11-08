@@ -18,6 +18,8 @@ class RecipeMisc(Base):
     inventory = Column(Integer, nullable=True)
     display_time = Column(String, nullable=True)
     batch_size = Column(Integer, nullable=True)
+    stage = Column(String, nullable=True)  # mash/boil/fermentation
+    duration = Column(Integer, nullable=True)  # duration in minutes
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="miscs")
 

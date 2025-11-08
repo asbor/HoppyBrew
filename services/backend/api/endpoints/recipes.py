@@ -361,3 +361,337 @@ async def scale_recipe(
         scaled_recipe=scaled_recipe,
         metrics=metrics,
     )
+
+
+# Individual ingredient CRUD endpoints
+
+
+@router.post("/recipes/{recipe_id}/ingredients/hops")
+async def add_hop_to_recipe(
+    recipe_id: int,
+    hop: schemas.RecipeHopBase,
+    db: Session = Depends(get_db),
+):
+    """Add a hop ingredient to a recipe"""
+    recipe = db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    db_hop = models.RecipeHop(**hop.model_dump(), recipe_id=recipe_id)
+    db.add(db_hop)
+    db.commit()
+    db.refresh(db_hop)
+    return db_hop
+
+
+@router.put("/recipes/{recipe_id}/ingredients/hops/{ingredient_id}")
+async def update_hop_in_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    hop: schemas.RecipeHopBase,
+    db: Session = Depends(get_db),
+):
+    """Update a hop ingredient in a recipe"""
+    db_hop = (
+        db.query(models.RecipeHop)
+        .filter(models.RecipeHop.id == ingredient_id, models.RecipeHop.recipe_id == recipe_id)
+        .first()
+    )
+    if not db_hop:
+        raise HTTPException(status_code=404, detail="Hop ingredient not found")
+
+    for key, value in hop.model_dump().items():
+        setattr(db_hop, key, value)
+
+    db.commit()
+    db.refresh(db_hop)
+    return db_hop
+
+
+@router.delete("/recipes/{recipe_id}/ingredients/hops/{ingredient_id}")
+async def delete_hop_from_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    db: Session = Depends(get_db),
+):
+    """Delete a hop ingredient from a recipe"""
+    db_hop = (
+        db.query(models.RecipeHop)
+        .filter(models.RecipeHop.id == ingredient_id, models.RecipeHop.recipe_id == recipe_id)
+        .first()
+    )
+    if not db_hop:
+        raise HTTPException(status_code=404, detail="Hop ingredient not found")
+
+    db.delete(db_hop)
+    db.commit()
+    return {"message": "Hop ingredient deleted successfully"}
+
+
+@router.post("/recipes/{recipe_id}/ingredients/fermentables")
+async def add_fermentable_to_recipe(
+    recipe_id: int,
+    fermentable: schemas.RecipeFermentableBase,
+    db: Session = Depends(get_db),
+):
+    """Add a fermentable ingredient to a recipe"""
+    recipe = db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    db_fermentable = models.RecipeFermentable(**fermentable.model_dump(), recipe_id=recipe_id)
+    db.add(db_fermentable)
+    db.commit()
+    db.refresh(db_fermentable)
+    return db_fermentable
+
+
+@router.put("/recipes/{recipe_id}/ingredients/fermentables/{ingredient_id}")
+async def update_fermentable_in_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    fermentable: schemas.RecipeFermentableBase,
+    db: Session = Depends(get_db),
+):
+    """Update a fermentable ingredient in a recipe"""
+    db_fermentable = (
+        db.query(models.RecipeFermentable)
+        .filter(
+            models.RecipeFermentable.id == ingredient_id,
+            models.RecipeFermentable.recipe_id == recipe_id,
+        )
+        .first()
+    )
+    if not db_fermentable:
+        raise HTTPException(status_code=404, detail="Fermentable ingredient not found")
+
+    for key, value in fermentable.model_dump().items():
+        setattr(db_fermentable, key, value)
+
+    db.commit()
+    db.refresh(db_fermentable)
+    return db_fermentable
+
+
+@router.delete("/recipes/{recipe_id}/ingredients/fermentables/{ingredient_id}")
+async def delete_fermentable_from_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    db: Session = Depends(get_db),
+):
+    """Delete a fermentable ingredient from a recipe"""
+    db_fermentable = (
+        db.query(models.RecipeFermentable)
+        .filter(
+            models.RecipeFermentable.id == ingredient_id,
+            models.RecipeFermentable.recipe_id == recipe_id,
+        )
+        .first()
+    )
+    if not db_fermentable:
+        raise HTTPException(status_code=404, detail="Fermentable ingredient not found")
+
+    db.delete(db_fermentable)
+    db.commit()
+    return {"message": "Fermentable ingredient deleted successfully"}
+
+
+@router.post("/recipes/{recipe_id}/ingredients/yeasts")
+async def add_yeast_to_recipe(
+    recipe_id: int,
+    yeast: schemas.RecipeYeastBase,
+    db: Session = Depends(get_db),
+):
+    """Add a yeast ingredient to a recipe"""
+    recipe = db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    db_yeast = models.RecipeYeast(**yeast.model_dump(), recipe_id=recipe_id)
+    db.add(db_yeast)
+    db.commit()
+    db.refresh(db_yeast)
+    return db_yeast
+
+
+@router.put("/recipes/{recipe_id}/ingredients/yeasts/{ingredient_id}")
+async def update_yeast_in_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    yeast: schemas.RecipeYeastBase,
+    db: Session = Depends(get_db),
+):
+    """Update a yeast ingredient in a recipe"""
+    db_yeast = (
+        db.query(models.RecipeYeast)
+        .filter(
+            models.RecipeYeast.id == ingredient_id,
+            models.RecipeYeast.recipe_id == recipe_id,
+        )
+        .first()
+    )
+    if not db_yeast:
+        raise HTTPException(status_code=404, detail="Yeast ingredient not found")
+
+    for key, value in yeast.model_dump().items():
+        setattr(db_yeast, key, value)
+
+    db.commit()
+    db.refresh(db_yeast)
+    return db_yeast
+
+
+@router.delete("/recipes/{recipe_id}/ingredients/yeasts/{ingredient_id}")
+async def delete_yeast_from_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    db: Session = Depends(get_db),
+):
+    """Delete a yeast ingredient from a recipe"""
+    db_yeast = (
+        db.query(models.RecipeYeast)
+        .filter(
+            models.RecipeYeast.id == ingredient_id,
+            models.RecipeYeast.recipe_id == recipe_id,
+        )
+        .first()
+    )
+    if not db_yeast:
+        raise HTTPException(status_code=404, detail="Yeast ingredient not found")
+
+    db.delete(db_yeast)
+    db.commit()
+    return {"message": "Yeast ingredient deleted successfully"}
+
+
+@router.post("/recipes/{recipe_id}/ingredients/miscs")
+async def add_misc_to_recipe(
+    recipe_id: int,
+    misc: schemas.RecipeMiscBase,
+    db: Session = Depends(get_db),
+):
+    """Add a misc ingredient to a recipe"""
+    recipe = db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    db_misc = models.RecipeMisc(**misc.model_dump(), recipe_id=recipe_id)
+    db.add(db_misc)
+    db.commit()
+    db.refresh(db_misc)
+    return db_misc
+
+
+@router.put("/recipes/{recipe_id}/ingredients/miscs/{ingredient_id}")
+async def update_misc_in_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    misc: schemas.RecipeMiscBase,
+    db: Session = Depends(get_db),
+):
+    """Update a misc ingredient in a recipe"""
+    db_misc = (
+        db.query(models.RecipeMisc)
+        .filter(
+            models.RecipeMisc.id == ingredient_id,
+            models.RecipeMisc.recipe_id == recipe_id,
+        )
+        .first()
+    )
+    if not db_misc:
+        raise HTTPException(status_code=404, detail="Misc ingredient not found")
+
+    for key, value in misc.model_dump().items():
+        setattr(db_misc, key, value)
+
+    db.commit()
+    db.refresh(db_misc)
+    return db_misc
+
+
+@router.delete("/recipes/{recipe_id}/ingredients/miscs/{ingredient_id}")
+async def delete_misc_from_recipe(
+    recipe_id: int,
+    ingredient_id: int,
+    db: Session = Depends(get_db),
+):
+    """Delete a misc ingredient from a recipe"""
+    db_misc = (
+        db.query(models.RecipeMisc)
+        .filter(
+            models.RecipeMisc.id == ingredient_id,
+            models.RecipeMisc.recipe_id == recipe_id,
+        )
+        .first()
+    )
+    if not db_misc:
+        raise HTTPException(status_code=404, detail="Misc ingredient not found")
+
+    db.delete(db_misc)
+    db.commit()
+    return {"message": "Misc ingredient deleted successfully"}
+
+
+# Recipe versioning endpoints
+
+
+@router.post("/recipes/{recipe_id}/version", response_model=schemas.RecipeVersion)
+async def create_recipe_version(
+    recipe_id: int,
+    version_data: schemas.RecipeVersionCreate,
+    db: Session = Depends(get_db),
+):
+    """Create a new version snapshot of a recipe"""
+    import json
+
+    recipe = _fetch_recipe(db, recipe_id)
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    # Get the current highest version number for this recipe
+    max_version = (
+        db.query(models.RecipeVersion.version_number)
+        .filter(models.RecipeVersion.recipe_id == recipe_id)
+        .order_by(models.RecipeVersion.version_number.desc())
+        .first()
+    )
+    next_version = (max_version[0] + 1) if max_version else 1
+
+    # Create a snapshot of the current recipe state
+    recipe_dict = schemas.Recipe.model_validate(recipe).model_dump(mode="json")
+    recipe_snapshot = json.dumps(recipe_dict)
+
+    # Create the version record
+    db_version = models.RecipeVersion(
+        recipe_id=recipe_id,
+        version_number=next_version,
+        version_name=version_data.version_name,
+        notes=version_data.notes,
+        recipe_snapshot=recipe_snapshot,
+    )
+    db.add(db_version)
+    db.commit()
+    db.refresh(db_version)
+
+    return db_version
+
+
+@router.get("/recipes/{recipe_id}/versions", response_model=List[schemas.RecipeVersion])
+async def get_recipe_versions(
+    recipe_id: int,
+    db: Session = Depends(get_db),
+):
+    """Get all version history for a recipe"""
+    recipe = db.query(models.Recipes).filter(models.Recipes.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    versions = (
+        db.query(models.RecipeVersion)
+        .filter(models.RecipeVersion.recipe_id == recipe_id)
+        .order_by(models.RecipeVersion.version_number.desc())
+        .all()
+    )
+
+    return versions
+

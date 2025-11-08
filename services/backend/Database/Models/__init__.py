@@ -31,6 +31,7 @@ from .Ingredients.miscs import RecipeMisc, InventoryMisc
 from .Ingredients.yeasts import RecipeYeast, InventoryYeast
 from .references import References
 from .devices import Device
+from .recipe_versions import RecipeVersion
 from .batch_ingredients import BatchIngredient, InventoryTransaction
 
 __all__ = [
@@ -72,6 +73,7 @@ __all__ = [
     "InventoryYeast",
     "References",
     "Device",
+    "RecipeVersion",
     "BatchIngredient",
     "InventoryTransaction",
 ]

@@ -44,11 +44,18 @@ class YeastBase(BaseModel):
     )
 
 
-class RecipeYeast(YeastBase):
+class RecipeYeastBase(YeastBase):
+    """Schema for recipe yeasts with additional fields"""
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
+
+
+class RecipeYeast(RecipeYeastBase):
+    id: int
     recipe_id: int
 
     model_config = ConfigDict(
-        from_attributes=True, json_schema_extra={"example": {**YEAST_BASE_EXAMPLE, "recipe_id": 12}}
+        from_attributes=True, json_schema_extra={"example": {**YEAST_BASE_EXAMPLE, "id": 1, "recipe_id": 12}}
     )
 
 

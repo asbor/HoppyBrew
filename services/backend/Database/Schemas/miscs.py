@@ -37,12 +37,19 @@ class MiscBase(BaseModel):
     )
 
 
-class RecipeMisc(MiscBase):
+class RecipeMiscBase(MiscBase):
+    """Schema for recipe miscs with additional fields"""
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
+
+
+class RecipeMisc(RecipeMiscBase):
+    id: int
     recipe_id: int
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {**MISC_BASE_EXAMPLE, "recipe_id": 12}},
+        json_schema_extra={"example": {**MISC_BASE_EXAMPLE, "id": 1, "recipe_id": 12}},
     )
 
 

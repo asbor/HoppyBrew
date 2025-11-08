@@ -38,11 +38,18 @@ class HopBase(BaseModel):
     model_config = ConfigDict(from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE})
 
 
-class RecipeHop(HopBase):
+class RecipeHopBase(HopBase):
+    """Schema for recipe hops with additional fields"""
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
+
+
+class RecipeHop(RecipeHopBase):
+    id: int
     recipe_id: int
 
     model_config = ConfigDict(
-        from_attributes=True, json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "recipe_id": 1}}
+        from_attributes=True, json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "id": 1, "recipe_id": 1}}
     )
 
 

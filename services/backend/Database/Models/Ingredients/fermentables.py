@@ -34,6 +34,8 @@ class RecipeFermentable(Base):
     description = Column(String, nullable=True)
     substitutes = Column(String, nullable=True)
     used_in = Column(String, nullable=True)
+    stage = Column(String, nullable=True)  # mash/boil/fermentation
+    duration = Column(Integer, nullable=True)  # duration in minutes
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="fermentables")
 
