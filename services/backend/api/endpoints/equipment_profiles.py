@@ -16,7 +16,8 @@ async def get_equipment_profiles(db: Session = Depends(get_db)):
     List all equipment profiles.
     """
     profiles = (
-        db.query(models.EquipmentProfiles).order_by(models.EquipmentProfiles.name).all()
+        db.query(models.EquipmentProfiles).order_by(
+            models.EquipmentProfiles.name).all()
     )
 
     # Convert to dict to match frontend expectations
@@ -120,7 +121,8 @@ async def get_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
     )
 
     if not profile:
-        raise HTTPException(status_code=404, detail="Equipment profile not found")
+        raise HTTPException(
+            status_code=404, detail="Equipment profile not found")
 
     return {
         "id": str(profile.id),
@@ -167,7 +169,8 @@ async def update_equipment_profile(
     )
 
     if not profile:
-        raise HTTPException(status_code=404, detail="Equipment profile not found")
+        raise HTTPException(
+            status_code=404, detail="Equipment profile not found")
 
     # Check for name conflicts if name is being updated
     if profile_update.name and profile_update.name != profile.name:
@@ -236,7 +239,8 @@ async def delete_equipment_profile(profile_id: int, db: Session = Depends(get_db
     )
 
     if not profile:
-        raise HTTPException(status_code=404, detail="Equipment profile not found")
+        raise HTTPException(
+            status_code=404, detail="Equipment profile not found")
 
     db.delete(profile)
     db.commit()

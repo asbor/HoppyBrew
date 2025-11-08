@@ -32,9 +32,12 @@ def export_references(xml_file, session=None):
             ET.SubElement(ref_element, "id").text = str(reference.id)
             ET.SubElement(ref_element, "name").text = reference.name
             ET.SubElement(ref_element, "url").text = reference.url
-            ET.SubElement(ref_element, "description").text = reference.description or ""
-            ET.SubElement(ref_element, "category").text = reference.category or ""
-            ET.SubElement(ref_element, "favicon_url").text = reference.favicon_url or ""
+            ET.SubElement(
+                ref_element, "description").text = reference.description or ""
+            ET.SubElement(
+                ref_element, "category").text = reference.category or ""
+            ET.SubElement(
+                ref_element, "favicon_url").text = reference.favicon_url or ""
             ET.SubElement(ref_element, "created_at").text = (
                 reference.created_at.isoformat()
             )
