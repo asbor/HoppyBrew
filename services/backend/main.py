@@ -7,6 +7,32 @@ from api.router import router
 from fastapi.middleware.cors import CORSMiddleware
 from logger_config import get_logger
 from config import settings
+from contextlib import asynccontextmanager
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for startup and shutdown events.
+    
+    This handles initialization and cleanup of background tasks,
+    including the device scheduler for auto-import.
+    """
+    # Startup
+    logger = get_logger("Main")
+    logger.info("Application startup - initializing background tasks")
+    
+    # Import here to avoid circular imports
+    from modules.device_scheduler import start_scheduler
+    start_scheduler()
+    
+    yield
+    
+    # Shutdown
+    logger.info("Application shutdown - cleaning up background tasks")
+    from modules.device_scheduler import stop_scheduler
+    stop_scheduler()
+
 
 tags_metadata = [
     {
@@ -140,6 +166,7 @@ app = FastAPI(
         "docExpansion": "list",
         "displayRequestDuration": True,
     },
+    lifespan=lifespan,
 )
 app.include_router(router)
 

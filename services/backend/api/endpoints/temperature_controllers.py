@@ -294,6 +294,18 @@ async def get_device_alerts(device_id: int, db: Session = Depends(get_db)):
     }
 
 
+@router.get("/temperature-controllers/scheduler/status", tags=["temperature_controllers"])
+async def get_scheduler_status():
+    """
+    Get the current status of the device auto-import scheduler.
+    
+    Returns information about scheduled jobs, their next run times,
+    and the overall scheduler status.
+    """
+    from modules.device_scheduler import get_scheduler_status
+    return get_scheduler_status()
+
+
 @router.post("/temperature-controllers/manual-reading/{device_id}", tags=["temperature_controllers"])
 async def create_manual_reading(
     device_id: int,
