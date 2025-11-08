@@ -87,6 +87,17 @@ from .devices import (
     DeviceInDBBase,
     Device,
 )
+from .batch_ingredients import (
+    BatchIngredient,
+    BatchIngredientCreate,
+    BatchIngredientBase,
+    InventoryTransaction,
+    InventoryTransactionCreate,
+    InventoryTransactionBase,
+    ConsumeIngredientsRequest,
+    IngredientTrackingResponse,
+    InventoryAvailability,
+)
 
 __all__ = [
     "SugarBase",
@@ -165,4 +176,13 @@ __all__ = [
     "Device",
     "QuestionBase",
     "ChoiceBase",
+    "BatchIngredient",
+    "BatchIngredientCreate",
+    "BatchIngredientBase",
+    "InventoryTransaction",
+    "InventoryTransactionCreate",
+    "InventoryTransactionBase",
+    "ConsumeIngredientsRequest",
+    "IngredientTrackingResponse",
+    "InventoryAvailability",
 ]
