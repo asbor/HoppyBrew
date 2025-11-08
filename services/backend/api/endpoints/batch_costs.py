@@ -18,27 +18,27 @@ PINT_IN_LITERS = 0.473176  # US pint
 def calculate_batch_cost_totals(batch_cost: models.BatchCost, batch_size: float) -> models.BatchCost:
     """Calculate total cost and per-unit costs for a batch"""
     
-    # Calculate ingredient costs total
+    # Calculate ingredient costs total (handle None values)
     ingredients_total = (
-        batch_cost.fermentables_cost
-        + batch_cost.hops_cost
-        + batch_cost.yeasts_cost
-        + batch_cost.miscs_cost
+        (batch_cost.fermentables_cost or 0.0)
+        + (batch_cost.hops_cost or 0.0)
+        + (batch_cost.yeasts_cost or 0.0)
+        + (batch_cost.miscs_cost or 0.0)
     )
     
     # Calculate utility costs total
     utilities_total = (
-        batch_cost.electricity_cost
-        + batch_cost.water_cost
-        + batch_cost.gas_cost
-        + batch_cost.other_utility_cost
+        (batch_cost.electricity_cost or 0.0)
+        + (batch_cost.water_cost or 0.0)
+        + (batch_cost.gas_cost or 0.0)
+        + (batch_cost.other_utility_cost or 0.0)
     )
     
     # Calculate other costs total
     other_total = (
-        batch_cost.labor_cost
-        + batch_cost.packaging_cost
-        + batch_cost.other_cost
+        (batch_cost.labor_cost or 0.0)
+        + (batch_cost.packaging_cost or 0.0)
+        + (batch_cost.other_cost or 0.0)
     )
     
     # Total cost
