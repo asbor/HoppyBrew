@@ -3,6 +3,7 @@
 from .recipes import Recipes
 from .batches import Batches
 from .batch_logs import BatchLogs
+from .batch_workflow_history import BatchWorkflowHistory
 from .style_guidlines import StyleGuidelines, StyleGuidelineSource
 from .styles import Styles
 from .beer_styles import BeerStyle, StyleCategory
@@ -31,11 +32,13 @@ from .Ingredients.yeasts import RecipeYeast, InventoryYeast
 from .references import References
 from .devices import Device
 from .recipe_versions import RecipeVersion
+from .batch_ingredients import BatchIngredient, InventoryTransaction
 
 __all__ = [
     "Recipes",
     "Batches",
     "BatchLogs",
+    "BatchWorkflowHistory",
     "StyleGuidelines",
     "StyleGuidelineSource",
     "Styles",
@@ -71,4 +74,6 @@ __all__ = [
     "References",
     "Device",
     "RecipeVersion",
+    "BatchIngredient",
+    "InventoryTransaction",
 ]

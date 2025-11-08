@@ -9,10 +9,21 @@ class BatchStatus(str, Enum):
     """Batch workflow status enum"""
 
     PLANNING = "planning"
-    BREW_DAY = "brew_day"
-    PRIMARY_FERMENTATION = "primary_fermentation"
-    SECONDARY_FERMENTATION = "secondary_fermentation"
+    BREWING = "brewing"
+    FERMENTING = "fermenting"
     CONDITIONING = "conditioning"
-    PACKAGED = "packaged"
-    COMPLETED = "completed"
+    PACKAGING = "packaging"
+    COMPLETE = "complete"
     ARCHIVED = "archived"
+
+
+# Valid state transitions for batch workflow
+BATCH_STATUS_TRANSITIONS = {
+    BatchStatus.PLANNING: [BatchStatus.BREWING, BatchStatus.ARCHIVED],
+    BatchStatus.BREWING: [BatchStatus.FERMENTING, BatchStatus.ARCHIVED],
+    BatchStatus.FERMENTING: [BatchStatus.CONDITIONING, BatchStatus.ARCHIVED],
+    BatchStatus.CONDITIONING: [BatchStatus.PACKAGING, BatchStatus.ARCHIVED],
+    BatchStatus.PACKAGING: [BatchStatus.COMPLETE, BatchStatus.ARCHIVED],
+    BatchStatus.COMPLETE: [BatchStatus.ARCHIVED],
+    BatchStatus.ARCHIVED: [],  # Terminal state
+}

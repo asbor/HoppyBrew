@@ -37,6 +37,12 @@ class Batches(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
+    workflow_history = relationship(
+        "BatchWorkflowHistory",
+        back_populates="batch",
+        cascade="all, delete-orphan",
+        order_by="BatchWorkflowHistory.changed_at.desc()",
+    )
     inventory_fermentables = relationship(
         "InventoryFermentable",
         back_populates="batch",
@@ -54,6 +60,11 @@ class Batches(Base):
     )
     inventory_yeasts = relationship(
         "InventoryYeast",
+        back_populates="batch",
+        cascade="all, delete-orphan",
+    )
+    batch_ingredients = relationship(
+        "BatchIngredient",
         back_populates="batch",
         cascade="all, delete-orphan",
     )
