@@ -93,6 +93,10 @@ tags_metadata = [
         "name": "calculators",
         "description": "Brewing calculation utilities for strike water, ABV, priming sugar, yeast starters, and more.",
     },
+    {
+        "name": "backups",
+        "description": "Database backup and restore operations for data protection and disaster recovery.",
+    },
 ]
 
 # Get logger instance
@@ -138,6 +142,26 @@ app = FastAPI(
     },
 )
 app.include_router(router)
+
+# Initialize backup scheduler
+from modules.backup_scheduler import backup_scheduler
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize services on application startup"""
+    logger.info("Application startup - initializing services")
+    # Start the backup scheduler if enabled
+    backup_scheduler.start()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Cleanup on application shutdown"""
+    logger.info("Application shutdown - cleaning up services")
+    # Stop the backup scheduler
+    backup_scheduler.stop()
+
 
 # Add CORS middleware to allow requests from the frontend
 

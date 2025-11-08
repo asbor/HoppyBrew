@@ -25,6 +25,7 @@ from . import health
 from . import references
 from . import homeassistant
 from . import calculators
+from . import backups
 
 __all__ = [
     "recipes",
@@ -51,4 +52,5 @@ __all__ = [
     "references",
     "homeassistant",
     "calculators",
+    "backups",
 ]

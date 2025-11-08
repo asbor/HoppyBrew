@@ -23,6 +23,9 @@ passlib[bcrypt]==1.7.4
 config==0.5.1
 python-dotenv==1.2.1
 
+# Task Scheduling
+APScheduler==3.10.4
+
 # Data Processing & Web Scraping
 pandas==2.3.3
 requests==2.32.5

@@ -89,6 +89,7 @@ class Settings:
         )
         self.BACKUP_SCHEDULE: str = os.getenv("BACKUP_SCHEDULE", "0 2 * * *")
         self.BACKUP_RETENTION_DAYS: int = int(os.getenv("BACKUP_RETENTION_DAYS", "30"))
+        self.BACKUP_DIR: str = os.getenv("BACKUP_DIR", "/app/data/backups")
 
         # Validate configuration
         self._validate_settings()
@@ -129,6 +130,7 @@ class Settings:
         try:
             Path(self.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
             Path(self.LOG_FILE).parent.mkdir(parents=True, exist_ok=True)
+            Path(self.BACKUP_DIR).mkdir(parents=True, exist_ok=True)
         except Exception as e:
             print(f"Warning: Could not create directories: {e}")
 
