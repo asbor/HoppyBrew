@@ -226,28 +226,50 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo;
-            const title = `Security scan alerts for ${context.runId}`;
+            const title = 'Security scan alerts - Dependencies';
             const body = [
               'Automated MCP alert for security scan findings.',
               '',
               core.getInput('markdown'),
               '',
+              `_Last updated: ${new Date().toISOString()}_`,
+              `_Run ID: ${context.runId}_`,
+              '',
               '_Generated automatically by the security workflow._',
             ].join('\n');
+            
+            // Search for existing open security alert issue
             const { data: existing } = await github.rest.search.issuesAndPullRequests({
               q: `repo:${owner}/${repo} "${title}" in:title state:open label:security-alert`,
             });
+            
             if (existing.total_count > 0) {
-              core.info('Existing security alert issue detected; skipping creation.');
-              return;
+              // Update existing issue instead of creating new one
+              const issueNumber = existing.items[0].number;
+              core.info(`Updating existing security alert issue #${issueNumber}`);
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body,
+              });
+              // Add a comment with the update timestamp
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `🔄 Security scan re-run at ${new Date().toISOString()} (Run ID: ${context.runId})\n\n${core.getInput('markdown')}`,
+              });
+            } else {
+              core.info('Creating new security alert issue');
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ['security-alert', 'automated'],
+              });
             }
-            await github.rest.issues.create({
-              owner,
-              repo,
-              title,
-              body,
-              labels: ['security-alert', 'automated'],
-            });
           markdown: ${{ steps.summary.outputs.markdown }}
 
       - name: Fail workflow if security issues found
