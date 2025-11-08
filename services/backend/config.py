@@ -104,9 +104,9 @@ class Settings:
     @property
     def DATABASE_URL(self) -> str:
         """Construct database URL from individual components"""
-        if os.getenv('TESTING'):
+        if os.getenv('TESTING') == '1':
             return self.TEST_DATABASE_URL
-        return f"postgresql://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
+        return f"postgresql+psycopg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
 
     @property
     def is_production(self) -> bool:
