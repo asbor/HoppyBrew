@@ -78,6 +78,10 @@ tags_metadata = [
         "description": "Track fermentation progress with gravity, temperature, and pH readings over time.",
     },
     {
+        "name": "temperature_controllers",
+        "description": "Temperature controller integration endpoints for Tilt and iSpindel devices with auto-import and alerts.",
+    },
+    {
         "name": "user",
         "description": "User account endpoints for authentication and profile management.",
     },

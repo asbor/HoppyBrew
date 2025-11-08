@@ -11,6 +11,8 @@ FERMENTATION_READING_BASE_EXAMPLE = {
     "temperature": 18.5,
     "ph": 5.4,
     "notes": "Active fermentation observed, krausen forming nicely",
+    "device_id": None,
+    "source": "manual",
 }
 
 FERMENTATION_READING_FULL_EXAMPLE = {
@@ -44,6 +46,8 @@ class FermentationReadingBase(BaseModel):
     )
     ph: Optional[float] = Field(None, description="pH level of the fermenting beer")
     notes: Optional[str] = Field(None, description="Additional notes about the reading")
+    device_id: Optional[int] = Field(None, description="ID of device that created this reading")
+    source: Optional[str] = Field("manual", description="Source of reading: manual, tilt, ispindel, etc.")
 
     model_config = ConfigDict(
         json_schema_extra={"example": FERMENTATION_READING_BASE_EXAMPLE}
@@ -60,6 +64,8 @@ class FermentationReadingUpdate(BaseModel):
     temperature: Optional[float] = None
     ph: Optional[float] = None
     notes: Optional[str] = None
+    device_id: Optional[int] = None
+    source: Optional[str] = None
 
     model_config = ConfigDict(
         json_schema_extra={

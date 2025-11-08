@@ -25,6 +25,7 @@ from .endpoints import (
     homeassistant,
     devices,
     calculators,
+    temperature_controllers,
 )
 
 # create the router and include all the routers from the endpoints folder
@@ -53,6 +54,10 @@ router.include_router(equipment_profiles.router, tags=["equipment_profiles"])
 router.include_router(fermentation_profiles.router, tags=["fermentation_profiles"])
 router.include_router(fermentation_readings.router, tags=["fermentation"])
 router.include_router(users.router, tags=["user"])
+
+# Temperature controller integration
+
+router.include_router(temperature_controllers.router, tags=["temperature_controllers"])
 
 # Include the script router
 
