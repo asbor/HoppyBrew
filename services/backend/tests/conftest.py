@@ -1,18 +1,17 @@
+import Database.Models
+from database import Base, get_db
+from main import app
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from fastapi.testclient import TestClient
+import pkgutil
+import importlib
+import logging
+import pytest
 import os
 
 # Set environment variable for testing BEFORE any other imports
 os.environ["TESTING"] = "1"
-
-import pytest
-import logging
-import importlib
-import pkgutil
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from main import app
-from database import Base, get_db
-import Database.Models
 
 
 # Ensure the model package and its submodules load so Base.metadata sees every table
@@ -30,10 +29,12 @@ logger = logging.getLogger(__name__)
 logger.debug(f"Environment variable TESTING set to: {os.environ['TESTING']}")
 
 # Database setup for testing
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test_fermentables.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 logger.debug(f"SQLALCHEMY_DATABASE_URL set to: {SQLALCHEMY_DATABASE_URL}")
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={
+                       "check_same_thread": False})
+TestingSessionLocal = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine)
 
 
 def override_get_db():
