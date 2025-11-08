@@ -85,6 +85,10 @@ tags_metadata = [
         "name": "homeassistant",
         "description": "HomeAssistant integration endpoints for monitoring brewing batches.",
     },
+    {
+        "name": "calculators",
+        "description": "Brewing calculation utilities for strike water, ABV, priming sugar, yeast starters, and more.",
+    },
 ]
 
 # Get logger instance
