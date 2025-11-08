@@ -30,6 +30,24 @@ else:
     db_host = os.getenv("DATABASE_HOST")
     db_port = os.getenv("DATABASE_PORT")
     db_name = os.getenv("DATABASE_NAME")
+    
+    # Validate required environment variables
+    if not all([db_user, db_password, db_host, db_port, db_name]):
+        missing_vars = []
+        if not db_user:
+            missing_vars.append("DATABASE_USER")
+        if not db_password:
+            missing_vars.append("DATABASE_PASSWORD")
+        if not db_host:
+            missing_vars.append("DATABASE_HOST")
+        if not db_port:
+            missing_vars.append("DATABASE_PORT")
+        if not db_name:
+            missing_vars.append("DATABASE_NAME")
+        raise ValueError(
+            f"Missing required environment variables: {', '.join(missing_vars)}"
+        )
+    
     SQLALCHEMY_DATABASE_URL = (
         f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     )
@@ -38,11 +56,14 @@ else:
 
 logger.info(f"Connecting to the database: {SQLALCHEMY_DATABASE_URL}")
 
+# Determine if SQLAlchemy should echo SQL statements
+DB_ECHO = os.getenv("DB_ECHO", "false").lower() == "true"
+
 if IS_TESTING:
     # For SQLite tests, ensure the engine can be shared across threads
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
-        echo=True,
+        echo=DB_ECHO,
         connect_args={"check_same_thread": False},
     )
 else:
@@ -53,6 +74,8 @@ else:
     # Wait for PostgreSQL to be ready
     logger.info("Waiting for PostgreSQL to be available")
     max_retries = 30
+    retry_delay = 1  # seconds
+    
     for i in range(max_retries):
         try:
             conn = psycopg2.connect(
@@ -65,15 +88,19 @@ else:
             conn.close()
             logger.info("PostgreSQL is available")
             break
-        except psycopg2.OperationalError:
+        except psycopg2.OperationalError as e:
             if i < max_retries - 1:
                 logger.info(f"Waiting for PostgreSQL... ({i+1}/{max_retries})")
-                time.sleep(1)
+                time.sleep(retry_delay)
             else:
-                raise Exception("Could not connect to PostgreSQL")
+                logger.error(f"Failed to connect to PostgreSQL after {max_retries} attempts")
+                raise ConnectionError(
+                    f"Could not connect to PostgreSQL at {db_host}:{db_port} "
+                    f"after {max_retries} attempts. Last error: {str(e)}"
+                )
 
     # Create the engine
-    engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=DB_ECHO)
 
     # Create database if it doesn't exist
     if not database_exists(engine.url):

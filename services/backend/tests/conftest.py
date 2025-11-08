@@ -1,3 +1,10 @@
+import os
+import pytest
+import logging
+
+# Set environment variable for testing BEFORE any other imports
+os.environ["TESTING"] = "1"
+
 import Database.Models
 from database import Base, get_db
 from main import app
@@ -6,12 +13,6 @@ from sqlalchemy import create_engine
 from fastapi.testclient import TestClient
 import pkgutil
 import importlib
-import logging
-import pytest
-import os
-
-# Set environment variable for testing BEFORE any other imports
-os.environ["TESTING"] = "1"
 
 
 # Ensure the model package and its submodules load so Base.metadata sees every table
