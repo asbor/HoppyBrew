@@ -57,3 +57,8 @@ class Batches(Base):
         back_populates="batch",
         cascade="all, delete-orphan",
     )
+    batch_ingredients = relationship(
+        "BatchIngredient",
+        back_populates="batch",
+        cascade="all, delete-orphan",
+    )
