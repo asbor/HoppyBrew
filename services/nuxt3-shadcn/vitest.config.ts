@@ -15,6 +15,14 @@ export default defineConfig({
     setupFiles: './test/setupTests.ts',
     coverage: {
       provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      reportsDirectory: './coverage',
+      thresholds: {
+        lines: 60,
+        branches: 60,
+        functions: 60,
+        statements: 60,
+      },
     },
   },
 })

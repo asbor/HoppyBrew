@@ -43,15 +43,59 @@ cd services/nuxt3-shadcn
 yarn install
 ```
 
+### Pre-commit Hooks Setup (Recommended)
+We use pre-commit hooks to automatically check code quality before commits:
+
+```bash
+# Install pre-commit tool
+pip install pre-commit
+
+# Install the git hook scripts
+pre-commit install
+
+# (Optional) Run against all files to test
+pre-commit run --all-files
+```
+
+Pre-commit hooks will automatically:
+- Format Python code with Black and Ruff
+- Lint Python code with Ruff
+- Format and lint JavaScript/TypeScript/Vue with ESLint and Prettier
+- Check for common issues (trailing whitespace, merge conflicts, etc.)
+- Detect secrets and credentials
+
 ### Running Tests
 ```bash
 # Backend tests
 cd services/backend
 pytest -v
 
-# Frontend tests (when available)
+# Backend tests with coverage
+pytest -v --cov=. --cov-report=term --cov-report=html
+
+# Frontend unit tests
 cd services/nuxt3-shadcn
 yarn test
+
+# Frontend tests with coverage
+yarn test:coverage
+```
+
+### Code Quality Checks
+```bash
+# Python formatting
+cd services/backend
+black .
+
+# Python linting
+ruff check .
+
+# Frontend linting
+cd services/nuxt3-shadcn
+yarn lint
+
+# Frontend formatting
+yarn format
 ```
 
 ## Coding Standards

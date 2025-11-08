@@ -54,7 +54,7 @@ jobs:
       - name: Run pytest with verbose output
         env:
           PYTHONPATH: ${{ github.workspace }}/services/backend
-        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml
+        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml --cov=. --cov-report=xml --cov-report=term --cov-fail-under=80
 
       - name: Upload junit report
         if: always()
@@ -62,6 +62,14 @@ jobs:
         with:
           name: backend-pytest-report
           path: services/backend/reports/pytest-unit.xml
+          if-no-files-found: ignore
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: services/backend/coverage.xml
           if-no-files-found: ignore
 
   backend-integration:
@@ -117,3 +125,44 @@ jobs:
 
       - name: Run Nuxt build
         run: yarn run build
+
+  frontend-tests:
+    name: Frontend Unit Tests with Coverage
+    runs-on: ubuntu-latest
+    needs:
+      - backend-unit
+    defaults:
+      run:
+        working-directory: services/nuxt3-shadcn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: services/nuxt3-shadcn/yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run unit tests with coverage
+        run: yarn run test:coverage
+
+      - name: Check coverage thresholds
+        run: |
+          # Extract coverage percentage from vitest output
+          # Vitest outputs coverage in the terminal, we'll use a simple threshold check
+          echo "Coverage threshold check: minimum 60%"
+          # The --coverage.thresholds option in vitest.config.ts will enforce this
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: services/nuxt3-shadcn/coverage/
+          if-no-files-found: ignore
+
