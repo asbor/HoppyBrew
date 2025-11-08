@@ -38,15 +38,19 @@ class YeastBase(BaseModel):
     times_cultured: Optional[int] = None
     max_reuse: Optional[int] = None
     add_to_secondary: Optional[bool] = None
-    stage: Optional[str] = None  # mash/boil/fermentation
-    duration: Optional[int] = None  # duration in minutes
 
     model_config = ConfigDict(
         from_attributes=True, json_schema_extra={"example": YEAST_BASE_EXAMPLE}
     )
 
 
-class RecipeYeast(YeastBase):
+class RecipeYeastBase(YeastBase):
+    """Schema for recipe yeasts with additional fields"""
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
+
+
+class RecipeYeast(RecipeYeastBase):
     id: int
     recipe_id: int
 

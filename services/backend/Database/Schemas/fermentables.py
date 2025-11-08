@@ -62,8 +62,6 @@ class FermentableBase(BaseModel):
     description: Optional[str] = None
     substitutes: Optional[str] = None
     used_in: Optional[str] = None
-    stage: Optional[str] = None  # mash/boil/fermentation
-    duration: Optional[int] = None  # duration in minutes
 
     model_config = ConfigDict(
         from_attributes=True,
@@ -71,7 +69,13 @@ class FermentableBase(BaseModel):
     )
 
 
-class RecipeFermentable(FermentableBase):
+class RecipeFermentableBase(FermentableBase):
+    """Schema for recipe fermentables with additional fields"""
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
+
+
+class RecipeFermentable(RecipeFermentableBase):
     id: int
     recipe_id: int
 

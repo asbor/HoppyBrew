@@ -31,8 +31,6 @@ class HopBase(BaseModel):
     use: Optional[str] = None
     time: Optional[int] = None
     notes: Optional[str] = None
-    stage: Optional[str] = None  # mash/boil/fermentation
-    duration: Optional[int] = None  # duration in minutes
     display_amount: Optional[str] = None
     inventory: Optional[str] = None
     display_time: Optional[str] = None
@@ -40,7 +38,13 @@ class HopBase(BaseModel):
     model_config = ConfigDict(from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE})
 
 
-class RecipeHop(HopBase):
+class RecipeHopBase(HopBase):
+    """Schema for recipe hops with additional fields"""
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
+
+
+class RecipeHop(RecipeHopBase):
     id: int
     recipe_id: int
 

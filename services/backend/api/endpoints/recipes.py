@@ -369,7 +369,7 @@ async def scale_recipe(
 @router.post("/recipes/{recipe_id}/ingredients/hops")
 async def add_hop_to_recipe(
     recipe_id: int,
-    hop: schemas.HopBase,
+    hop: schemas.RecipeHopBase,
     db: Session = Depends(get_db),
 ):
     """Add a hop ingredient to a recipe"""
@@ -388,7 +388,7 @@ async def add_hop_to_recipe(
 async def update_hop_in_recipe(
     recipe_id: int,
     ingredient_id: int,
-    hop: schemas.HopBase,
+    hop: schemas.RecipeHopBase,
     db: Session = Depends(get_db),
 ):
     """Update a hop ingredient in a recipe"""
@@ -431,7 +431,7 @@ async def delete_hop_from_recipe(
 @router.post("/recipes/{recipe_id}/ingredients/fermentables")
 async def add_fermentable_to_recipe(
     recipe_id: int,
-    fermentable: schemas.FermentableBase,
+    fermentable: schemas.RecipeFermentableBase,
     db: Session = Depends(get_db),
 ):
     """Add a fermentable ingredient to a recipe"""
@@ -450,7 +450,7 @@ async def add_fermentable_to_recipe(
 async def update_fermentable_in_recipe(
     recipe_id: int,
     ingredient_id: int,
-    fermentable: schemas.FermentableBase,
+    fermentable: schemas.RecipeFermentableBase,
     db: Session = Depends(get_db),
 ):
     """Update a fermentable ingredient in a recipe"""
@@ -499,7 +499,7 @@ async def delete_fermentable_from_recipe(
 @router.post("/recipes/{recipe_id}/ingredients/yeasts")
 async def add_yeast_to_recipe(
     recipe_id: int,
-    yeast: schemas.YeastBase,
+    yeast: schemas.RecipeYeastBase,
     db: Session = Depends(get_db),
 ):
     """Add a yeast ingredient to a recipe"""
@@ -518,7 +518,7 @@ async def add_yeast_to_recipe(
 async def update_yeast_in_recipe(
     recipe_id: int,
     ingredient_id: int,
-    yeast: schemas.YeastBase,
+    yeast: schemas.RecipeYeastBase,
     db: Session = Depends(get_db),
 ):
     """Update a yeast ingredient in a recipe"""
@@ -567,7 +567,7 @@ async def delete_yeast_from_recipe(
 @router.post("/recipes/{recipe_id}/ingredients/miscs")
 async def add_misc_to_recipe(
     recipe_id: int,
-    misc: schemas.MiscBase,
+    misc: schemas.RecipeMiscBase,
     db: Session = Depends(get_db),
 ):
     """Add a misc ingredient to a recipe"""
@@ -586,7 +586,7 @@ async def add_misc_to_recipe(
 async def update_misc_in_recipe(
     recipe_id: int,
     ingredient_id: int,
-    misc: schemas.MiscBase,
+    misc: schemas.RecipeMiscBase,
     db: Session = Depends(get_db),
 ):
     """Update a misc ingredient in a recipe"""

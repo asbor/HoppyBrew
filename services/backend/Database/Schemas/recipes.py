@@ -2,10 +2,10 @@
 
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
-from .hops import HopBase, RecipeHop
-from .fermentables import FermentableBase, RecipeFermentable
-from .miscs import MiscBase, RecipeMisc
-from .yeasts import YeastBase, RecipeYeast
+from .hops import HopBase, RecipeHopBase, RecipeHop
+from .fermentables import FermentableBase, RecipeFermentableBase, RecipeFermentable
+from .miscs import MiscBase, RecipeMiscBase, RecipeMisc
+from .yeasts import YeastBase, RecipeYeastBase, RecipeYeast
 
 
 RECIPE_SAMPLE_HOP = {
@@ -121,10 +121,10 @@ class RecipeBase(BaseModel):
     display_tertiary_temp: Optional[str] = None
     display_age_temp: Optional[str] = None
     # List of objects for each ingredient type
-    hops: List[HopBase] = Field(default_factory=list)
-    fermentables: List[FermentableBase] = Field(default_factory=list)
-    miscs: List[MiscBase] = Field(default_factory=list)
-    yeasts: List[YeastBase] = Field(default_factory=list)
+    hops: List[RecipeHopBase] = Field(default_factory=list)
+    fermentables: List[RecipeFermentableBase] = Field(default_factory=list)
+    miscs: List[RecipeMiscBase] = Field(default_factory=list)
+    yeasts: List[RecipeYeastBase] = Field(default_factory=list)
 
     model_config = ConfigDict(json_schema_extra={"example": RECIPE_BASE_EXAMPLE})
 

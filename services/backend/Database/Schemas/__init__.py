@@ -42,6 +42,7 @@ from .water_profiles import (
 from .mash_profiles import MashProfileBase, MashStepBase
 from .fermentables import (
     FermentableBase,
+    RecipeFermentableBase,
     RecipeFermentable,
     InventoryFermentableBase,
     InventoryFermentableCreate,
@@ -49,6 +50,7 @@ from .fermentables import (
 )
 from .hops import (
     HopBase,
+    RecipeHopBase,
     RecipeHop,
     InventoryHopBase,
     InventoryHopCreate,
@@ -56,6 +58,7 @@ from .hops import (
 )
 from .miscs import (
     MiscBase,
+    RecipeMiscBase,
     RecipeMisc,
     InventoryMiscBase,
     InventoryMiscCreate,
@@ -63,6 +66,7 @@ from .miscs import (
 )
 from .yeasts import (
     YeastBase,
+    RecipeYeastBase,
     RecipeYeast,
     InventoryYeastBase,
     InventoryYeastCreate,
@@ -131,21 +135,25 @@ __all__ = [
     "MashProfileBase",
     "MashStepBase",
     "FermentableBase",
+    "RecipeFermentableBase",
     "RecipeFermentable",
     "InventoryFermentableBase",
     "InventoryFermentableCreate",
     "InventoryFermentable",
     "HopBase",
+    "RecipeHopBase",
     "RecipeHop",
     "InventoryHopBase",
     "InventoryHopCreate",
     "InventoryHop",
     "MiscBase",
+    "RecipeMiscBase",
     "RecipeMisc",
     "InventoryMiscBase",
     "InventoryMiscCreate",
     "InventoryMisc",
     "YeastBase",
+    "RecipeYeastBase",
     "RecipeYeast",
     "InventoryYeastBase",
     "InventoryYeastCreate",
