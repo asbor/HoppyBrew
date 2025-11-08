@@ -22,6 +22,9 @@
       </CardHeader>
     </Card>
 
+    <!-- Brew Day Checklist -->
+    <BrewDayChecklist :batch-id="batch.id" />
+
     <!-- Brew Sheet Overview -->
     <div class="grid lg:grid-cols-3 gap-6">
       <!-- Recipe Summary -->
@@ -419,6 +422,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Icon } from '#components'
+import BrewDayChecklist from '@/components/BrewDayChecklist.vue'
 
 const props = defineProps<{
   batch: any
