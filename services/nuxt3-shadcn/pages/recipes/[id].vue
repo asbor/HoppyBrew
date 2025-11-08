@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { 
   Dialog, 
   DialogContent, 
@@ -35,13 +36,19 @@ const batchForm = ref<Partial<BatchCreate>>({
 
 // Load recipe on mount
 onMounted(async () => {
-  const result = await fetchOne(recipeId)
-  if (result.data.value) {
-    recipe.value = result.data.value
-    // Pre-fill batch form with recipe defaults
-    batchForm.value.batch_name = generateBatchName(recipe.value.name)
-    batchForm.value.batch_size = recipe.value.batch_size
-    batchForm.value.brewer = recipe.value.brewer || ''
+  try {
+    const result = await fetchOne(recipeId)
+    if (result.data.value) {
+      recipe.value = result.data.value
+      // Pre-fill batch form with recipe defaults
+      batchForm.value.batch_name = generateBatchName(recipe.value.name)
+      batchForm.value.batch_size = recipe.value.batch_size
+      batchForm.value.brewer = recipe.value.brewer || ''
+    }
+    // If there's an error, it will be in result.error and handled by the template
+  } catch (e) {
+    // Catch any unexpected errors
+    console.error('Error loading recipe:', e)
   }
 })
 
@@ -117,7 +124,20 @@ async function handleStartBrew() {
 
     <!-- Error State -->
     <div v-else-if="recipeError" class="text-center py-12">
-      <p class="text-destructive">Error loading recipe: {{ recipeError }}</p>
+      <Card>
+        <CardHeader>
+          <CardTitle class="text-destructive">Error Loading Recipe</CardTitle>
+          <CardDescription>{{ recipeError }}</CardDescription>
+        </CardHeader>
+        <CardFooter class="justify-center gap-2">
+          <Button @click="router.back()" variant="outline">
+            Go Back
+          </Button>
+          <Button @click="router.push('/recipes')">
+            Back to Recipes
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
 
     <!-- Recipe Edit Form -->
