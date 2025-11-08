@@ -629,7 +629,7 @@ class HopSubstitutionResponse(BaseModel):
 async def calculate_hop_schedule(request: HopScheduleRequest) -> HopScheduleResponse:
     """
     Calculate IBU contributions and utilization for each hop addition in a schedule.
-    
+
     This endpoint provides detailed analysis of hop additions including:
     - Individual IBU contribution per hop
     - Hop utilization percentage
@@ -682,7 +682,7 @@ async def get_hop_substitutions(
 ) -> HopSubstitutionResponse:
     """
     Suggest hop substitutions based on hop characteristics.
-    
+
     Returns a list of alternative hops that can substitute for the requested variety,
     with similarity scores and detailed characteristics.
     """
