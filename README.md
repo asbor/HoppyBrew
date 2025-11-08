@@ -77,6 +77,7 @@ The project, undertaken as part of the Software Engineering course at the Facult
 - **Recipe Management**: Create, edit, and manage brewing recipes with detailed ingredient tracking
 - **Batch Tracking**: Monitor active brewing batches through all stages of production
 - **Inventory Management**: Track hops, fermentables, yeasts, and miscellaneous ingredients
+- **Automated Backups**: Schedule regular database backups with restore functionality
 - **HomeAssistant Integration**: Monitor your brewing processes through HomeAssistant dashboards
 - **Self-Hosted**: Run on your own infrastructure with full control over your data
 
@@ -584,6 +585,25 @@ sensor:
     resource: http://your-hoppybrew-host:8000/api/homeassistant/summary
     value_template: "{{ value_json.active_batches }}"
 ```
+
+### Automated Backup System
+
+HoppyBrew includes an automated backup system for protecting your brewing data. See [documents/BACKUP_SYSTEM.md](documents/BACKUP_SYSTEM.md) for complete documentation.
+
+Key features:
+- Scheduled automatic backups (configurable via cron)
+- Manual backup creation via API
+- Database restore functionality
+- Automatic cleanup of old backups
+- Compressed storage to save space
+
+Quick configuration in `.env`:
+```bash
+BACKUP_ENABLED=true
+BACKUP_SCHEDULE=0 2 * * *  # Daily at 2 AM
+BACKUP_RETENTION_DAYS=30
+```
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
