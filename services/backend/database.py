@@ -30,7 +30,7 @@ else:
     db_host = os.getenv("DATABASE_HOST")
     db_port = os.getenv("DATABASE_PORT")
     db_name = os.getenv("DATABASE_NAME")
-    
+
     # Validate required environment variables
     if not all([db_user, db_password, db_host, db_port, db_name]):
         missing_vars = []
@@ -47,7 +47,7 @@ else:
         raise ValueError(
             f"Missing required environment variables: {', '.join(missing_vars)}"
         )
-    
+
     SQLALCHEMY_DATABASE_URL = (
         f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     )
@@ -75,7 +75,7 @@ else:
     logger.info("Waiting for PostgreSQL to be available")
     max_retries = 30
     retry_delay = 1  # seconds
-    
+
     for i in range(max_retries):
         try:
             conn = psycopg2.connect(
@@ -93,7 +93,10 @@ else:
                 logger.info(f"Waiting for PostgreSQL... ({i+1}/{max_retries})")
                 time.sleep(retry_delay)
             else:
-                logger.error(f"Failed to connect to PostgreSQL after {max_retries} attempts")
+                logger.error(
+                    f"Failed to connect to PostgreSQL after {max_retries} "
+                    "attempts"
+                )
                 raise ConnectionError(
                     f"Could not connect to PostgreSQL at {db_host}:{db_port} "
                     f"after {max_retries} attempts. Last error: {str(e)}"

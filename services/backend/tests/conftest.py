@@ -5,14 +5,14 @@ import logging
 # Set environment variable for testing BEFORE any other imports
 os.environ["TESTING"] = "1"
 
-import Database.Models
-from database import Base, get_db
-from main import app
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
-from fastapi.testclient import TestClient
-import pkgutil
-import importlib
+import Database.Models  # noqa: E402
+from database import Base, get_db  # noqa: E402
+from main import app  # noqa: E402
+from sqlalchemy.orm import sessionmaker  # noqa: E402
+from sqlalchemy import create_engine  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+import pkgutil  # noqa: E402
+import importlib  # noqa: E402
 
 
 # Ensure the model package and its submodules load so Base.metadata sees every table
