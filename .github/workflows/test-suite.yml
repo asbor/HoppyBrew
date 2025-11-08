@@ -51,10 +51,28 @@ jobs:
       - name: Prepare reports directory
         run: mkdir -p reports
 
-      - name: Run pytest with verbose output
+      - name: Run pytest with coverage
         env:
           PYTHONPATH: ${{ github.workspace }}/services/backend
-        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml
+        run: |
+          pytest -vv --color=yes \
+            --cov=. \
+            --cov-report=xml:reports/coverage.xml \
+            --cov-report=html:reports/htmlcov \
+            --cov-report=term \
+            --junitxml=reports/pytest-unit.xml
+
+      - name: Check coverage threshold
+        run: |
+          coverage_percent=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('reports/coverage.xml'); root = tree.getroot(); print(round(float(root.attrib['line-rate']) * 100, 2))")
+          echo "Current coverage: ${coverage_percent}%"
+          
+          if (( $(echo "$coverage_percent < 80" | bc -l) )); then
+            echo "❌ Coverage ${coverage_percent}% is below the 80% threshold"
+            exit 1
+          else
+            echo "✅ Coverage ${coverage_percent}% meets the 80% threshold"
+          fi
 
       - name: Upload junit report
         if: always()
@@ -62,6 +80,16 @@ jobs:
         with:
           name: backend-pytest-report
           path: services/backend/reports/pytest-unit.xml
+          if-no-files-found: ignore
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: |
+            services/backend/reports/coverage.xml
+            services/backend/reports/htmlcov
           if-no-files-found: ignore
 
   backend-integration:
