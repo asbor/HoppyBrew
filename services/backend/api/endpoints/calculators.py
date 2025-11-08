@@ -4,7 +4,7 @@ API endpoints for brewing calculators.
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+from typing import Optional, List
 
 from modules.brewing_calculations import (
     calculate_abv,
@@ -432,3 +432,453 @@ async def calc_water_chemistry(
         request.target_ph,
     )
     return WaterChemistryResponse(**result)
+
+
+# Hop Schedule Optimizer Models
+
+
+class HopAddition(BaseModel):
+    name: str = Field(..., description="Hop variety name")
+    alpha_acid: float = Field(..., ge=0, description="Alpha acid percentage")
+    amount_oz: float = Field(..., ge=0, description="Hop amount in ounces")
+    time_min: float = Field(..., ge=0, description="Boil time in minutes")
+    type: Optional[str] = Field(None, description="Hop type (Bittering, Aroma, etc.)")
+    form: Optional[str] = Field(None, description="Hop form (Pellet, Whole, etc.)")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "Cascade",
+                "alpha_acid": 5.5,
+                "amount_oz": 1.0,
+                "time_min": 60.0,
+                "type": "Aroma",
+                "form": "Pellet",
+            }
+        }
+    )
+
+
+class HopScheduleRequest(BaseModel):
+    hops: List[HopAddition] = Field(..., description="List of hop additions")
+    batch_size_gal: float = Field(..., gt=0, description="Batch size in gallons")
+    boil_gravity: float = Field(..., gt=0, description="Boil gravity (e.g., 1.050)")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "hops": [
+                    {
+                        "name": "Magnum",
+                        "alpha_acid": 12.0,
+                        "amount_oz": 1.0,
+                        "time_min": 60.0,
+                        "type": "Bittering",
+                        "form": "Pellet",
+                    },
+                    {
+                        "name": "Cascade",
+                        "alpha_acid": 5.5,
+                        "amount_oz": 1.0,
+                        "time_min": 15.0,
+                        "type": "Aroma",
+                        "form": "Pellet",
+                    },
+                ],
+                "batch_size_gal": 5.0,
+                "boil_gravity": 1.050,
+            }
+        }
+    )
+
+
+class HopContribution(BaseModel):
+    name: str = Field(..., description="Hop variety name")
+    time_min: float = Field(..., description="Boil time in minutes")
+    amount_oz: float = Field(..., description="Amount in ounces")
+    ibu: float = Field(..., description="IBU contribution")
+    utilization: float = Field(..., description="Hop utilization percentage")
+    type: Optional[str] = Field(None, description="Hop type")
+    form: Optional[str] = Field(None, description="Hop form")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "Cascade",
+                "time_min": 60.0,
+                "amount_oz": 1.0,
+                "ibu": 27.5,
+                "utilization": 28.5,
+                "type": "Aroma",
+                "form": "Pellet",
+            }
+        }
+    )
+
+
+class HopScheduleResponse(BaseModel):
+    total_ibu: float = Field(..., description="Total IBU from all additions")
+    hop_contributions: List[HopContribution] = Field(
+        ..., description="Individual hop contributions"
+    )
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "total_ibu": 45.3,
+                "hop_contributions": [
+                    {
+                        "name": "Magnum",
+                        "time_min": 60.0,
+                        "amount_oz": 1.0,
+                        "ibu": 37.8,
+                        "utilization": 30.1,
+                        "type": "Bittering",
+                        "form": "Pellet",
+                    },
+                    {
+                        "name": "Cascade",
+                        "time_min": 15.0,
+                        "amount_oz": 1.0,
+                        "ibu": 7.5,
+                        "utilization": 10.5,
+                        "type": "Aroma",
+                        "form": "Pellet",
+                    },
+                ],
+            }
+        }
+    )
+
+
+class HopSubstitution(BaseModel):
+    name: str = Field(..., description="Substitute hop variety name")
+    alpha_acid_range: str = Field(
+        ..., description="Typical alpha acid range (e.g., '4-6%')"
+    )
+    similarity_score: float = Field(
+        ..., ge=0, le=100, description="Similarity score (0-100)"
+    )
+    characteristics: str = Field(..., description="Flavor and aroma characteristics")
+    origin: Optional[str] = Field(None, description="Primary origin")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "Centennial",
+                "alpha_acid_range": "9-12%",
+                "similarity_score": 85.0,
+                "characteristics": "Citrus, floral, pine notes",
+                "origin": "USA",
+            }
+        }
+    )
+
+
+class HopSubstitutionRequest(BaseModel):
+    hop_name: str = Field(..., description="Hop variety to find substitutes for")
+    alpha_acid: Optional[float] = Field(
+        None, description="Alpha acid percentage (optional)"
+    )
+
+    model_config = ConfigDict(
+        json_schema_extra={"example": {"hop_name": "Cascade", "alpha_acid": 5.5}}
+    )
+
+
+class HopSubstitutionResponse(BaseModel):
+    original_hop: str = Field(..., description="Original hop variety")
+    substitutes: List[HopSubstitution] = Field(
+        ..., description="List of substitute hops"
+    )
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "original_hop": "Cascade",
+                "substitutes": [
+                    {
+                        "name": "Centennial",
+                        "alpha_acid_range": "9-12%",
+                        "similarity_score": 85.0,
+                        "characteristics": "Citrus, floral, pine notes",
+                        "origin": "USA",
+                    },
+                    {
+                        "name": "Amarillo",
+                        "alpha_acid_range": "8-11%",
+                        "similarity_score": 78.0,
+                        "characteristics": "Orange, grapefruit, floral",
+                        "origin": "USA",
+                    },
+                ],
+            }
+        }
+    )
+
+
+# Hop Schedule Optimizer Endpoints
+
+
+@router.post(
+    "/calculators/hop-schedule",
+    response_model=HopScheduleResponse,
+    summary="Calculate hop schedule",
+    response_description="IBU contributions and utilization for hop schedule",
+)
+async def calculate_hop_schedule(request: HopScheduleRequest) -> HopScheduleResponse:
+    """
+    Calculate IBU contributions and utilization for each hop addition in a schedule.
+    
+    This endpoint provides detailed analysis of hop additions including:
+    - Individual IBU contribution per hop
+    - Hop utilization percentage
+    - Total IBU for the recipe
+    """
+    contributions = []
+    total_ibu = 0.0
+
+    for hop in request.hops:
+        # Calculate IBU for this addition
+        ibu = calculate_ibu_tinseth(
+            hop.alpha_acid,
+            hop.amount_oz,
+            hop.time_min,
+            request.batch_size_gal,
+            request.boil_gravity,
+        )
+
+        # Calculate utilization percentage
+        gravity_factor = 1.65 * (0.000125 ** (request.boil_gravity - 1.0))
+        time_factor = (1 - (2.71828 ** (-0.04 * hop.time_min))) / 4.15
+        utilization = (gravity_factor * time_factor) * 100
+
+        contributions.append(
+            HopContribution(
+                name=hop.name,
+                time_min=hop.time_min,
+                amount_oz=hop.amount_oz,
+                ibu=round(ibu, 1),
+                utilization=round(utilization, 1),
+                type=hop.type,
+                form=hop.form,
+            )
+        )
+        total_ibu += ibu
+
+    return HopScheduleResponse(
+        total_ibu=round(total_ibu, 1), hop_contributions=contributions
+    )
+
+
+@router.post(
+    "/calculators/hop-substitutions",
+    response_model=HopSubstitutionResponse,
+    summary="Get hop substitutions",
+    response_description="List of substitute hops with similarity scores",
+)
+async def get_hop_substitutions(
+    request: HopSubstitutionRequest,
+) -> HopSubstitutionResponse:
+    """
+    Suggest hop substitutions based on hop characteristics.
+    
+    Returns a list of alternative hops that can substitute for the requested variety,
+    with similarity scores and detailed characteristics.
+    """
+    # Hop substitution database with characteristics
+    hop_database = {
+        "Cascade": {
+            "alpha_range": "4.5-7%",
+            "characteristics": "Citrus, grapefruit, floral",
+            "origin": "USA",
+            "substitutes": {
+                "Centennial": 85,
+                "Amarillo": 78,
+                "Citra": 72,
+                "Columbus": 65,
+            },
+        },
+        "Centennial": {
+            "alpha_range": "9-12%",
+            "characteristics": "Citrus, floral, pine",
+            "origin": "USA",
+            "substitutes": {"Cascade": 85, "Columbus": 80, "Chinook": 75, "Citra": 70},
+        },
+        "Citra": {
+            "alpha_range": "11-13%",
+            "characteristics": "Tropical fruit, citrus, passion fruit",
+            "origin": "USA",
+            "substitutes": {
+                "Mosaic": 88,
+                "Amarillo": 75,
+                "Simcoe": 72,
+                "Cascade": 68,
+            },
+        },
+        "Mosaic": {
+            "alpha_range": "11.5-13.5%",
+            "characteristics": "Tropical fruit, berry, floral",
+            "origin": "USA",
+            "substitutes": {"Citra": 88, "Simcoe": 80, "Amarillo": 75, "Galaxy": 70},
+        },
+        "Simcoe": {
+            "alpha_range": "12-14%",
+            "characteristics": "Pine, citrus, earthy",
+            "origin": "USA",
+            "substitutes": {
+                "Columbus": 82,
+                "Amarillo": 78,
+                "Mosaic": 75,
+                "Chinook": 72,
+            },
+        },
+        "Amarillo": {
+            "alpha_range": "8-11%",
+            "characteristics": "Orange, grapefruit, floral",
+            "origin": "USA",
+            "substitutes": {"Cascade": 80, "Citra": 78, "Centennial": 75, "Simcoe": 70},
+        },
+        "Columbus": {
+            "alpha_range": "14-18%",
+            "characteristics": "Pungent, earthy, spicy",
+            "origin": "USA",
+            "substitutes": {
+                "Chinook": 85,
+                "Magnum": 80,
+                "Simcoe": 78,
+                "Centennial": 72,
+            },
+        },
+        "Chinook": {
+            "alpha_range": "12-14%",
+            "characteristics": "Pine, spicy, grapefruit",
+            "origin": "USA",
+            "substitutes": {
+                "Columbus": 85,
+                "Nugget": 80,
+                "Centennial": 75,
+                "Simcoe": 70,
+            },
+        },
+        "Magnum": {
+            "alpha_range": "12-17%",
+            "characteristics": "Clean bittering, mild aroma",
+            "origin": "Germany/USA",
+            "substitutes": {
+                "Columbus": 82,
+                "Warrior": 80,
+                "Nugget": 78,
+                "Chinook": 75,
+            },
+        },
+        "Saaz": {
+            "alpha_range": "3-4.5%",
+            "characteristics": "Earthy, herbal, spicy",
+            "origin": "Czech Republic",
+            "substitutes": {
+                "Sterling": 85,
+                "Liberty": 82,
+                "Tettnanger": 78,
+                "Hallertau": 75,
+            },
+        },
+        "Hallertau": {
+            "alpha_range": "3.5-5.5%",
+            "characteristics": "Mild, pleasant, slightly spicy",
+            "origin": "Germany",
+            "substitutes": {
+                "Tettnanger": 88,
+                "Liberty": 85,
+                "Crystal": 80,
+                "Saaz": 75,
+            },
+        },
+        "Tettnanger": {
+            "alpha_range": "3.5-5.5%",
+            "characteristics": "Floral, herbal, spicy",
+            "origin": "Germany",
+            "substitutes": {
+                "Hallertau": 88,
+                "Saaz": 82,
+                "Liberty": 80,
+                "Sterling": 78,
+            },
+        },
+        "Galaxy": {
+            "alpha_range": "13-15%",
+            "characteristics": "Passion fruit, peach, citrus",
+            "origin": "Australia",
+            "substitutes": {"Citra": 75, "Mosaic": 72, "El Dorado": 70, "Azacca": 68},
+        },
+        "Nelson Sauvin": {
+            "alpha_range": "12-14%",
+            "characteristics": "White wine, gooseberry, grape",
+            "origin": "New Zealand",
+            "substitutes": {
+                "Motueka": 78,
+                "Galaxy": 72,
+                "Citra": 68,
+                "Amarillo": 65,
+            },
+        },
+        "Fuggle": {
+            "alpha_range": "4-5.5%",
+            "characteristics": "Earthy, woody, mild",
+            "origin": "UK",
+            "substitutes": {
+                "Willamette": 88,
+                "Styrian Golding": 85,
+                "East Kent Golding": 82,
+            },
+        },
+        "East Kent Golding": {
+            "alpha_range": "4.5-6.5%",
+            "characteristics": "Earthy, floral, honey",
+            "origin": "UK",
+            "substitutes": {
+                "Fuggle": 85,
+                "Willamette": 82,
+                "Styrian Golding": 80,
+                "Progress": 75,
+            },
+        },
+    }
+
+    hop_name_normalized = request.hop_name.strip()
+
+    # Try to find exact match (case-insensitive)
+    hop_info = None
+    for key, value in hop_database.items():
+        if key.lower() == hop_name_normalized.lower():
+            hop_info = value
+            hop_name_normalized = key
+            break
+
+    if not hop_info:
+        # Return empty substitutes if hop not found
+        return HopSubstitutionResponse(
+            original_hop=request.hop_name, substitutes=[]
+        )
+
+    # Build substitution list
+    substitutes = []
+    for sub_name, similarity in hop_info["substitutes"].items():
+        if sub_name in hop_database:
+            sub_info = hop_database[sub_name]
+            substitutes.append(
+                HopSubstitution(
+                    name=sub_name,
+                    alpha_acid_range=sub_info["alpha_range"],
+                    similarity_score=float(similarity),
+                    characteristics=sub_info["characteristics"],
+                    origin=sub_info["origin"],
+                )
+            )
+
+    # Sort by similarity score (descending)
+    substitutes.sort(key=lambda x: x.similarity_score, reverse=True)
+
+    return HopSubstitutionResponse(
+        original_hop=hop_name_normalized, substitutes=substitutes
+    )
