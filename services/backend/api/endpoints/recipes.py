@@ -1,6 +1,6 @@
 # api/endpoints/recipes.py
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from database import get_db
@@ -720,3 +720,320 @@ async def get_recipe_versions(
     )
 
     return versions
+
+
+# BeerXML Import/Export Endpoints
+
+
+@router.post("/recipes/import/beerxml")
+async def import_beerxml_recipes(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """
+    Import recipes from BeerXML format.
+    
+    This endpoint accepts a BeerXML file and imports all recipes found within it.
+    The import process validates the XML structure and creates new recipe records
+    with all associated ingredients.
+    
+    Returns a summary of the import operation including success count and any errors.
+    """
+    from modules.beerxml_parser import parse_beerxml, BeerXMLParseError, validate_beerxml
+    from pydantic import BaseModel
+    
+    class BeerXMLImportResponse(BaseModel):
+        message: str
+        imported_count: int
+        skipped_count: int
+        errors: List[str]
+        recipe_ids: List[int]
+    
+    # Read file content
+    try:
+        content = await file.read()
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Failed to read uploaded file: {str(e)}"
+        )
+    
+    # Validate XML first
+    validation = validate_beerxml(content)
+    if not validation["valid"]:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid BeerXML: {', '.join(validation['errors'])}"
+        )
+    
+    # Parse recipes
+    try:
+        beerxml_recipes = parse_beerxml(content)
+    except BeerXMLParseError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Failed to parse BeerXML: {str(e)}"
+        )
+    
+    imported_count = 0
+    skipped_count = 0
+    errors = []
+    recipe_ids = []
+    
+    for beerxml_recipe in beerxml_recipes:
+        try:
+            # Create recipe record
+            db_recipe = models.Recipes(
+                name=beerxml_recipe.name,
+                version=beerxml_recipe.version or 1,
+                type=beerxml_recipe.type,
+                brewer=beerxml_recipe.brewer,
+                asst_brewer=beerxml_recipe.asst_brewer,
+                batch_size=beerxml_recipe.batch_size,
+                boil_size=beerxml_recipe.boil_size,
+                boil_time=beerxml_recipe.boil_time,
+                efficiency=beerxml_recipe.efficiency,
+                notes=beerxml_recipe.notes,
+                taste_notes=beerxml_recipe.taste_notes,
+                taste_rating=beerxml_recipe.taste_rating,
+                og=beerxml_recipe.og,
+                fg=beerxml_recipe.fg,
+                fermentation_stages=beerxml_recipe.fermentation_stages,
+                primary_age=beerxml_recipe.primary_age,
+                primary_temp=beerxml_recipe.primary_temp,
+                secondary_age=beerxml_recipe.secondary_age,
+                secondary_temp=beerxml_recipe.secondary_temp,
+                tertiary_age=beerxml_recipe.tertiary_age,
+                age=beerxml_recipe.age,
+                age_temp=beerxml_recipe.age_temp,
+                carbonation_used=beerxml_recipe.carbonation_used,
+                est_og=beerxml_recipe.est_og,
+                est_fg=beerxml_recipe.est_fg,
+                est_color=beerxml_recipe.est_color,
+                ibu=beerxml_recipe.ibu,
+                ibu_method=beerxml_recipe.ibu_method,
+                est_abv=beerxml_recipe.est_abv,
+                abv=beerxml_recipe.abv,
+                actual_efficiency=beerxml_recipe.actual_efficiency,
+                calories=beerxml_recipe.calories,
+                display_batch_size=beerxml_recipe.display_batch_size,
+                display_boil_size=beerxml_recipe.display_boil_size,
+                display_og=beerxml_recipe.display_og,
+                display_fg=beerxml_recipe.display_fg,
+                display_primary_temp=beerxml_recipe.display_primary_temp,
+                display_secondary_temp=beerxml_recipe.display_secondary_temp,
+                display_tertiary_temp=beerxml_recipe.display_tertiary_temp,
+                display_age_temp=beerxml_recipe.display_age_temp,
+            )
+            
+            db.add(db_recipe)
+            db.flush()  # Get the recipe ID
+            
+            # Add hops
+            for hop in beerxml_recipe.hops:
+                db_hop = models.RecipeHop(
+                    recipe_id=db_recipe.id,
+                    name=hop.name,
+                    version=hop.version,
+                    alpha=hop.alpha,
+                    amount=hop.amount,
+                    use=hop.use,
+                    time=hop.time,
+                    notes=hop.notes,
+                    type=hop.type,
+                    form=hop.form,
+                    beta=hop.beta,
+                    hsi=hop.hsi,
+                    origin=hop.origin,
+                    substitutes=hop.substitutes,
+                    humulene=hop.humulene,
+                    caryophyllene=hop.caryophyllene,
+                    cohumulone=hop.cohumulone,
+                    myrcene=hop.myrcene,
+                    display_amount=hop.display_amount,
+                    inventory=hop.inventory,
+                    display_time=hop.display_time,
+                )
+                db.add(db_hop)
+            
+            # Add fermentables
+            for ferm in beerxml_recipe.fermentables:
+                db_ferm = models.RecipeFermentable(
+                    recipe_id=db_recipe.id,
+                    name=ferm.name,
+                    version=ferm.version,
+                    type=ferm.type,
+                    amount=ferm.amount,
+                    yield_=ferm.yield_,
+                    color=ferm.color,
+                    add_after_boil=ferm.add_after_boil,
+                    origin=ferm.origin,
+                    supplier=ferm.supplier,
+                    notes=ferm.notes,
+                    coarse_fine_diff=ferm.coarse_fine_diff,
+                    moisture=ferm.moisture,
+                    diastatic_power=ferm.diastatic_power,
+                    protein=ferm.protein,
+                    max_in_batch=ferm.max_in_batch,
+                    recommend_mash=ferm.recommend_mash,
+                    ibu_gal_per_lb=ferm.ibu_gal_per_lb,
+                    display_amount=ferm.display_amount,
+                    potential=ferm.potential,
+                    inventory=ferm.inventory,
+                    display_color=ferm.display_color,
+                )
+                db.add(db_ferm)
+            
+            # Add yeasts
+            for yeast in beerxml_recipe.yeasts:
+                db_yeast = models.RecipeYeast(
+                    recipe_id=db_recipe.id,
+                    name=yeast.name,
+                    version=yeast.version,
+                    type=yeast.type,
+                    form=yeast.form,
+                    amount=yeast.amount,
+                    amount_is_weight=yeast.amount_is_weight,
+                    laboratory=yeast.laboratory,
+                    product_id=yeast.product_id,
+                    min_temperature=yeast.min_temperature,
+                    max_temperature=yeast.max_temperature,
+                    flocculation=yeast.flocculation,
+                    attenuation=yeast.attenuation,
+                    notes=yeast.notes,
+                    best_for=yeast.best_for,
+                    max_reuse=yeast.max_reuse,
+                    times_cultured=yeast.times_cultured,
+                    add_to_secondary=yeast.add_to_secondary,
+                    display_amount=yeast.display_amount,
+                    disp_min_temp=yeast.disp_min_temp,
+                    disp_max_temp=yeast.disp_max_temp,
+                    inventory=yeast.inventory,
+                    culture_date=yeast.culture_date,
+                )
+                db.add(db_yeast)
+            
+            # Add miscs
+            for misc in beerxml_recipe.miscs:
+                db_misc = models.RecipeMisc(
+                    recipe_id=db_recipe.id,
+                    name=misc.name,
+                    version=misc.version,
+                    type=misc.type,
+                    use=misc.use,
+                    amount=misc.amount,
+                    time=misc.time,
+                    amount_is_weight=misc.amount_is_weight,
+                    use_for=misc.use_for,
+                    notes=misc.notes,
+                    display_amount=misc.display_amount,
+                    inventory=misc.inventory,
+                    display_time=misc.display_time,
+                    batch_size=misc.batch_size,
+                )
+                db.add(db_misc)
+            
+            db.commit()
+            recipe_ids.append(db_recipe.id)
+            imported_count += 1
+            
+        except Exception as e:
+            db.rollback()
+            skipped_count += 1
+            errors.append(f"Failed to import recipe '{beerxml_recipe.name}': {str(e)}")
+    
+    return BeerXMLImportResponse(
+        message=f"Import completed: {imported_count} recipes imported, {skipped_count} skipped",
+        imported_count=imported_count,
+        skipped_count=skipped_count,
+        errors=errors,
+        recipe_ids=recipe_ids,
+    )
+
+
+@router.get("/recipes/{recipe_id}/export/beerxml")
+async def export_recipe_beerxml(
+    recipe_id: int,
+    db: Session = Depends(get_db),
+):
+    """
+    Export a single recipe to BeerXML format.
+    
+    Returns the recipe in BeerXML format as a downloadable file.
+    """
+    from modules.beerxml_exporter import export_recipe_to_beerxml, BeerXMLExportError
+    from fastapi.responses import Response
+    
+    # Fetch recipe with all relationships
+    recipe = _fetch_recipe(db, recipe_id)
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    try:
+        xml_content = export_recipe_to_beerxml(recipe, pretty_print=True)
+    except BeerXMLExportError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to export recipe: {str(e)}"
+        )
+    
+    # Generate filename
+    safe_name = "".join(c for c in recipe.name if c.isalnum() or c in (' ', '-', '_')).strip()
+    filename = f"{safe_name or 'recipe'}_{recipe_id}.xml"
+    
+    return Response(
+        content=xml_content.encode('utf-8'),
+        media_type="application/xml",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+
+
+@router.post("/recipes/export/beerxml")
+async def export_multiple_recipes_beerxml(
+    recipe_ids: List[int],
+    db: Session = Depends(get_db),
+):
+    """
+    Export multiple recipes to a single BeerXML file.
+    
+    Accepts a list of recipe IDs and returns them in a single BeerXML file.
+    """
+    from modules.beerxml_exporter import export_to_beerxml, BeerXMLExportError
+    from fastapi.responses import Response
+    
+    if not recipe_ids:
+        raise HTTPException(
+            status_code=400,
+            detail="No recipe IDs provided"
+        )
+    
+    # Fetch all recipes
+    recipes = []
+    for recipe_id in recipe_ids:
+        recipe = _fetch_recipe(db, recipe_id)
+        if recipe:
+            recipes.append(recipe)
+    
+    if not recipes:
+        raise HTTPException(
+            status_code=404,
+            detail="No recipes found with the provided IDs"
+        )
+    
+    try:
+        xml_content = export_to_beerxml(recipes, pretty_print=True)
+    except BeerXMLExportError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to export recipes: {str(e)}"
+        )
+    
+    return Response(
+        content=xml_content.encode('utf-8'),
+        media_type="application/xml",
+        headers={
+            "Content-Disposition": "attachment; filename=recipes_export.xml"
+        }
+    )
