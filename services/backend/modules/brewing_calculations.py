@@ -66,11 +66,11 @@ def calculate_attenuation(original_gravity: Number, final_gravity: Number) -> fl
     Calculate apparent attenuation percentage from original and final gravity readings.
 
     Formula: Attenuation = ((OG - FG) / (OG - 1.0)) * 100
-    
+
     Args:
         original_gravity: Original gravity reading (e.g., 1.050)
         final_gravity: Final gravity reading (e.g., 1.010)
-    
+
     Returns:
         Attenuation percentage (e.g., 80.0 for 80% attenuation)
     """
@@ -79,7 +79,7 @@ def calculate_attenuation(original_gravity: Number, final_gravity: Number) -> fl
 
     if og <= fg:
         raise ValueError("original_gravity must be greater than final_gravity.")
-    
+
     if og <= 1.0:
         raise ValueError("original_gravity must be greater than 1.0")
 
@@ -137,7 +137,9 @@ def calculate_srm_morey(
         batch_size_gal: Batch size in gallons.
     """
     color = _coerce_positive(grain_color, "grain_color", allow_zero=True)
-    grain_weight = _coerce_positive(grain_weight_lbs, "grain_weight_lbs", allow_zero=True)
+    grain_weight = _coerce_positive(
+        grain_weight_lbs, "grain_weight_lbs", allow_zero=True
+    )
     batch_volume = _coerce_positive(batch_size_gal, "batch_size_gal")
 
     if color == 0 or grain_weight == 0:
@@ -208,10 +210,10 @@ def calculate_priming_sugar(
 
     # Sugar conversion factors (grams per liter per CO2 volume)
     sugar_factors = {
-        "table": 4.0,   # Table sugar (sucrose)
-        "corn": 3.6,    # Corn sugar (dextrose)
-        "dme": 4.6,     # Dry malt extract
-        "honey": 4.7,   # Honey
+        "table": 4.0,  # Table sugar (sucrose)
+        "corn": 3.6,  # Corn sugar (dextrose)
+        "dme": 4.6,  # Dry malt extract
+        "honey": 4.7,  # Honey
     }
 
     if sugar_type not in sugar_factors:
@@ -257,7 +259,9 @@ def calculate_yeast_starter(
     # Calculate cells needed (default pitch rate: 0.75M cells/mL/°P for ales)
     if target_cell_count is None:
         pitch_rate = 0.75  # million cells per mL per degree Plato
-        cells_needed = pitch_rate * (volume_liters * 1000) * gravity_plato / 1000  # in billions
+        cells_needed = (
+            pitch_rate * (volume_liters * 1000) * gravity_plato / 1000
+        )  # in billions
     else:
         cells_needed = _coerce_positive(target_cell_count, "target_cell_count")
 
@@ -269,7 +273,9 @@ def calculate_yeast_starter(
     packages_needed = math.ceil(cells_needed / cells_per_package)
 
     # Estimate starter size needed (rough approximation: 1L starter per 100B cells growth)
-    starter_size = max(1000, int((cells_needed - (packages_needed * cells_per_package)) * 10))
+    starter_size = max(
+        1000, int((cells_needed - (packages_needed * cells_per_package)) * 10)
+    )
 
     return {
         "cells_needed_billions": cells_needed,
@@ -349,10 +355,9 @@ def calculate_carbonation(
 
     # Simplified pressure calculation (empirical formula)
     # PSI = (-16.6999 - 0.0101059 * T + 0.00116512 * T^2) + (0.173354 * T + 4.24267) * V
-    psi = (
-        (-16.6999 - 0.0101059 * temp_f + 0.00116512 * temp_f * temp_f)
-        + (0.173354 * temp_f + 4.24267) * volumes
-    )
+    psi = (-16.6999 - 0.0101059 * temp_f + 0.00116512 * temp_f * temp_f) + (
+        0.173354 * temp_f + 4.24267
+    ) * volumes
 
     return {
         "psi": max(0.0, psi),
@@ -387,8 +392,12 @@ def calculate_water_chemistry(
             raise ValueError(f"water_profile must contain '{key}' key")
 
     calcium = _coerce_positive(water_profile["calcium"], "calcium", allow_zero=True)
-    magnesium = _coerce_positive(water_profile["magnesium"], "magnesium", allow_zero=True)
-    bicarbonate = _coerce_positive(water_profile["bicarbonate"], "bicarbonate", allow_zero=True)
+    magnesium = _coerce_positive(
+        water_profile["magnesium"], "magnesium", allow_zero=True
+    )
+    bicarbonate = _coerce_positive(
+        water_profile["bicarbonate"], "bicarbonate", allow_zero=True
+    )
 
     # Calculate alkalinity as CaCO3 equivalent
     alkalinity = bicarbonate * 0.8202

@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean, DateTime, Text
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Numeric,
+    Boolean,
+    DateTime,
+    Text,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -36,7 +45,9 @@ class WaterProfiles(Base):
     description = Column(Text, nullable=True)
 
     # Profile categorization
-    profile_type = Column(String(50), nullable=False, default="source")  # 'source' or 'target'
+    profile_type = Column(
+        String(50), nullable=False, default="source"
+    )  # 'source' or 'target'
     style_category = Column(String(100), nullable=True)
 
     # Ion concentrations (ppm) - using Numeric for precise decimal values
@@ -63,7 +74,9 @@ class WaterProfiles(Base):
     is_default = Column(Boolean, nullable=False, default=False)
     is_custom = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
+    )
 
     # Relationships
     recipe_id = Column(Integer, ForeignKey("recipes.id"))

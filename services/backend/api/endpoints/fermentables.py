@@ -45,10 +45,14 @@ async def get_inventory_fermentable(fermentable_id: int, db: Session = Depends(g
     return fermentable
 
 
-@router.delete("/inventory/fermentables/{id}", response_model=schemas.InventoryFermentable)
+@router.delete(
+    "/inventory/fermentables/{id}", response_model=schemas.InventoryFermentable
+)
 async def delete_inventory_fermentable(id: int, db: Session = Depends(get_db)):
     fermentable = (
-        db.query(models.InventoryFermentable).filter(models.InventoryFermentable.id == id).first()
+        db.query(models.InventoryFermentable)
+        .filter(models.InventoryFermentable.id == id)
+        .first()
     )
     if not fermentable:
         raise HTTPException(status_code=404, detail="Fermentable not found")

@@ -11,7 +11,9 @@ from .hops import router
 
 
 @router.post("/inventory/hops", response_model=schemas.InventoryHop)
-async def create_inventory_hop(hop: schemas.InventoryHopCreate, db: Session = Depends(get_db)):
+async def create_inventory_hop(
+    hop: schemas.InventoryHopCreate, db: Session = Depends(get_db)
+):
     try:
         db_hop = models.InventoryHop(**hop.model_dump())
         db.add(db_hop)

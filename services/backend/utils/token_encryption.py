@@ -1,6 +1,7 @@
 """
 Token encryption utilities for secure API token storage.
 """
+
 import secrets
 import base64
 from cryptography.fernet import Fernet
@@ -40,8 +41,7 @@ def encrypt_token(token: str, salt: str = None) -> tuple[str, str]:
         salt = generate_salt()
 
     # Use environment variable or generate a master key
-    master_key = os.getenv(
-        'DEVICE_TOKEN_KEY', 'default-key-change-in-production')
+    master_key = os.getenv("DEVICE_TOKEN_KEY", "default-key-change-in-production")
 
     salt_bytes = bytes.fromhex(salt)
     key = derive_key_from_password(master_key, salt_bytes)
@@ -63,8 +63,7 @@ def decrypt_token(encrypted_token: str, salt: str) -> str:
     Returns:
         The decrypted plaintext token
     """
-    master_key = os.getenv(
-        'DEVICE_TOKEN_KEY', 'default-key-change-in-production')
+    master_key = os.getenv("DEVICE_TOKEN_KEY", "default-key-change-in-production")
 
     salt_bytes = bytes.fromhex(salt)
     key = derive_key_from_password(master_key, salt_bytes)

@@ -29,7 +29,11 @@ async def get_all_inventory_yeasts(db: Session = Depends(get_db)):
 
 @router.get("/inventory/yeasts/{yeast_id}", response_model=schemas.InventoryYeast)
 async def get_inventory_yeast(yeast_id: int, db: Session = Depends(get_db)):
-    yeast = db.query(models.InventoryYeast).filter(models.InventoryYeast.id == yeast_id).first()
+    yeast = (
+        db.query(models.InventoryYeast)
+        .filter(models.InventoryYeast.id == yeast_id)
+        .first()
+    )
     if not yeast:
         raise HTTPException(status_code=404, detail="Yeast not found")
     return yeast
@@ -37,7 +41,9 @@ async def get_inventory_yeast(yeast_id: int, db: Session = Depends(get_db)):
 
 @router.delete("/inventory/yeasts/{id}", response_model=schemas.InventoryYeast)
 async def delete_inventory_yeast(id: int, db: Session = Depends(get_db)):
-    yeast = db.query(models.InventoryYeast).filter(models.InventoryYeast.id == id).first()
+    yeast = (
+        db.query(models.InventoryYeast).filter(models.InventoryYeast.id == id).first()
+    )
     if not yeast:
         raise HTTPException(status_code=404, detail="Yeast not found")
     db.delete(yeast)

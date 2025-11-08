@@ -1,12 +1,11 @@
 # api/endpoints/equipment_profiles.py
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
-from typing import List, Optional
-from datetime import datetime
+from typing import List
 
 router = APIRouter()
 
@@ -16,7 +15,10 @@ async def get_equipment_profiles(db: Session = Depends(get_db)):
     """
     List all equipment profiles.
     """
-    profiles = db.query(models.EquipmentProfiles).order_by(models.EquipmentProfiles.name).all()
+    profiles = (
+        db.query(models.EquipmentProfiles).order_by(
+            models.EquipmentProfiles.name).all()
+    )
 
     # Convert to dict to match frontend expectations
     result = []
@@ -69,7 +71,8 @@ async def create_equipment_profile(
 
     if existing:
         raise HTTPException(
-            status_code=400, detail=f"Equipment profile with name '{profile.name}' already exists"
+            status_code=400,
+            detail=f"Equipment profile with name '{profile.name}' already exists",
         )
 
     db_profile = models.EquipmentProfiles(**profile.model_dump())
@@ -112,11 +115,14 @@ async def get_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
     Get a specific equipment profile by ID.
     """
     profile = (
-        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.id == profile_id)
+        .first()
     )
 
     if not profile:
-        raise HTTPException(status_code=404, detail="Equipment profile not found")
+        raise HTTPException(
+            status_code=404, detail="Equipment profile not found")
 
     return {
         "id": str(profile.id),
@@ -149,17 +155,22 @@ async def get_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
 
 @router.put("/equipment/{profile_id}", response_model=dict)
 async def update_equipment_profile(
-    profile_id: int, profile_update: schemas.EquipmentProfileBase, db: Session = Depends(get_db)
+    profile_id: int,
+    profile_update: schemas.EquipmentProfileBase,
+    db: Session = Depends(get_db),
 ):
     """
     Update an existing equipment profile.
     """
     profile = (
-        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.id == profile_id)
+        .first()
     )
 
     if not profile:
-        raise HTTPException(status_code=404, detail="Equipment profile not found")
+        raise HTTPException(
+            status_code=404, detail="Equipment profile not found")
 
     # Check for name conflicts if name is being updated
     if profile_update.name and profile_update.name != profile.name:
@@ -222,11 +233,14 @@ async def delete_equipment_profile(profile_id: int, db: Session = Depends(get_db
     Delete an equipment profile.
     """
     profile = (
-        db.query(models.EquipmentProfiles).filter(models.EquipmentProfiles.id == profile_id).first()
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.id == profile_id)
+        .first()
     )
 
     if not profile:
-        raise HTTPException(status_code=404, detail="Equipment profile not found")
+        raise HTTPException(
+            status_code=404, detail="Equipment profile not found")
 
     db.delete(profile)
     db.commit()

@@ -34,11 +34,15 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["batch_id"], ["batches.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
-    
+
     # Create indexes for faster queries
     op.create_index("ix_batch_workflow_history_id", "batch_workflow_history", ["id"])
-    op.create_index("ix_batch_workflow_history_batch_id", "batch_workflow_history", ["batch_id"])
-    op.create_index("ix_batch_workflow_history_changed_at", "batch_workflow_history", ["changed_at"])
+    op.create_index(
+        "ix_batch_workflow_history_batch_id", "batch_workflow_history", ["batch_id"]
+    )
+    op.create_index(
+        "ix_batch_workflow_history_changed_at", "batch_workflow_history", ["changed_at"]
+    )
 
 
 def downgrade() -> None:
@@ -48,6 +52,6 @@ def downgrade() -> None:
     op.drop_index("ix_batch_workflow_history_changed_at", "batch_workflow_history")
     op.drop_index("ix_batch_workflow_history_batch_id", "batch_workflow_history")
     op.drop_index("ix_batch_workflow_history_id", "batch_workflow_history")
-    
+
     # Drop table
     op.drop_table("batch_workflow_history")

@@ -113,19 +113,21 @@ This document organizes work based on the **COMPREHENSIVE_WORKFLOW_ANALYSIS** an
 - [ ] Extend Makefile for linting, tests, formatters
 
 ### Frontend - Recipe Detail Page
-- [ ] Build recipes/[id].vue with complete recipe display
-- [ ] Create RecipeBlock component (overview)
-- [ ] Create EquipmentBlock component
-- [ ] Create StyleBlock component
-- [ ] Create FermentablesBlock component
-- [ ] Create HopsBlock component
-- [ ] Create MiscsBlock component
-- [ ] Create YeastBlock component
-- [ ] Create MashBlock component
-- [ ] Create FermentationBlock component
-- [ ] Create WaterBlock component
-- [ ] Create NotesBlock component
-- [ ] Add edit mode, clone recipe, start batch actions
+- [x] Build recipes/[id].vue with complete recipe display ✅
+- [x] Create RecipeBlock component (overview) ✅
+- [x] Create EquipmentBlock component ✅
+- [x] Create StyleBlock component ✅
+- [x] Create FermentablesBlock component ✅
+- [x] Create HopsBlock component ✅
+- [x] Create MiscsBlock component ✅
+- [x] Create YeastBlock component ✅
+- [x] Create MashBlock component ✅
+- [x] Create FermentationBlock component ✅
+- [x] Create WaterBlock component ✅
+- [x] Create NotesBlock component ✅
+- [x] Add start batch actions ✅
+- [ ] Add edit mode (separate /recipes/[id]/edit route)
+- [ ] Add clone recipe functionality  
 - [ ] Add inventory availability check
 
 ### Frontend - Inventory Pages
@@ -136,9 +138,9 @@ This document organizes work based on the **COMPREHENSIVE_WORKFLOW_ANALYSIS** an
   - ✅ inventory/miscs - Complete with type/use tracking, flexible units
 
 ### Frontend - Profile Pages
-- [ ] Create /profiles/equipment page (CRUD for equipment profiles)
+- [x] Create /profiles/equipment page (CRUD for equipment profiles) ✅
 - [ ] Create /profiles/mash page (CRUD for mash profiles)
-- [ ] Create /profiles/water page (CRUD for water profiles)
+- [x] Create /profiles/water page (CRUD for water profiles) ✅
 - [ ] Create /profiles/fermentation page (CRUD for fermentation profiles)
 - [ ] Add profile templates library
 

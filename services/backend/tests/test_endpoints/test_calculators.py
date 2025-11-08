@@ -253,13 +253,13 @@ class TestCarbonationEndpoint:
             "/calculators/carbonation",
             json={"temp_f": 68.0, "co2_volumes": 2.5},
         )
-        
+
         assert cold_response.status_code == 200
         assert warm_response.status_code == 200
-        
+
         cold_data = cold_response.json()
         warm_data = warm_response.json()
-        
+
         assert warm_data["psi"] > cold_data["psi"]
 
 

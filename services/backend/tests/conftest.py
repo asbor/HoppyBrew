@@ -16,7 +16,9 @@ os.environ["TESTING"] = "1"
 
 # Ensure the model package and its submodules load so Base.metadata sees every table
 def _import_all_model_modules(package):
-    for _, module_name, _ in pkgutil.walk_packages(package.__path__, package.__name__ + "."):
+    for _, module_name, _ in pkgutil.walk_packages(
+        package.__path__, package.__name__ + "."
+    ):
         importlib.import_module(module_name)
 
 
@@ -31,10 +33,10 @@ logger.debug(f"Environment variable TESTING set to: {os.environ['TESTING']}")
 # Database setup for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 logger.debug(f"SQLALCHEMY_DATABASE_URL set to: {SQLALCHEMY_DATABASE_URL}")
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={
-                       "check_same_thread": False})
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def override_get_db():

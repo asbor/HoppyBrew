@@ -106,8 +106,7 @@ async def create_batch(batch: schemas.BatchCreate, db: Session = Depends(get_db)
             batch_size=batch.batch_size,
             brewer=batch.brewer,
             brew_date=batch.brew_date,
-            status=(
-                batch.status.value if batch.status else BatchStatus.PLANNING.value),
+            status=(batch.status.value if batch.status else BatchStatus.PLANNING.value),
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
@@ -141,10 +140,10 @@ async def create_batch(batch: schemas.BatchCreate, db: Session = Depends(get_db)
                 use=hop.use,
                 time=hop.time,
                 notes=hop.notes,
-                display_amount=(
-                    hop.display_amount if hop.display_amount else ""),
-                inventory=(parse_numeric_value(hop.inventory)
-                           if hop.inventory else 0.0),
+                display_amount=(hop.display_amount if hop.display_amount else ""),
+                inventory=(
+                    parse_numeric_value(hop.inventory) if hop.inventory else 0.0
+                ),
                 display_time=hop.display_time if hop.display_time else "",
                 batch_id=db_batch.id,
             )
@@ -182,10 +181,10 @@ async def create_batch(batch: schemas.BatchCreate, db: Session = Depends(get_db)
                 notes=misc.notes,
                 amount=misc.amount,
                 time=misc.time,
-                display_amount=(
-                    misc.display_amount if misc.display_amount else ""),
-                inventory=(parse_numeric_value(misc.inventory)
-                           if misc.inventory else 0.0),
+                display_amount=(misc.display_amount if misc.display_amount else ""),
+                inventory=(
+                    parse_numeric_value(misc.inventory) if misc.inventory else 0.0
+                ),
                 display_time=misc.display_time if misc.display_time else "",
                 batch_size=misc.batch_size,
                 batch_id=db_batch.id,
@@ -271,9 +270,10 @@ async def get_batch_by_id(batch_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/batches/{batch_id}", response_model=schemas.Batch)
-async def update_batch(batch_id: int, batch: schemas.BatchUpdate, db: Session = Depends(get_db)):
-    db_batch = db.query(models.Batches).filter(
-        models.Batches.id == batch_id).first()
+async def update_batch(
+    batch_id: int, batch: schemas.BatchUpdate, db: Session = Depends(get_db)
+):
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
     if not db_batch:
         raise HTTPException(status_code=404, detail="Batch not found")
     # Update the batch
@@ -290,21 +290,23 @@ async def update_batch(batch_id: int, batch: schemas.BatchUpdate, db: Session = 
 
 @router.delete("/batches/{batch_id}")
 async def delete_batch(batch_id: int, db: Session = Depends(get_db)):
-    db_batch = db.query(models.Batches).filter(
-        models.Batches.id == batch_id).first()
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
     if not db_batch:
         raise HTTPException(status_code=404, detail="Batch not found")
     # Delete related inventory items
 
     db.query(models.InventoryHop).filter(
-        models.InventoryHop.batch_id == batch_id).delete()
+        models.InventoryHop.batch_id == batch_id
+    ).delete()
     db.query(models.InventoryFermentable).filter(
         models.InventoryFermentable.batch_id == batch_id
     ).delete()
     db.query(models.InventoryMisc).filter(
-        models.InventoryMisc.batch_id == batch_id).delete()
+        models.InventoryMisc.batch_id == batch_id
+    ).delete()
     db.query(models.InventoryYeast).filter(
-        models.InventoryYeast.batch_id == batch_id).delete()
+        models.InventoryYeast.batch_id == batch_id
+    ).delete()
     # Delete the batch
 
     db.delete(db_batch)
@@ -319,7 +321,7 @@ async def delete_batch(batch_id: int, db: Session = Depends(get_db)):
 async def consume_ingredients(
     batch_id: int,
     request: schemas.ConsumeIngredientsRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Deduct ingredients from inventory for a batch.
@@ -327,8 +329,7 @@ async def consume_ingredients(
     """
     try:
         # Verify batch exists
-        batch = db.query(models.Batches).filter(
-            models.Batches.id == batch_id).first()
+        batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
         if not batch:
             raise HTTPException(status_code=404, detail="Batch not found")
 
@@ -337,16 +338,17 @@ async def consume_ingredients(
 
         for ingredient in request.ingredients:
             # Get the inventory item based on type
-            inventory_model = _get_inventory_model(
-                ingredient.inventory_item_type)
-            inventory_item = db.query(inventory_model).filter(
-                inventory_model.id == ingredient.inventory_item_id
-            ).first()
+            inventory_model = _get_inventory_model(ingredient.inventory_item_type)
+            inventory_item = (
+                db.query(inventory_model)
+                .filter(inventory_model.id == ingredient.inventory_item_id)
+                .first()
+            )
 
             if not inventory_item:
                 raise HTTPException(
                     status_code=404,
-                    detail=f"Inventory item {ingredient.inventory_item_id} of type {ingredient.inventory_item_type} not found"
+                    detail=f"Inventory item {ingredient.inventory_item_id} of type {ingredient.inventory_item_type} not found",
                 )
 
             # Check if item has sufficient stock (if inventory field exists and is numeric)
@@ -354,7 +356,7 @@ async def consume_ingredients(
             if current_stock is not None and current_stock < ingredient.quantity_used:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Insufficient stock for {getattr(inventory_item, 'name', 'item')}. Available: {current_stock}, Required: {ingredient.quantity_used}"
+                    detail=f"Insufficient stock for {getattr(inventory_item, 'name', 'item')}. Available: {current_stock}, Required: {ingredient.quantity_used}",
                 )
 
             # Create batch_ingredient record
@@ -364,14 +366,17 @@ async def consume_ingredients(
                 inventory_item_type=ingredient.inventory_item_type,
                 quantity_used=ingredient.quantity_used,
                 unit=ingredient.unit,
-                created_at=datetime.now()
+                created_at=datetime.now(),
             )
             db.add(batch_ingredient)
             consumed_items.append(batch_ingredient)
 
             # Update inventory stock
-            new_stock = current_stock - \
-                ingredient.quantity_used if current_stock is not None else None
+            new_stock = (
+                current_stock - ingredient.quantity_used
+                if current_stock is not None
+                else None
+            )
             if new_stock is not None:
                 _set_inventory_stock(inventory_item, new_stock)
 
@@ -379,15 +384,15 @@ async def consume_ingredients(
                 transaction = models.InventoryTransaction(
                     inventory_item_id=ingredient.inventory_item_id,
                     inventory_item_type=ingredient.inventory_item_type,
-                    transaction_type='consumption',
+                    transaction_type="consumption",
                     quantity_change=-ingredient.quantity_used,
                     quantity_before=current_stock,
                     quantity_after=new_stock,
                     unit=ingredient.unit,
-                    reference_type='batch',
+                    reference_type="batch",
                     reference_id=batch_id,
                     notes=f"Consumed for batch {batch.batch_name}",
-                    created_at=datetime.now()
+                    created_at=datetime.now(),
                 )
                 db.add(transaction)
                 transactions.append(transaction)
@@ -398,7 +403,7 @@ async def consume_ingredients(
             "message": "Ingredients consumed successfully",
             "batch_id": batch_id,
             "consumed_count": len(consumed_items),
-            "transactions_created": len(transactions)
+            "transactions_created": len(transactions),
         }
 
     except HTTPException:
@@ -409,7 +414,10 @@ async def consume_ingredients(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/batches/{batch_id}/ingredient-tracking", response_model=schemas.IngredientTrackingResponse)
+@router.get(
+    "/batches/{batch_id}/ingredient-tracking",
+    response_model=schemas.IngredientTrackingResponse,
+)
 async def get_ingredient_tracking(batch_id: int, db: Session = Depends(get_db)):
     """
     Get ingredient consumption tracking for a batch.
@@ -417,27 +425,32 @@ async def get_ingredient_tracking(batch_id: int, db: Session = Depends(get_db)):
     """
     try:
         # Verify batch exists
-        batch = db.query(models.Batches).filter(
-            models.Batches.id == batch_id).first()
+        batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
         if not batch:
             raise HTTPException(status_code=404, detail="Batch not found")
 
         # Get batch ingredients
-        batch_ingredients = db.query(models.BatchIngredient).filter(
-            models.BatchIngredient.batch_id == batch_id
-        ).all()
+        batch_ingredients = (
+            db.query(models.BatchIngredient)
+            .filter(models.BatchIngredient.batch_id == batch_id)
+            .all()
+        )
 
         # Get related transactions
-        transactions = db.query(models.InventoryTransaction).filter(
-            models.InventoryTransaction.reference_type == 'batch',
-            models.InventoryTransaction.reference_id == batch_id
-        ).all()
+        transactions = (
+            db.query(models.InventoryTransaction)
+            .filter(
+                models.InventoryTransaction.reference_type == "batch",
+                models.InventoryTransaction.reference_id == batch_id,
+            )
+            .all()
+        )
 
         return schemas.IngredientTrackingResponse(
             batch_id=batch_id,
             batch_name=batch.batch_name,
             consumed_ingredients=batch_ingredients,
-            transactions=transactions
+            transactions=transactions,
         )
 
     except HTTPException:
@@ -447,7 +460,10 @@ async def get_ingredient_tracking(batch_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/batches/check-inventory-availability/{recipe_id}", response_model=List[schemas.InventoryAvailability])
+@router.get(
+    "/batches/check-inventory-availability/{recipe_id}",
+    response_model=List[schemas.InventoryAvailability],
+)
 async def check_inventory_availability(recipe_id: int, db: Session = Depends(get_db)):
     """
     Check inventory availability for a recipe's ingredients.
@@ -474,44 +490,57 @@ async def check_inventory_availability(recipe_id: int, db: Session = Depends(get
 
         # Check hops
         for hop in recipe.hops:
-            available_qty = _get_total_inventory_for_item('hop', hop.name)
+            available_qty = _get_total_inventory_for_item("hop", hop.name)
             required_qty = hop.amount or 0
-            availability.append(_create_availability_response(
-                hop.id, 'hop', hop.name, available_qty, required_qty, 'kg'
-            ))
+            availability.append(
+                _create_availability_response(
+                    hop.id, "hop", hop.name, available_qty, required_qty, "kg"
+                )
+            )
 
         # Check fermentables
         for fermentable in recipe.fermentables:
             available_qty = _get_total_inventory_for_item(
-                'fermentable', fermentable.name)
+                "fermentable", fermentable.name
+            )
             required_qty = fermentable.amount or 0
-            availability.append(_create_availability_response(
-                fermentable.id, 'fermentable', fermentable.name, available_qty, required_qty, 'kg'
-            ))
+            availability.append(
+                _create_availability_response(
+                    fermentable.id,
+                    "fermentable",
+                    fermentable.name,
+                    available_qty,
+                    required_qty,
+                    "kg",
+                )
+            )
 
         # Check yeasts
         for yeast in recipe.yeasts:
-            available_qty = _get_total_inventory_for_item('yeast', yeast.name)
+            available_qty = _get_total_inventory_for_item("yeast", yeast.name)
             required_qty = yeast.amount or 0
-            availability.append(_create_availability_response(
-                yeast.id, 'yeast', yeast.name, available_qty, required_qty, 'g'
-            ))
+            availability.append(
+                _create_availability_response(
+                    yeast.id, "yeast", yeast.name, available_qty, required_qty, "g"
+                )
+            )
 
         # Check miscs
         for misc in recipe.miscs:
-            available_qty = _get_total_inventory_for_item('misc', misc.name)
+            available_qty = _get_total_inventory_for_item("misc", misc.name)
             required_qty = misc.amount or 0
-            availability.append(_create_availability_response(
-                misc.id, 'misc', misc.name, available_qty, required_qty, 'g'
-            ))
+            availability.append(
+                _create_availability_response(
+                    misc.id, "misc", misc.name, available_qty, required_qty, "g"
+                )
+            )
 
         return availability
 
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(
-            f"Error checking inventory availability: {e}", exc_info=True)
+        logger.error(f"Error checking inventory availability: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -520,15 +549,16 @@ async def check_inventory_availability(recipe_id: int, db: Session = Depends(get
 
 @router.put("/batches/{batch_id}/status", response_model=schemas.Batch)
 async def update_batch_status(
-    batch_id: int, status_update: schemas.StatusUpdateRequest, db: Session = Depends(get_db)
+    batch_id: int,
+    status_update: schemas.StatusUpdateRequest,
+    db: Session = Depends(get_db),
 ):
     """
     Update batch status with state machine validation.
 
     Status changes are validated to ensure valid transitions and logged in workflow history.
     """
-    db_batch = db.query(models.Batches).filter(
-        models.Batches.id == batch_id).first()
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
     if not db_batch:
         raise HTTPException(status_code=404, detail="Batch not found")
 
@@ -539,7 +569,7 @@ async def update_batch_status(
         valid_statuses = ", ".join([s.value for s in BatchStatus])
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid status '{status_update.status}'. Valid statuses: {valid_statuses}"
+            detail=f"Invalid status '{status_update.status}'. Valid statuses: {valid_statuses}",
         )
 
     # Get current status
@@ -571,15 +601,16 @@ async def update_batch_status(
 # Get workflow history for a batch
 
 
-@router.get("/batches/{batch_id}/workflow", response_model=List[schemas.BatchWorkflowHistory])
+@router.get(
+    "/batches/{batch_id}/workflow", response_model=List[schemas.BatchWorkflowHistory]
+)
 async def get_batch_workflow(batch_id: int, db: Session = Depends(get_db)):
     """
     Get the complete workflow history for a batch.
 
     Returns all status changes in chronological order (most recent first).
     """
-    db_batch = db.query(models.Batches).filter(
-        models.Batches.id == batch_id).first()
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
     if not db_batch:
         raise HTTPException(status_code=404, detail="Batch not found")
 
@@ -603,8 +634,7 @@ async def get_batch_status_transitions(batch_id: int, db: Session = Depends(get_
 
     Returns a list of statuses that the batch can transition to.
     """
-    db_batch = db.query(models.Batches).filter(
-        models.Batches.id == batch_id).first()
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
     if not db_batch:
         raise HTTPException(status_code=404, detail="Batch not found")
 
@@ -623,10 +653,10 @@ async def get_batch_status_transitions(batch_id: int, db: Session = Depends(get_
 def _get_inventory_model(item_type: str):
     """Get the SQLAlchemy model for an inventory item type"""
     type_map = {
-        'hop': models.InventoryHop,
-        'fermentable': models.InventoryFermentable,
-        'yeast': models.InventoryYeast,
-        'misc': models.InventoryMisc,
+        "hop": models.InventoryHop,
+        "fermentable": models.InventoryFermentable,
+        "yeast": models.InventoryYeast,
+        "misc": models.InventoryMisc,
     }
     if item_type not in type_map:
         raise ValueError(f"Invalid inventory item type: {item_type}")
@@ -636,7 +666,7 @@ def _get_inventory_model(item_type: str):
 def _get_inventory_stock(inventory_item) -> float:
     """Get current stock level from inventory item"""
     # Try to get numeric inventory value
-    if hasattr(inventory_item, 'inventory'):
+    if hasattr(inventory_item, "inventory"):
         inventory_val = inventory_item.inventory
         if isinstance(inventory_val, (int, float)):
             return float(inventory_val)
@@ -646,16 +676,16 @@ def _get_inventory_stock(inventory_item) -> float:
             except (ValueError, TypeError):
                 pass
     # Fallback to amount field
-    if hasattr(inventory_item, 'amount') and inventory_item.amount is not None:
+    if hasattr(inventory_item, "amount") and inventory_item.amount is not None:
         return float(inventory_item.amount)
     return None
 
 
 def _set_inventory_stock(inventory_item, new_stock: float):
     """Update stock level on inventory item"""
-    if hasattr(inventory_item, 'inventory'):
+    if hasattr(inventory_item, "inventory"):
         inventory_item.inventory = new_stock
-    elif hasattr(inventory_item, 'amount'):
+    elif hasattr(inventory_item, "amount"):
         inventory_item.amount = new_stock
 
 
@@ -672,16 +702,16 @@ def _create_availability_response(
     name: str,
     available_qty: float,
     required_qty: float,
-    unit: str
+    unit: str,
 ) -> schemas.InventoryAvailability:
     """Create an inventory availability response"""
     is_available = available_qty >= required_qty
     warning_level = None
 
     if not is_available:
-        warning_level = 'out_of_stock'
+        warning_level = "out_of_stock"
     elif available_qty < required_qty * 1.5:  # Less than 1.5x required
-        warning_level = 'low_stock'
+        warning_level = "low_stock"
 
     return schemas.InventoryAvailability(
         inventory_item_id=item_id,
@@ -691,5 +721,5 @@ def _create_availability_response(
         required_quantity=required_qty,
         unit=unit,
         is_available=is_available,
-        warning_level=warning_level
+        warning_level=warning_level,
     )

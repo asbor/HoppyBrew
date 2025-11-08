@@ -48,7 +48,9 @@ class DeviceUpdate(BaseModel):
     is_active: Optional[bool] = None
 
     model_config = ConfigDict(
-        json_schema_extra={"example": {"name": "Updated iSpindel Name", "is_active": False}}
+        json_schema_extra={
+            "example": {"name": "Updated iSpindel Name", "is_active": False}
+        }
     )
 
 

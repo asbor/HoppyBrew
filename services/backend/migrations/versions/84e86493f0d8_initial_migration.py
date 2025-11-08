@@ -103,8 +103,12 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_recipes_id"), "recipes", ["id"], unique=False)
     op.create_index(op.f("ix_recipes_name"), "recipes", ["name"], unique=False)
-    op.create_index("ix_recipes_name_version", "recipes", ["name", "version"], unique=False)
-    op.create_index("ix_recipes_origin_recipe_id", "recipes", ["origin_recipe_id"], unique=False)
+    op.create_index(
+        "ix_recipes_name_version", "recipes", ["name", "version"], unique=False
+    )
+    op.create_index(
+        "ix_recipes_origin_recipe_id", "recipes", ["origin_recipe_id"], unique=False
+    )
     op.create_table(
         "references",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -144,7 +148,10 @@ def upgrade() -> None:
     op.create_index(op.f("ix_batches_id"), "batches", ["id"], unique=False)
     op.create_index("ix_batches_recipe_id", "batches", ["recipe_id"], unique=False)
     op.create_index(
-        "ix_batches_recipe_id_batch_number", "batches", ["recipe_id", "batch_number"], unique=False
+        "ix_batches_recipe_id_batch_number",
+        "batches",
+        ["recipe_id", "batch_number"],
+        unique=False,
     )
     op.create_table(
         "choices",
@@ -158,7 +165,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_choices_choice_text"), "choices", ["choice_text"], unique=False)
+    op.create_index(
+        op.f("ix_choices_choice_text"), "choices", ["choice_text"], unique=False
+    )
     op.create_index(op.f("ix_choices_id"), "choices", ["id"], unique=False)
     op.create_table(
         "equipment",
@@ -196,7 +205,9 @@ def upgrade() -> None:
         sa.UniqueConstraint("name", name="uq_equipment_name"),
     )
     op.create_index(op.f("ix_equipment_id"), "equipment", ["id"], unique=False)
-    op.create_index(op.f("ix_equipment_recipe_id"), "equipment", ["recipe_id"], unique=False)
+    op.create_index(
+        op.f("ix_equipment_recipe_id"), "equipment", ["recipe_id"], unique=False
+    )
     op.create_table(
         "mash_step",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -250,7 +261,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_recipe_fermentables_id"), "recipe_fermentables", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_recipe_fermentables_id"), "recipe_fermentables", ["id"], unique=False
+    )
     op.create_table(
         "recipe_hops",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -353,7 +366,10 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        op.f("ix_style_guidelines_recipe_id"), "style_guidelines", ["recipe_id"], unique=False
+        op.f("ix_style_guidelines_recipe_id"),
+        "style_guidelines",
+        ["recipe_id"],
+        unique=False,
     )
     op.create_table(
         "styles",
@@ -485,7 +501,10 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        op.f("ix_inventory_fermentables_id"), "inventory_fermentables", ["id"], unique=False
+        op.f("ix_inventory_fermentables_id"),
+        "inventory_fermentables",
+        ["id"],
+        unique=False,
     )
     op.create_table(
         "inventory_hops",
@@ -511,7 +530,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_inventory_hops_id"), "inventory_hops", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_inventory_hops_id"), "inventory_hops", ["id"], unique=False
+    )
     op.create_table(
         "inventory_miscs",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -534,7 +555,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_inventory_miscs_id"), "inventory_miscs", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_inventory_miscs_id"), "inventory_miscs", ["id"], unique=False
+    )
     op.create_table(
         "inventory_yeasts",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -561,7 +584,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_inventory_yeasts_id"), "inventory_yeasts", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_inventory_yeasts_id"), "inventory_yeasts", ["id"], unique=False
+    )
     op.create_table(
         "recipe_adjunct",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -572,7 +597,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_recipe_adjunct_id"), "recipe_adjunct", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_recipe_adjunct_id"), "recipe_adjunct", ["id"], unique=False
+    )
     op.create_table(
         "recipe_dry_extract",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -583,7 +610,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_recipe_dry_extract_id"), "recipe_dry_extract", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_recipe_dry_extract_id"), "recipe_dry_extract", ["id"], unique=False
+    )
     op.create_table(
         "recipe_grain",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -615,7 +644,10 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        op.f("ix_recipe_liquid_extract_id"), "recipe_liquid_extract", ["id"], unique=False
+        op.f("ix_recipe_liquid_extract_id"),
+        "recipe_liquid_extract",
+        ["id"],
+        unique=False,
     )
     op.create_table(
         "recipe_other",
@@ -649,7 +681,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_inventory_adjunct_id"), "inventory_adjunct", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_inventory_adjunct_id"), "inventory_adjunct", ["id"], unique=False
+    )
     op.create_table(
         "inventory_dry_extract",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -661,7 +695,10 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        op.f("ix_inventory_dry_extract_id"), "inventory_dry_extract", ["id"], unique=False
+        op.f("ix_inventory_dry_extract_id"),
+        "inventory_dry_extract",
+        ["id"],
+        unique=False,
     )
     op.create_table(
         "inventory_grain",
@@ -682,7 +719,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_inventory_grain_id"), "inventory_grain", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_inventory_grain_id"), "inventory_grain", ["id"], unique=False
+    )
     op.create_table(
         "inventory_liquid_extract",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -694,7 +733,10 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        op.f("ix_inventory_liquid_extract_id"), "inventory_liquid_extract", ["id"], unique=False
+        op.f("ix_inventory_liquid_extract_id"),
+        "inventory_liquid_extract",
+        ["id"],
+        unique=False,
     )
     op.create_table(
         "inventory_other",
@@ -706,7 +748,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_inventory_other_id"), "inventory_other", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_inventory_other_id"), "inventory_other", ["id"], unique=False
+    )
     op.create_table(
         "inventory_sugar",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -717,7 +761,9 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_inventory_sugar_id"), "inventory_sugar", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_inventory_sugar_id"), "inventory_sugar", ["id"], unique=False
+    )
     # ### end Alembic commands ###
 
 
@@ -727,11 +773,15 @@ def downgrade() -> None:
     op.drop_table("inventory_sugar")
     op.drop_index(op.f("ix_inventory_other_id"), table_name="inventory_other")
     op.drop_table("inventory_other")
-    op.drop_index(op.f("ix_inventory_liquid_extract_id"), table_name="inventory_liquid_extract")
+    op.drop_index(
+        op.f("ix_inventory_liquid_extract_id"), table_name="inventory_liquid_extract"
+    )
     op.drop_table("inventory_liquid_extract")
     op.drop_index(op.f("ix_inventory_grain_id"), table_name="inventory_grain")
     op.drop_table("inventory_grain")
-    op.drop_index(op.f("ix_inventory_dry_extract_id"), table_name="inventory_dry_extract")
+    op.drop_index(
+        op.f("ix_inventory_dry_extract_id"), table_name="inventory_dry_extract"
+    )
     op.drop_table("inventory_dry_extract")
     op.drop_index(op.f("ix_inventory_adjunct_id"), table_name="inventory_adjunct")
     op.drop_table("inventory_adjunct")
@@ -739,7 +789,9 @@ def downgrade() -> None:
     op.drop_table("recipe_sugar")
     op.drop_index(op.f("ix_recipe_other_id"), table_name="recipe_other")
     op.drop_table("recipe_other")
-    op.drop_index(op.f("ix_recipe_liquid_extract_id"), table_name="recipe_liquid_extract")
+    op.drop_index(
+        op.f("ix_recipe_liquid_extract_id"), table_name="recipe_liquid_extract"
+    )
     op.drop_table("recipe_liquid_extract")
     op.drop_index(op.f("ix_recipe_grain_id"), table_name="recipe_grain")
     op.drop_table("recipe_grain")
@@ -753,7 +805,9 @@ def downgrade() -> None:
     op.drop_table("inventory_miscs")
     op.drop_index(op.f("ix_inventory_hops_id"), table_name="inventory_hops")
     op.drop_table("inventory_hops")
-    op.drop_index(op.f("ix_inventory_fermentables_id"), table_name="inventory_fermentables")
+    op.drop_index(
+        op.f("ix_inventory_fermentables_id"), table_name="inventory_fermentables"
+    )
     op.drop_table("inventory_fermentables")
     op.drop_index(op.f("ix_batch_logs_id"), table_name="batch_logs")
     op.drop_index("ix_batch_logs_batch_id", table_name="batch_logs")

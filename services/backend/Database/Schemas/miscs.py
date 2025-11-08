@@ -39,6 +39,7 @@ class MiscBase(BaseModel):
 
 class RecipeMiscBase(MiscBase):
     """Schema for recipe miscs with additional fields"""
+
     stage: Optional[str] = None  # mash/boil/fermentation
     duration: Optional[int] = None  # duration in minutes
 

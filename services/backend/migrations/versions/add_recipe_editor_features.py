@@ -69,13 +69,20 @@ def upgrade() -> None:
         sa.Column("version_number", sa.Integer(), nullable=False),
         sa.Column("version_name", sa.String(), nullable=True),
         sa.Column("notes", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.text("now()"), nullable=True),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=True,
+        ),
         sa.Column("recipe_snapshot", sa.Text(), nullable=True),
         sa.ForeignKeyConstraint(["recipe_id"], ["recipes.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index("ix_recipe_versions_recipe_id", "recipe_versions", ["recipe_id"])
-    op.create_index("ix_recipe_versions_version_number", "recipe_versions", ["version_number"])
+    op.create_index(
+        "ix_recipe_versions_version_number", "recipe_versions", ["version_number"]
+    )
 
 
 def downgrade() -> None:

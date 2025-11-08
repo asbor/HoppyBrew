@@ -1,4 +1,14 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, Numeric, DateTime, Index
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Boolean,
+    Text,
+    Numeric,
+    DateTime,
+    Index,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -17,15 +27,21 @@ class StyleCategory(Base):
     __tablename__ = "style_categories"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    guideline_source_id = Column(Integer, ForeignKey("style_guideline_sources.id"), nullable=False)
+    guideline_source_id = Column(
+        Integer, ForeignKey("style_guideline_sources.id"), nullable=False
+    )
     name = Column(String(255), nullable=False)
     code = Column(String(20), nullable=True)  # e.g., "1", "21", etc.
     description = Column(Text, nullable=True)
-    parent_category_id = Column(Integer, ForeignKey("style_categories.id"), nullable=True)
+    parent_category_id = Column(
+        Integer, ForeignKey("style_categories.id"), nullable=True
+    )
 
     # Relationships
     guideline_source = relationship("StyleGuidelineSource", back_populates="categories")
-    parent_category = relationship("StyleCategory", remote_side=[id], backref="subcategories")
+    parent_category = relationship(
+        "StyleCategory", remote_side=[id], backref="subcategories"
+    )
     beer_styles = relationship("BeerStyle", back_populates="category")
 
     __table_args__ = (
@@ -48,7 +64,9 @@ class BeerStyle(Base):
     __tablename__ = "beer_styles"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    guideline_source_id = Column(Integer, ForeignKey("style_guideline_sources.id"), nullable=True)
+    guideline_source_id = Column(
+        Integer, ForeignKey("style_guideline_sources.id"), nullable=True
+    )
     category_id = Column(Integer, ForeignKey("style_categories.id"), nullable=True)
 
     # Basic Information
@@ -87,10 +105,14 @@ class BeerStyle(Base):
     is_custom = Column(Boolean, default=False)
     created_by = Column(Integer, nullable=True)  # user reference (future)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    updated_at = Column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
 
     # Relationships
-    guideline_source = relationship("StyleGuidelineSource", back_populates="beer_styles")
+    guideline_source = relationship(
+        "StyleGuidelineSource", back_populates="beer_styles"
+    )
     category = relationship("StyleCategory", back_populates="beer_styles")
 
     __table_args__ = (

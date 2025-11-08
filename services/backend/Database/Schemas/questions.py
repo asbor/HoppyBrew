@@ -26,5 +26,6 @@ class QuestionWithID(QuestionBase):
     id: int
 
     model_config = ConfigDict(
-        from_attributes=True, json_schema_extra={"example": {**QUESTION_BASE_EXAMPLE, "id": 42}}
+        from_attributes=True,
+        json_schema_extra={"example": {**QUESTION_BASE_EXAMPLE, "id": 42}},
     )

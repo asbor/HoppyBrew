@@ -9,7 +9,10 @@ def test_create_and_get_device(client):
         "description": "Test device for fermentation monitoring",
         "api_endpoint": "/api/devices/ispindel/data",
         "api_token": "test-token-123",
-        "calibration_data": {"polynomial": [0.0, 0.0, 0.0, 1.0], "temp_correction": True},
+        "calibration_data": {
+            "polynomial": [0.0, 0.0, 0.0, 1.0],
+            "temp_correction": True,
+        },
         "configuration": {"update_interval": 900, "battery_warning_threshold": 3.5},
         "is_active": True,
     }

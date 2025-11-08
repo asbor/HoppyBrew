@@ -233,7 +233,9 @@ async def update_fermentation_step(
 ) -> schemas.FermentationStep:
     """Update an existing fermentation step."""
     db_step = (
-        db.query(models.FermentationSteps).filter(models.FermentationSteps.id == step_id).first()
+        db.query(models.FermentationSteps)
+        .filter(models.FermentationSteps.id == step_id)
+        .first()
     )
 
     if not db_step:
@@ -258,7 +260,9 @@ async def update_fermentation_step(
 async def delete_fermentation_step(step_id: int, db: db_dependency):
     """Delete a fermentation step."""
     db_step = (
-        db.query(models.FermentationSteps).filter(models.FermentationSteps.id == step_id).first()
+        db.query(models.FermentationSteps)
+        .filter(models.FermentationSteps.id == step_id)
+        .first()
     )
 
     if not db_step:

@@ -177,7 +177,9 @@ def test_update_recipe_replaces_ingredients(client, db_session):
     assert [misc["name"] for misc in updated["miscs"]] == ["Whirlfloc Tablet"]
 
     assert (
-        db_session.query(models.RecipeHop).filter(models.RecipeHop.recipe_id == recipe_id).count()
+        db_session.query(models.RecipeHop)
+        .filter(models.RecipeHop.recipe_id == recipe_id)
+        .count()
         == 1
     )
 
@@ -199,9 +201,14 @@ def test_delete_recipe_removes_related_rows(client, db_session):
     missing = client.get(f"/recipes/{recipe_id}")
     assert missing.status_code == 404
 
-    assert db_session.query(models.Recipes).filter(models.Recipes.id == recipe_id).count() == 0
     assert (
-        db_session.query(models.RecipeHop).filter(models.RecipeHop.recipe_id == recipe_id).count()
+        db_session.query(models.Recipes).filter(models.Recipes.id == recipe_id).count()
+        == 0
+    )
+    assert (
+        db_session.query(models.RecipeHop)
+        .filter(models.RecipeHop.recipe_id == recipe_id)
+        .count()
         == 0
     )
     assert (
@@ -211,7 +218,9 @@ def test_delete_recipe_removes_related_rows(client, db_session):
         == 0
     )
     assert (
-        db_session.query(models.RecipeMisc).filter(models.RecipeMisc.recipe_id == recipe_id).count()
+        db_session.query(models.RecipeMisc)
+        .filter(models.RecipeMisc.recipe_id == recipe_id)
+        .count()
         == 0
     )
     assert (
@@ -643,4 +652,3 @@ def test_create_version_for_nonexistent_recipe_returns_404(client):
     response = client.post("/recipes/9999/version", json=version_data)
     assert response.status_code == 404
     assert response.json()["detail"] == "Recipe not found"
-

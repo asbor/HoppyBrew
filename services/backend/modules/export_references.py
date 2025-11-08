@@ -1,6 +1,4 @@
 import xml.etree.ElementTree as ET
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 import sys
 import os
 
@@ -9,8 +7,8 @@ backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
-from Database.Models.references import References
-from database import SessionLocal, SQLALCHEMY_DATABASE_URL
+from Database.Models.references import References  # noqa: E402
+from database import SessionLocal  # noqa: E402
 
 
 def export_references(xml_file, session=None):
@@ -34,10 +32,15 @@ def export_references(xml_file, session=None):
             ET.SubElement(ref_element, "id").text = str(reference.id)
             ET.SubElement(ref_element, "name").text = reference.name
             ET.SubElement(ref_element, "url").text = reference.url
-            ET.SubElement(ref_element, "description").text = reference.description or ""
-            ET.SubElement(ref_element, "category").text = reference.category or ""
-            ET.SubElement(ref_element, "favicon_url").text = reference.favicon_url or ""
-            ET.SubElement(ref_element, "created_at").text = reference.created_at.isoformat()
+            ET.SubElement(
+                ref_element, "description").text = reference.description or ""
+            ET.SubElement(
+                ref_element, "category").text = reference.category or ""
+            ET.SubElement(
+                ref_element, "favicon_url").text = reference.favicon_url or ""
+            ET.SubElement(ref_element, "created_at").text = (
+                reference.created_at.isoformat()
+            )
             ET.SubElement(ref_element, "updated_at").text = (
                 reference.updated_at.isoformat() if reference.updated_at else ""
             )

@@ -33,21 +33,18 @@ class BatchWorkflowHistory(BatchWorkflowHistoryBase):
     changed_at: datetime
 
     model_config = ConfigDict(
-        from_attributes=True, 
-        json_schema_extra={"example": WORKFLOW_HISTORY_EXAMPLE}
+        from_attributes=True, json_schema_extra={"example": WORKFLOW_HISTORY_EXAMPLE}
     )
 
 
 class StatusUpdateRequest(BaseModel):
     """Request schema for updating batch status"""
+
     status: str
     notes: Optional[str] = None
 
     model_config = ConfigDict(
         json_schema_extra={
-            "example": {
-                "status": "brewing",
-                "notes": "Started brew day at 8am"
-            }
+            "example": {"status": "brewing", "notes": "Started brew day at 8am"}
         }
     )

@@ -41,7 +41,9 @@ async def get_water_profiles(
 
 
 @router.post("/water-profiles", response_model=schemas.WaterProfile, status_code=201)
-async def create_water_profile(profile: schemas.WaterProfileCreate, db: Session = Depends(get_db)):
+async def create_water_profile(
+    profile: schemas.WaterProfileCreate, db: Session = Depends(get_db)
+):
     """
     Create a new water profile.
 
@@ -77,7 +79,11 @@ async def get_water_profile(profile_id: int, db: Session = Depends(get_db)):
     """
     Get a specific water profile by ID.
     """
-    profile = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.WaterProfiles)
+        .filter(models.WaterProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Water profile not found")
@@ -87,14 +93,20 @@ async def get_water_profile(profile_id: int, db: Session = Depends(get_db)):
 
 @router.put("/water-profiles/{profile_id}", response_model=schemas.WaterProfile)
 async def update_water_profile(
-    profile_id: int, profile_update: schemas.WaterProfileUpdate, db: Session = Depends(get_db)
+    profile_id: int,
+    profile_update: schemas.WaterProfileUpdate,
+    db: Session = Depends(get_db),
 ):
     """
     Update an existing water profile.
 
     Only custom profiles can be updated. Default profiles are read-only.
     """
-    profile = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.WaterProfiles)
+        .filter(models.WaterProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Water profile not found")
@@ -143,7 +155,11 @@ async def delete_water_profile(profile_id: int, db: Session = Depends(get_db)):
 
     Only custom profiles can be deleted. Default profiles are protected.
     """
-    profile = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
+    profile = (
+        db.query(models.WaterProfiles)
+        .filter(models.WaterProfiles.id == profile_id)
+        .first()
+    )
 
     if not profile:
         raise HTTPException(status_code=404, detail="Water profile not found")
@@ -157,11 +173,15 @@ async def delete_water_profile(profile_id: int, db: Session = Depends(get_db)):
 
 
 @router.post(
-    "/water-profiles/{profile_id}/duplicate", response_model=schemas.WaterProfile, status_code=201
+    "/water-profiles/{profile_id}/duplicate",
+    response_model=schemas.WaterProfile,
+    status_code=201,
 )
 async def duplicate_water_profile(
     profile_id: int,
-    new_name: Optional[str] = Query(None, description="Name for the duplicated profile"),
+    new_name: Optional[str] = Query(
+        None, description="Name for the duplicated profile"
+    ),
     db: Session = Depends(get_db),
 ):
     """
@@ -169,7 +189,11 @@ async def duplicate_water_profile(
 
     This is useful for creating custom variants of default profiles.
     """
-    original = db.query(models.WaterProfiles).filter(models.WaterProfiles.id == profile_id).first()
+    original = (
+        db.query(models.WaterProfiles)
+        .filter(models.WaterProfiles.id == profile_id)
+        .first()
+    )
 
     if not original:
         raise HTTPException(status_code=404, detail="Water profile not found")

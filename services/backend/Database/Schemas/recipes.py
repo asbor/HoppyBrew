@@ -2,10 +2,10 @@
 
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
-from .hops import HopBase, RecipeHopBase, RecipeHop
-from .fermentables import FermentableBase, RecipeFermentableBase, RecipeFermentable
-from .miscs import MiscBase, RecipeMiscBase, RecipeMisc
-from .yeasts import YeastBase, RecipeYeastBase, RecipeYeast
+from .hops import RecipeHopBase, RecipeHop
+from .fermentables import RecipeFermentableBase, RecipeFermentable
+from .miscs import RecipeMiscBase, RecipeMisc
+from .yeasts import RecipeYeastBase, RecipeYeast
 
 
 RECIPE_SAMPLE_HOP = {
@@ -162,7 +162,9 @@ class RecipeScaleRequest(BaseModel):
     target_batch_size: float = Field(..., gt=0)
     target_boil_size: Optional[float] = Field(None, gt=0)
 
-    model_config = ConfigDict(json_schema_extra={"example": RECIPE_SCALE_REQUEST_EXAMPLE})
+    model_config = ConfigDict(
+        json_schema_extra={"example": RECIPE_SCALE_REQUEST_EXAMPLE}
+    )
 
 
 class RecipeScaleResponse(BaseModel):
@@ -172,4 +174,6 @@ class RecipeScaleResponse(BaseModel):
     scaled_recipe: Recipe
     metrics: RecipeMetrics
 
-    model_config = ConfigDict(json_schema_extra={"example": RECIPE_SCALE_RESPONSE_EXAMPLE})
+    model_config = ConfigDict(
+        json_schema_extra={"example": RECIPE_SCALE_RESPONSE_EXAMPLE}
+    )

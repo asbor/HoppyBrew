@@ -2,6 +2,7 @@
 Authentication and authorization utilities for HoppyBrew API
 Implements JWT-based authentication with password hashing
 """
+
 from datetime import datetime, timedelta
 from typing import Optional, Union
 from jose import JWTError, jwt
@@ -67,7 +68,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+):
     """Get current user from JWT token"""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -97,13 +100,14 @@ async def get_current_active_user(current_user: Users = Depends(get_current_user
 
 def require_role(required_role: str):
     """Dependency factory for role-based access control"""
+
     def role_checker(current_user: Users = Depends(get_current_active_user)):
         if current_user.role != required_role and current_user.role != "admin":
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not enough permissions"
+                status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
             )
         return current_user
+
     return role_checker
 
 

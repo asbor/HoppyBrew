@@ -51,7 +51,8 @@ def seed_equipment_profiles(db: Session):
     existing_count = db.query(models.EquipmentProfiles).count()
     if existing_count > 0:
         print(
-            f"✓ Equipment profiles already exist ({existing_count} found), skipping...")
+            f"✓ Equipment profiles already exist ({existing_count} found), skipping..."
+        )
         return
 
     equipment_profiles = [
@@ -126,8 +127,7 @@ def seed_water_profiles(db: Session):
     # Check if profiles already exist
     existing_count = db.query(models.WaterProfiles).count()
     if existing_count > 0:
-        print(
-            f"✓ Water profiles already exist ({existing_count} found), skipping...")
+        print(f"✓ Water profiles already exist ({existing_count} found), skipping...")
         return
 
     water_profiles = [
@@ -214,28 +214,78 @@ def seed_recipes(db: Session):
             "ibu": 65.0,
             "est_color": 8.0,
             "fermentables": [
-                {"name": "Pale Malt", "type": "Grain",
-                    "amount": 5.0, "yield_": 80.0, "color": 3.0},
-                {"name": "Munich Malt", "type": "Grain",
-                    "amount": 0.5, "yield_": 78.0, "color": 10.0},
-                {"name": "Caramel 40L", "type": "Grain",
-                    "amount": 0.3, "yield_": 75.0, "color": 40.0},
+                {
+                    "name": "Pale Malt",
+                    "type": "Grain",
+                    "amount": 5.0,
+                    "yield_": 80.0,
+                    "color": 3.0,
+                },
+                {
+                    "name": "Munich Malt",
+                    "type": "Grain",
+                    "amount": 0.5,
+                    "yield_": 78.0,
+                    "color": 10.0,
+                },
+                {
+                    "name": "Caramel 40L",
+                    "type": "Grain",
+                    "amount": 0.3,
+                    "yield_": 75.0,
+                    "color": 40.0,
+                },
             ],
             "hops": [
-                {"name": "Cascade", "origin": "USA", "alpha": 5.5,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 30.0},
-                {"name": "Centennial", "origin": "USA", "alpha": 10.0,
-                    "form": "Pellet", "use": "Boil", "time": 15, "amount": 25.0},
-                {"name": "Cascade", "origin": "USA", "alpha": 5.5,
-                    "form": "Pellet", "use": "Dry Hop", "time": 5, "amount": 50.0},
+                {
+                    "name": "Cascade",
+                    "origin": "USA",
+                    "alpha": 5.5,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 30.0,
+                },
+                {
+                    "name": "Centennial",
+                    "origin": "USA",
+                    "alpha": 10.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 15,
+                    "amount": 25.0,
+                },
+                {
+                    "name": "Cascade",
+                    "origin": "USA",
+                    "alpha": 5.5,
+                    "form": "Pellet",
+                    "use": "Dry Hop",
+                    "time": 5,
+                    "amount": 50.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle US-05", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "US-05",
-                    "min_temperature": 18.0, "max_temperature": 22.0, "attenuation": 78.0, "amount": 11.0},
+                {
+                    "name": "SafAle US-05",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "US-05",
+                    "min_temperature": 18.0,
+                    "max_temperature": 22.0,
+                    "attenuation": 78.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [
-                {"name": "Whirlfloc Tablet", "type": "Fining",
-                    "use": "Boil", "amount": 1.0, "time": 15},
+                {
+                    "name": "Whirlfloc Tablet",
+                    "type": "Fining",
+                    "use": "Boil",
+                    "amount": 1.0,
+                    "time": 15,
+                },
             ],
         },
         {
@@ -254,26 +304,67 @@ def seed_recipes(db: Session):
             "ibu": 35.0,
             "est_color": 40.0,
             "fermentables": [
-                {"name": "Pale Malt", "type": "Grain",
-                    "amount": 3.5, "yield_": 80.0, "color": 3.0},
-                {"name": "Roasted Barley", "type": "Grain",
-                    "amount": 0.35, "yield_": 70.0, "color": 300.0},
-                {"name": "Flaked Barley", "type": "Grain",
-                    "amount": 0.4, "yield_": 70.0, "color": 2.0},
-                {"name": "Chocolate Malt", "type": "Grain",
-                    "amount": 0.15, "yield_": 70.0, "color": 350.0},
+                {
+                    "name": "Pale Malt",
+                    "type": "Grain",
+                    "amount": 3.5,
+                    "yield_": 80.0,
+                    "color": 3.0,
+                },
+                {
+                    "name": "Roasted Barley",
+                    "type": "Grain",
+                    "amount": 0.35,
+                    "yield_": 70.0,
+                    "color": 300.0,
+                },
+                {
+                    "name": "Flaked Barley",
+                    "type": "Grain",
+                    "amount": 0.4,
+                    "yield_": 70.0,
+                    "color": 2.0,
+                },
+                {
+                    "name": "Chocolate Malt",
+                    "type": "Grain",
+                    "amount": 0.15,
+                    "yield_": 70.0,
+                    "color": 350.0,
+                },
             ],
             "hops": [
-                {"name": "East Kent Goldings", "origin": "UK", "alpha": 5.0,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 40.0},
+                {
+                    "name": "East Kent Goldings",
+                    "origin": "UK",
+                    "alpha": 5.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 40.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle S-04", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "S-04",
-                    "min_temperature": 15.0, "max_temperature": 20.0, "attenuation": 75.0, "amount": 11.0},
+                {
+                    "name": "SafAle S-04",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "S-04",
+                    "min_temperature": 15.0,
+                    "max_temperature": 20.0,
+                    "attenuation": 75.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [
-                {"name": "Irish Moss", "type": "Fining",
-                    "use": "Boil", "amount": 5.0, "time": 15},
+                {
+                    "name": "Irish Moss",
+                    "type": "Fining",
+                    "use": "Boil",
+                    "amount": 5.0,
+                    "time": 15,
+                },
             ],
         },
         {
@@ -292,24 +383,64 @@ def seed_recipes(db: Session):
             "ibu": 38.0,
             "est_color": 3.5,
             "fermentables": [
-                {"name": "Pilsner Malt", "type": "Grain",
-                    "amount": 4.5, "yield_": 82.0, "color": 2.0},
+                {
+                    "name": "Pilsner Malt",
+                    "type": "Grain",
+                    "amount": 4.5,
+                    "yield_": 82.0,
+                    "color": 2.0,
+                },
             ],
             "hops": [
-                {"name": "Hallertau Mittelfrüh", "origin": "Germany", "alpha": 4.0,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 35.0},
-                {"name": "Saaz", "origin": "Czech Republic", "alpha": 3.5,
-                    "form": "Pellet", "use": "Boil", "time": 15, "amount": 25.0},
-                {"name": "Hallertau Mittelfrüh", "origin": "Germany", "alpha": 4.0,
-                    "form": "Pellet", "use": "Boil", "time": 0, "amount": 15.0},
+                {
+                    "name": "Hallertau Mittelfrüh",
+                    "origin": "Germany",
+                    "alpha": 4.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 35.0,
+                },
+                {
+                    "name": "Saaz",
+                    "origin": "Czech Republic",
+                    "alpha": 3.5,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 15,
+                    "amount": 25.0,
+                },
+                {
+                    "name": "Hallertau Mittelfrüh",
+                    "origin": "Germany",
+                    "alpha": 4.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 0,
+                    "amount": 15.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafLager W-34/70", "type": "Lager", "form": "Dry", "laboratory": "Fermentis", "product_id": "W-34/70",
-                    "min_temperature": 9.0, "max_temperature": 15.0, "attenuation": 80.0, "amount": 11.0},
+                {
+                    "name": "SafLager W-34/70",
+                    "type": "Lager",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "W-34/70",
+                    "min_temperature": 9.0,
+                    "max_temperature": 15.0,
+                    "attenuation": 80.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [
-                {"name": "Calcium Chloride", "type": "Water Agent",
-                    "use": "Mash", "amount": 2.0, "time": 0},
+                {
+                    "name": "Calcium Chloride",
+                    "type": "Water Agent",
+                    "use": "Mash",
+                    "amount": 2.0,
+                    "time": 0,
+                },
             ],
         },
         {
@@ -328,18 +459,44 @@ def seed_recipes(db: Session):
             "ibu": 15.0,
             "est_color": 4.0,
             "fermentables": [
-                {"name": "Wheat Malt", "type": "Grain",
-                    "amount": 2.5, "yield_": 82.0, "color": 2.0},
-                {"name": "Pilsner Malt", "type": "Grain",
-                    "amount": 2.0, "yield_": 82.0, "color": 2.0},
+                {
+                    "name": "Wheat Malt",
+                    "type": "Grain",
+                    "amount": 2.5,
+                    "yield_": 82.0,
+                    "color": 2.0,
+                },
+                {
+                    "name": "Pilsner Malt",
+                    "type": "Grain",
+                    "amount": 2.0,
+                    "yield_": 82.0,
+                    "color": 2.0,
+                },
             ],
             "hops": [
-                {"name": "Hallertau Mittelfrüh", "origin": "Germany", "alpha": 4.0,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 20.0},
+                {
+                    "name": "Hallertau Mittelfrüh",
+                    "origin": "Germany",
+                    "alpha": 4.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 20.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafBrew WB-06", "type": "Wheat", "form": "Dry", "laboratory": "Fermentis", "product_id": "WB-06",
-                    "min_temperature": 18.0, "max_temperature": 24.0, "attenuation": 76.0, "amount": 11.0},
+                {
+                    "name": "SafBrew WB-06",
+                    "type": "Wheat",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "WB-06",
+                    "min_temperature": 18.0,
+                    "max_temperature": 24.0,
+                    "attenuation": 76.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [],
         },
@@ -359,20 +516,53 @@ def seed_recipes(db: Session):
             "ibu": 30.0,
             "est_color": 10.0,
             "fermentables": [
-                {"name": "Maris Otter", "type": "Grain",
-                    "amount": 3.6, "yield_": 82.0, "color": 3.0},
-                {"name": "Caramel 60L", "type": "Grain",
-                    "amount": 0.25, "yield_": 75.0, "color": 60.0},
+                {
+                    "name": "Maris Otter",
+                    "type": "Grain",
+                    "amount": 3.6,
+                    "yield_": 82.0,
+                    "color": 3.0,
+                },
+                {
+                    "name": "Caramel 60L",
+                    "type": "Grain",
+                    "amount": 0.25,
+                    "yield_": 75.0,
+                    "color": 60.0,
+                },
             ],
             "hops": [
-                {"name": "Fuggle", "origin": "UK", "alpha": 4.5,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 30.0},
-                {"name": "East Kent Goldings", "origin": "UK", "alpha": 5.0,
-                    "form": "Pellet", "use": "Boil", "time": 15, "amount": 15.0},
+                {
+                    "name": "Fuggle",
+                    "origin": "UK",
+                    "alpha": 4.5,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 30.0,
+                },
+                {
+                    "name": "East Kent Goldings",
+                    "origin": "UK",
+                    "alpha": 5.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 15,
+                    "amount": 15.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle S-04", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "S-04",
-                    "min_temperature": 15.0, "max_temperature": 20.0, "attenuation": 75.0, "amount": 11.0},
+                {
+                    "name": "SafAle S-04",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "S-04",
+                    "min_temperature": 15.0,
+                    "max_temperature": 20.0,
+                    "attenuation": 75.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [],
         },
@@ -392,24 +582,67 @@ def seed_recipes(db: Session):
             "ibu": 25.0,
             "est_color": 18.0,
             "fermentables": [
-                {"name": "Pilsner Malt", "type": "Grain",
-                    "amount": 4.5, "yield_": 82.0, "color": 2.0},
-                {"name": "Munich Malt", "type": "Grain",
-                    "amount": 1.0, "yield_": 78.0, "color": 10.0},
-                {"name": "Caramunich", "type": "Grain",
-                    "amount": 0.3, "yield_": 75.0, "color": 60.0},
-                {"name": "Dark Candi Sugar", "type": "Sugar",
-                    "amount": 0.5, "yield_": 100.0, "color": 80.0},
+                {
+                    "name": "Pilsner Malt",
+                    "type": "Grain",
+                    "amount": 4.5,
+                    "yield_": 82.0,
+                    "color": 2.0,
+                },
+                {
+                    "name": "Munich Malt",
+                    "type": "Grain",
+                    "amount": 1.0,
+                    "yield_": 78.0,
+                    "color": 10.0,
+                },
+                {
+                    "name": "Caramunich",
+                    "type": "Grain",
+                    "amount": 0.3,
+                    "yield_": 75.0,
+                    "color": 60.0,
+                },
+                {
+                    "name": "Dark Candi Sugar",
+                    "type": "Sugar",
+                    "amount": 0.5,
+                    "yield_": 100.0,
+                    "color": 80.0,
+                },
             ],
             "hops": [
-                {"name": "Styrian Goldings", "origin": "Slovenia", "alpha": 5.0,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 25.0},
-                {"name": "Styrian Goldings", "origin": "Slovenia", "alpha": 5.0,
-                    "form": "Pellet", "use": "Boil", "time": 15, "amount": 15.0},
+                {
+                    "name": "Styrian Goldings",
+                    "origin": "Slovenia",
+                    "alpha": 5.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 25.0,
+                },
+                {
+                    "name": "Styrian Goldings",
+                    "origin": "Slovenia",
+                    "alpha": 5.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 15,
+                    "amount": 15.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle T-58", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "T-58",
-                    "min_temperature": 18.0, "max_temperature": 24.0, "attenuation": 74.0, "amount": 11.0},
+                {
+                    "name": "SafAle T-58",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "T-58",
+                    "min_temperature": 18.0,
+                    "max_temperature": 24.0,
+                    "attenuation": 74.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [],
         },
@@ -429,26 +662,71 @@ def seed_recipes(db: Session):
             "ibu": 45.0,
             "est_color": 7.0,
             "fermentables": [
-                {"name": "Pale Malt", "type": "Grain",
-                    "amount": 4.5, "yield_": 80.0, "color": 3.0},
-                {"name": "Caramel 20L", "type": "Grain",
-                    "amount": 0.3, "yield_": 75.0, "color": 20.0},
+                {
+                    "name": "Pale Malt",
+                    "type": "Grain",
+                    "amount": 4.5,
+                    "yield_": 80.0,
+                    "color": 3.0,
+                },
+                {
+                    "name": "Caramel 20L",
+                    "type": "Grain",
+                    "amount": 0.3,
+                    "yield_": 75.0,
+                    "color": 20.0,
+                },
             ],
             "hops": [
-                {"name": "Chinook", "origin": "USA", "alpha": 13.0,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 20.0},
-                {"name": "Cascade", "origin": "USA", "alpha": 5.5,
-                    "form": "Pellet", "use": "Boil", "time": 10, "amount": 30.0},
-                {"name": "Centennial", "origin": "USA", "alpha": 10.0,
-                    "form": "Pellet", "use": "Boil", "time": 0, "amount": 25.0},
+                {
+                    "name": "Chinook",
+                    "origin": "USA",
+                    "alpha": 13.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 20.0,
+                },
+                {
+                    "name": "Cascade",
+                    "origin": "USA",
+                    "alpha": 5.5,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 10,
+                    "amount": 30.0,
+                },
+                {
+                    "name": "Centennial",
+                    "origin": "USA",
+                    "alpha": 10.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 0,
+                    "amount": 25.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle US-05", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "US-05",
-                    "min_temperature": 18.0, "max_temperature": 22.0, "attenuation": 78.0, "amount": 11.0},
+                {
+                    "name": "SafAle US-05",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "US-05",
+                    "min_temperature": 18.0,
+                    "max_temperature": 22.0,
+                    "attenuation": 78.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [
-                {"name": "Whirlfloc Tablet", "type": "Fining",
-                    "use": "Boil", "amount": 1.0, "time": 15},
+                {
+                    "name": "Whirlfloc Tablet",
+                    "type": "Fining",
+                    "use": "Boil",
+                    "amount": 1.0,
+                    "time": 15,
+                },
             ],
         },
         {
@@ -467,24 +745,67 @@ def seed_recipes(db: Session):
             "ibu": 30.0,
             "est_color": 30.0,
             "fermentables": [
-                {"name": "Pale Malt", "type": "Grain",
-                    "amount": 4.0, "yield_": 80.0, "color": 3.0},
-                {"name": "Chocolate Malt", "type": "Grain",
-                    "amount": 0.4, "yield_": 70.0, "color": 350.0},
-                {"name": "Caramel 80L", "type": "Grain",
-                    "amount": 0.3, "yield_": 75.0, "color": 80.0},
-                {"name": "Black Patent", "type": "Grain",
-                    "amount": 0.15, "yield_": 70.0, "color": 500.0},
+                {
+                    "name": "Pale Malt",
+                    "type": "Grain",
+                    "amount": 4.0,
+                    "yield_": 80.0,
+                    "color": 3.0,
+                },
+                {
+                    "name": "Chocolate Malt",
+                    "type": "Grain",
+                    "amount": 0.4,
+                    "yield_": 70.0,
+                    "color": 350.0,
+                },
+                {
+                    "name": "Caramel 80L",
+                    "type": "Grain",
+                    "amount": 0.3,
+                    "yield_": 75.0,
+                    "color": 80.0,
+                },
+                {
+                    "name": "Black Patent",
+                    "type": "Grain",
+                    "amount": 0.15,
+                    "yield_": 70.0,
+                    "color": 500.0,
+                },
             ],
             "hops": [
-                {"name": "Fuggle", "origin": "UK", "alpha": 4.5,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 35.0},
-                {"name": "Willamette", "origin": "USA", "alpha": 5.0,
-                    "form": "Pellet", "use": "Boil", "time": 15, "amount": 15.0},
+                {
+                    "name": "Fuggle",
+                    "origin": "UK",
+                    "alpha": 4.5,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 35.0,
+                },
+                {
+                    "name": "Willamette",
+                    "origin": "USA",
+                    "alpha": 5.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 15,
+                    "amount": 15.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle S-04", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "S-04",
-                    "min_temperature": 15.0, "max_temperature": 20.0, "attenuation": 75.0, "amount": 11.0},
+                {
+                    "name": "SafAle S-04",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "S-04",
+                    "min_temperature": 15.0,
+                    "max_temperature": 20.0,
+                    "attenuation": 75.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [],
         },
@@ -504,20 +825,53 @@ def seed_recipes(db: Session):
             "ibu": 25.0,
             "est_color": 4.0,
             "fermentables": [
-                {"name": "Pilsner Malt", "type": "Grain",
-                    "amount": 4.0, "yield_": 82.0, "color": 2.0},
-                {"name": "Wheat Malt", "type": "Grain",
-                    "amount": 0.4, "yield_": 82.0, "color": 2.0},
+                {
+                    "name": "Pilsner Malt",
+                    "type": "Grain",
+                    "amount": 4.0,
+                    "yield_": 82.0,
+                    "color": 2.0,
+                },
+                {
+                    "name": "Wheat Malt",
+                    "type": "Grain",
+                    "amount": 0.4,
+                    "yield_": 82.0,
+                    "color": 2.0,
+                },
             ],
             "hops": [
-                {"name": "Hallertau Mittelfrüh", "origin": "Germany", "alpha": 4.0,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 30.0},
-                {"name": "Spalt", "origin": "Germany", "alpha": 4.5,
-                    "form": "Pellet", "use": "Boil", "time": 15, "amount": 20.0},
+                {
+                    "name": "Hallertau Mittelfrüh",
+                    "origin": "Germany",
+                    "alpha": 4.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 30.0,
+                },
+                {
+                    "name": "Spalt",
+                    "origin": "Germany",
+                    "alpha": 4.5,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 15,
+                    "amount": 20.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle K-97", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "K-97",
-                    "min_temperature": 15.0, "max_temperature": 20.0, "attenuation": 77.0, "amount": 11.0},
+                {
+                    "name": "SafAle K-97",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "K-97",
+                    "min_temperature": 15.0,
+                    "max_temperature": 20.0,
+                    "attenuation": 77.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [],
         },
@@ -537,34 +891,103 @@ def seed_recipes(db: Session):
             "ibu": 75.0,
             "est_color": 6.0,
             "fermentables": [
-                {"name": "Pale Malt", "type": "Grain",
-                    "amount": 5.5, "yield_": 80.0, "color": 3.0},
-                {"name": "Caramel 10L", "type": "Grain",
-                    "amount": 0.5, "yield_": 75.0, "color": 10.0},
-                {"name": "Dextrose", "type": "Sugar",
-                    "amount": 0.3, "yield_": 100.0, "color": 0.0},
+                {
+                    "name": "Pale Malt",
+                    "type": "Grain",
+                    "amount": 5.5,
+                    "yield_": 80.0,
+                    "color": 3.0,
+                },
+                {
+                    "name": "Caramel 10L",
+                    "type": "Grain",
+                    "amount": 0.5,
+                    "yield_": 75.0,
+                    "color": 10.0,
+                },
+                {
+                    "name": "Dextrose",
+                    "type": "Sugar",
+                    "amount": 0.3,
+                    "yield_": 100.0,
+                    "color": 0.0,
+                },
             ],
             "hops": [
-                {"name": "Columbus", "origin": "USA", "alpha": 15.0,
-                    "form": "Pellet", "use": "Boil", "time": 60, "amount": 25.0},
-                {"name": "Simcoe", "origin": "USA", "alpha": 13.0,
-                    "form": "Pellet", "use": "Boil", "time": 15, "amount": 30.0},
-                {"name": "Citra", "origin": "USA", "alpha": 12.0,
-                    "form": "Pellet", "use": "Boil", "time": 0, "amount": 30.0},
-                {"name": "Mosaic", "origin": "USA", "alpha": 12.5,
-                    "form": "Pellet", "use": "Dry Hop", "time": 7, "amount": 50.0},
-                {"name": "Citra", "origin": "USA", "alpha": 12.0,
-                    "form": "Pellet", "use": "Dry Hop", "time": 7, "amount": 50.0},
+                {
+                    "name": "Columbus",
+                    "origin": "USA",
+                    "alpha": 15.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 60,
+                    "amount": 25.0,
+                },
+                {
+                    "name": "Simcoe",
+                    "origin": "USA",
+                    "alpha": 13.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 15,
+                    "amount": 30.0,
+                },
+                {
+                    "name": "Citra",
+                    "origin": "USA",
+                    "alpha": 12.0,
+                    "form": "Pellet",
+                    "use": "Boil",
+                    "time": 0,
+                    "amount": 30.0,
+                },
+                {
+                    "name": "Mosaic",
+                    "origin": "USA",
+                    "alpha": 12.5,
+                    "form": "Pellet",
+                    "use": "Dry Hop",
+                    "time": 7,
+                    "amount": 50.0,
+                },
+                {
+                    "name": "Citra",
+                    "origin": "USA",
+                    "alpha": 12.0,
+                    "form": "Pellet",
+                    "use": "Dry Hop",
+                    "time": 7,
+                    "amount": 50.0,
+                },
             ],
             "yeasts": [
-                {"name": "SafAle US-05", "type": "Ale", "form": "Dry", "laboratory": "Fermentis", "product_id": "US-05",
-                    "min_temperature": 18.0, "max_temperature": 22.0, "attenuation": 78.0, "amount": 11.0},
+                {
+                    "name": "SafAle US-05",
+                    "type": "Ale",
+                    "form": "Dry",
+                    "laboratory": "Fermentis",
+                    "product_id": "US-05",
+                    "min_temperature": 18.0,
+                    "max_temperature": 22.0,
+                    "attenuation": 78.0,
+                    "amount": 11.0,
+                },
             ],
             "miscs": [
-                {"name": "Gypsum", "type": "Water Agent",
-                    "use": "Mash", "amount": 5.0, "time": 0},
-                {"name": "Whirlfloc Tablet", "type": "Fining",
-                    "use": "Boil", "amount": 1.0, "time": 15},
+                {
+                    "name": "Gypsum",
+                    "type": "Water Agent",
+                    "use": "Mash",
+                    "amount": 5.0,
+                    "time": 0,
+                },
+                {
+                    "name": "Whirlfloc Tablet",
+                    "type": "Fining",
+                    "use": "Boil",
+                    "amount": 1.0,
+                    "time": 15,
+                },
             ],
         },
     ]
@@ -584,8 +1007,7 @@ def seed_recipes(db: Session):
 
         # Add fermentables
         for ferm_data in fermentables:
-            fermentable = models.RecipeFermentable(
-                recipe_id=recipe.id, **ferm_data)
+            fermentable = models.RecipeFermentable(recipe_id=recipe.id, **ferm_data)
             db.add(fermentable)
 
         # Add hops
@@ -661,10 +1083,7 @@ def seed_batches(db: Session, recipes):
 
         # Create batch
         batch = models.Batches(
-            recipe_id=recipe.id,
-            **batch_data,
-            created_at=now,
-            updated_at=now
+            recipe_id=recipe.id, **batch_data, created_at=now, updated_at=now
         )
         batch.status = batch_status
         db.add(batch)
@@ -752,15 +1171,14 @@ def main():
         print("\nSummary:")
         print(f"  - {db.query(models.Recipes).count()} recipes")
         print(f"  - {db.query(models.Batches).count()} batches")
-        print(
-            f"  - {db.query(models.EquipmentProfiles).count()} equipment profiles")
+        print(f"  - {db.query(models.EquipmentProfiles).count()} equipment profiles")
         print(f"  - {db.query(models.WaterProfiles).count()} water profiles")
-        print(
-            f"  - {db.query(models.RecipeFermentable).count()} recipe fermentables")
+        print(f"  - {db.query(models.RecipeFermentable).count()} recipe fermentables")
         print(f"  - {db.query(models.RecipeHop).count()} recipe hops")
         print(f"  - {db.query(models.RecipeYeast).count()} recipe yeasts")
         print(
-            f"  - {db.query(models.InventoryFermentable).count()} inventory fermentables")
+            f"  - {db.query(models.InventoryFermentable).count()} inventory fermentables"
+        )
         print(f"  - {db.query(models.InventoryHop).count()} inventory hops")
         print(f"  - {db.query(models.InventoryYeast).count()} inventory yeasts")
         print("=" * 60)
