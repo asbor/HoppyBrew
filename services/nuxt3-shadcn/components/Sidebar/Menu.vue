@@ -60,8 +60,8 @@ const items = ref([
   { title: "Library", path: "/library", icon: "lucide:library-big" },
   // Profiles
   { title: "Profiles", path: "/profiles", icon: "ri:contacts-line" },
-  // Beer Styles
-  { title: "Beer Styles", path: "/beer-styles", icon: "ri:file-list-3-line" },
+  // Styles
+  { title: "Styles", path: "/styles", icon: "ri:file-list-3-line" },
   // Tools
   { title: "Tools", path: "/tools", icon: "ri:tools-line" },
   // Settings
