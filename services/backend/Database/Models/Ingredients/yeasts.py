@@ -24,6 +24,7 @@ class RecipeYeast(Base):
     add_to_secondary = Column(Boolean, nullable=True)
     stage = Column(String, nullable=True)  # mash/boil/fermentation
     duration = Column(Integer, nullable=True)  # duration in minutes
+    cost_per_unit = Column(Float, nullable=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="yeasts")
 
@@ -47,5 +48,6 @@ class InventoryYeast(Base):
     times_cultured = Column(Integer, nullable=True)
     max_reuse = Column(Integer, nullable=True)
     add_to_secondary = Column(Boolean, nullable=True)
+    cost_per_unit = Column(Float, nullable=True)
     batch_id = Column(Integer, ForeignKey("batches.id"))
     batch = relationship("Batches", back_populates="inventory_yeasts")

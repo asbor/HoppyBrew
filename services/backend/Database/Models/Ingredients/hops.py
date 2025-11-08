@@ -24,6 +24,7 @@ class RecipeHop(Base):
     display_amount = Column(String, nullable=True)
     inventory = Column(String, nullable=True)
     display_time = Column(String, nullable=True)
+    cost_per_unit = Column(Float, nullable=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="hops")
 
@@ -45,5 +46,6 @@ class InventoryHop(Base):
     display_amount = Column(String, nullable=True)
     inventory = Column(String, nullable=True)
     display_time = Column(String, nullable=True)
+    cost_per_unit = Column(Float, nullable=True)
     batch_id = Column(Integer, ForeignKey("batches.id"))
     batch = relationship("Batches", back_populates="inventory_hops")

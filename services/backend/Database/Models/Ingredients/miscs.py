@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -20,6 +20,7 @@ class RecipeMisc(Base):
     batch_size = Column(Integer, nullable=True)
     stage = Column(String, nullable=True)  # mash/boil/fermentation
     duration = Column(Integer, nullable=True)  # duration in minutes
+    cost_per_unit = Column(Float, nullable=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="miscs")
 
@@ -39,5 +40,6 @@ class InventoryMisc(Base):
     inventory = Column(Integer, nullable=True)
     display_time = Column(String, nullable=True)
     batch_size = Column(Integer, nullable=True)
+    cost_per_unit = Column(Float, nullable=True)
     batch_id = Column(Integer, ForeignKey("batches.id"))
     batch = relationship("Batches", back_populates="inventory_miscs")
