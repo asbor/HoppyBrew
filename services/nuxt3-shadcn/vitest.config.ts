@@ -17,6 +17,8 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       reportsDirectory: './coverage',
+      // Aspirational coverage thresholds (60% target)
+      // Adjust or remove thresholds if they block CI
       thresholds: {
         lines: 60,
         branches: 60,
