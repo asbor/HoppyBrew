@@ -1,7 +1,6 @@
 <script setup lang="ts">
+import { ChevronLeft, Edit, Copy, Play } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { 
   Dialog, 
   DialogContent, 
@@ -10,18 +9,20 @@ import {
   DialogHeader, 
   DialogTitle 
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import type { Recipe } from '@/composables/useRecipes'
 import type { BatchCreate } from '@/composables/useBatches'
 
 const route = useRoute()
 const router = useRouter()
-const { fetchOne, update, loading: recipeLoading, error: recipeError } = useRecipes()
+const { fetchOne, loading: recipeLoading, error: recipeError } = useRecipes()
 const { create: createBatch, loading: batchLoading } = useBatches()
 const { generateBatchName } = useFormatters()
 
 const recipeId = route.params.id as string
 const recipe = ref<Recipe | null>(null)
-const isLoading = computed(() => recipeLoading.value || batchLoading.value)
+const isLoading = computed(() => recipeLoading.value)
 
 // Start Brew Dialog state
 const showStartBrewDialog = ref(false)
@@ -45,19 +46,19 @@ onMounted(async () => {
   }
 })
 
-async function handleUpdateRecipe() {
-  if (!recipe.value) return
-  
-  const result = await update(recipeId, recipe.value)
-  if (!result.error.value) {
-    router.back()
-  } else {
-    alert(`Failed to update recipe: ${result.error.value}`)
-  }
+// Set page title
+useHead({
+  title: computed(() => recipe.value ? `${recipe.value.name} - Recipe` : 'Recipe Details')
+})
+
+// Action handlers
+const editRecipe = () => {
+  router.push(`/recipes/${recipeId}/edit`)
 }
 
-function handleCancel() {
-  router.back()
+const cloneRecipe = () => {
+  // TODO: Implement clone functionality
+  console.log('Clone recipe:', recipeId)
 }
 
 function openStartBrewDialog() {
@@ -92,170 +93,141 @@ async function handleStartBrew() {
     alert(`Failed to create batch: ${result.error.value}`)
   }
 }
+
+// Handle recipe not found
+watchEffect(() => {
+  if (!isLoading.value && !recipe.value && !recipeError.value) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Recipe not found'
+    })
+  }
+})
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <header class="flex justify-between items-start">
-      <div>
-        <h1 class="text-3xl font-bold">Edit Recipe</h1>
-        <p v-if="recipe" class="text-muted-foreground">{{ recipe.name }}</p>
-      </div>
-      <div class="flex gap-3">
-        <Button @click="openStartBrewDialog" variant="default" :disabled="isLoading || !recipe">
-          <Icon name="mdi:flask" class="mr-2 h-4 w-4" />
-          Start Brew
-        </Button>
-      </div>
-    </header>
-
+  <div class="container mx-auto p-6">
     <!-- Loading State -->
-    <div v-if="isLoading && !recipe" class="text-center py-12">
-      <p class="text-muted-foreground">Loading recipe...</p>
+    <div v-if="isLoading && !recipe" class="flex justify-center">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <p class="mt-4 text-gray-600">Loading recipe...</p>
+      </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="recipeError" class="text-center py-12">
-      <p class="text-destructive">Error loading recipe: {{ recipeError }}</p>
+    <div v-else-if="recipeError" class="text-center">
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <strong class="font-bold">Error!</strong>
+        <span class="block sm:inline">{{ recipeError }}</span>
+      </div>
+      <nuxt-link to="/recipes" class="mt-4 inline-block text-blue-600 hover:text-blue-800">
+        ← Back to Recipes
+      </nuxt-link>
     </div>
 
-    <!-- Recipe Edit Form -->
-    <form v-else-if="recipe" @submit.prevent="handleUpdateRecipe" class="space-y-6">
-      <!-- Three columns -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="border-2 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold mb-3">Recipe Info</h3>
-          <div class="space-y-3">
-            <div>
-              <Label for="name">Name</Label>
-              <Input type="text" id="name" v-model="recipe.name" required />
-            </div>
-            <div>
-              <Label for="brewer">Brewer</Label>
-              <Input type="text" id="brewer" v-model="recipe.brewer" />
-            </div>
-            <div>
-              <Label for="type">Type</Label>
-              <Input type="text" id="type" v-model="recipe.type" required />
-            </div>
+    <!-- Recipe Detail View -->
+    <div v-else-if="recipe" class="space-y-6">
+      <!-- Header with Recipe Actions -->
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="flex items-center space-x-4 mb-2">
+            <nuxt-link to="/recipes" class="text-blue-600 hover:text-blue-800 flex items-center">
+              <ChevronLeft class="h-4 w-4 mr-1" />
+              Back to Recipes
+            </nuxt-link>
           </div>
+          <h1 class="text-3xl font-bold text-gray-900">{{ recipe.name }}</h1>
+          <p v-if="recipe.type" class="text-lg text-gray-600 mt-1">{{ recipe.type }}</p>
         </div>
-
-        <div class="border-2 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold mb-3">Equipment</h3>
-          <div class="space-y-3">
-            <div>
-              <Label for="batch_size">Batch Size (L)</Label>
-              <Input type="number" step="0.1" id="batch_size" v-model.number="recipe.batch_size" required />
-            </div>
-            <div>
-              <Label for="boil_size">Boil Size (L)</Label>
-              <Input type="number" step="0.1" id="boil_size" v-model.number="recipe.boil_size" required />
-            </div>
-            <div>
-              <Label for="boil_time">Boil Time (min)</Label>
-              <Input type="number" id="boil_time" v-model.number="recipe.boil_time" required />
-            </div>
-            <div>
-              <Label for="efficiency">Efficiency (%)</Label>
-              <Input type="number" step="0.1" id="efficiency" v-model.number="recipe.efficiency" required />
-            </div>
-          </div>
-        </div>
-
-        <div class="border-2 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold mb-3">Style</h3>
-          <div class="space-y-3">
-            <div>
-              <Label for="abv">ABV (%)</Label>
-              <Input type="number" step="0.1" id="abv" v-model.number="recipe.abv" />
-            </div>
-            <div>
-              <Label for="og">OG</Label>
-              <Input type="number" step="0.001" id="og" v-model.number="recipe.og" />
-            </div>
-            <div>
-              <Label for="fg">FG</Label>
-              <Input type="number" step="0.001" id="fg" v-model.number="recipe.fg" />
-            </div>
-            <div>
-              <Label for="ibu">IBU</Label>
-              <Input type="number" step="0.1" id="ibu" v-model.number="recipe.ibu" />
-            </div>
-            <div>
-              <Label for="est_color">EBC</Label>
-              <Input type="number" step="0.1" id="est_color" v-model.number="recipe.est_color" />
-            </div>
-          </div>
+        
+        <div class="flex space-x-2">
+          <Button variant="outline" @click="editRecipe">
+            <Edit class="h-4 w-4 mr-2" />
+            Edit
+          </Button>
+          <Button variant="outline" @click="cloneRecipe">
+            <Copy class="h-4 w-4 mr-2" />
+            Clone
+          </Button>
+          <Button @click="openStartBrewDialog" class="bg-green-600 hover:bg-green-700">
+            <Play class="h-4 w-4 mr-2" />
+            Start Batch
+          </Button>
         </div>
       </div>
 
-      <!-- Ingredients Section -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="border-2 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold mb-3">Fermentables</h3>
-          <div v-if="recipe.fermentables && recipe.fermentables.length > 0" class="space-y-2">
-            <div v-for="(fermentable, index) in recipe.fermentables" :key="index" class="text-sm">
-              {{ fermentable.name || 'Unnamed' }}
-            </div>
-          </div>
-          <p v-else class="text-sm text-muted-foreground">No fermentables added</p>
-        </div>
+      <!-- Recipe Overview Block -->
+      <RecipeBlock v-if="recipe" :recipe="recipe" />
 
-        <div class="border-2 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold mb-3">Hops</h3>
-          <div v-if="recipe.hops && recipe.hops.length > 0" class="space-y-2">
-            <div v-for="(hop, index) in recipe.hops" :key="index" class="text-sm">
-              {{ hop.name || 'Unnamed' }}
-            </div>
+      <!-- Recipe Metrics -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg border p-4 text-center">
+          <div class="text-2xl font-bold text-blue-600">
+            {{ recipe.abv?.toFixed(1) || recipe.est_abv?.toFixed(1) || '--' }}%
           </div>
-          <p v-else class="text-sm text-muted-foreground">No hops added</p>
+          <div class="text-sm text-gray-600">ABV</div>
         </div>
-
-        <div class="border-2 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold mb-3">Miscs</h3>
-          <div v-if="recipe.miscs && recipe.miscs.length > 0" class="space-y-2">
-            <div v-for="(misc, index) in recipe.miscs" :key="index" class="text-sm">
-              {{ misc.name || 'Unnamed' }}
-            </div>
+        <div class="bg-white rounded-lg border p-4 text-center">
+          <div class="text-2xl font-bold text-amber-600">
+            {{ recipe.ibu?.toFixed(0) || '--' }}
           </div>
-          <p v-else class="text-sm text-muted-foreground">No miscs added</p>
+          <div class="text-sm text-gray-600">IBU</div>
         </div>
-
-        <div class="border-2 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold mb-3">Yeasts</h3>
-          <div v-if="recipe.yeasts && recipe.yeasts.length > 0" class="space-y-2">
-            <div v-for="(yeast, index) in recipe.yeasts" :key="index" class="text-sm">
-              {{ yeast.name || 'Unnamed' }}
-            </div>
+        <div class="bg-white rounded-lg border p-4 text-center">
+          <div class="text-2xl font-bold text-orange-600">
+            {{ recipe.est_color?.toFixed(0) || '--' }}
           </div>
-          <p v-else class="text-sm text-muted-foreground">No yeasts added</p>
+          <div class="text-sm text-gray-600">SRM</div>
+        </div>
+        <div class="bg-white rounded-lg border p-4 text-center">
+          <div class="text-2xl font-bold text-green-600">
+            {{ recipe.og?.toFixed(3) || recipe.est_og?.toFixed(3) || '--' }}
+          </div>
+          <div class="text-sm text-gray-600">OG</div>
         </div>
       </div>
 
-      <!-- Notes Section -->
-      <div class="border-2 p-4 rounded-lg">
-        <h3 class="text-lg font-semibold mb-3">Notes</h3>
-        <textarea 
-          id="notes" 
-          v-model="recipe.notes" 
-          rows="4"
-          class="w-full border border-input rounded-lg p-2 bg-background"
-          placeholder="Add brewing notes..."
-        ></textarea>
+      <!-- Ingredients Sections -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Fermentables -->
+        <FermentablesBlock 
+          v-if="recipe.fermentables && recipe.fermentables.length > 0"
+          :fermentables="recipe.fermentables" 
+        />
+
+        <!-- Hops -->
+        <HopsBlock 
+          v-if="recipe.hops && recipe.hops.length > 0"
+          :hops="recipe.hops" 
+        />
+
+        <!-- Yeasts -->
+        <YeastBlock 
+          v-if="recipe.yeasts && recipe.yeasts.length > 0"
+          :yeasts="recipe.yeasts" 
+        />
+
+        <!-- Miscs -->
+        <MiscsBlock 
+          v-if="recipe.miscs && recipe.miscs.length > 0"
+          :miscs="recipe.miscs" 
+        />
       </div>
 
-      <!-- Footer Actions -->
-      <div class="flex justify-end gap-3">
-        <Button type="button" variant="outline" @click="handleCancel">
-          Cancel
-        </Button>
-        <Button type="submit" :disabled="isLoading">
-          Save Changes
-        </Button>
+      <!-- Additional Information Blocks -->
+      <div class="space-y-6">
+        <EquipmentBlock v-if="recipe.equipment_profiles" :equipment="recipe.equipment_profiles" />
+        <StyleBlock v-if="recipe.style_profile || recipe.style_guideline" 
+          :style-profile="recipe.style_profile"
+          :style-guideline="recipe.style_guideline" 
+        />
+        <WaterBlock v-if="recipe.water_profiles" :water="recipe.water_profiles" />
+        <MashBlock v-if="recipe.mash_profile" :mash="recipe.mash_profile" />
+        <FermentationBlock :recipe="recipe" />
+        <NotesBlock :recipe="recipe" />
       </div>
-    </form>
+    </div>
 
     <!-- Start Brew Dialog -->
     <Dialog v-model:open="showStartBrewDialog">
