@@ -1,8 +1,8 @@
 {
   "agent_id": "ARCH-001",
-  "agent_name": "ARCHITECTURE",
-  "status": "RUNNING",
-  "started_at": "2025-11-08T17:24:58Z",
-  "pid": 2386332,
-  "priority": 1
+  "pid": 2411137,
+  "started_at": "2025-11-08T18:00:36Z",
+  "context_file": ".agents/CODEX_AGENT_ARCHITECTURE.md",
+  "workspace": "/home/asbo/repo/HoppyBrew",
+  "status": "RUNNING"
 }
