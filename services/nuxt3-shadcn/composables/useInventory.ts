@@ -344,6 +344,19 @@ export const useInventory = () => {
     return response
   }
 
+  // Barcode functions
+  async function lookupByBarcode(barcode: string) {
+    const response = await api.get(`/inventory/barcode/${barcode}`)
+    return response
+  }
+
+  async function updateBarcode(itemType: string, itemId: string, barcode: string | null) {
+    const response = await api.put(`/inventory/${itemType}/${itemId}/barcode`, null, {
+      params: { barcode }
+    })
+    return response
+  }
+
   return {
     // Hops
     hops,
@@ -386,5 +399,9 @@ export const useInventory = () => {
     checkInventoryAvailability,
     consumeIngredients,
     getIngredientTracking,
+    
+    // Barcode
+    lookupByBarcode,
+    updateBarcode,
   }
 }

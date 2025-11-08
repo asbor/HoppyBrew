@@ -31,6 +31,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
+    "html5-qrcode": "^2.3.8",
     "lucide-vue-next": "^0.368.0",
     "nuxt": "^3.11.2",
     "nuxt-highcharts": "^3.1.1",
