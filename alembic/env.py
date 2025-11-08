@@ -18,6 +18,10 @@ if config.config_file_name is not None:
 
 # Ensure the services/backend package root is on sys.path so imports resolve.
 BASE_DIR = Path(__file__).resolve().parents[1]
+BACKEND_DIR = BASE_DIR / "services" / "backend"
+# Add backend directory FIRST to prioritize local imports
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
 if str(BASE_DIR) not in sys.path:
     sys.path.append(str(BASE_DIR))
 

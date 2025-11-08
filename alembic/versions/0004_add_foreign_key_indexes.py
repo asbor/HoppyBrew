@@ -33,6 +33,16 @@ def get_existing_indexes(bind, table_name: str) -> set[str]:
         return set()
 
 
+def has_column(bind, table_name: str, column_name: str) -> bool:
+    """Check if a table has a specific column."""
+    inspector = inspect(bind)
+    try:
+        columns = inspector.get_columns(table_name)
+        return any(col['name'] == column_name for col in columns)
+    except Exception:
+        return False
+
+
 def upgrade() -> None:
     """Add foreign key indexes for performance optimization."""
 
@@ -42,14 +52,15 @@ def upgrade() -> None:
     if 'inventory_fermentables' in inspect(bind).get_table_names():
         existing = get_existing_indexes(bind, 'inventory_fermentables')
 
-        if 'idx_inventory_fermentables_batch_id' not in existing:
+        if has_column(bind, 'inventory_fermentables', 'batch_id') and 'idx_inventory_fermentables_batch_id' not in existing:
             op.create_index(
                 'idx_inventory_fermentables_batch_id',
                 'inventory_fermentables',
                 ['batch_id']
             )
 
-        if 'idx_inventory_fermentables_recipe_id' not in existing:
+        # Only create recipe_id index if column exists
+        if has_column(bind, 'inventory_fermentables', 'recipe_id') and 'idx_inventory_fermentables_recipe_id' not in existing:
             op.create_index(
                 'idx_inventory_fermentables_recipe_id',
                 'inventory_fermentables',
@@ -60,14 +71,15 @@ def upgrade() -> None:
     if 'inventory_hops' in inspect(bind).get_table_names():
         existing = get_existing_indexes(bind, 'inventory_hops')
 
-        if 'idx_inventory_hops_batch_id' not in existing:
+        if has_column(bind, 'inventory_hops', 'batch_id') and 'idx_inventory_hops_batch_id' not in existing:
             op.create_index(
                 'idx_inventory_hops_batch_id',
                 'inventory_hops',
                 ['batch_id']
             )
 
-        if 'idx_inventory_hops_recipe_id' not in existing:
+        # Only create recipe_id index if column exists
+        if has_column(bind, 'inventory_hops', 'recipe_id') and 'idx_inventory_hops_recipe_id' not in existing:
             op.create_index(
                 'idx_inventory_hops_recipe_id',
                 'inventory_hops',
@@ -78,14 +90,15 @@ def upgrade() -> None:
     if 'inventory_yeasts' in inspect(bind).get_table_names():
         existing = get_existing_indexes(bind, 'inventory_yeasts')
 
-        if 'idx_inventory_yeasts_batch_id' not in existing:
+        if has_column(bind, 'inventory_yeasts', 'batch_id') and 'idx_inventory_yeasts_batch_id' not in existing:
             op.create_index(
                 'idx_inventory_yeasts_batch_id',
                 'inventory_yeasts',
                 ['batch_id']
             )
 
-        if 'idx_inventory_yeasts_recipe_id' not in existing:
+        # Only create recipe_id index if column exists
+        if has_column(bind, 'inventory_yeasts', 'recipe_id') and 'idx_inventory_yeasts_recipe_id' not in existing:
             op.create_index(
                 'idx_inventory_yeasts_recipe_id',
                 'inventory_yeasts',
@@ -96,14 +109,15 @@ def upgrade() -> None:
     if 'inventory_miscs' in inspect(bind).get_table_names():
         existing = get_existing_indexes(bind, 'inventory_miscs')
 
-        if 'idx_inventory_miscs_batch_id' not in existing:
+        if has_column(bind, 'inventory_miscs', 'batch_id') and 'idx_inventory_miscs_batch_id' not in existing:
             op.create_index(
                 'idx_inventory_miscs_batch_id',
                 'inventory_miscs',
                 ['batch_id']
             )
 
-        if 'idx_inventory_miscs_recipe_id' not in existing:
+        # Only create recipe_id index if column exists
+        if has_column(bind, 'inventory_miscs', 'recipe_id') and 'idx_inventory_miscs_recipe_id' not in existing:
             op.create_index(
                 'idx_inventory_miscs_recipe_id',
                 'inventory_miscs',
