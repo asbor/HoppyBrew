@@ -65,11 +65,15 @@ services:
     build:
       context: ./services/nuxt3-shadcn
       dockerfile: Dockerfile
+      args:
+        HOST_UID: ${HOST_UID:-1000}
+        HOST_GID: ${HOST_GID:-1000}
     ports:
       - 3000:3000
     volumes:
       - ./services/nuxt3-shadcn:/app
-    command: sh -c "yarn && yarn dev --host 0.0.0.0"
+      - /app/node_modules
+    command: sh -c "yarn install && yarn dev --host 0.0.0.0"
     environment:
       - API_BASE_URL=http://localhost:8000
       - HOST=0.0.0.0
