@@ -8,6 +8,9 @@ ARG USER_GID=1000
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     postgresql-client \
+    libpq-dev \
+    gcc \
+    python3-dev \
     curl \
     && rm -rf /var/lib/apt/lists/*
 

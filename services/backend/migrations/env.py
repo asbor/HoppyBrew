@@ -1,5 +1,6 @@
 from logging.config import fileConfig
 import os
+import sys
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -10,16 +11,12 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 
-default_sqlite_url = "sqlite:///./test.db"
-database_url = (
-    os.getenv("ALEMBIC_DATABASE_URL")
-    or os.getenv("SQLALCHEMY_DATABASE_URL")
-    or default_sqlite_url
-)
-config.set_main_option("sqlalchemy.url", database_url)
+# Get database URL from application settings
+# Import the database module to get the actual database URL being used
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from database import SQLALCHEMY_DATABASE_URL  # noqa: E402
 
-if "TESTING" not in os.environ and database_url.startswith("sqlite"):
-    os.environ["TESTING"] = "1"
+config.set_main_option("sqlalchemy.url", SQLALCHEMY_DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

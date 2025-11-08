@@ -33,3 +33,7 @@ selenium==4.21.0
 # Code Quality
 flake8==7.3.0
 
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
