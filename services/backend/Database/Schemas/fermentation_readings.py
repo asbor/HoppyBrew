@@ -33,6 +33,8 @@ CHART_DATA_EXAMPLE = {
     "ph": [5.4, 5.2, 5.1],
     "abv": [0.0, 2.1, 3.7],
     "attenuation": [0.0, 33.3, 58.3],
+    "sources": ["manual", "tilt", "tilt"],
+    "device_ids": [None, 1, 1],
 }
 
 
@@ -101,6 +103,12 @@ class FermentationChartData(BaseModel):
     abv: list[float] = Field(..., description="Calculated ABV at each reading")
     attenuation: list[float] = Field(
         ..., description="Calculated attenuation percentage at each reading"
+    )
+    sources: list[Optional[str]] = Field(
+        ..., description="Data source for each reading (manual, tilt, ispindel, etc.)"
+    )
+    device_ids: list[Optional[int]] = Field(
+        ..., description="Device ID for each reading (null for manual readings)"
     )
 
     model_config = ConfigDict(json_schema_extra={"example": CHART_DATA_EXAMPLE})

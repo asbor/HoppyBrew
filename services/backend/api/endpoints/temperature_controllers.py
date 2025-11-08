@@ -306,6 +306,65 @@ async def get_scheduler_status():
     return get_scheduler_status()
 
 
+@router.get("/temperature-controllers/batch/{batch_id}/devices", tags=["temperature_controllers"])
+async def get_batch_devices(batch_id: int, db: Session = Depends(get_db)):
+    """
+    Get all temperature controller devices associated with a batch.
+    
+    Returns device information including current status, last import time,
+    and alert configuration. Useful for displaying device status in batch views.
+    """
+    # Verify batch exists
+    batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
+    if not batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    
+    # Get devices for this batch
+    devices = db.query(models.Device).filter(
+        models.Device.batch_id == batch_id
+    ).all()
+    
+    result = []
+    for device in devices:
+        # Get latest reading for this device
+        latest_reading = (
+            db.query(models.FermentationReadings)
+            .filter(
+                models.FermentationReadings.device_id == device.id,
+                models.FermentationReadings.batch_id == batch_id
+            )
+            .order_by(models.FermentationReadings.timestamp.desc())
+            .first()
+        )
+        
+        device_info = {
+            "id": device.id,
+            "name": device.name,
+            "device_type": device.device_type,
+            "is_active": device.is_active,
+            "auto_import_enabled": device.auto_import_enabled,
+            "manual_override": device.manual_override,
+            "last_import_at": device.last_import_at.isoformat() if device.last_import_at else None,
+            "alert_config": device.alert_config,
+            "latest_reading": None
+        }
+        
+        if latest_reading:
+            device_info["latest_reading"] = {
+                "timestamp": latest_reading.timestamp.isoformat(),
+                "gravity": latest_reading.gravity,
+                "temperature": latest_reading.temperature,
+                "ph": latest_reading.ph,
+            }
+        
+        result.append(device_info)
+    
+    return {
+        "batch_id": batch_id,
+        "devices": result
+    }
+
+
 @router.post("/temperature-controllers/manual-reading/{device_id}", tags=["temperature_controllers"])
 async def create_manual_reading(
     device_id: int,

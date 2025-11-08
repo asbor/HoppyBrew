@@ -188,12 +188,16 @@ async def get_fermentation_chart_data(batch_id: int, db: Session = Depends(get_d
     ph = []
     abv = []
     attenuation = []
+    sources = []
+    device_ids = []
 
     for reading in readings:
         timestamps.append(reading.timestamp.isoformat())
         gravity.append(reading.gravity)
         temperature.append(reading.temperature)
         ph.append(reading.ph)
+        sources.append(reading.source or "manual")
+        device_ids.append(reading.device_id)
 
         # Calculate ABV and attenuation if we have both OG and current gravity
         if original_gravity and reading.gravity:
@@ -219,4 +223,6 @@ async def get_fermentation_chart_data(batch_id: int, db: Session = Depends(get_d
         ph=ph,
         abv=abv,
         attenuation=attenuation,
+        sources=sources,
+        device_ids=device_ids,
     )
