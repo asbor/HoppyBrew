@@ -1,5 +1,6 @@
 from . import recipes
 from . import batches
+from . import batch_costs
 from . import hops
 from . import inventory_hops
 from . import fermentables
@@ -29,6 +30,7 @@ from . import calculators
 __all__ = [
     "recipes",
     "batches",
+    "batch_costs",
     "hops",
     "inventory_hops",
     "fermentables",

@@ -118,6 +118,15 @@ from .batch_ingredients import (
     IngredientTrackingResponse,
     InventoryAvailability,
 )
+from .batch_costs import (
+    BatchCost,
+    BatchCostCreate,
+    BatchCostUpdate,
+    BatchCostSummary,
+    UtilityCostConfig,
+    UtilityCostConfigCreate,
+    UtilityCostConfigUpdate,
+)
 
 __all__ = [
     "SugarBase",
@@ -217,4 +226,11 @@ __all__ = [
     "ConsumeIngredientsRequest",
     "IngredientTrackingResponse",
     "InventoryAvailability",
+    "BatchCost",
+    "BatchCostCreate",
+    "BatchCostUpdate",
+    "BatchCostSummary",
+    "UtilityCostConfig",
+    "UtilityCostConfigCreate",
+    "UtilityCostConfigUpdate",
 ]
