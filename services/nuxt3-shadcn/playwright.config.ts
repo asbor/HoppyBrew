@@ -17,7 +17,7 @@ if (isCI) {
 }
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './tests/e2e/specs',
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
