@@ -30,7 +30,9 @@ else:
     db_host = os.getenv("DATABASE_HOST")
     db_port = os.getenv("DATABASE_PORT")
     db_name = os.getenv("DATABASE_NAME")
-    SQLALCHEMY_DATABASE_URL = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    SQLALCHEMY_DATABASE_URL = (
+        f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+    )
 
 # Connect to the database
 
