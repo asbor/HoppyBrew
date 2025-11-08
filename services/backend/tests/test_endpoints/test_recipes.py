@@ -268,6 +268,104 @@ def test_scale_recipe_endpoint_returns_scaled_payload(client):
         original_fermentable_amount * (target_batch_size / original_batch)
     )
 
+
+def test_scale_recipe_to_equipment_endpoint(client, db_session):
+    """Test scaling a recipe to match an equipment profile's batch size"""
+    # Create a recipe
+    created, payload = create_recipe(client, name="Test Recipe For Equipment")
+    recipe_id = created["id"]
+    original_batch = payload["batch_size"]
+
+    # Create an equipment profile
+    equipment_data = {
+        "name": "Test Brewing System",
+        "version": 1,
+        "batch_size": 40,
+        "boil_size": 50,
+        "boil_time": 60,
+    }
+    equipment_response = client.post("/equipment", json=equipment_data)
+    assert equipment_response.status_code == 201, equipment_response.text
+    equipment = equipment_response.json()
+    equipment_id = int(equipment["id"])
+
+    # Scale the recipe to the equipment
+    response = client.post(f"/recipes/{recipe_id}/scale-to-equipment/{equipment_id}")
+    assert response.status_code == 200, response.text
+
+    data = response.json()
+    
+    # Verify scaling results
+    assert data["original_batch_size"] == pytest.approx(original_batch)
+    assert data["target_batch_size"] == pytest.approx(equipment_data["batch_size"])
+    assert data["scale_factor"] == pytest.approx(
+        equipment_data["batch_size"] / original_batch
+    )
+    
+    # Verify equipment profile info is included
+    assert data["equipment_profile_id"] == equipment_id
+    assert data["equipment_profile_name"] == equipment_data["name"]
+
+    # Verify scaled recipe has equipment's batch and boil sizes
+    scaled_recipe = data["scaled_recipe"]
+    assert scaled_recipe["batch_size"] == pytest.approx(equipment_data["batch_size"])
+    assert scaled_recipe["boil_size"] == pytest.approx(equipment_data["boil_size"])
+
+    # Verify ingredients are scaled correctly
+    scale_factor = equipment_data["batch_size"] / original_batch
+    original_hop_amount = payload["hops"][0]["amount"]
+    scaled_hop_amount = scaled_recipe["hops"][0]["amount"]
+    assert scaled_hop_amount == pytest.approx(original_hop_amount * scale_factor)
+
+    original_fermentable_amount = payload["fermentables"][0]["amount"]
+    scaled_fermentable_amount = scaled_recipe["fermentables"][0]["amount"]
+    assert scaled_fermentable_amount == pytest.approx(
+        original_fermentable_amount * scale_factor
+    )
+
+
+def test_scale_recipe_to_equipment_with_missing_equipment_batch_size(client, db_session):
+    """Test that equipment without batch_size returns error"""
+    created, _ = create_recipe(client, name="Test Recipe")
+    recipe_id = created["id"]
+
+    # Create equipment without batch_size
+    equipment_data = {
+        "name": "Incomplete Equipment",
+        "version": 1,
+        "boil_time": 60,
+    }
+    equipment_response = client.post("/equipment", json=equipment_data)
+    assert equipment_response.status_code == 201
+    equipment_id = int(equipment_response.json()["id"])
+
+    response = client.post(f"/recipes/{recipe_id}/scale-to-equipment/{equipment_id}")
+    assert response.status_code == 400
+    assert "missing batch_size" in response.json()["detail"].lower()
+
+
+def test_scale_recipe_to_equipment_with_missing_recipe(client, db_session):
+    """Test that missing recipe returns 404"""
+    # Create equipment
+    equipment_data = {"name": "Test Equipment", "batch_size": 30, "boil_size": 40}
+    equipment_response = client.post("/equipment", json=equipment_data)
+    equipment_id = int(equipment_response.json()["id"])
+
+    response = client.post(f"/recipes/999999/scale-to-equipment/{equipment_id}")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Recipe not found"
+
+
+def test_scale_recipe_to_equipment_with_missing_equipment(client):
+    """Test that missing equipment profile returns 404"""
+    created, _ = create_recipe(client, name="Test Recipe")
+    recipe_id = created["id"]
+
+    response = client.post(f"/recipes/{recipe_id}/scale-to-equipment/999999")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Equipment profile not found"
+
+
     metrics = data["metrics"]
     assert set(metrics.keys()) == {"abv", "ibu", "srm"}
 
