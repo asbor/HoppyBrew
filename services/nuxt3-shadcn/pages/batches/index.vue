@@ -4,6 +4,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
   Table,
   TableBody,
   TableCaption,
@@ -21,8 +28,21 @@ const { getBatchStatusColor } = useStatusColors()
 const searchQuery = ref('')
 const filterStatus = ref<BatchStatus | 'all'>('all')
 const viewMode = ref<'table' | 'cards'>('table')
+const sortBy = ref<'name' | 'date' | 'status'>('date')
+const sortOrder = ref<'asc' | 'desc'>('desc')
 
-// Filtered batches based on search and status
+// Status order for sorting
+const statusOrder: Record<string, number> = {
+  planning: 1,
+  brewing: 2,
+  fermenting: 3,
+  conditioning: 4,
+  packaging: 5,
+  complete: 6,
+  archived: 7,
+}
+
+// Filtered and sorted batches based on search, status, and sort options
 const filteredBatches = computed(() => {
   let result = batches.value
 
@@ -38,6 +58,25 @@ const filteredBatches = computed(() => {
       batch.batch_name.toLowerCase().includes(query)
     )
   }
+
+  // Sort batches
+  result = [...result].sort((a, b) => {
+    let comparison = 0
+    
+    if (sortBy.value === 'name') {
+      comparison = a.batch_name.localeCompare(b.batch_name)
+    } else if (sortBy.value === 'date') {
+      const dateA = new Date(a.brew_date || a.created_at).getTime()
+      const dateB = new Date(b.brew_date || b.created_at).getTime()
+      comparison = dateA - dateB
+    } else if (sortBy.value === 'status') {
+      const statusA = statusOrder[a.status] || 999
+      const statusB = statusOrder[b.status] || 999
+      comparison = statusA - statusB
+    }
+    
+    return sortOrder.value === 'asc' ? comparison : -comparison
+  })
 
   return result
 })
@@ -129,14 +168,38 @@ onMounted(async () => {
       </div>
     </header>
 
-    <!-- Search & Filters -->
-    <div class="flex flex-col md:flex-row gap-4">
-      <div class="flex-1">
-        <Input v-model="searchQuery" placeholder="Search batches by name..." class="max-w-md">
-        <template #prefix>
-          <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
-        </template>
-        </Input>
+    <!-- Search, Filters & Sort -->
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <Input v-model="searchQuery" placeholder="Search batches by name..." class="max-w-md">
+          <template #prefix>
+            <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
+          </template>
+          </Input>
+        </div>
+        <div class="flex gap-2">
+          <Select v-model="sortBy">
+            <SelectTrigger class="w-[140px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date">Date</SelectItem>
+              <SelectItem value="name">Name</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button 
+            variant="outline" 
+            size="icon"
+            @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+          >
+            <Icon 
+              :name="sortOrder === 'asc' ? 'mdi:sort-ascending' : 'mdi:sort-descending'" 
+              class="h-4 w-4" 
+            />
+          </Button>
+        </div>
       </div>
       <div class="flex gap-2 flex-wrap">
         <Button variant="outline" size="sm" :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
