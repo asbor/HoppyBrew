@@ -8,6 +8,7 @@ services:
       - 8000:8000
     volumes:
       - ./services/backend:/app
+      - backup_data:/app/data/backups
     command: sh -c "cd /app && /home/app/.local/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000"
     depends_on:
       db:
@@ -34,7 +35,7 @@ services:
 
   db:
     container_name: hoppybrew-db-1
-    image: postgres:latest
+    image: postgres:16-alpine
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -97,3 +98,4 @@ networks:
 
 volumes:
   postgres_data:
+  backup_data:
