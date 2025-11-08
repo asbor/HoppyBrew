@@ -144,8 +144,18 @@ onMounted(async () => {
           All
         </Button>
         <Button variant="outline" size="sm"
-          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'primary_fermentation' }"
-          @click="filterStatus = 'primary_fermentation'">
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'planning' }"
+          @click="filterStatus = 'planning'">
+          Planning
+        </Button>
+        <Button variant="outline" size="sm"
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'brewing' }"
+          @click="filterStatus = 'brewing'">
+          Brewing
+        </Button>
+        <Button variant="outline" size="sm"
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'fermenting' }"
+          @click="filterStatus = 'fermenting'">
           Fermenting
         </Button>
         <Button variant="outline" size="sm"
@@ -154,14 +164,14 @@ onMounted(async () => {
           Conditioning
         </Button>
         <Button variant="outline" size="sm"
-          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'packaged' }"
-          @click="filterStatus = 'packaged'">
-          Packaged
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'packaging' }"
+          @click="filterStatus = 'packaging'">
+          Packaging
         </Button>
         <Button variant="outline" size="sm"
-          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'completed' }"
-          @click="filterStatus = 'completed'">
-          Completed
+          :class="{ 'bg-primary text-primary-foreground': filterStatus === 'complete' }"
+          @click="filterStatus = 'complete'">
+          Complete
         </Button>
       </div>
     </div>
