@@ -6,6 +6,7 @@ from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
 from Database.enums import BatchStatus
+from api.state_machine import validate_status_transition, get_valid_transitions
 from datetime import datetime
 from typing import List
 import re
@@ -112,6 +113,18 @@ async def create_batch(batch: schemas.BatchCreate, db: Session = Depends(get_db)
         db.add(db_batch)
         db.commit()
         db.refresh(db_batch)
+        
+        # Create initial workflow history entry
+        initial_workflow = models.BatchWorkflowHistory(
+            batch_id=db_batch.id,
+            from_status=None,  # No previous status for new batch
+            to_status=db_batch.status,
+            changed_at=datetime.now(),
+            notes="Batch created",
+        )
+        db.add(initial_workflow)
+        db.commit()
+        
         # Copy ingredients to inventory tables
 
         for hop in recipe.hops:
@@ -287,3 +300,102 @@ async def delete_batch(batch_id: int, db: Session = Depends(get_db)):
     db.delete(db_batch)
     db.commit()
     return {"message": "Batch deleted successfully"}
+
+
+# Update batch status with validation and logging
+
+
+@router.put("/batches/{batch_id}/status", response_model=schemas.Batch)
+async def update_batch_status(
+    batch_id: int, status_update: schemas.StatusUpdateRequest, db: Session = Depends(get_db)
+):
+    """
+    Update batch status with state machine validation.
+    
+    Status changes are validated to ensure valid transitions and logged in workflow history.
+    """
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
+    if not db_batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    
+    # Parse and validate the new status
+    try:
+        new_status = BatchStatus(status_update.status)
+    except ValueError:
+        valid_statuses = ", ".join([s.value for s in BatchStatus])
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid status '{status_update.status}'. Valid statuses: {valid_statuses}"
+        )
+    
+    # Get current status
+    current_status = BatchStatus(db_batch.status)
+    
+    # Validate the transition
+    validate_status_transition(current_status, new_status)
+    
+    # Record the status change in workflow history
+    workflow_entry = models.BatchWorkflowHistory(
+        batch_id=batch_id,
+        from_status=current_status.value,
+        to_status=new_status.value,
+        changed_at=datetime.now(),
+        notes=status_update.notes,
+    )
+    db.add(workflow_entry)
+    
+    # Update the batch status
+    db_batch.status = new_status.value
+    db_batch.updated_at = datetime.now()
+    
+    db.commit()
+    db.refresh(db_batch)
+    
+    return db_batch
+
+
+# Get workflow history for a batch
+
+
+@router.get("/batches/{batch_id}/workflow", response_model=List[schemas.BatchWorkflowHistory])
+async def get_batch_workflow(batch_id: int, db: Session = Depends(get_db)):
+    """
+    Get the complete workflow history for a batch.
+    
+    Returns all status changes in chronological order (most recent first).
+    """
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
+    if not db_batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    
+    workflow_history = (
+        db.query(models.BatchWorkflowHistory)
+        .filter(models.BatchWorkflowHistory.batch_id == batch_id)
+        .order_by(models.BatchWorkflowHistory.changed_at.desc())
+        .all()
+    )
+    
+    return workflow_history
+
+
+# Get valid transitions for a batch's current status
+
+
+@router.get("/batches/{batch_id}/status/transitions")
+async def get_batch_status_transitions(batch_id: int, db: Session = Depends(get_db)):
+    """
+    Get the valid status transitions for a batch's current status.
+    
+    Returns a list of statuses that the batch can transition to.
+    """
+    db_batch = db.query(models.Batches).filter(models.Batches.id == batch_id).first()
+    if not db_batch:
+        raise HTTPException(status_code=404, detail="Batch not found")
+    
+    current_status = BatchStatus(db_batch.status)
+    valid_transitions = get_valid_transitions(current_status)
+    
+    return {
+        "current_status": current_status.value,
+        "valid_transitions": [s.value for s in valid_transitions],
+    }

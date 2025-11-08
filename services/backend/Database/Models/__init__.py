@@ -3,6 +3,7 @@
 from .recipes import Recipes
 from .batches import Batches
 from .batch_logs import BatchLogs
+from .batch_workflow_history import BatchWorkflowHistory
 from .style_guidlines import StyleGuidelines, StyleGuidelineSource
 from .styles import Styles
 from .beer_styles import BeerStyle, StyleCategory
@@ -35,6 +36,7 @@ __all__ = [
     "Recipes",
     "Batches",
     "BatchLogs",
+    "BatchWorkflowHistory",
     "StyleGuidelines",
     "StyleGuidelineSource",
     "Styles",

@@ -5,12 +5,11 @@
 
 export type BatchStatus = 
   | 'planning'
-  | 'brew_day'
-  | 'primary_fermentation'
-  | 'secondary_fermentation'
+  | 'brewing'
+  | 'fermenting'
   | 'conditioning'
-  | 'packaged'
-  | 'completed'
+  | 'packaging'
+  | 'complete'
   | 'archived'
 
 export interface Batch {
@@ -42,6 +41,25 @@ export interface BatchCreate {
   brew_date?: string
   notes?: string
   [key: string]: any
+}
+
+export interface BatchStatusUpdate {
+  status: BatchStatus
+  notes?: string
+}
+
+export interface WorkflowHistoryEntry {
+  id: string
+  batch_id: string
+  from_status: BatchStatus | null
+  to_status: BatchStatus
+  changed_at: string
+  notes?: string
+}
+
+export interface ValidTransitions {
+  current_status: BatchStatus
+  valid_transitions: BatchStatus[]
 }
 
 export interface BatchReading {
@@ -153,8 +171,54 @@ export const useBatches = () => {
   /**
    * Update batch status (workflow progression)
    */
-  async function updateStatus(id: string, newStatus: BatchStatus) {
-    return update(id, { status: newStatus })
+  async function updateStatus(id: string, statusUpdate: BatchStatusUpdate) {
+    loading.value = true
+    error.value = null
+    
+    const response = await api.put<Batch>(`/batches/${id}/status`, statusUpdate)
+    
+    if (response.error.value) {
+      error.value = response.error.value
+      loading.value = false
+      return { data: null, error }
+    }
+    
+    if (response.data.value) {
+      const index = batches.value.findIndex(b => b.id === id)
+      if (index !== -1) {
+        batches.value[index] = response.data.value
+      }
+      currentBatch.value = response.data.value
+    }
+    
+    loading.value = false
+    return { data: response.data, error }
+  }
+
+  /**
+   * Get workflow history for a batch
+   */
+  async function fetchWorkflowHistory(id: string) {
+    loading.value = true
+    error.value = null
+    
+    const response = await api.get<WorkflowHistoryEntry[]>(`/batches/${id}/workflow`)
+    
+    loading.value = false
+    return response
+  }
+
+  /**
+   * Get valid status transitions for a batch
+   */
+  async function fetchValidTransitions(id: string) {
+    loading.value = true
+    error.value = null
+    
+    const response = await api.get<ValidTransitions>(`/batches/${id}/status/transitions`)
+    
+    loading.value = false
+    return response
   }
 
   /**
@@ -186,7 +250,7 @@ export const useBatches = () => {
    */
   function getActiveBatches() {
     return batches.value.filter(b => 
-      ['brew_day', 'primary_fermentation', 'secondary_fermentation', 'conditioning'].includes(b.status)
+      ['brewing', 'fermenting', 'conditioning'].includes(b.status)
     )
   }
 
@@ -207,6 +271,8 @@ export const useBatches = () => {
     create,
     update,
     updateStatus,
+    fetchWorkflowHistory,
+    fetchValidTransitions,
     remove,
     getActiveBatches,
     getBatchesByStatus,
