@@ -34,6 +34,7 @@ from .devices import Device
 from .fermentation_readings import FermentationReadings
 from .recipe_versions import RecipeVersion
 from .batch_ingredients import BatchIngredient, InventoryTransaction
+from .brew_steps import BrewSteps
 
 __all__ = [
     "Recipes",
@@ -78,4 +79,5 @@ __all__ = [
     "RecipeVersion",
     "BatchIngredient",
     "InventoryTransaction",
+    "BrewSteps",
 ]

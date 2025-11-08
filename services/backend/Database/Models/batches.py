@@ -74,3 +74,9 @@ class Batches(Base):
         back_populates="batch",
         cascade="all, delete-orphan",
     )
+    brew_steps = relationship(
+        "BrewSteps",
+        back_populates="batch",
+        cascade="all, delete-orphan",
+        order_by="BrewSteps.order_index",
+    )

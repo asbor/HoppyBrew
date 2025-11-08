@@ -118,6 +118,12 @@ from .batch_ingredients import (
     IngredientTrackingResponse,
     InventoryAvailability,
 )
+from .brew_steps import (
+    BrewStepBase,
+    BrewStepCreate,
+    BrewStepUpdate,
+    BrewStep,
+)
 
 __all__ = [
     "SugarBase",
@@ -217,4 +223,8 @@ __all__ = [
     "ConsumeIngredientsRequest",
     "IngredientTrackingResponse",
     "InventoryAvailability",
+    "BrewStepBase",
+    "BrewStepCreate",
+    "BrewStepUpdate",
+    "BrewStep",
 ]
