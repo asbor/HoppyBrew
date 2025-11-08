@@ -2,31 +2,130 @@
 
 !theme reddress-lightorange
 
-package "Order management system" {
-  
-  interface ILog
-  interface IDisplay
-  interface ICalendarObserver
-  
-  ILog <|.. OrderManager
-  IDisplay <|.. OrderManager  
-  OrderManager "1" --> Orders : manages
-  Customer "1" --> "1" Address
-  Customer "1" --> "1" CustomerBuilder
-  CustomerBuilder "1" --> "1" Address
-  Customers "`" --> "0..*" Customer
-  Customers --> Orders : places
-  Orders "1" --> Menus : has
-  Orders "1" --> PaymentGateway : processes
-  Orders "0..*" - "1..*" Order : consists of
-  
-  Order "0..*" - "1..*" Product : consists of
-  OnlineOrder --|> Order : specialization
-  Order "1" -- "1" Calendar : has
-  Calendar "1" -- "1" Event : occurs on
-  
-  PaymentGateway "1" --> CreditCardPayment : processes credit card payments
-  PaymentGateway "1" --> PayPalPayment : processes PayPal payments
+title HoppyBrew - Component Architecture
+
+' Frontend Layer
+package "Frontend Layer" {
+  component "Nuxt3 App" as Nuxt {
+    component "Vue Components" as VueComp
+    component "Shadcn UI" as Shadcn
+    component "Pages" as Pages
+    component "Composables" as Composables
+  }
 }
+
+' Backend API Layer
+package "Backend API Layer" {
+  component "FastAPI Server" as FastAPI {
+    component "Recipe Endpoints" as RecipeAPI
+    component "Batch Endpoints" as BatchAPI
+    component "Profile Endpoints" as ProfileAPI
+    component "Integration Endpoints" as IntegrationAPI
+  }
+}
+
+' Business Logic Layer
+package "Business Logic Layer" {
+  component "Recipe Service" as RecipeService {
+    component "Recipe Manager" as RecipeManager
+    component "Style Validator" as StyleValidator
+    component "IBU Calculator" as IBUCalc
+    component "ABV Calculator" as ABVCalc
+    component "SRM Calculator" as SRMCalc
+  }
+  
+  component "Batch Service" as BatchService {
+    component "Batch Tracker" as BatchTracker
+    component "Fermentation Monitor" as FermMonitor
+    component "Brew Day Checklist" as BrewChecklist
+  }
+  
+  component "Profile Service" as ProfileService {
+    component "Equipment Profiles" as EquipmentProfiles
+    component "Water Profiles" as WaterProfiles
+    component "Yeast Bank" as YeastBank
+  }
+}
+
+' Data Access Layer
+package "Data Access Layer" {
+  component "Database Models" as DBModels {
+    component "Recipe Models" as RecipeModels
+    component "Batch Models" as BatchModels
+    component "Profile Models" as ProfileModels
+    component "Ingredient Models" as IngredientModels
+  }
+  
+  database "PostgreSQL/SQLite" as DB
+}
+
+' Integration Layer
+package "Integration Layer" {
+  component "HomeAssistant Integration" as HA {
+    component "REST Sensors" as HARestSensors
+    component "MQTT Client" as HAMQTT
+  }
+  
+  component "ISpindel Integration" as ISpindel {
+    component "Telemetry Receiver" as ISpindelReceiver
+    component "Gravity Tracker" as GravityTracker
+  }
+  
+  component "BeerXML Import/Export" as BeerXML
+  component "Web Scraper" as Scraper
+}
+
+' Relationships - Frontend to Backend
+Nuxt --> FastAPI : "HTTP/REST"
+Pages --> RecipeAPI : "fetch recipes"
+Pages --> BatchAPI : "manage batches"
+Pages --> ProfileAPI : "load profiles"
+
+' Relationships - Backend to Business Logic
+RecipeAPI --> RecipeService : "uses"
+BatchAPI --> BatchService : "uses"
+ProfileAPI --> ProfileService : "uses"
+IntegrationAPI --> HA : "exposes"
+IntegrationAPI --> ISpindel : "receives"
+
+' Relationships - Business Logic to Data
+RecipeService --> DBModels : "persists"
+BatchService --> DBModels : "persists"
+ProfileService --> DBModels : "persists"
+DBModels --> DB : "stores"
+
+' Relationships - Integration to Business Logic
+ISpindel --> BatchService : "updates fermentation"
+HA --> BatchService : "monitors"
+BeerXML --> RecipeService : "imports/exports"
+Scraper --> RecipeService : "fetches recipes"
+
+' Notes
+note right of Nuxt
+  Vue 3 + Nuxt 3
+  Shadcn UI components
+  Tailwind CSS
+  TypeScript
+end note
+
+note right of FastAPI
+  Python FastAPI
+  SQLAlchemy ORM
+  Pydantic validation
+  OpenAPI docs
+end note
+
+note right of DB
+  SQLite for development
+  PostgreSQL for production
+  Migration support
+end note
+
+note bottom of HA
+  Exposes sensors for:
+  - Active batches
+  - Fermentation status
+  - Temperature monitoring
+end note
 
 @enduml
