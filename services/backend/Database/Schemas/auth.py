@@ -5,6 +5,7 @@ Pydantic schemas for authentication and user management
 from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional
 from enum import Enum
+from datetime import datetime
 
 
 class UserRole(str, Enum):
@@ -49,7 +50,7 @@ class UserResponse(UserBase):
 
     id: int
     is_verified: bool
-    created_at: str
+    created_at: datetime
     full_name: str
 
     model_config = ConfigDict(from_attributes=True)
