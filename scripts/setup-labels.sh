@@ -1,0 +1,76 @@
+#!/bin/bash
+
+echo "🏷️  Setting up GitHub Labels for HoppyBrew"
+echo "=========================================="
+echo ""
+
+OWNER="asbor"
+REPO="HoppyBrew"
+
+# Function to create or update label
+create_label() {
+    local name="$1"
+    local color="$2"
+    local description="$3"
+    
+    echo "Creating label: $name"
+    gh label create "$name" --color "$color" --description "$description" --force 2>&1 | grep -v "already exists"
+}
+
+echo "Creating Priority Labels..."
+create_label "priority:critical" "d73a4a" "Critical priority - immediate attention required"
+create_label "priority:high" "ff9800" "High priority - needed soon"
+create_label "priority:medium" "fbca04" "Medium priority - normal queue"
+create_label "priority:low" "0e8a16" "Low priority - nice to have"
+create_label "priority:future" "1d76db" "Future priority - long-term"
+
+echo ""
+echo "Creating Status Labels..."
+create_label "status:backlog" "d4c5f9" "In backlog, not yet started"
+create_label "status:in-progress" "0075ca" "Currently being worked on"
+create_label "status:review" "fbca04" "In review, awaiting feedback"
+create_label "status:blocked" "d73a4a" "Blocked by dependency or issue"
+create_label "status:done" "0e8a16" "Completed"
+
+echo ""
+echo "Creating Type Labels..."
+create_label "type:bug" "d73a4a" "Something isn't working"
+create_label "type:feature" "0075ca" "New feature implementation"
+create_label "type:enhancement" "a2eeef" "Enhancement to existing feature"
+create_label "type:documentation" "0075ca" "Documentation changes"
+create_label "type:testing" "d4c5f9" "Test-related changes"
+create_label "type:infrastructure" "fef2c0" "Infrastructure or DevOps changes"
+create_label "type:security" "d73a4a" "Security-related changes"
+
+echo ""
+echo "Creating Agent Role Labels..."
+create_label "agent-role:backend" "d4c5f9" "Backend/API development"
+create_label "agent-role:frontend" "c5def5" "Frontend/UI development"
+create_label "agent-role:devops" "fef2c0" "DevOps/Infrastructure"
+create_label "agent-role:qa" "d4c5f9" "Quality Assurance/Testing"
+create_label "agent-role:data" "bfd4f2" "Data processing/ETL"
+create_label "agent-role:docs" "c5def5" "Documentation"
+create_label "agent-role:security" "d73a4a" "Security"
+create_label "agent-role:any" "d1f0fd" "Any role can work on this"
+
+echo ""
+echo "Creating Other Labels..."
+create_label "agent-task" "7057ff" "Task for AI agent"
+create_label "good-first-issue" "7057ff" "Good for newcomers"
+create_label "help-wanted" "008672" "Extra attention needed"
+
+echo ""
+echo "✅ All labels created!"
+echo ""
+echo "📊 Label Summary:"
+echo "   - Priority labels: 5"
+echo "   - Status labels: 5"
+echo "   - Type labels: 7"
+echo "   - Agent role labels: 8"
+echo "   - Other labels: 3"
+echo "   - Total: 28 labels"
+echo ""
+echo "🎯 Next Steps:"
+echo "   1. Review labels at: https://github.com/$OWNER/$REPO/labels"
+echo "   2. Set up GitHub Projects (see GITHUB_PROJECTS_SETUP.md)"
+echo "   3. Start migrating TODO.md items to issues"

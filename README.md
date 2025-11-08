@@ -595,6 +595,7 @@ sensor:
 - High-level direction lives in [`ROADMAP.md`](ROADMAP.md).
 - Actionable backlog is tracked in [`TODO.md`](TODO.md).
 - Open issues capture feature requests and bugs.
+- **GitHub Projects**: Tasks are organized across 5 project boards for multi-agent coordination. See [`GITHUB_PROJECTS_ORGANIZATION.md`](GITHUB_PROJECTS_ORGANIZATION.md) for the complete structure.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -608,7 +609,15 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
-- Multi-agent contributors should review the collaboration contract in [`AI_AGENT_MANIFEST.md`](AI_AGENT_MANIFEST.md) before starting work.
+### For AI Agents
+
+**Multi-agent collaboration is supported!** AI agents should review:
+- [`AI_AGENT_COORDINATION_GUIDE.md`](AI_AGENT_COORDINATION_GUIDE.md) - Practical guide for AI agents
+- [`GITHUB_PROJECTS_ORGANIZATION.md`](GITHUB_PROJECTS_ORGANIZATION.md) - Project structure and task delegation
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) - General contribution guidelines
+
+### For Human Contributors
+
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
