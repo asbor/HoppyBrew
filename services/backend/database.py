@@ -48,24 +48,24 @@ if IS_TESTING:
 else:
     # For PostgreSQL, wait for it to be ready and create database if needed
     from sqlalchemy_utils import database_exists, create_database
-    import psycopg2
+    import psycopg
 
     # Wait for PostgreSQL to be ready
     logger.info("Waiting for PostgreSQL to be available")
     max_retries = 30
     for i in range(max_retries):
         try:
-            conn = psycopg2.connect(
+            conn = psycopg.connect(
                 host=os.getenv("DATABASE_HOST"),
                 port=os.getenv("DATABASE_PORT"),
                 user=os.getenv("DATABASE_USER"),
                 password=os.getenv("DATABASE_PASSWORD"),
-                database="postgres",  # Connect to default database first
+                dbname="postgres",  # Connect to default database first
             )
             conn.close()
             logger.info("PostgreSQL is available")
             break
-        except psycopg2.OperationalError:
+        except psycopg.OperationalError:
             if i < max_retries - 1:
                 logger.info(f"Waiting for PostgreSQL... ({i+1}/{max_retries})")
                 time.sleep(1)
