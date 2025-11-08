@@ -2,8 +2,6 @@
 Test CORS headers are present in responses, including error responses.
 """
 
-import pytest
-
 
 def test_cors_headers_on_successful_request(client):
     """Test that CORS headers are present on successful requests"""

@@ -1,5 +1,4 @@
 import Database.Models as models
-import Database.Schemas as schemas
 
 
 def test_create_style_guideline_source(client, db_session):

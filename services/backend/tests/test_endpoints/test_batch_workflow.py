@@ -2,10 +2,8 @@
 Tests for batch status workflow system
 """
 
-import pytest
 from datetime import datetime
 import Database.Models as models
-from Database.enums import BatchStatus
 
 
 def create_test_batch(client, db_session, status="planning"):

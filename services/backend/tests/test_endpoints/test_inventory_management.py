@@ -1,7 +1,6 @@
 import pytest
 from datetime import datetime
 import Database.Models as models
-import Database.Schemas as schemas
 
 
 def create_recipe_with_ingredients(client, db_session):

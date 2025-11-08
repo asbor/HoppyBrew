@@ -9,7 +9,6 @@ from Database.Schemas.auth import (
     UserResponse,
     UserUpdate,
     Token,
-    LoginRequest,
 )
 from auth import (
     get_password_hash,

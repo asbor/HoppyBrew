@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 
 MASH_PROFILE_EXAMPLE = {
     "name": "Single Infusion, Medium Body",

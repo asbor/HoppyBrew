@@ -1,12 +1,11 @@
 # api/endpoints/mash_profiles.py
 
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
-from typing import List, Optional
-from datetime import datetime
+from typing import List
 
 router = APIRouter()
 

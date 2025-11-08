@@ -2,8 +2,6 @@
 Test authentication endpoints
 """
 
-import pytest
-from fastapi.testclient import TestClient
 from auth import get_password_hash
 from Database.Models.users import Users, UserRole
 

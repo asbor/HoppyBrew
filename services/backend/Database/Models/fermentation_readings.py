@@ -1,6 +1,6 @@
 # services/backend/Database/Models/fermentation_readings.py
 
-from sqlalchemy import Column, Integer, Float, String, ForeignKey, DateTime, Index, Text
+from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime, Index, Text
 from sqlalchemy.orm import relationship
 from database import Base
 from datetime import datetime

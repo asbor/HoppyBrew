@@ -2,10 +2,10 @@
 
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
-from .hops import HopBase, RecipeHopBase, RecipeHop
-from .fermentables import FermentableBase, RecipeFermentableBase, RecipeFermentable
-from .miscs import MiscBase, RecipeMiscBase, RecipeMisc
-from .yeasts import YeastBase, RecipeYeastBase, RecipeYeast
+from .hops import RecipeHopBase, RecipeHop
+from .fermentables import RecipeFermentableBase, RecipeFermentable
+from .miscs import RecipeMiscBase, RecipeMisc
+from .yeasts import RecipeYeastBase, RecipeYeast
 
 
 RECIPE_SAMPLE_HOP = {

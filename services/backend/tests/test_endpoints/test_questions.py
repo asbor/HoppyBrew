@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_create_and_get_all_questions(client):
     # Create a question and associated choices
 

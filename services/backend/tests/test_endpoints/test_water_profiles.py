@@ -1,8 +1,6 @@
 """Tests for water profile endpoints."""
 
-import pytest
 from fastapi.testclient import TestClient
-from decimal import Decimal
 
 
 def test_create_water_profile(client: TestClient):
