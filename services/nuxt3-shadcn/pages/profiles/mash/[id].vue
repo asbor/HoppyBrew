@@ -8,6 +8,7 @@ import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 import MashStepDesigner from '~/components/mash/MashStepDesigner.vue'
+import BrewDayTimer from '~/components/mash/BrewDayTimer.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -32,6 +33,7 @@ const mash = ref({
 const mashSteps = ref<any[]>([])
 const isLoading = ref(false)
 const error = ref('')
+const showTimer = ref(false)
 
 // Fetch mash profile
 const getMashProfile = async (id: string) => {
@@ -154,6 +156,9 @@ onMounted(() => {
       <TabsList>
         <TabsTrigger value="basic">Basic Info</TabsTrigger>
         <TabsTrigger value="steps">Mash Steps</TabsTrigger>
+        <TabsTrigger value="timer" :disabled="mashSteps.length === 0">
+          Brew Day Timer
+        </TabsTrigger>
       </TabsList>
 
       <!-- Basic Info Tab -->
@@ -266,6 +271,22 @@ onMounted(() => {
           </CardHeader>
           <CardContent>
             <MashStepDesigner v-model="mashSteps" />
+          </CardContent>
+        </Card>
+      </TabsContent>
+
+      <!-- Brew Day Timer Tab -->
+      <TabsContent value="timer" class="space-y-4">
+        <BrewDayTimer 
+          v-if="mashSteps.length > 0"
+          :steps="mashSteps"
+          :profile-name="mash.name"
+        />
+        <Card v-else>
+          <CardContent class="py-12 text-center">
+            <p class="text-muted-foreground">
+              Add mash steps to enable the brew day timer
+            </p>
           </CardContent>
         </Card>
       </TabsContent>
