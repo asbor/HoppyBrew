@@ -1,0 +1,41 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+
+# Test and coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
