@@ -40,11 +40,12 @@ class MiscBase(BaseModel):
 
 
 class RecipeMisc(MiscBase):
+    id: int
     recipe_id: int
 
     model_config = ConfigDict(
         from_attributes=True,
-        json_schema_extra={"example": {**MISC_BASE_EXAMPLE, "recipe_id": 12}},
+        json_schema_extra={"example": {**MISC_BASE_EXAMPLE, "id": 1, "recipe_id": 12}},
     )
 
 

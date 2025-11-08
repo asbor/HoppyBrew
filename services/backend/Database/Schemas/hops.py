@@ -41,10 +41,11 @@ class HopBase(BaseModel):
 
 
 class RecipeHop(HopBase):
+    id: int
     recipe_id: int
 
     model_config = ConfigDict(
-        from_attributes=True, json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "recipe_id": 1}}
+        from_attributes=True, json_schema_extra={"example": {**HOP_BASE_EXAMPLE, "id": 1, "recipe_id": 1}}
     )
 
 

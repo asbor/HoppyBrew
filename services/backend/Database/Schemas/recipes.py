@@ -2,10 +2,10 @@
 
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
-from .hops import HopBase
-from .fermentables import FermentableBase
-from .miscs import MiscBase
-from .yeasts import YeastBase
+from .hops import HopBase, RecipeHop
+from .fermentables import FermentableBase, RecipeFermentable
+from .miscs import MiscBase, RecipeMisc
+from .yeasts import YeastBase, RecipeYeast
 
 
 RECIPE_SAMPLE_HOP = {
@@ -133,6 +133,11 @@ class Recipe(RecipeBase):
     id: int
     is_batch: Optional[bool] = False
     origin_recipe_id: Optional[int] = None
+    # Override with full schemas that include IDs
+    hops: List[RecipeHop] = Field(default_factory=list)
+    fermentables: List[RecipeFermentable] = Field(default_factory=list)
+    miscs: List[RecipeMisc] = Field(default_factory=list)
+    yeasts: List[RecipeYeast] = Field(default_factory=list)
 
     model_config = ConfigDict(
         from_attributes=True,  # Pydantic v2: renamed from orm_mode
