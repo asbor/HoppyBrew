@@ -152,7 +152,7 @@ jobs:
           fi
 
       - name: Build and push to GHCR
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
@@ -169,7 +169,7 @@ jobs:
 
       - name: Build and push to DockerHub
         if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.service.context }}
           file: ${{ matrix.service.dockerfile }}
