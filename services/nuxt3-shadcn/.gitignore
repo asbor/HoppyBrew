@@ -18,6 +18,11 @@ logs
 .fleet
 .idea
 
+# Backup files
+*.backup
+*.bak
+*~
+
 # Local env files
 .env
 .env.*
