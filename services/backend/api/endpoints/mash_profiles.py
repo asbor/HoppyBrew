@@ -5,9 +5,204 @@ from sqlalchemy.orm import Session
 from database import get_db
 import Database.Models as models
 import Database.Schemas as schemas
-from typing import List
+from typing import List, Dict, Any
 
 router = APIRouter()
+
+# Mash profile templates with common brewing profiles
+MASH_TEMPLATES = [
+    {
+        "id": "single_infusion",
+        "name": "Single Infusion - Medium Body",
+        "description": "Standard single infusion mash for most ales. Targets medium body with good fermentability.",
+        "grain_temp": 20,
+        "tun_temp": 20,
+        "sparge_temp": 76,
+        "ph": 5.4,
+        "notes": "Most common mash profile for ales. Simple and effective.",
+        "steps": [
+            {
+                "name": "Saccharification Rest",
+                "type": "Infusion",
+                "step_temp": 66,
+                "step_time": 60,
+                "ramp_time": 2,
+                "description": "Main conversion step at 66°C for balanced body and fermentability"
+            },
+            {
+                "name": "Mash Out",
+                "type": "Temperature",
+                "step_temp": 76,
+                "step_time": 10,
+                "ramp_time": 5,
+                "description": "Raise to 76°C to stop enzymatic activity and improve lautering"
+            }
+        ]
+    },
+    {
+        "id": "step_mash",
+        "name": "Step Mash - Full Body",
+        "description": "Multi-step mash for fuller body beers like stouts and porters.",
+        "grain_temp": 20,
+        "tun_temp": 20,
+        "sparge_temp": 76,
+        "ph": 5.4,
+        "notes": "Protein rest and higher saccharification temperature for fuller body.",
+        "steps": [
+            {
+                "name": "Protein Rest",
+                "type": "Infusion",
+                "step_temp": 55,
+                "step_time": 15,
+                "ramp_time": 2,
+                "description": "Protein rest at 55°C to improve head retention"
+            },
+            {
+                "name": "Saccharification Rest",
+                "type": "Temperature",
+                "step_temp": 68,
+                "step_time": 60,
+                "ramp_time": 10,
+                "description": "Higher temperature rest at 68°C for fuller body"
+            },
+            {
+                "name": "Mash Out",
+                "type": "Temperature",
+                "step_temp": 76,
+                "step_time": 10,
+                "ramp_time": 5,
+                "description": "Mash out at 76°C"
+            }
+        ]
+    },
+    {
+        "id": "hochkurz",
+        "name": "Hochkurz - Dry/Crisp",
+        "description": "German hochkurz (high-short) mash for highly fermentable, dry beers.",
+        "grain_temp": 20,
+        "tun_temp": 20,
+        "sparge_temp": 76,
+        "ph": 5.4,
+        "notes": "High temperature short mash for German lagers and pilsners. Creates dry, crisp beer.",
+        "steps": [
+            {
+                "name": "Beta Glucan Rest",
+                "type": "Infusion",
+                "step_temp": 45,
+                "step_time": 20,
+                "ramp_time": 2,
+                "description": "Beta glucan rest at 45°C for better lautering"
+            },
+            {
+                "name": "High Temperature Rest",
+                "type": "Temperature",
+                "step_temp": 72,
+                "step_time": 30,
+                "ramp_time": 15,
+                "description": "Short high-temperature rest at 72°C for quick conversion"
+            },
+            {
+                "name": "Mash Out",
+                "type": "Temperature",
+                "step_temp": 76,
+                "step_time": 10,
+                "ramp_time": 5,
+                "description": "Mash out at 76°C"
+            }
+        ]
+    },
+    {
+        "id": "decoction",
+        "name": "Traditional Decoction",
+        "description": "Traditional three-decoction mash for authentic German lagers.",
+        "grain_temp": 20,
+        "tun_temp": 20,
+        "sparge_temp": 76,
+        "ph": 5.4,
+        "notes": "Traditional decoction mash. Labor intensive but creates unique malt character.",
+        "steps": [
+            {
+                "name": "Acid Rest",
+                "type": "Infusion",
+                "step_temp": 40,
+                "step_time": 20,
+                "ramp_time": 2,
+                "description": "Acid rest at 40°C"
+            },
+            {
+                "name": "Protein Rest",
+                "type": "Decoction",
+                "step_temp": 55,
+                "step_time": 30,
+                "ramp_time": 15,
+                "decoction_amt": "30%",
+                "description": "First decoction - protein rest at 55°C"
+            },
+            {
+                "name": "Saccharification Rest 1",
+                "type": "Decoction",
+                "step_temp": 63,
+                "step_time": 30,
+                "ramp_time": 10,
+                "decoction_amt": "30%",
+                "description": "Second decoction - beta amylase rest at 63°C"
+            },
+            {
+                "name": "Saccharification Rest 2",
+                "type": "Decoction",
+                "step_temp": 72,
+                "step_time": 20,
+                "ramp_time": 10,
+                "decoction_amt": "30%",
+                "description": "Third decoction - alpha amylase rest at 72°C"
+            },
+            {
+                "name": "Mash Out",
+                "type": "Temperature",
+                "step_temp": 76,
+                "step_time": 10,
+                "ramp_time": 5,
+                "description": "Mash out at 76°C"
+            }
+        ]
+    },
+    {
+        "id": "light_lager",
+        "name": "Light Lager - Highly Attenuative",
+        "description": "Optimized for light lagers with high attenuation and crisp finish.",
+        "grain_temp": 20,
+        "tun_temp": 20,
+        "sparge_temp": 76,
+        "ph": 5.4,
+        "notes": "Designed for light, crisp lagers with high fermentability.",
+        "steps": [
+            {
+                "name": "Beta Amylase Rest",
+                "type": "Infusion",
+                "step_temp": 63,
+                "step_time": 45,
+                "ramp_time": 2,
+                "description": "Extended beta amylase rest at 63°C for high fermentability"
+            },
+            {
+                "name": "Alpha Amylase Rest",
+                "type": "Temperature",
+                "step_temp": 70,
+                "step_time": 30,
+                "ramp_time": 5,
+                "description": "Brief alpha amylase rest at 70°C"
+            },
+            {
+                "name": "Mash Out",
+                "type": "Temperature",
+                "step_temp": 76,
+                "step_time": 10,
+                "ramp_time": 5,
+                "description": "Mash out at 76°C"
+            }
+        ]
+    }
+]
 
 
 @router.get("/mash", response_model=List[dict])
@@ -356,4 +551,99 @@ async def delete_mash_step(step_id: int, db: Session = Depends(get_db)):
         "id": step.id,
         "name": step.name,
         "message": "Mash step deleted successfully",
+    }
+
+
+# Mash Profile Templates endpoint
+
+
+@router.get("/mash/templates/list", response_model=List[Dict[str, Any]])
+async def get_mash_templates():
+    """
+    Get all available mash profile templates.
+    Returns pre-configured mash profiles with common brewing schedules.
+    """
+    return MASH_TEMPLATES
+
+
+@router.post("/mash/from-template/{template_id}", response_model=dict, status_code=201)
+async def create_mash_from_template(
+    template_id: str, custom_name: str = None, db: Session = Depends(get_db)
+):
+    """
+    Create a new mash profile from a template.
+    
+    Args:
+        template_id: ID of the template to use
+        custom_name: Optional custom name for the profile (defaults to template name)
+    """
+    # Find the template
+    template = next((t for t in MASH_TEMPLATES if t["id"] == template_id), None)
+    
+    if not template:
+        raise HTTPException(status_code=404, detail=f"Template '{template_id}' not found")
+    
+    # Use custom name or template name
+    profile_name = custom_name if custom_name else template["name"]
+    
+    # Check if profile with same name already exists
+    existing = (
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.name == profile_name)
+        .first()
+    )
+    
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Mash profile with name '{profile_name}' already exists",
+        )
+    
+    # Create the mash profile
+    profile_data = {
+        "name": profile_name,
+        "version": 1,
+        "grain_temp": template["grain_temp"],
+        "tun_temp": template["tun_temp"],
+        "sparge_temp": template["sparge_temp"],
+        "ph": template["ph"],
+        "notes": template.get("notes", "") + f" (Created from template: {template['name']})",
+        "display_grain_temp": f"{template['grain_temp']} °C",
+        "display_tun_temp": f"{template['tun_temp']} °C",
+        "display_sparge_temp": f"{template['sparge_temp']} °C",
+    }
+    
+    db_profile = models.MashProfiles(**profile_data)
+    db.add(db_profile)
+    db.commit()
+    db.refresh(db_profile)
+    
+    # Create the mash steps from template
+    created_steps = []
+    for step_template in template["steps"]:
+        step_data = {
+            "mash_id": db_profile.id,
+            "name": step_template["name"],
+            "version": 1,
+            "type": step_template["type"],
+            "step_temp": step_template["step_temp"],
+            "step_time": step_template["step_time"],
+            "ramp_time": step_template.get("ramp_time", 0),
+            "description": step_template.get("description", ""),
+            "decoction_amt": step_template.get("decoction_amt"),
+            "display_step_temp": f"{step_template['step_temp']} °C",
+        }
+        
+        db_step = models.MashStep(**step_data)
+        db.add(db_step)
+        created_steps.append(step_template["name"])
+    
+    db.commit()
+    
+    return {
+        "id": str(db_profile.id),
+        "name": db_profile.name,
+        "template_used": template["name"],
+        "steps_created": len(created_steps),
+        "message": f"Mash profile created successfully from template with {len(created_steps)} steps",
     }
