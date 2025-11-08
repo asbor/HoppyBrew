@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.12-slim
 
 # Accept UID and GID as build arguments (defaults to 1000 if not provided)
 ARG USER_UID=1000
