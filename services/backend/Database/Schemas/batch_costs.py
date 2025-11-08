@@ -25,9 +25,15 @@ class BatchCostBase(BaseModel):
     other_cost: float = Field(default=0.0, ge=0, description="Other miscellaneous costs")
 
     # Sales information
-    expected_yield_volume: Optional[float] = Field(None, gt=0, description="Expected yield volume in liters")
-    selling_price_per_unit: Optional[float] = Field(None, ge=0, description="Selling price per unit")
-    unit_type: str = Field(default="pint", description="Unit type (pint, liter, bottle, etc.)")
+    expected_yield_volume: Optional[float] = Field(
+        None, gt=0, description="Expected yield volume in liters"
+    )
+    selling_price_per_unit: Optional[float] = Field(
+        None, ge=0, description="Selling price per unit"
+    )
+    unit_type: str = Field(
+        default="pint", description="Unit type (pint, liter, bottle, etc.)"
+    )
 
     model_config = ConfigDict(
         json_schema_extra={
