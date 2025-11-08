@@ -19,6 +19,8 @@ class RecipeHop(Base):
     use = Column(String, nullable=True)
     time = Column(Integer, nullable=True)
     notes = Column(String, nullable=True)
+    stage = Column(String, nullable=True)  # mash/boil/fermentation
+    duration = Column(Integer, nullable=True)  # duration in minutes
     display_amount = Column(String, nullable=True)
     inventory = Column(String, nullable=True)
     display_time = Column(String, nullable=True)

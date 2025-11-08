@@ -11,6 +11,13 @@
                     <option v-for="recipe in recipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
                 </select>
             </div>
+            
+            <!-- Inventory Availability Check -->
+            <InventoryAvailabilityCheck 
+                v-if="newBatch.recipe_id" 
+                :recipe-id="newBatch.recipe_id" 
+            />
+            
             <div class="mb-4">
                 <label for="batch_name" class="block text-sm font-medium text-gray-700">Batch Name</label>
                 <input type="text" id="batch_name" v-model="newBatch.batch_name" required class="mt-1 block w-full" />
@@ -43,6 +50,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Button } from '@/components/ui/button';
+import InventoryAvailabilityCheck from '@/components/batch/InventoryAvailabilityCheck.vue';
 
 // Define interface for recipe
 interface Recipe {

@@ -24,6 +24,7 @@ from . import trigger_beer_styles_processing
 from . import health
 from . import references
 from . import homeassistant
+from . import calculators
 
 __all__ = [
     "recipes",
@@ -49,4 +50,5 @@ __all__ = [
     "health",
     "references",
     "homeassistant",
+    "calculators",
 ]

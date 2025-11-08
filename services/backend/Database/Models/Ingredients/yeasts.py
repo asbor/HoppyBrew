@@ -22,6 +22,8 @@ class RecipeYeast(Base):
     times_cultured = Column(Integer, nullable=True)
     max_reuse = Column(Integer, nullable=True)
     add_to_secondary = Column(Boolean, nullable=True)
+    stage = Column(String, nullable=True)  # mash/boil/fermentation
+    duration = Column(Integer, nullable=True)  # duration in minutes
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="yeasts")
 
