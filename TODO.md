@@ -138,9 +138,9 @@ This document organizes work based on the **COMPREHENSIVE_WORKFLOW_ANALYSIS** an
   - ✅ inventory/miscs - Complete with type/use tracking, flexible units
 
 ### Frontend - Profile Pages
-- [ ] Create /profiles/equipment page (CRUD for equipment profiles)
+- [x] Create /profiles/equipment page (CRUD for equipment profiles) ✅
 - [ ] Create /profiles/mash page (CRUD for mash profiles)
-- [ ] Create /profiles/water page (CRUD for water profiles)
+- [x] Create /profiles/water page (CRUD for water profiles) ✅
 - [ ] Create /profiles/fermentation page (CRUD for fermentation profiles)
 - [ ] Add profile templates library
 
