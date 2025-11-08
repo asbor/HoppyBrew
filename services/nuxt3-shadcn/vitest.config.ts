@@ -13,8 +13,19 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './test/setupTests.ts',
+    include: ['test/**/*.{test,spec}.{js,ts}'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**', 'tests/e2e/**'],
     coverage: {
       provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.config.*',
+        '**/e2e/**',
+        'tests/e2e/**',
+        'test/setupTests.ts',
+      ],
     },
   },
 })
