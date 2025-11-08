@@ -17,6 +17,7 @@ Number = Union[int, float]
 
 __all__ = [
     "calculate_abv",
+    "calculate_attenuation",
     "calculate_ibu_tinseth",
     "calculate_srm_morey",
 ]
@@ -52,6 +53,32 @@ def calculate_abv(original_gravity: Number, final_gravity: Number) -> float:
         raise ValueError("original_gravity must be greater than final_gravity.")
 
     return (og - fg) * 131.25
+
+
+def calculate_attenuation(original_gravity: Number, final_gravity: Number) -> float:
+    """
+    Calculate apparent attenuation percentage from original and final gravity readings.
+
+    Formula: Attenuation = ((OG - FG) / (OG - 1.0)) * 100
+    
+    Args:
+        original_gravity: Original gravity reading (e.g., 1.050)
+        final_gravity: Final gravity reading (e.g., 1.010)
+    
+    Returns:
+        Attenuation percentage (e.g., 80.0 for 80% attenuation)
+    """
+    og = _coerce_positive(original_gravity, "original_gravity")
+    fg = _coerce_positive(final_gravity, "final_gravity")
+
+    if og <= fg:
+        raise ValueError("original_gravity must be greater than final_gravity.")
+    
+    if og <= 1.0:
+        raise ValueError("original_gravity must be greater than 1.0")
+
+    attenuation = ((og - fg) / (og - 1.0)) * 100.0
+    return max(attenuation, 0.0)
 
 
 def calculate_ibu_tinseth(

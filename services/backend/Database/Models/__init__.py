@@ -30,6 +30,7 @@ from .Ingredients.miscs import RecipeMisc, InventoryMisc
 from .Ingredients.yeasts import RecipeYeast, InventoryYeast
 from .references import References
 from .devices import Device
+from .fermentation_readings import FermentationReadings
 
 __all__ = [
     "Recipes",
@@ -69,4 +70,5 @@ __all__ = [
     "InventoryYeast",
     "References",
     "Device",
+    "FermentationReadings",
 ]

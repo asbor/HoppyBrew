@@ -57,3 +57,9 @@ class Batches(Base):
         back_populates="batch",
         cascade="all, delete-orphan",
     )
+    fermentation_readings = relationship(
+        "FermentationReadings",
+        back_populates="batch",
+        cascade="all, delete-orphan",
+        order_by="FermentationReadings.timestamp",
+    )

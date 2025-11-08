@@ -82,6 +82,13 @@ from .devices import (
     DeviceInDBBase,
     Device,
 )
+from .fermentation_readings import (
+    FermentationReadingBase,
+    FermentationReadingCreate,
+    FermentationReadingUpdate,
+    FermentationReading,
+    FermentationChartData,
+)
 
 __all__ = [
     "SugarBase",
@@ -157,4 +164,9 @@ __all__ = [
     "Device",
     "QuestionBase",
     "ChoiceBase",
+    "FermentationReadingBase",
+    "FermentationReadingCreate",
+    "FermentationReadingUpdate",
+    "FermentationReading",
+    "FermentationChartData",
 ]

@@ -74,6 +74,10 @@ tags_metadata = [
         "description": "Capture equipment configurations, efficiencies, and boil-off rates.",
     },
     {
+        "name": "fermentation",
+        "description": "Track fermentation progress with gravity, temperature, and pH readings over time.",
+    },
+    {
         "name": "user",
         "description": "User account endpoints for authentication and profile management.",
     },

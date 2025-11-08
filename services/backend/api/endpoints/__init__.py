@@ -13,6 +13,8 @@ from . import questions
 from . import water_profiles
 from . import mash_profiles
 from . import equipment_profiles
+from . import fermentation_profiles
+from . import fermentation_readings
 from . import miscs
 from . import inventory_miscs
 from . import users
@@ -36,6 +38,8 @@ __all__ = [
     "water_profiles",
     "mash_profiles",
     "equipment_profiles",
+    "fermentation_profiles",
+    "fermentation_readings",
     "miscs",
     "inventory_miscs",
     "users",

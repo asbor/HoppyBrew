@@ -4,6 +4,7 @@ import pytest
 
 from modules.brewing_calculations import (
     calculate_abv,
+    calculate_attenuation,
     calculate_ibu_tinseth,
     calculate_srm_morey,
 )
@@ -22,6 +23,52 @@ def test_calculate_abv_invalid_gravity_order():
 def test_calculate_abv_requires_positive_values():
     with pytest.raises(ValueError):
         calculate_abv(-1.050, 1.010)
+
+
+def test_calculate_attenuation_standard():
+    """Test standard attenuation calculation"""
+    # OG = 1.050, FG = 1.010
+    # Attenuation = ((1.050 - 1.010) / (1.050 - 1.0)) * 100 = 80%
+    attenuation = calculate_attenuation(1.050, 1.010)
+    assert math.isclose(attenuation, 80.0, rel_tol=1e-3)
+
+
+def test_calculate_attenuation_high():
+    """Test high attenuation"""
+    # OG = 1.048, FG = 1.008
+    attenuation = calculate_attenuation(1.048, 1.008)
+    assert math.isclose(attenuation, 83.33, rel_tol=1e-2)
+
+
+def test_calculate_attenuation_partial():
+    """Test partial attenuation (mid-fermentation)"""
+    # OG = 1.048, current = 1.032
+    attenuation = calculate_attenuation(1.048, 1.032)
+    assert math.isclose(attenuation, 33.33, rel_tol=1e-2)
+
+
+def test_calculate_attenuation_invalid_gravity_order():
+    """Test that FG > OG raises error"""
+    with pytest.raises(ValueError):
+        calculate_attenuation(1.010, 1.050)
+
+
+def test_calculate_attenuation_same_gravity():
+    """Test that OG == FG raises error"""
+    with pytest.raises(ValueError):
+        calculate_attenuation(1.050, 1.050)
+
+
+def test_calculate_attenuation_og_too_low():
+    """Test that OG <= 1.0 raises error"""
+    with pytest.raises(ValueError):
+        calculate_attenuation(1.0, 0.998)
+
+
+def test_calculate_attenuation_negative_values():
+    """Test that negative values raise error"""
+    with pytest.raises(ValueError):
+        calculate_attenuation(-1.050, 1.010)
 
 
 def test_calculate_ibu_tinseth_baseline():

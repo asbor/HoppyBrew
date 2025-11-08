@@ -19,6 +19,7 @@ from .endpoints import (
     water_profiles,
     equipment_profiles,
     fermentation_profiles,
+    fermentation_readings,
     users,
     trigger_beer_styles_processing,
     homeassistant,
@@ -49,6 +50,7 @@ router.include_router(mash_profiles.router, tags=["mash_profiles"])
 router.include_router(water_profiles.router, tags=["water_profiles"])
 router.include_router(equipment_profiles.router, tags=["equipment_profiles"])
 router.include_router(fermentation_profiles.router, tags=["fermentation_profiles"])
+router.include_router(fermentation_readings.router, tags=["fermentation"])
 router.include_router(users.router, tags=["user"])
 
 # Include the script router

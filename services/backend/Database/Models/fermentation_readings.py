@@ -1,0 +1,31 @@
+# services/backend/Database/Models/fermentation_readings.py
+
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, DateTime, Index, Text
+from sqlalchemy.orm import relationship
+from database import Base
+from datetime import datetime
+
+
+class FermentationReadings(Base):
+    __tablename__ = "fermentation_readings"
+    __table_args__ = (
+        Index("ix_fermentation_readings_batch_id", "batch_id"),
+        Index("ix_fermentation_readings_timestamp", "timestamp"),
+        Index("ix_fermentation_readings_batch_timestamp", "batch_id", "timestamp"),
+    )
+    
+    id = Column(Integer, primary_key=True, index=True)
+    batch_id = Column(
+        Integer,
+        ForeignKey("batches.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    timestamp = Column(DateTime, default=datetime.now, nullable=False)
+    gravity = Column(Float, nullable=True)  # Specific gravity reading
+    temperature = Column(Float, nullable=True)  # Temperature in Celsius or Fahrenheit
+    ph = Column(Float, nullable=True)  # pH reading
+    notes = Column(Text, nullable=True)  # User notes
+    created_at = Column(DateTime, default=datetime.now, nullable=False)
+    
+    # Relationship to Batches
+    batch = relationship("Batches", back_populates="fermentation_readings")
