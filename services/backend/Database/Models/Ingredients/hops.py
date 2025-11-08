@@ -45,5 +45,6 @@ class InventoryHop(Base):
     display_amount = Column(String, nullable=True)
     inventory = Column(String, nullable=True)
     display_time = Column(String, nullable=True)
+    barcode = Column(String, nullable=True, unique=True, index=True)
     batch_id = Column(Integer, ForeignKey("batches.id"))
     batch = relationship("Batches", back_populates="inventory_hops")

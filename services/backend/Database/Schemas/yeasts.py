@@ -38,6 +38,7 @@ class YeastBase(BaseModel):
     times_cultured: Optional[int] = None
     max_reuse: Optional[int] = None
     add_to_secondary: Optional[bool] = None
+    barcode: Optional[str] = None
 
     model_config = ConfigDict(
         from_attributes=True, json_schema_extra={"example": YEAST_BASE_EXAMPLE}

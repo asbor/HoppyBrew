@@ -76,5 +76,6 @@ class InventoryFermentable(Base):
     display_amount = Column(String, nullable=True)
     display_time = Column(String, nullable=True)
     batch_size = Column(Float, nullable=True)
+    barcode = Column(String, nullable=True, unique=True, index=True)
     batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
     batch = relationship("Batches", back_populates="inventory_fermentables")

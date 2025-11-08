@@ -30,6 +30,7 @@ class MiscBase(BaseModel):
     inventory: Optional[int] = None
     display_time: Optional[str] = None
     batch_size: Optional[int] = None
+    barcode: Optional[str] = None
 
     model_config = ConfigDict(
         from_attributes=True,

@@ -47,5 +47,6 @@ class InventoryYeast(Base):
     times_cultured = Column(Integer, nullable=True)
     max_reuse = Column(Integer, nullable=True)
     add_to_secondary = Column(Boolean, nullable=True)
+    barcode = Column(String, nullable=True, unique=True, index=True)
     batch_id = Column(Integer, ForeignKey("batches.id"))
     batch = relationship("Batches", back_populates="inventory_yeasts")

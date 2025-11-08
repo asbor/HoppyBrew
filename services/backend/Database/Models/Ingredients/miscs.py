@@ -39,5 +39,6 @@ class InventoryMisc(Base):
     inventory = Column(Integer, nullable=True)
     display_time = Column(String, nullable=True)
     batch_size = Column(Integer, nullable=True)
+    barcode = Column(String, nullable=True, unique=True, index=True)
     batch_id = Column(Integer, ForeignKey("batches.id"))
     batch = relationship("Batches", back_populates="inventory_miscs")

@@ -34,6 +34,7 @@ class HopBase(BaseModel):
     display_amount: Optional[str] = None
     inventory: Optional[str] = None
     display_time: Optional[str] = None
+    barcode: Optional[str] = None
 
     model_config = ConfigDict(
         from_attributes=True, json_schema_extra={"example": HOP_BASE_EXAMPLE}

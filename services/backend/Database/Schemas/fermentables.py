@@ -104,6 +104,7 @@ class InventoryFermentableBase(FermentableBase):
     display_amount: Optional[str] = None  # Specific to all
     display_time: Optional[str] = None  # Specific to all
     batch_size: Optional[float] = None  # Specific to miscs
+    barcode: Optional[str] = None
 
     model_config = ConfigDict(
         json_schema_extra={"example": INVENTORY_FERMENTABLE_EXAMPLE}
