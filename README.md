@@ -136,7 +136,21 @@ HoppyBrew/
 └── docker-compose.yml # Docker orchestration
 ```
 
-For detailed project documentation, see the [ROADMAP](ROADMAP.md) and [TODO](TODO.md) files.
+## 📖 Documentation
+
+Comprehensive documentation is available:
+
+- **[Wiki Home](WIKI_HOME.md)** - Complete documentation hub
+- **[Getting Started](documents/guides/GETTING_STARTED.md)** - Installation and setup
+- **[User Guide](documents/guides/USER_GUIDE.md)** - How to use HoppyBrew
+- **[Development Setup](documents/guides/DEVELOPMENT_SETUP.md)** - Developer guide
+- **[API Reference](api_endpoint_catalog.md)** - API documentation
+- **[Documentation Index](documents/DOCUMENTATION_INDEX.md)** - Full documentation index
+
+For project planning and tasks:
+- **[ROADMAP](ROADMAP.md)** - Project roadmap and future plans
+- **[TODO](TODO.md)** - Current tasks and priorities
+- **[CHANGELOG](CHANGELOG.md)** - Version history
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
