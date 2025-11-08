@@ -5,7 +5,7 @@ from datetime import datetime
 import Database.Models as models
 
 
-def create_test_batch(client, db_session, batch_name="Test Cost Batch"):
+def create_test_batch(client, batch_name="Test Cost Batch"):
     """Helper function to create a test batch with recipe"""
     # Create recipe
     payload = {
@@ -43,9 +43,9 @@ def create_test_batch(client, db_session, batch_name="Test Cost Batch"):
     return batch
 
 
-def test_create_batch_cost(client, db_session):
+def test_create_batch_cost(client):
     """Test creating a batch cost record"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     cost_payload = {
         "batch_id": batch["id"],
@@ -77,9 +77,9 @@ def test_create_batch_cost(client, db_session):
     assert batch_cost["profit_margin"] is not None
 
 
-def test_get_batch_cost(client, db_session):
+def test_get_batch_cost(client):
     """Test retrieving batch cost information"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     cost_payload = {
         "batch_id": batch["id"],
@@ -101,9 +101,9 @@ def test_get_batch_cost(client, db_session):
     assert batch_cost["fermentables_cost"] == 45.50
 
 
-def test_update_batch_cost(client, db_session):
+def test_update_batch_cost(client):
     """Test updating batch cost information"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     # Create initial cost record
     cost_payload = {
@@ -130,9 +130,9 @@ def test_update_batch_cost(client, db_session):
     assert updated_cost["total_cost"] > 0
 
 
-def test_delete_batch_cost(client, db_session):
+def test_delete_batch_cost(client):
     """Test deleting batch cost information"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     cost_payload = {
         "batch_id": batch["id"],
@@ -151,9 +151,9 @@ def test_delete_batch_cost(client, db_session):
     assert get_response.status_code == 404
 
 
-def test_batch_cost_summary(client, db_session):
+def test_batch_cost_summary(client):
     """Test getting batch cost summary"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     cost_payload = {
         "batch_id": batch["id"],
@@ -185,9 +185,9 @@ def test_batch_cost_summary(client, db_session):
     assert summary["cost_per_pint"] > 0
 
 
-def test_calculate_costs_from_ingredients(client, db_session):
+def test_calculate_costs_from_ingredients(client):
     """Test calculating costs automatically from ingredient cost_per_unit"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     # Calculate costs from ingredients
     response = client.post(f"/batch-costs/{batch['id']}/calculate-from-ingredients")
@@ -206,7 +206,7 @@ def test_calculate_costs_from_ingredients(client, db_session):
     assert total_ingredients >= 0  # Could be zero if no cost_per_unit was set
 
 
-def test_create_utility_cost_config(client, db_session):
+def test_create_utility_cost_config(client):
     """Test creating a utility cost configuration"""
     config_payload = {
         "name": "Home Brewery - Summer 2024",
@@ -229,7 +229,7 @@ def test_create_utility_cost_config(client, db_session):
     assert config["is_active"] == 1
 
 
-def test_get_utility_cost_configs(client, db_session):
+def test_get_utility_cost_configs(client):
     """Test retrieving all utility cost configurations"""
     # Create two configs
     config1 = {
@@ -261,7 +261,7 @@ def test_get_utility_cost_configs(client, db_session):
         assert config["is_active"] == 1
 
 
-def test_update_utility_cost_config(client, db_session):
+def test_update_utility_cost_config(client):
     """Test updating a utility cost configuration"""
     config_payload = {
         "name": "Test Config",
@@ -286,9 +286,9 @@ def test_update_utility_cost_config(client, db_session):
     assert updated_config["water_rate_per_liter"] == 0.003
 
 
-def test_apply_utility_config_to_batch(client, db_session):
+def test_apply_utility_config_to_batch(client):
     """Test applying utility configuration to a batch"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     # Create utility config
     config_payload = {
@@ -316,9 +316,9 @@ def test_apply_utility_config_to_batch(client, db_session):
     assert batch_cost["water_cost"] == pytest.approx(expected_water, abs=0.01)
 
 
-def test_cost_per_pint_calculation(client, db_session):
+def test_cost_per_pint_calculation(client):
     """Test that cost per pint is calculated correctly"""
-    batch = create_test_batch(client, db_session, "20L Batch")
+    batch = create_test_batch(client, "20L Batch")
     
     cost_payload = {
         "batch_id": batch["id"],
@@ -342,9 +342,9 @@ def test_cost_per_pint_calculation(client, db_session):
     assert batch_cost["cost_per_pint"] == pytest.approx(1.42, abs=0.01)
 
 
-def test_profit_margin_calculation(client, db_session):
+def test_profit_margin_calculation(client):
     """Test that profit margin is calculated correctly"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     cost_payload = {
         "batch_id": batch["id"],
@@ -369,9 +369,9 @@ def test_profit_margin_calculation(client, db_session):
     assert batch_cost["profit_margin"] > 70  # Should be around 76%
 
 
-def test_duplicate_batch_cost_rejected(client, db_session):
+def test_duplicate_batch_cost_rejected(client):
     """Test that creating duplicate batch cost records is rejected"""
-    batch = create_test_batch(client, db_session)
+    batch = create_test_batch(client)
     
     cost_payload = {
         "batch_id": batch["id"],
@@ -388,7 +388,7 @@ def test_duplicate_batch_cost_rejected(client, db_session):
     assert "already exists" in response2.json()["detail"].lower()
 
 
-def test_batch_cost_not_found(client, db_session):
+def test_batch_cost_not_found(client):
     """Test 404 responses for non-existent batch costs"""
     # Try to get non-existent batch cost
     response = client.get("/batch-costs/99999")
