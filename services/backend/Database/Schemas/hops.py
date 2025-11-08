@@ -31,6 +31,8 @@ class HopBase(BaseModel):
     use: Optional[str] = None
     time: Optional[int] = None
     notes: Optional[str] = None
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
     display_amount: Optional[str] = None
     inventory: Optional[str] = None
     display_time: Optional[str] = None

@@ -111,3 +111,9 @@ class Recipes(Base):
         back_populates="recipe",
         cascade="all, delete-orphan",
     )
+    versions = relationship(
+        "RecipeVersion",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+        order_by="RecipeVersion.version_number.desc()",
+    )

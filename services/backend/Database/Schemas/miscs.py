@@ -26,6 +26,8 @@ class MiscBase(BaseModel):
     notes: Optional[str] = None
     amount: Optional[int] = None
     time: Optional[int] = None
+    stage: Optional[str] = None  # mash/boil/fermentation
+    duration: Optional[int] = None  # duration in minutes
     display_amount: Optional[str] = None
     inventory: Optional[int] = None
     display_time: Optional[str] = None

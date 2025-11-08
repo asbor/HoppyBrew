@@ -82,6 +82,11 @@ from .devices import (
     DeviceInDBBase,
     Device,
 )
+from .recipe_versions import (
+    RecipeVersionBase,
+    RecipeVersionCreate,
+    RecipeVersion,
+)
 
 __all__ = [
     "SugarBase",
@@ -157,4 +162,7 @@ __all__ = [
     "Device",
     "QuestionBase",
     "ChoiceBase",
+    "RecipeVersionBase",
+    "RecipeVersionCreate",
+    "RecipeVersion",
 ]
