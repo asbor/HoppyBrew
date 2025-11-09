@@ -52,6 +52,8 @@ const items = ref([
   { title: "Recipes", path: "/recipes", icon: "lucide:book-open-text" },
   // Beer brewing batches
   { title: "Batches", path: "/batches", icon: "lucide:beer" },
+  // Analytics
+  { title: "Analytics", path: "/analytics/batches", icon: "lucide:bar-chart-3" },
   // Inventory
   { title: "Inventory", path: "/inventory", icon: "lucide:clipboard-list" },
   // References
