@@ -75,8 +75,10 @@ The project, undertaken as part of the Software Engineering course at the Facult
 ### Key Features
 
 - **Recipe Management**: Create, edit, and manage brewing recipes with detailed ingredient tracking
+- **Community Features**: Share recipes publicly, rate and review, comment with threaded discussions, fork recipes
 - **Batch Tracking**: Monitor active brewing batches through all stages of production
 - **Inventory Management**: Track hops, fermentables, yeasts, and miscellaneous ingredients
+- **User Profiles**: Customize your profile with bio, avatar, and activity statistics
 - **HomeAssistant Integration**: Monitor your brewing processes through HomeAssistant dashboards
 - **Self-Hosted**: Run on your own infrastructure with full control over your data
 
