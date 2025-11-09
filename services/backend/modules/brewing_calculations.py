@@ -26,6 +26,9 @@ __all__ = [
     "calculate_dilution",
     "calculate_carbonation",
     "calculate_water_chemistry",
+    "calculate_mineral_additions",
+    "calculate_salt_ion_contribution",
+    "calculate_water_adjustment",
 ]
 
 
@@ -422,3 +425,246 @@ def calculate_water_chemistry(
         "ph_target": target,
         "ph_difference": estimated_ph - target,
     }
+
+
+def calculate_salt_ion_contribution(
+    salt_type: str,
+    amount_grams: Number,
+    water_volume_gal: Number,
+) -> dict:
+    """
+    Calculate ion contribution from brewing salt additions.
+
+    Args:
+        salt_type: Type of salt (CaCl2, CaSO4, MgSO4, NaCl, NaHCO3, CaCO3, etc.)
+        amount_grams: Amount of salt in grams
+        water_volume_gal: Water volume in gallons
+
+    Returns:
+        Dictionary with ion contributions in ppm
+    """
+    amount = _coerce_positive(amount_grams, "amount_grams", allow_zero=True)
+    volume = _coerce_positive(water_volume_gal, "water_volume_gal")
+
+    if amount == 0:
+        return {
+            "calcium": 0.0,
+            "magnesium": 0.0,
+            "sodium": 0.0,
+            "chloride": 0.0,
+            "sulfate": 0.0,
+            "bicarbonate": 0.0,
+        }
+
+    # Convert gallons to liters
+    volume_liters = volume * 3.78541
+
+    # Ion contribution factors (mg of ion per gram of salt)
+    salt_factors = {
+        "CaCl2": {"calcium": 272.6, "chloride": 482.6},  # Calcium Chloride (anhydrous)
+        "CaCl2.2H2O": {"calcium": 272.6, "chloride": 482.6},  # Calcium Chloride dihydrate
+        "CaSO4": {"calcium": 232.8, "sulfate": 557.7},  # Gypsum (Calcium Sulfate)
+        "MgSO4": {"magnesium": 98.6, "sulfate": 389.6},  # Epsom Salt (Magnesium Sulfate)
+        "MgSO4.7H2O": {"magnesium": 98.6, "sulfate": 389.6},  # Epsom Salt heptahydrate
+        "NaCl": {"sodium": 393.4, "chloride": 606.6},  # Table Salt (Sodium Chloride)
+        "NaHCO3": {"sodium": 274.2, "bicarbonate": 726.3},  # Baking Soda (Sodium Bicarbonate)
+        "CaCO3": {"calcium": 400.4, "bicarbonate": 609.6},  # Chalk (Calcium Carbonate)
+    }
+
+    # Normalize salt type
+    salt_type_normalized = salt_type.replace(" ", "").replace(".", "")
+    
+    # Try to find matching salt type
+    salt_data = None
+    for key in salt_factors:
+        if key.replace(".", "").upper() == salt_type_normalized.upper():
+            salt_data = salt_factors[key]
+            break
+    
+    if not salt_data:
+        raise ValueError(
+            f"Unknown salt type '{salt_type}'. "
+            f"Supported types: {', '.join(salt_factors.keys())}"
+        )
+
+    # Calculate ion contributions in ppm (mg/L)
+    contributions = {
+        "calcium": 0.0,
+        "magnesium": 0.0,
+        "sodium": 0.0,
+        "chloride": 0.0,
+        "sulfate": 0.0,
+        "bicarbonate": 0.0,
+    }
+
+    for ion, factor in salt_data.items():
+        # ppm = (grams of salt * mg of ion per gram) / liters
+        contributions[ion] = (amount * factor / 1000.0) / volume_liters
+
+    return contributions
+
+
+def calculate_mineral_additions(
+    source_profile: dict,
+    target_profile: dict,
+    water_volume_gal: Number,
+) -> dict:
+    """
+    Calculate salt additions needed to adjust source water to target profile.
+
+    Args:
+        source_profile: Starting water profile with ion concentrations (ppm)
+        target_profile: Target water profile with ion concentrations (ppm)
+        water_volume_gal: Volume of water to treat in gallons
+
+    Returns:
+        Dictionary with recommended salt additions in grams and resulting profile
+    """
+    volume = _coerce_positive(water_volume_gal, "water_volume_gal")
+    volume_liters = volume * 3.78541
+
+    # Validate required keys
+    required_ions = ["calcium", "magnesium", "sodium", "chloride", "sulfate", "bicarbonate"]
+    for profile_name, profile in [("source_profile", source_profile), ("target_profile", target_profile)]:
+        for ion in required_ions:
+            if ion not in profile:
+                raise ValueError(f"{profile_name} must contain '{ion}' key")
+
+    # Calculate ion differences (target - source)
+    differences = {}
+    for ion in required_ions:
+        source_val = _coerce_positive(profile[ion] if profile[ion] else 0, f"source_{ion}", allow_zero=True)
+        target_val = _coerce_positive(target_profile[ion] if target_profile[ion] else 0, f"target_{ion}", allow_zero=True)
+        differences[ion] = target_val - source_val
+
+    # Calculate salt additions using a simplified approach
+    # This uses a greedy algorithm to add salts in priority order
+    additions = {
+        "CaSO4": 0.0,  # Gypsum
+        "CaCl2": 0.0,  # Calcium Chloride
+        "MgSO4": 0.0,  # Epsom Salt
+        "NaCl": 0.0,   # Table Salt
+        "NaHCO3": 0.0, # Baking Soda
+    }
+
+    current_ions = {ion: float(source_profile[ion]) for ion in required_ions}
+
+    # Add Gypsum (CaSO4) for calcium and sulfate
+    if differences["calcium"] > 0 and differences["sulfate"] > 0:
+        # Calculate grams needed: (ppm increase * liters) / (mg ion per gram of salt / 1000)
+        ca_needed = (differences["calcium"] * volume_liters) / (232.8 / 1000.0)
+        so4_needed = (differences["sulfate"] * volume_liters) / (557.7 / 1000.0)
+        gypsum_grams = min(ca_needed, so4_needed)
+        additions["CaSO4"] = max(0, gypsum_grams)
+        
+        # Update current ions
+        contrib = calculate_salt_ion_contribution("CaSO4", additions["CaSO4"], volume)
+        for ion in contrib:
+            current_ions[ion] += contrib[ion]
+
+    # Add Calcium Chloride for remaining calcium and chloride
+    remaining_ca = target_profile["calcium"] - current_ions["calcium"]
+    remaining_cl = target_profile["chloride"] - current_ions["chloride"]
+    if remaining_ca > 0 and remaining_cl > 0:
+        ca_needed = (remaining_ca * volume_liters) / (272.6 / 1000.0)
+        cl_needed = (remaining_cl * volume_liters) / (482.6 / 1000.0)
+        cacl2_grams = min(ca_needed, cl_needed)
+        additions["CaCl2"] = max(0, cacl2_grams)
+        
+        contrib = calculate_salt_ion_contribution("CaCl2", additions["CaCl2"], volume)
+        for ion in contrib:
+            current_ions[ion] += contrib[ion]
+
+    # Add Epsom Salt for magnesium and remaining sulfate
+    remaining_mg = target_profile["magnesium"] - current_ions["magnesium"]
+    remaining_so4 = target_profile["sulfate"] - current_ions["sulfate"]
+    if remaining_mg > 0 and remaining_so4 > 0:
+        mg_needed = (remaining_mg * volume_liters) / (98.6 / 1000.0)
+        so4_needed = (remaining_so4 * volume_liters) / (389.6 / 1000.0)
+        epsom_grams = min(mg_needed, so4_needed)
+        additions["MgSO4"] = max(0, epsom_grams)
+        
+        contrib = calculate_salt_ion_contribution("MgSO4", additions["MgSO4"], volume)
+        for ion in contrib:
+            current_ions[ion] += contrib[ion]
+
+    # Add Table Salt for remaining sodium and chloride
+    remaining_na = target_profile["sodium"] - current_ions["sodium"]
+    remaining_cl = target_profile["chloride"] - current_ions["chloride"]
+    if remaining_na > 0 and remaining_cl > 0:
+        na_needed = (remaining_na * volume_liters) / (393.4 / 1000.0)
+        cl_needed = (remaining_cl * volume_liters) / (606.6 / 1000.0)
+        nacl_grams = min(na_needed, cl_needed)
+        additions["NaCl"] = max(0, nacl_grams)
+        
+        contrib = calculate_salt_ion_contribution("NaCl", additions["NaCl"], volume)
+        for ion in contrib:
+            current_ions[ion] += contrib[ion]
+
+    # Add Baking Soda for remaining sodium and bicarbonate
+    remaining_na = target_profile["sodium"] - current_ions["sodium"]
+    remaining_hco3 = target_profile["bicarbonate"] - current_ions["bicarbonate"]
+    if remaining_na > 0 and remaining_hco3 > 0:
+        na_needed = (remaining_na * volume_liters) / (274.2 / 1000.0)
+        hco3_needed = (remaining_hco3 * volume_liters) / (726.3 / 1000.0)
+        nahco3_grams = min(na_needed, hco3_needed)
+        additions["NaHCO3"] = max(0, nahco3_grams)
+        
+        contrib = calculate_salt_ion_contribution("NaHCO3", additions["NaHCO3"], volume)
+        for ion in contrib:
+            current_ions[ion] += contrib[ion]
+
+    # Round additions to 2 decimal places
+    for salt in additions:
+        additions[salt] = round(additions[salt], 2)
+
+    # Round resulting ions to 1 decimal place
+    for ion in current_ions:
+        current_ions[ion] = round(current_ions[ion], 1)
+
+    return {
+        "additions": additions,
+        "resulting_profile": current_ions,
+        "target_profile": {ion: float(target_profile[ion]) for ion in required_ions},
+    }
+
+
+def calculate_water_adjustment(
+    water_profile: dict,
+    salt_additions: dict,
+    water_volume_gal: Number,
+) -> dict:
+    """
+    Calculate resulting water chemistry from salt additions.
+
+    Args:
+        water_profile: Starting water profile with ion concentrations (ppm)
+        salt_additions: Dictionary of salt additions in grams (e.g., {"CaSO4": 5.0, "CaCl2": 3.0})
+        water_volume_gal: Volume of water in gallons
+
+    Returns:
+        Dictionary with resulting ion concentrations
+    """
+    volume = _coerce_positive(water_volume_gal, "water_volume_gal")
+
+    # Validate required keys
+    required_ions = ["calcium", "magnesium", "sodium", "chloride", "sulfate", "bicarbonate"]
+    for ion in required_ions:
+        if ion not in water_profile:
+            raise ValueError(f"water_profile must contain '{ion}' key")
+
+    # Start with source water chemistry
+    resulting_profile = {ion: float(water_profile[ion]) for ion in required_ions}
+
+    # Add contributions from each salt
+    for salt_type, amount in salt_additions.items():
+        if amount > 0:
+            contributions = calculate_salt_ion_contribution(salt_type, amount, volume)
+            for ion in required_ions:
+                resulting_profile[ion] += contributions[ion]
+
+    # Round to 1 decimal place
+    for ion in resulting_profile:
+        resulting_profile[ion] = round(resulting_profile[ion], 1)
+
+    return resulting_profile

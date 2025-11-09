@@ -16,6 +16,9 @@ from modules.brewing_calculations import (
     calculate_dilution,
     calculate_carbonation,
     calculate_water_chemistry,
+    calculate_salt_ion_contribution,
+    calculate_mineral_additions,
+    calculate_water_adjustment,
 )
 
 router = APIRouter()
@@ -432,3 +435,233 @@ async def calc_water_chemistry(
         request.target_ph,
     )
     return WaterChemistryResponse(**result)
+
+
+# New mineral adjustment calculator models and endpoints
+
+
+class SaltIonContributionRequest(BaseModel):
+    salt_type: str = Field(
+        ...,
+        description="Type of brewing salt (CaCl2, CaSO4, MgSO4, NaCl, NaHCO3, CaCO3)",
+    )
+    amount_grams: float = Field(..., ge=0, description="Amount of salt in grams")
+    water_volume_gal: float = Field(..., gt=0, description="Water volume in gallons")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "salt_type": "CaSO4",
+                "amount_grams": 5.0,
+                "water_volume_gal": 5.0,
+            }
+        }
+    )
+
+
+class SaltIonContributionResponse(BaseModel):
+    calcium: float = Field(..., description="Calcium contribution in ppm")
+    magnesium: float = Field(..., description="Magnesium contribution in ppm")
+    sodium: float = Field(..., description="Sodium contribution in ppm")
+    chloride: float = Field(..., description="Chloride contribution in ppm")
+    sulfate: float = Field(..., description="Sulfate contribution in ppm")
+    bicarbonate: float = Field(..., description="Bicarbonate contribution in ppm")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "calcium": 54.0,
+                "magnesium": 0.0,
+                "sodium": 0.0,
+                "chloride": 0.0,
+                "sulfate": 129.3,
+                "bicarbonate": 0.0,
+            }
+        }
+    )
+
+
+class MineralAdditionsRequest(BaseModel):
+    source_profile: dict = Field(
+        ...,
+        description="Source water profile with ion concentrations in ppm",
+    )
+    target_profile: dict = Field(
+        ...,
+        description="Target water profile with ion concentrations in ppm",
+    )
+    water_volume_gal: float = Field(..., gt=0, description="Water volume in gallons")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "source_profile": {
+                    "calcium": 10,
+                    "magnesium": 2,
+                    "sodium": 5,
+                    "chloride": 8,
+                    "sulfate": 5,
+                    "bicarbonate": 20,
+                },
+                "target_profile": {
+                    "calcium": 100,
+                    "magnesium": 10,
+                    "sodium": 15,
+                    "chloride": 60,
+                    "sulfate": 150,
+                    "bicarbonate": 40,
+                },
+                "water_volume_gal": 5.0,
+            }
+        }
+    )
+
+
+class MineralAdditionsResponse(BaseModel):
+    additions: dict = Field(..., description="Recommended salt additions in grams")
+    resulting_profile: dict = Field(
+        ..., description="Resulting water profile after additions"
+    )
+    target_profile: dict = Field(..., description="Target water profile")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "additions": {
+                    "CaSO4": 15.2,
+                    "CaCl2": 8.5,
+                    "MgSO4": 3.1,
+                    "NaCl": 0.5,
+                    "NaHCO3": 1.2,
+                },
+                "resulting_profile": {
+                    "calcium": 98.5,
+                    "magnesium": 9.8,
+                    "sodium": 14.7,
+                    "chloride": 58.3,
+                    "sulfate": 148.9,
+                    "bicarbonate": 39.5,
+                },
+                "target_profile": {
+                    "calcium": 100,
+                    "magnesium": 10,
+                    "sodium": 15,
+                    "chloride": 60,
+                    "sulfate": 150,
+                    "bicarbonate": 40,
+                },
+            }
+        }
+    )
+
+
+class WaterAdjustmentRequest(BaseModel):
+    water_profile: dict = Field(
+        ...,
+        description="Starting water profile with ion concentrations in ppm",
+    )
+    salt_additions: dict = Field(
+        ...,
+        description="Salt additions in grams (e.g., {'CaSO4': 5.0, 'CaCl2': 3.0})",
+    )
+    water_volume_gal: float = Field(..., gt=0, description="Water volume in gallons")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "water_profile": {
+                    "calcium": 10,
+                    "magnesium": 2,
+                    "sodium": 5,
+                    "chloride": 8,
+                    "sulfate": 5,
+                    "bicarbonate": 20,
+                },
+                "salt_additions": {
+                    "CaSO4": 5.0,
+                    "CaCl2": 3.0,
+                },
+                "water_volume_gal": 5.0,
+            }
+        }
+    )
+
+
+class WaterAdjustmentResponse(BaseModel):
+    calcium: float = Field(..., description="Resulting calcium in ppm")
+    magnesium: float = Field(..., description="Resulting magnesium in ppm")
+    sodium: float = Field(..., description="Resulting sodium in ppm")
+    chloride: float = Field(..., description="Resulting chloride in ppm")
+    sulfate: float = Field(..., description="Resulting sulfate in ppm")
+    bicarbonate: float = Field(..., description="Resulting bicarbonate in ppm")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "calcium": 71.8,
+                "magnesium": 2.0,
+                "sodium": 5.0,
+                "chloride": 45.6,
+                "sulfate": 134.3,
+                "bicarbonate": 20.0,
+            }
+        }
+    )
+
+
+@router.post(
+    "/calculators/salt-ion-contribution",
+    response_model=SaltIonContributionResponse,
+    summary="Calculate salt ion contribution",
+    response_description="Ion contribution from brewing salt addition",
+)
+async def calc_salt_ion_contribution(
+    request: SaltIonContributionRequest,
+) -> SaltIonContributionResponse:
+    """Calculate the ion contribution from adding a brewing salt to water."""
+    try:
+        result = calculate_salt_ion_contribution(
+            request.salt_type,
+            request.amount_grams,
+            request.water_volume_gal,
+        )
+        return SaltIonContributionResponse(**result)
+    except ValueError as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+@router.post(
+    "/calculators/mineral-additions",
+    response_model=MineralAdditionsResponse,
+    summary="Calculate mineral additions",
+    response_description="Recommended salt additions to reach target water profile",
+)
+async def calc_mineral_additions(
+    request: MineralAdditionsRequest,
+) -> MineralAdditionsResponse:
+    """Calculate salt additions needed to adjust source water to target profile."""
+    result = calculate_mineral_additions(
+        request.source_profile,
+        request.target_profile,
+        request.water_volume_gal,
+    )
+    return MineralAdditionsResponse(**result)
+
+
+@router.post(
+    "/calculators/water-adjustment",
+    response_model=WaterAdjustmentResponse,
+    summary="Calculate water adjustment",
+    response_description="Resulting water chemistry from salt additions",
+)
+async def calc_water_adjustment(
+    request: WaterAdjustmentRequest,
+) -> WaterAdjustmentResponse:
+    """Calculate resulting water chemistry from salt additions."""
+    result = calculate_water_adjustment(
+        request.water_profile,
+        request.salt_additions,
+        request.water_volume_gal,
+    )
+    return WaterAdjustmentResponse(**result)
