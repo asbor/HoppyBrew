@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { mockEquipmentApi } from './fixtures/mockApi'
-import { equipmentFixtures } from './fixtures/testData'
+import { mockEquipmentApi } from '../fixtures/mockApi'
+import { equipmentFixtures } from '../fixtures/testData'
 
 test.describe('Equipment profiles page', () => {
   test.beforeEach(async ({ page }) => {

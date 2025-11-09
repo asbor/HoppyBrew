@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { mockRecipesApi } from './fixtures/mockApi'
-import { recipeFixtures } from './fixtures/testData'
+import { mockRecipesApi } from '../fixtures/mockApi'
+import { recipeFixtures } from '../fixtures/testData'
 
 test.describe('Recipes page', () => {
   test.beforeEach(async ({ page }) => {
