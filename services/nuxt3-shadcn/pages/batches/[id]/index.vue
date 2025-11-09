@@ -88,13 +88,13 @@
             @update-batch="handleBatchUpdate" />
         </template>
 
-        <!-- Packaged Phase -->
-        <template v-else-if="currentBatch.status === 'packaged'">
-          <BatchPackagedPhase :batch="currentBatch" @complete-batch="completeBatch" @update-batch="handleBatchUpdate" />
+        <!-- Packaging Phase -->
+        <template v-else-if="currentBatch.status === 'packaging'">
+          <BatchPackagingPhase :batch="currentBatch" @complete-batch="completeBatch" @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Completed Phase -->
-        <template v-else-if="['completed', 'archived'].includes(currentBatch.status)">
+        <template v-else-if="['complete', 'archived'].includes(currentBatch.status)">
           <BatchCompletedPhase :batch="currentBatch" @archive-batch="archiveBatch" @update-batch="handleBatchUpdate" />
         </template>
       </div>
@@ -150,7 +150,7 @@ import BatchPlanningPhase from '@/components/batch/BatchPlanningPhase.vue'
 import BatchBrewingPhase from '@/components/batch/BatchBrewingPhase.vue'
 import BatchFermentationPhase from '@/components/batch/BatchFermentationPhase.vue'
 import BatchConditioningPhase from '@/components/batch/BatchConditioningPhase.vue'
-import BatchPackagedPhase from '@/components/batch/BatchPackagedPhase.vue'
+import BatchPackagingPhase from '@/components/batch/BatchPackagingPhase.vue'
 import BatchCompletedPhase from '@/components/batch/BatchCompletedPhase.vue'
 
 // Import dialogs
@@ -212,11 +212,11 @@ const startConditioning = async () => {
 }
 
 const packageBatch = async () => {
-  await handlePhaseChange('packaged')
+  await handlePhaseChange('packaging')
 }
 
 const completeBatch = async () => {
-  await handlePhaseChange('completed')
+  await handlePhaseChange('complete')
 }
 
 const archiveBatch = async () => {
