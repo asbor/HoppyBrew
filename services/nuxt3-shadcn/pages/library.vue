@@ -207,7 +207,9 @@ const formatRating = (rating?: number) => {
 
 // Navigate to entry detail
 const viewEntry = (id: number) => {
-  router.push(`/library/${id}`)
+  // TODO: Implement library detail page
+  console.log('View library entry:', id)
+  // router.push(`/library/${id}`)
 }
 
 // Category display name
@@ -374,7 +376,7 @@ onMounted(() => {
               v-if="entry.purchase_url" 
               variant="outline" 
               size="sm"
-              @click.stop="window.open(entry.purchase_url, '_blank')"
+              @click.stop="() => { if (typeof window !== 'undefined') window.open(entry.purchase_url, '_blank') }"
             >
               <ExternalLink class="h-3 w-3" />
             </Button>

@@ -127,7 +127,8 @@ def seed_water_profiles(db: Session):
     # Check if profiles already exist
     existing_count = db.query(models.WaterProfiles).count()
     if existing_count > 0:
-        print(f"✓ Water profiles already exist ({existing_count} found), skipping...")
+        print(
+            f"✓ Water profiles already exist ({existing_count} found), skipping...")
         return
 
     water_profiles = [
@@ -1007,7 +1008,8 @@ def seed_recipes(db: Session):
 
         # Add fermentables
         for ferm_data in fermentables:
-            fermentable = models.RecipeFermentable(recipe_id=recipe.id, **ferm_data)
+            fermentable = models.RecipeFermentable(
+                recipe_id=recipe.id, **ferm_data)
             db.add(fermentable)
 
         # Add hops
@@ -1046,7 +1048,7 @@ def seed_batches(db: Session, recipes):
             "batch_size": 20.0,
             "brewer": "John Brewer",
             "brew_date": now - timedelta(days=21),
-            "status": "primary_fermentation",
+            "status": "fermenting",
         },
         {
             "recipe": recipes[1],  # Irish Dry Stout
@@ -1073,7 +1075,7 @@ def seed_batches(db: Session, recipes):
             "batch_size": 20.0,
             "brewer": "John Brewer",
             "brew_date": now - timedelta(days=14),
-            "status": "primary_fermentation",
+            "status": "fermenting",
         },
     ]
 
@@ -1171,9 +1173,11 @@ def main():
         print("\nSummary:")
         print(f"  - {db.query(models.Recipes).count()} recipes")
         print(f"  - {db.query(models.Batches).count()} batches")
-        print(f"  - {db.query(models.EquipmentProfiles).count()} equipment profiles")
+        print(
+            f"  - {db.query(models.EquipmentProfiles).count()} equipment profiles")
         print(f"  - {db.query(models.WaterProfiles).count()} water profiles")
-        print(f"  - {db.query(models.RecipeFermentable).count()} recipe fermentables")
+        print(
+            f"  - {db.query(models.RecipeFermentable).count()} recipe fermentables")
         print(f"  - {db.query(models.RecipeHop).count()} recipe hops")
         print(f"  - {db.query(models.RecipeYeast).count()} recipe yeasts")
         print(
