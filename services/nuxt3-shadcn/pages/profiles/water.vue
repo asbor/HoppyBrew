@@ -76,20 +76,10 @@
                   <Button variant="ghost" size="icon" @click="viewProfile(profile)">
                     <Eye class="h-4 w-4" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    @click="editProfile(profile)"
-                    :disabled="profile.is_default"
-                  >
+                  <Button variant="ghost" size="icon" @click="editProfile(profile)" :disabled="profile.is_default">
                     <Pencil class="h-4 w-4" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    @click="deleteProfile(profile)"
-                    :disabled="profile.is_default"
-                  >
+                  <Button variant="ghost" size="icon" @click="deleteProfile(profile)" :disabled="profile.is_default">
                     <Trash2 class="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
@@ -109,7 +99,7 @@
             {{ isEditing ? 'Update' : 'Add' }} water chemistry profile for brewing calculations
           </DialogDescription>
         </DialogHeader>
-        
+
         <form @submit.prevent="saveProfile" class="space-y-4">
           <!-- Basic Information -->
           <div class="space-y-4">
@@ -212,7 +202,7 @@
             <Badge v-if="selectedProfile?.is_default" variant="outline" class="ml-2">Default</Badge>
           </DialogDescription>
         </DialogHeader>
-        
+
         <div v-if="selectedProfile" class="space-y-4">
           <div>
             <h4 class="text-sm font-semibold text-muted-foreground mb-3">Ion Concentrations (ppm)</h4>
@@ -243,7 +233,7 @@
               </div>
             </div>
           </div>
-          
+
           <div v-if="selectedProfile.ph || selectedProfile.alkalinity" class="grid grid-cols-2 gap-4">
             <div v-if="selectedProfile.ph">
               <h4 class="text-sm font-semibold text-muted-foreground">pH</h4>
@@ -270,7 +260,7 @@
               </div>
             </div>
           </div>
-          
+
           <div v-if="selectedProfile.notes">
             <h4 class="text-sm font-semibold text-muted-foreground mb-2">Notes</h4>
             <p class="text-sm whitespace-pre-wrap">{{ selectedProfile.notes }}</p>
@@ -341,13 +331,13 @@ const getWaterCharacter = (ratio: number) => {
 const fetchProfiles = async () => {
   loading.value = true
   error.value = null
-  
+
   try {
     const { data, error: fetchError } = await useApi('/water-profiles')
-    
-    if (fetchError.value) {
-      error.value = fetchError.value.message
-    } else if (data.value) {
+
+    if (fetchError && fetchError.value) {
+      error.value = fetchError.value.message || 'Failed to load water profiles'
+    } else if (data && data.value) {
       profiles.value = data.value
     }
   } catch (e: any) {
@@ -383,7 +373,7 @@ const viewProfile = (profile: WaterProfile) => {
 
 const editProfile = (profile: WaterProfile) => {
   if (profile.is_default) return
-  
+
   isEditing.value = true
   selectedProfile.value = profile
   formData.value = {
@@ -405,16 +395,16 @@ const editProfile = (profile: WaterProfile) => {
 
 const saveProfile = async () => {
   saving.value = true
-  
+
   try {
     if (isEditing.value && selectedProfile.value) {
       const { error: updateError } = await useApi(`/water-profiles/${selectedProfile.value.id}`, {
         method: 'PUT',
         body: formData.value
       })
-      
-      if (updateError.value) {
-        error.value = updateError.value.message
+
+      if (updateError && updateError.value) {
+        error.value = updateError.value.message || 'Failed to update water profile'
         return
       }
     } else {
@@ -422,13 +412,13 @@ const saveProfile = async () => {
         method: 'POST',
         body: formData.value
       })
-      
-      if (createError.value) {
-        error.value = createError.value.message
+
+      if (createError && createError.value) {
+        error.value = createError.value.message || 'Failed to create water profile'
         return
       }
     }
-    
+
     dialogOpen.value = false
     await fetchProfiles()
   } catch (e: any) {
@@ -440,21 +430,21 @@ const saveProfile = async () => {
 
 const deleteProfile = async (profile: WaterProfile) => {
   if (profile.is_default) return
-  
+
   if (!confirm(`Are you sure you want to delete "${profile.name}"?`)) {
     return
   }
-  
+
   try {
     const { error: deleteError } = await useApi(`/water-profiles/${profile.id}`, {
       method: 'DELETE'
     })
-    
-    if (deleteError.value) {
-      error.value = deleteError.value.message
+
+    if (deleteError && deleteError.value) {
+      error.value = deleteError.value.message || 'Failed to delete water profile'
       return
     }
-    
+
     await fetchProfiles()
   } catch (e: any) {
     error.value = e.message || 'Failed to delete water profile'
