@@ -25,6 +25,8 @@ from .endpoints import (
     homeassistant,
     devices,
     calculators,
+    recipe_community,
+    user_profiles,
 )
 
 # create the router and include all the routers from the endpoints folder
@@ -53,6 +55,11 @@ router.include_router(equipment_profiles.router, tags=["equipment_profiles"])
 router.include_router(fermentation_profiles.router, tags=["fermentation_profiles"])
 router.include_router(fermentation_readings.router, tags=["fermentation"])
 router.include_router(users.router, tags=["user"])
+
+# Community features routers
+
+router.include_router(recipe_community.router, tags=["recipe_community"])
+router.include_router(user_profiles.router, tags=["user_profiles"])
 
 # Include the script router
 

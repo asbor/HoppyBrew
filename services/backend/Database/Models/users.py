@@ -56,6 +56,11 @@ class Users(Base):
     hashed_password = Column(String(255), nullable=True)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
+    
+    # User profile fields for community features
+    bio = Column(String(500), nullable=True)
+    location = Column(String(100), nullable=True)
+    avatar_url = Column(String(255), nullable=True)
 
     # New authentication and authorization fields
     role = Column(Enum(UserRole), default=UserRole.viewer, nullable=False)

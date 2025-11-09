@@ -33,6 +33,8 @@ from .references import References
 from .devices import Device
 from .fermentation_readings import FermentationReadings
 from .recipe_versions import RecipeVersion
+from .recipe_ratings import RecipeRating
+from .recipe_comments import RecipeComment
 from .batch_ingredients import BatchIngredient, InventoryTransaction
 
 __all__ = [
@@ -76,6 +78,8 @@ __all__ = [
     "Device",
     "FermentationReadings",
     "RecipeVersion",
+    "RecipeRating",
+    "RecipeComment",
     "BatchIngredient",
     "InventoryTransaction",
 ]

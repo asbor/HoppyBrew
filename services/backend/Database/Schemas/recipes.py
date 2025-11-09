@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
+from datetime import datetime
 from .hops import RecipeHopBase, RecipeHop
 from .fermentables import RecipeFermentableBase, RecipeFermentable
 from .miscs import RecipeMiscBase, RecipeMisc
@@ -120,6 +121,8 @@ class RecipeBase(BaseModel):
     display_secondary_temp: Optional[str] = None
     display_tertiary_temp: Optional[str] = None
     display_age_temp: Optional[str] = None
+    # Community features
+    is_public: Optional[bool] = False
     # List of objects for each ingredient type
     hops: List[RecipeHopBase] = Field(default_factory=list)
     fermentables: List[RecipeFermentableBase] = Field(default_factory=list)
@@ -133,6 +136,11 @@ class Recipe(RecipeBase):
     id: int
     is_batch: Optional[bool] = False
     origin_recipe_id: Optional[int] = None
+    # Community features
+    user_id: Optional[int] = None
+    forked_from_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     # Override with full schemas that include IDs
     hops: List[RecipeHop] = Field(default_factory=list)
     fermentables: List[RecipeFermentable] = Field(default_factory=list)

@@ -1,7 +1,8 @@
 # services/backend/Database/Models/recipes.py
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, Index
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, Index, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from database import Base
 
 
@@ -10,21 +11,43 @@ class Recipes(Base):
     __table_args__ = (
         Index("ix_recipes_origin_recipe_id", "origin_recipe_id"),
         Index("ix_recipes_name_version", "name", "version"),
+        Index("ix_recipes_user_id", "user_id"),
+        Index("ix_recipes_is_public", "is_public"),
     )
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     is_batch = Column(Boolean, default=False)
+    
+    # Community features
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=True)  # Recipe author
+    is_public = Column(Boolean, default=False)  # Public/private visibility
+    forked_from_id = Column(Integer, ForeignKey("recipes.id"), nullable=True)  # Track recipe forks
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    # Original forking system (for batches)
     origin_recipe_id = Column(Integer, ForeignKey("recipes.id"), nullable=True)
     origin_recipe = relationship(
         "Recipes",
         remote_side=[id],
         back_populates="derived_recipes",
+        foreign_keys=[origin_recipe_id],
     )
     derived_recipes = relationship(
         "Recipes",
         back_populates="origin_recipe",
         cascade="all, delete-orphan",
+        foreign_keys=[origin_recipe_id],
     )
+    
+    # Forking system (for community sharing)
+    forked_from = relationship(
+        "Recipes",
+        remote_side=[id],
+        backref="forks",
+        foreign_keys=[forked_from_id],
+    )
+    
     version = Column(Integer)
     type = Column(String)
     brewer = Column(String)
@@ -116,4 +139,17 @@ class Recipes(Base):
         back_populates="recipe",
         cascade="all, delete-orphan",
         order_by="RecipeVersion.version_number.desc()",
+    )
+    
+    # Community features relationships
+    user = relationship("Users", backref="recipes")
+    ratings = relationship(
+        "RecipeRating",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    comments = relationship(
+        "RecipeComment",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
     )

@@ -107,6 +107,27 @@ from .recipe_versions import (
     RecipeVersionCreate,
     RecipeVersion,
 )
+from .recipe_ratings import (
+    RecipeRatingBase,
+    RecipeRatingCreate,
+    RecipeRatingUpdate,
+    RecipeRating,
+    RecipeRatingWithUser,
+    RecipeRatingSummary,
+)
+from .recipe_comments import (
+    RecipeCommentBase,
+    RecipeCommentCreate,
+    RecipeCommentUpdate,
+    RecipeComment,
+    RecipeCommentWithUser,
+)
+from .user_profile import (
+    UserProfileBase,
+    UserProfileUpdate,
+    UserProfile,
+    UserProfilePublic,
+)
 from .batch_ingredients import (
     BatchIngredient,
     BatchIngredientCreate,
@@ -208,6 +229,21 @@ __all__ = [
     "RecipeVersionBase",
     "RecipeVersionCreate",
     "RecipeVersion",
+    "RecipeRatingBase",
+    "RecipeRatingCreate",
+    "RecipeRatingUpdate",
+    "RecipeRating",
+    "RecipeRatingWithUser",
+    "RecipeRatingSummary",
+    "RecipeCommentBase",
+    "RecipeCommentCreate",
+    "RecipeCommentUpdate",
+    "RecipeComment",
+    "RecipeCommentWithUser",
+    "UserProfileBase",
+    "UserProfileUpdate",
+    "UserProfile",
+    "UserProfilePublic",
     "BatchIngredient",
     "BatchIngredientCreate",
     "BatchIngredientBase",
