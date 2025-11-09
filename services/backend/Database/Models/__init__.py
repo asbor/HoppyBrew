@@ -29,6 +29,7 @@ from .Ingredients.fermentables import RecipeFermentable, InventoryFermentable
 from .Ingredients.hops import RecipeHop, InventoryHop
 from .Ingredients.miscs import RecipeMisc, InventoryMisc
 from .Ingredients.yeasts import RecipeYeast, InventoryYeast
+from .yeast_management import YeastStrain, YeastHarvest
 from .references import References
 from .devices import Device
 from .fermentation_readings import FermentationReadings
@@ -72,6 +73,8 @@ __all__ = [
     "InventoryMisc",
     "RecipeYeast",
     "InventoryYeast",
+    "YeastStrain",
+    "YeastHarvest",
     "References",
     "Device",
     "FermentationReadings",
