@@ -37,3 +37,5 @@ selenium==4.21.0
 # Code Quality
 flake8==7.3.0
 
+# PDF Generation
+reportlab==4.2.5

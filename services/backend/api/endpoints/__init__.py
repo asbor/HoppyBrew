@@ -25,6 +25,7 @@ from . import health
 from . import references
 from . import homeassistant
 from . import calculators
+from . import quality_control_tests
 
 __all__ = [
     "recipes",
@@ -51,4 +52,5 @@ __all__ = [
     "references",
     "homeassistant",
     "calculators",
+    "quality_control_tests",
 ]

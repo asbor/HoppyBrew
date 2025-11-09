@@ -93,6 +93,10 @@ tags_metadata = [
         "name": "calculators",
         "description": "Brewing calculation utilities for strike water, ABV, priming sugar, yeast starters, and more.",
     },
+    {
+        "name": "quality-control",
+        "description": "Quality control testing and tasting notes with BJCP score sheet integration.",
+    },
 ]
 
 # Get logger instance
