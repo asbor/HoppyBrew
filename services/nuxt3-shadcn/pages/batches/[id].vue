@@ -113,6 +113,15 @@
             <Icon name="mdi:note-plus" class="mr-2 h-4 w-4" />
             Add Note
           </Button>
+          <Button 
+            v-if="['completed', 'archived', 'packaged'].includes(currentBatch.status)"
+            @click="addQCTest" 
+            class="w-full" 
+            variant="outline"
+          >
+            <Icon name="mdi:clipboard-check" class="mr-2 h-4 w-4" />
+            Add QC Test
+          </Button>
           <Button @click="generateBrewSheet" class="w-full" variant="outline">
             <Icon name="mdi:printer" class="mr-2 h-4 w-4" />
             Brew Sheet
@@ -132,6 +141,9 @@
 
       <!-- Add Note Dialog -->
       <BatchNoteDialog v-model:open="showNoteDialog" :batch-id="currentBatch.id" @save="handleNoteAdded" />
+
+      <!-- Add QC Test Dialog -->
+      <QualityControlDialog v-model:open="showQCDialog" :batch-id="currentBatch.id" @save="handleQCTestAdded" />
     </template>
   </div>
 </template>
@@ -157,6 +169,7 @@ import BatchCompletedPhase from '@/components/batch/BatchCompletedPhase.vue'
 import BatchEditDialog from '@/components/batch/BatchEditDialog.vue'
 import BatchReadingDialog from '@/components/batch/BatchReadingDialog.vue'
 import BatchNoteDialog from '@/components/batch/BatchNoteDialog.vue'
+import QualityControlDialog from '@/components/batch/QualityControlDialog.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -169,6 +182,7 @@ const batchId = route.params.id as string
 const showEditDialog = ref(false)
 const showReadingDialog = ref(false)
 const showNoteDialog = ref(false)
+const showQCDialog = ref(false)
 
 // Fetch batch data
 const fetchBatch = async () => {
@@ -242,6 +256,11 @@ const handleNoteAdded = async () => {
   showNoteDialog.value = false
 }
 
+const handleQCTestAdded = async () => {
+  await fetchBatch() // Refresh to show new QC test
+  showQCDialog.value = false
+}
+
 // Quick action handlers
 const addReading = () => {
   showReadingDialog.value = true
@@ -249,6 +268,10 @@ const addReading = () => {
 
 const addNote = () => {
   showNoteDialog.value = true
+}
+
+const addQCTest = () => {
+  showQCDialog.value = true
 }
 
 const duplicateBatch = async () => {
