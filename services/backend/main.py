@@ -93,6 +93,10 @@ tags_metadata = [
         "name": "calculators",
         "description": "Brewing calculation utilities for strike water, ABV, priming sugar, yeast starters, and more.",
     },
+    {
+        "name": "analytics",
+        "description": "Comprehensive analytics for batch performance, cost analysis, and brewing trends.",
+    },
 ]
 
 # Get logger instance
