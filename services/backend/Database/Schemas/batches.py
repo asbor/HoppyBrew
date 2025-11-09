@@ -101,6 +101,7 @@ class BatchBase(BaseModel):
     brewer: str
     brew_date: datetime
     status: BatchStatus = BatchStatus.PLANNING
+    equipment_id: Optional[int] = None
 
     model_config = ConfigDict(json_schema_extra={"example": BATCH_BASE_EXAMPLE})
 
@@ -120,6 +121,7 @@ class BatchUpdate(BaseModel):
     brewer: Optional[str] = None
     brew_date: Optional[datetime] = None
     status: Optional[BatchStatus] = None
+    equipment_id: Optional[int] = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -141,6 +143,7 @@ class Batch(BatchBase):
     created_at: datetime
     updated_at: datetime
     status: BatchStatus
+    equipment_id: Optional[int] = None
     batch_log: Optional[BatchLog] = None
     inventory_hops: List[InventoryHop]
     inventory_fermentables: List[InventoryFermentable]

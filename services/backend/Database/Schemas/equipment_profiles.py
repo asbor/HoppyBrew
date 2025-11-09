@@ -17,6 +17,8 @@ EQUIPMENT_PROFILE_EXAMPLE = {
     "lauter_deadspace": 1,
     "top_up_kettle": 0,
     "hop_utilization": 100,
+    "brewhouse_efficiency": 75.0,
+    "mash_efficiency": 85.0,
     "notes": "Configured for single-vessel electric brewing.",
     "display_boil_size": "10 gal",
     "display_batch_size": "6 gal",
@@ -63,6 +65,8 @@ class EquipmentProfileBase(BaseModel):
     lauter_deadspace: Optional[int] = None
     top_up_kettle: Optional[int] = None
     hop_utilization: Optional[int] = None
+    brewhouse_efficiency: Optional[float] = None
+    mash_efficiency: Optional[float] = None
     notes: Optional[str] = None
     display_boil_size: Optional[str] = None
     display_batch_size: Optional[str] = None

@@ -31,6 +31,9 @@ class Batches(Base):
         nullable=False,
     )
     recipe = relationship("Recipes", back_populates="batches")
+    
+    equipment_id = Column(Integer, ForeignKey("equipment.id"), nullable=True)
+    equipment_profile = relationship("EquipmentProfiles", back_populates="batches")
     batch_log = relationship(
         "BatchLogs",
         back_populates="batch",

@@ -4,6 +4,7 @@ from sqlalchemy import (
     String,
     Boolean,
     ForeignKey,
+    Float,
     UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
@@ -21,8 +22,7 @@ class EquipmentProfiles(Base):
     Relationships:
 
     - ONE equipment_profile can have ZERO or MANY recipes
-
-    TODO: - ONE equipment_profile can have ZERO or MANY batches
+    - ONE equipment_profile can have ZERO or MANY batches
 
     """
 
@@ -53,10 +53,12 @@ class EquipmentProfiles(Base):
     display_trub_chiller_loss = Column(String(255), nullable=True)
     display_lauter_deadspace = Column(String(255), nullable=True)
     display_top_up_kettle = Column(String(255), nullable=True)
+    
+    # Efficiency tracking
+    brewhouse_efficiency = Column(Float, nullable=True)
+    mash_efficiency = Column(Float, nullable=True)
+    
     # Relationships
-
     recipe_id = Column(Integer, ForeignKey("recipes.id"), index=True)
     recipe = relationship("Recipes", back_populates="equipment_profiles")
-
-
-# TODO: batch_id = Column(Integer, ForeignKey('batches.id'))
+    batches = relationship("Batches", back_populates="equipment_profile")
