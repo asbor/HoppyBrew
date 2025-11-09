@@ -1,0 +1,185 @@
+Batch Analytics Dashboard Architecture
+=======================================
+
+┌─────────────────────────────────────────────────────────────────┐
+│                         USER INTERFACE                          │
+│                    (Nuxt 3 / Vue 3 / Tailwind)                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │           /pages/analytics/batches.vue                   │  │
+│  │  ┌───────────────────────────────────────────────────┐  │  │
+│  │  │  Header + Export Button                           │  │  │
+│  │  ├───────────────────────────────────────────────────┤  │  │
+│  │  │  Filters (Date Range, Recipe, Style)             │  │  │
+│  │  ├───────────────────────────────────────────────────┤  │  │
+│  │  │  6 Metric Cards (shadcn-vue Card)                │  │  │
+│  │  │  - Total Batches    - Success Rate               │  │  │
+│  │  │  - Avg Cost         - Fermentation Days          │  │  │
+│  │  │  - OG Accuracy      - FG Accuracy                │  │  │
+│  │  ├───────────────────────────────────────────────────┤  │  │
+│  │  │  Tabs (shadcn-vue Tabs)                          │  │  │
+│  │  │  ┌─────────┬─────────┬──────────┬──────────┐    │  │  │
+│  │  │  │ Success │  Costs  │Fermen-   │ Seasonal │    │  │  │
+│  │  │  │  Rate   │         │tation    │          │    │  │  │
+│  │  │  └─────────┴─────────┴──────────┴──────────┘    │  │  │
+│  │  │  Charts (Highcharts)                             │  │  │
+│  │  │  - Bar Charts (Success by Recipe/Style)         │  │  │
+│  │  │  - Column Charts (Costs, Seasonal)              │  │  │
+│  │  │  - Line Charts (Fermentation Times)             │  │  │
+│  │  └───────────────────────────────────────────────────┘  │  │
+│  └─────────────────────────────────────────────────────────┘  │
+│                              │                                  │
+│                              ↓                                  │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │     /composables/useBatchAnalytics.ts                    │  │
+│  │  • fetchAnalytics(filters)                               │  │
+│  │  • exportCSV(filters)                                    │  │
+│  │  • Chart data computed properties                        │  │
+│  │  • State: analytics, loading, error                      │  │
+│  └─────────────────────────────────────────────────────────┘  │
+│                              │                                  │
+└──────────────────────────────┼──────────────────────────────────┘
+                               │
+                               ↓ HTTP GET
+┌─────────────────────────────────────────────────────────────────┐
+│                      BACKEND API LAYER                          │
+│                      (FastAPI / Python)                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │      /api/endpoints/analytics.py                         │  │
+│  │                                                          │  │
+│  │  GET /analytics/batches/summary?filters                 │  │
+│  │  ┌────────────────────────────────────────────────┐    │  │
+│  │  │ 1. Parse query parameters                      │    │  │
+│  │  │ 2. Build SQLAlchemy query with filters         │    │  │
+│  │  │ 3. Execute query with eager loading            │    │  │
+│  │  │ 4. Calculate metrics:                          │    │  │
+│  │  │    • Success rates                             │    │  │
+│  │  │    • Cost analysis                             │    │  │
+│  │  │    • Fermentation times                        │    │  │
+│  │  │    • OG/FG accuracy                            │    │  │
+│  │  │    • Seasonal patterns                         │    │  │
+│  │  │ 5. Return JSON response                        │    │  │
+│  │  └────────────────────────────────────────────────┘    │  │
+│  │                                                          │  │
+│  │  GET /analytics/batches/export/csv?filters              │  │
+│  │  ┌────────────────────────────────────────────────┐    │  │
+│  │  │ 1. Call get_batch_analytics_summary()          │    │  │
+│  │  │ 2. Format data as CSV                          │    │  │
+│  │  │ 3. Return StreamingResponse                    │    │  │
+│  │  └────────────────────────────────────────────────┘    │  │
+│  └─────────────────────────────────────────────────────────┘  │
+│                              │                                  │
+└──────────────────────────────┼──────────────────────────────────┘
+                               │
+                               ↓ SQLAlchemy ORM
+┌─────────────────────────────────────────────────────────────────┐
+│                      DATABASE LAYER                             │
+│                      (PostgreSQL)                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐ │
+│  │   batches    │  │   recipes    │  │ fermentation_        │ │
+│  │              │  │              │  │    readings          │ │
+│  │ • id         │  │ • id         │  │ • batch_id           │ │
+│  │ • recipe_id  │  │ • name       │  │ • timestamp          │ │
+│  │ • status     │  │ • type       │  │ • gravity (OG/FG)    │ │
+│  │ • brew_date  │  │ • est_og     │  │                      │ │
+│  │ • batch_size │  │ • est_fg     │  │                      │ │
+│  └──────┬───────┘  └──────┬───────┘  └──────────────────────┘ │
+│         │                 │                                     │
+│         └────────┬────────┘                                     │
+│                  │                                              │
+│  ┌──────────────┴───────────────────────────────────────────┐ │
+│  │         inventory_fermentables                           │ │
+│  │  • batch_id                                              │ │
+│  │  • amount                                                │ │
+│  │  • cost_per_unit   ← Used for cost calculations         │ │
+│  └──────────────────────────────────────────────────────────┘ │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+DATA FLOW
+=========
+
+1. User opens /analytics/batches
+   ↓
+2. Frontend sets default date range (last 6 months)
+   ↓
+3. useBatchAnalytics.fetchAnalytics() called
+   ↓
+4. HTTP GET to /analytics/batches/summary?start_date=X&end_date=Y
+   ↓
+5. Backend queries database:
+   - SELECT batches JOIN recipes JOIN fermentation_readings
+   - WHERE brew_date BETWEEN start_date AND end_date
+   - Eager load all related data
+   ↓
+6. Backend calculates:
+   - Success rate = completed / total * 100
+   - Cost per batch = SUM(ingredient.cost * ingredient.amount)
+   - Fermentation days = (last_reading - first_reading).days
+   - OG/FG accuracy = 100 - |actual - estimated| / estimated * 100
+   - Seasonal counts by month → season mapping
+   ↓
+7. Return JSON with summary + detailed breakdowns
+   ↓
+8. Frontend receives data, updates reactive state
+   ↓
+9. Vue re-renders:
+   - Metric cards display summary values
+   - Highcharts renders charts with data
+   ↓
+10. User can:
+    - Change filters → repeat from step 4
+    - Export CSV → separate endpoint returns file
+
+KEY CALCULATIONS
+================
+
+Success Rate:
+  (batches with status COMPLETE or ARCHIVED) / total_batches * 100
+
+Cost per Pint:
+  total_ingredient_cost / (batch_size_liters * 2.11338)
+
+Fermentation Duration:
+  (last_fermentation_reading.timestamp - 
+   first_fermentation_reading.timestamp).days
+
+OG/FG Accuracy:
+  100 - (|actual_gravity - estimated_gravity| / estimated_gravity * 100)
+
+Season Mapping:
+  Winter: Dec, Jan, Feb
+  Spring: Mar, Apr, May  
+  Summer: Jun, Jul, Aug
+  Fall: Sep, Oct, Nov
+
+TECHNOLOGY STACK
+================
+
+Frontend:
+  • Nuxt 3 (Vue 3 framework)
+  • TypeScript (type safety)
+  • shadcn-vue (UI components)
+  • Highcharts (data visualization)
+  • Tailwind CSS (styling)
+  • Composition API (state management)
+
+Backend:
+  • FastAPI (REST API framework)
+  • SQLAlchemy (ORM)
+  • Pydantic (data validation)
+  • Python 3.12
+
+Database:
+  • PostgreSQL (primary database)
+  • Existing schema (no changes needed)
+
+Testing:
+  • Vitest (frontend unit tests)
+  • Pytest (backend tests)
+  • CodeQL (security scanning)
