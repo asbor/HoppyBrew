@@ -126,12 +126,32 @@ def _calculate_recipe_metrics(
 
 
 @router.get("/recipes", response_model=List[schemas.Recipe])
-async def get_all_recipes(db: Session = Depends(get_db)):
+async def get_all_recipes(
+    db: Session = Depends(get_db),
+    visibility: Optional[str] = None,
+    user_id: Optional[int] = None,
+):
     """
     This endpoint returns all the recipes stored in the database.
-
+    
+    - visibility: Filter by visibility (public, private, unlisted)
+    - user_id: Filter by recipe owner
     """
-    recipes = _with_relationships(db.query(models.Recipes)).all()
+    query = _with_relationships(db.query(models.Recipes))
+    
+    # Filter by visibility if specified
+    if visibility:
+        try:
+            visibility_enum = models.RecipeVisibility[visibility]
+            query = query.filter(models.Recipes.visibility == visibility_enum)
+        except KeyError:
+            raise HTTPException(status_code=400, detail=f"Invalid visibility value: {visibility}")
+    
+    # Filter by user_id if specified
+    if user_id:
+        query = query.filter(models.Recipes.user_id == user_id)
+    
+    recipes = query.all()
     return recipes
 
 
@@ -720,3 +740,87 @@ async def get_recipe_versions(
     )
 
     return versions
+
+
+@router.post("/recipes/{recipe_id}/fork", response_model=schemas.Recipe)
+async def fork_recipe(
+    recipe_id: int,
+    fork_data: Optional[dict] = None,
+    db: Session = Depends(get_db),
+):
+    """
+    Fork a recipe to create a new copy with attribution to the original.
+    The forked recipe will reference the original via origin_recipe_id.
+    
+    Optional fork_data can include:
+    - name: New name for the forked recipe (defaults to "Fork of {original_name}")
+    - notes: Additional notes about the fork
+    """
+    # Fetch the original recipe
+    original_recipe = _fetch_recipe(db, recipe_id)
+    if not original_recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    
+    # Check if recipe is public (forkable)
+    if original_recipe.visibility != models.RecipeVisibility.public:
+        raise HTTPException(
+            status_code=403,
+            detail="Can only fork public recipes"
+        )
+    
+    # Convert to Pydantic model to get all data
+    original_recipe_data = schemas.Recipe.model_validate(original_recipe).model_dump(
+        exclude={"id", "is_batch", "created_at", "updated_at"}
+    )
+    
+    # Customize fork name and notes
+    fork_name = original_recipe_data["name"]
+    if fork_data and "name" in fork_data:
+        fork_name = fork_data["name"]
+    else:
+        fork_name = f"Fork of {fork_name}"
+    
+    original_recipe_data["name"] = fork_name
+    original_recipe_data["origin_recipe_id"] = recipe_id
+    
+    if fork_data and "notes" in fork_data:
+        additional_notes = fork_data["notes"]
+        if original_recipe_data.get("notes"):
+            original_recipe_data["notes"] = f"{original_recipe_data['notes']}\n\n--- Fork Notes ---\n{additional_notes}"
+        else:
+            original_recipe_data["notes"] = additional_notes
+    
+    # Create new recipe from fork
+    db_recipe = models.Recipes(
+        **{k: v for k, v in original_recipe_data.items() 
+           if k not in {"hops", "fermentables", "yeasts", "miscs"}}
+    )
+    db.add(db_recipe)
+    db.commit()
+    db.refresh(db_recipe)
+    
+    # Copy ingredients
+    for hop_data in original_recipe_data["hops"]:
+        hop_data_clean = {k: v for k, v in hop_data.items() if k != "id"}
+        db_hop = models.RecipeHop(**hop_data_clean, recipe_id=db_recipe.id)
+        db.add(db_hop)
+    
+    for fermentable_data in original_recipe_data["fermentables"]:
+        fermentable_data_clean = {k: v for k, v in fermentable_data.items() if k != "id"}
+        db_fermentable = models.RecipeFermentable(
+            **fermentable_data_clean, recipe_id=db_recipe.id
+        )
+        db.add(db_fermentable)
+    
+    for misc_data in original_recipe_data["miscs"]:
+        misc_data_clean = {k: v for k, v in misc_data.items() if k != "id"}
+        db_misc = models.RecipeMisc(**misc_data_clean, recipe_id=db_recipe.id)
+        db.add(db_misc)
+    
+    for yeast_data in original_recipe_data["yeasts"]:
+        yeast_data_clean = {k: v for k, v in yeast_data.items() if k != "id"}
+        db_yeast = models.RecipeYeast(**yeast_data_clean, recipe_id=db_recipe.id)
+        db.add(db_yeast)
+    
+    db.commit()
+    return _fetch_recipe(db, db_recipe.id)
