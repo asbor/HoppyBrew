@@ -17,9 +17,11 @@ from sqlalchemy.orm import Session
 from database import get_session_local, initialize_database, Base
 import Database.Models as models
 
+
 def ensure_tables_exist():
     """Ensure all database tables are created before seeding."""
     from database import get_engine
+
     engine = get_engine()
     Base.metadata.create_all(bind=engine)
 
@@ -131,7 +133,8 @@ def seed_water_profiles(db: Session):
     existing_count = db.query(models.WaterProfiles).count()
     if existing_count > 0:
         print(
-            f"✓ Water profiles already exist ({existing_count} found), skipping...")
+            f"✓ Water profiles already exist ({existing_count} found), skipping..."
+        )
         return
 
     water_profiles = [
@@ -1012,7 +1015,8 @@ def seed_recipes(db: Session):
         # Add fermentables
         for ferm_data in fermentables:
             fermentable = models.RecipeFermentable(
-                recipe_id=recipe.id, **ferm_data)
+                recipe_id=recipe.id, **ferm_data
+            )
             db.add(fermentable)
 
         # Add hops
@@ -1161,7 +1165,7 @@ def main():
     # Initialize database and ensure tables exist
     initialize_database()
     ensure_tables_exist()
-    
+
     # Get session factory and create session
     SessionLocal = get_session_local()
     db = SessionLocal()
@@ -1183,17 +1187,21 @@ def main():
         print(f"  - {db.query(models.Recipes).count()} recipes")
         print(f"  - {db.query(models.Batches).count()} batches")
         print(
-            f"  - {db.query(models.EquipmentProfiles).count()} equipment profiles")
+            f"  - {db.query(models.EquipmentProfiles).count()} equipment profiles"
+        )
         print(f"  - {db.query(models.WaterProfiles).count()} water profiles")
         print(
-            f"  - {db.query(models.RecipeFermentable).count()} recipe fermentables")
+            f"  - {db.query(models.RecipeFermentable).count()} recipe fermentables"
+        )
         print(f"  - {db.query(models.RecipeHop).count()} recipe hops")
         print(f"  - {db.query(models.RecipeYeast).count()} recipe yeasts")
         print(
             f"  - {db.query(models.InventoryFermentable).count()} inventory fermentables"
         )
         print(f"  - {db.query(models.InventoryHop).count()} inventory hops")
-        print(f"  - {db.query(models.InventoryYeast).count()} inventory yeasts")
+        print(
+            f"  - {db.query(models.InventoryYeast).count()} inventory yeasts"
+        )
         print("=" * 60)
 
     except Exception as e:
