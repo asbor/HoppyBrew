@@ -195,13 +195,22 @@ async def delete_quality_control_test(qc_test_id: int, db: Session = Depends(get
         # Delete associated photo if exists
         if db_qc_test.photo_url:
             # Extract filename from URL (e.g., "/qc_photos/filename.jpg" -> "filename.jpg")
-            filename = Path(db_qc_test.photo_url).name
-            # Only delete if it's a valid filename without path traversal
-            if filename and not any(bad in filename for bad in ['..', '/', '\\']):
-                photo_path = UPLOAD_DIR / filename
-                # Ensure the file is within UPLOAD_DIR
-                if photo_path.resolve().is_relative_to(UPLOAD_DIR.resolve()) and photo_path.exists():
-                    photo_path.unlink()
+            url_filename = Path(db_qc_test.photo_url).name
+            # Only delete if it's a valid QC photo filename pattern
+            # Expected pattern: qc_{id}_{timestamp}.{ext}
+            if (url_filename and 
+                url_filename.startswith('qc_') and 
+                not any(bad in url_filename for bad in ['..', '/', '\\'])):
+                photo_path = UPLOAD_DIR / url_filename
+                # Ensure the file is within UPLOAD_DIR and exists
+                try:
+                    photo_resolved = photo_path.resolve()
+                    upload_resolved = UPLOAD_DIR.resolve()
+                    if (str(photo_resolved).startswith(str(upload_resolved)) and 
+                        photo_path.exists()):
+                        os.unlink(str(photo_path))
+                except (ValueError, OSError) as e:
+                    logger.warning(f"Could not delete photo file: {e}")
         
         db.delete(db_qc_test)
         db.commit()
@@ -234,26 +243,36 @@ async def upload_qc_photo(
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
     
-    # Validate file extension
+    # Validate and sanitize file extension (prevent path injection)
     ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
-    file_extension = Path(file.filename).suffix.lower()
-    if file_extension not in ALLOWED_EXTENSIONS:
+    original_extension = Path(file.filename).suffix.lower()
+    if original_extension not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400, 
             detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
         )
     
+    # Use a safe, validated extension from our whitelist
+    # This ensures no user-provided data is used in the path
+    safe_extension = original_extension if original_extension in ALLOWED_EXTENSIONS else '.jpg'
+    
     try:
-        # Generate unique filename with validated extension
-        unique_filename = f"qc_{qc_test_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{file_extension}"
+        # Generate unique filename with only safe, controlled values
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        unique_filename = f"qc_{qc_test_id}_{timestamp}{safe_extension}"
         file_path = UPLOAD_DIR / unique_filename
         
-        # Ensure the file_path is within UPLOAD_DIR (prevent path traversal)
-        if not file_path.resolve().is_relative_to(UPLOAD_DIR.resolve()):
+        # Double-check: Ensure the file_path is within UPLOAD_DIR (prevent path traversal)
+        try:
+            file_path_resolved = file_path.resolve()
+            upload_dir_resolved = UPLOAD_DIR.resolve()
+            if not str(file_path_resolved).startswith(str(upload_dir_resolved)):
+                raise HTTPException(status_code=400, detail="Invalid file path")
+        except (ValueError, OSError):
             raise HTTPException(status_code=400, detail="Invalid file path")
         
         # Save file
-        with file_path.open("wb") as buffer:
+        with open(str(file_path), "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
         # Update QC test with photo URL
