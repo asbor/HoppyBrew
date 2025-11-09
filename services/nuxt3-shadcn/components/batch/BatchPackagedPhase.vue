@@ -127,6 +127,10 @@
               <Icon name="mdi:check-circle" class="mr-2 h-4 w-4" />
               Mark as Complete
             </Button>
+            <Button @click="showLabelGenerator = true" variant="outline" v-if="packagingDetails.method === 'bottle'">
+              <Icon name="mdi:label" class="mr-2 h-4 w-4" />
+              Labels
+            </Button>
             <Button @click="editPackaging" variant="outline">
               <Icon name="mdi:pencil" class="mr-2 h-4 w-4" />
               Edit
@@ -154,6 +158,19 @@
       :batch-size="batch.batch_size"
       @success="handlePackagingSuccess"
     />
+
+    <!-- Label Generator Dialog -->
+    <LabelGenerator
+      v-model:open="showLabelGenerator"
+      :batch-id="batch.id"
+      :batch-name="batch.batch_name"
+      :batch-number="batch.batch_number"
+      :brewer="batch.brewer"
+      :packaging-details="packagingDetails"
+      :abv="batch.abv"
+      :style="batch.style"
+      :volume="batch.batch_size"
+    />
   </div>
 </template>
 
@@ -164,6 +181,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Icon } from '#components'
 import PackagingWizard from '@/components/PackagingWizard.vue'
+import LabelGenerator from '@/components/LabelGenerator.vue'
 
 const props = defineProps<{ batch: any }>()
 const emit = defineEmits<{
@@ -175,6 +193,7 @@ const packagingDetails = ref<any>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
 const showPackagingWizard = ref(false)
+const showLabelGenerator = ref(false)
 
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr)
