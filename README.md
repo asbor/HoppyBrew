@@ -76,6 +76,7 @@ The project, undertaken as part of the Software Engineering course at the Facult
 
 - **Recipe Management**: Create, edit, and manage brewing recipes with detailed ingredient tracking
 - **Batch Tracking**: Monitor active brewing batches through all stages of production
+- **Batch Analytics Dashboard**: Comprehensive analytics for batch performance, cost analysis, fermentation trends, OG/FG accuracy, and seasonal patterns
 - **Inventory Management**: Track hops, fermentables, yeasts, and miscellaneous ingredients
 - **HomeAssistant Integration**: Monitor your brewing processes through HomeAssistant dashboards
 - **Self-Hosted**: Run on your own infrastructure with full control over your data
