@@ -155,29 +155,29 @@ async function handleStartBrew() {
 
       <!-- Recipe Metrics -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white rounded-lg border p-4 text-center">
+        <div class="bg-card rounded-lg border border-border p-4 text-center">
           <div class="text-2xl font-bold text-blue-600">
             {{ recipe.abv?.toFixed(1) || recipe.est_abv?.toFixed(1) || '--' }}%
           </div>
-          <div class="text-sm text-gray-600">ABV</div>
+          <div class="text-sm text-muted-foreground">ABV</div>
         </div>
-        <div class="bg-white rounded-lg border p-4 text-center">
+        <div class="bg-card rounded-lg border border-border p-4 text-center">
           <div class="text-2xl font-bold text-amber-600">
             {{ recipe.ibu?.toFixed(0) || '--' }}
           </div>
-          <div class="text-sm text-gray-600">IBU</div>
+          <div class="text-sm text-muted-foreground">IBU</div>
         </div>
-        <div class="bg-white rounded-lg border p-4 text-center">
+        <div class="bg-card rounded-lg border border-border p-4 text-center">
           <div class="text-2xl font-bold text-orange-600">
             {{ recipe.est_color?.toFixed(0) || '--' }}
           </div>
-          <div class="text-sm text-gray-600">SRM</div>
+          <div class="text-sm text-muted-foreground">SRM</div>
         </div>
-        <div class="bg-white rounded-lg border p-4 text-center">
+        <div class="bg-card rounded-lg border border-border p-4 text-center">
           <div class="text-2xl font-bold text-green-600">
             {{ recipe.og?.toFixed(3) || recipe.est_og?.toFixed(3) || '--' }}
           </div>
-          <div class="text-sm text-gray-600">OG</div>
+          <div class="text-sm text-muted-foreground">OG</div>
         </div>
       </div>
 
