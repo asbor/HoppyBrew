@@ -1,6 +1,11 @@
 <template>
-  <div v-if="mash" class="bg-card rounded-lg border border-border p-6 shadow-sm">
-    <h3 class="text-lg font-semibold text-card-foreground mb-4">Mash Profile</h3>
+  <div v-if="mash" class="bg-card rounded-lg border border-border p-6 shadow-sm" :class="{ 'opacity-90': readonly }">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-card-foreground">Mash Profile</h3>
+      <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+        View Only
+      </span>
+    </div>
     
     <div class="p-4 bg-orange-100/20 dark:bg-orange-900/20 rounded-lg">
       <h4 class="font-medium text-orange-900 dark:text-orange-200 mb-3">{{ mash.name || 'Mash Schedule' }}</h4>
@@ -78,6 +83,7 @@ interface MashProfile {
 
 interface Props {
   mash: MashProfile
+  readonly?: boolean
 }
 
 defineProps<Props>()

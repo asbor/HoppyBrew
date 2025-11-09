@@ -1,6 +1,11 @@
 <template>
-  <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
-    <h3 class="text-lg font-semibold text-card-foreground mb-4">Notes & Information</h3>
+  <div class="bg-card rounded-lg border border-border p-6 shadow-sm" :class="{ 'opacity-90': readonly }">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-card-foreground">Notes & Information</h3>
+      <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+        View Only
+      </span>
+    </div>
     
     <div class="space-y-6">
       <!-- Main Notes -->
@@ -124,6 +129,7 @@ interface Recipe {
 
 interface Props {
   recipe: Recipe
+  readonly?: boolean
 }
 
 const props = defineProps<Props>()

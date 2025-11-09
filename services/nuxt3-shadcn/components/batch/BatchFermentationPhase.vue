@@ -31,6 +31,7 @@ import FermentationTracker from '@/components/batch/FermentationTracker.vue'
 
 const props = defineProps<{
   batch: any
+  readonly?: boolean
 }>()
 
 const emit = defineEmits<{

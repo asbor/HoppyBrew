@@ -1,6 +1,11 @@
 <template>
-  <div v-if="hasFermentationData" class="bg-card rounded-lg border border-border p-6 shadow-sm">
-    <h3 class="text-lg font-semibold text-card-foreground mb-4">Fermentation Schedule</h3>
+  <div v-if="hasFermentationData" class="bg-card rounded-lg border border-border p-6 shadow-sm" :class="{ 'opacity-90': readonly }">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-card-foreground">Fermentation Schedule</h3>
+      <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+        View Only
+      </span>
+    </div>
     
     <div class="space-y-4">
       <!-- Primary Fermentation -->
@@ -92,6 +97,7 @@ interface Recipe {
 
 interface Props {
   recipe: Recipe
+  readonly?: boolean
 }
 
 const props = defineProps<Props>()

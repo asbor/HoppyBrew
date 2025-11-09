@@ -56,10 +56,13 @@
         </div>
       </header>
 
+      <!-- Edit Mode Toggle -->
+      <EditModeToggle v-model="isEditMode" />
+
       <!-- Batch Phase Navigation -->
       <Card>
         <CardContent class="p-6">
-          <BatchPhaseNavigation :current-phase="currentBatch.status" @phase-change="handlePhaseChange" />
+          <BatchPhaseNavigation :current-phase="currentBatch.status" @phase-change="handlePhaseChange" :readonly="!isEditMode" />
         </CardContent>
       </Card>
 
@@ -67,35 +70,35 @@
       <div class="grid gap-6">
         <!-- Planning Phase -->
         <template v-if="currentBatch.status === 'planning'">
-          <BatchPlanningPhase :batch="currentBatch" @start-brew="startBrewDay" @update-batch="handleBatchUpdate" />
+          <BatchPlanningPhase :batch="currentBatch" @start-brew="startBrewDay" @update-batch="handleBatchUpdate" :readonly="!isEditMode" />
         </template>
 
         <!-- Brew Day Phase -->
         <template v-else-if="currentBatch.status === 'brew_day'">
           <BatchBrewingPhase :batch="currentBatch" @start-fermentation="startFermentation"
-            @update-batch="handleBatchUpdate" />
+            @update-batch="handleBatchUpdate" :readonly="!isEditMode" />
         </template>
 
         <!-- Fermentation Phases -->
         <template v-else-if="['primary_fermentation', 'secondary_fermentation'].includes(currentBatch.status)">
           <BatchFermentationPhase :batch="currentBatch" @start-conditioning="startConditioning"
-            @update-batch="handleBatchUpdate" />
+            @update-batch="handleBatchUpdate" :readonly="!isEditMode" />
         </template>
 
         <!-- Conditioning Phase -->
         <template v-else-if="currentBatch.status === 'conditioning'">
           <BatchConditioningPhase :batch="currentBatch" @package-batch="packageBatch"
-            @update-batch="handleBatchUpdate" />
+            @update-batch="handleBatchUpdate" :readonly="!isEditMode" />
         </template>
 
         <!-- Packaged Phase -->
         <template v-else-if="currentBatch.status === 'packaged'">
-          <BatchPackagedPhase :batch="currentBatch" @complete-batch="completeBatch" @update-batch="handleBatchUpdate" />
+          <BatchPackagedPhase :batch="currentBatch" @complete-batch="completeBatch" @update-batch="handleBatchUpdate" :readonly="!isEditMode" />
         </template>
 
         <!-- Completed Phase -->
         <template v-else-if="['completed', 'archived'].includes(currentBatch.status)">
-          <BatchCompletedPhase :batch="currentBatch" @archive-batch="archiveBatch" @update-batch="handleBatchUpdate" />
+          <BatchCompletedPhase :batch="currentBatch" @archive-batch="archiveBatch" @update-batch="handleBatchUpdate" :readonly="!isEditMode" />
         </template>
       </div>
 
@@ -165,6 +168,9 @@ const { fetchOne, currentBatch, loading, error, update: updateBatch, updateStatu
 const { getBatchStatusColor } = useStatusColors()
 
 const batchId = route.params.id as string
+
+// Edit mode state - default to view-only (read-only)
+const isEditMode = ref(false)
 
 // Dialog states
 const showEditDialog = ref(false)

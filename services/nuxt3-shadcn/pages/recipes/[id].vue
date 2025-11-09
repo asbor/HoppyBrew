@@ -24,6 +24,9 @@ const recipeId = route.params.id as string
 const recipe = ref<Recipe | null>(null)
 const isLoading = computed(() => recipeLoading.value)
 
+// Edit mode state - default to view-only (read-only)
+const isEditMode = ref(false)
+
 // Start Brew Dialog state
 const showStartBrewDialog = ref(false)
 const batchForm = ref<Partial<BatchCreate>>({
@@ -150,8 +153,11 @@ async function handleStartBrew() {
         </div>
       </div>
 
+      <!-- Edit Mode Toggle -->
+      <EditModeToggle v-model="isEditMode" />
+
       <!-- Recipe Overview Block -->
-      <RecipeBlock v-if="recipe" :recipe="recipe" />
+      <RecipeBlock v-if="recipe" :recipe="recipe" :readonly="!isEditMode" />
 
       <!-- Recipe Metrics -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -185,27 +191,27 @@ async function handleStartBrew() {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Fermentables -->
         <FermentablesBlock v-if="recipe.fermentables && recipe.fermentables.length > 0"
-          :fermentables="recipe.fermentables" />
+          :fermentables="recipe.fermentables" :readonly="!isEditMode" />
 
         <!-- Hops -->
-        <HopsBlock v-if="recipe.hops && recipe.hops.length > 0" :hops="recipe.hops" />
+        <HopsBlock v-if="recipe.hops && recipe.hops.length > 0" :hops="recipe.hops" :readonly="!isEditMode" />
 
         <!-- Yeasts -->
-        <YeastBlock v-if="recipe.yeasts && recipe.yeasts.length > 0" :yeasts="recipe.yeasts" />
+        <YeastBlock v-if="recipe.yeasts && recipe.yeasts.length > 0" :yeasts="recipe.yeasts" :readonly="!isEditMode" />
 
         <!-- Miscs -->
-        <MiscsBlock v-if="recipe.miscs && recipe.miscs.length > 0" :miscs="recipe.miscs" />
+        <MiscsBlock v-if="recipe.miscs && recipe.miscs.length > 0" :miscs="recipe.miscs" :readonly="!isEditMode" />
       </div>
 
       <!-- Additional Information Blocks -->
       <div class="space-y-6">
-        <EquipmentBlock v-if="recipe.equipment_profiles" :equipment="recipe.equipment_profiles" />
+        <EquipmentBlock v-if="recipe.equipment_profiles" :equipment="recipe.equipment_profiles" :readonly="!isEditMode" />
         <StyleBlock v-if="recipe.style_profile || recipe.style_guideline" :style-profile="recipe.style_profile"
-          :style-guideline="recipe.style_guideline" />
-        <WaterBlock v-if="recipe.water_profiles" :water="recipe.water_profiles" />
-        <MashBlock v-if="recipe.mash_profile" :mash="recipe.mash_profile" />
-        <FermentationBlock :recipe="recipe" />
-        <NotesBlock :recipe="recipe" />
+          :style-guideline="recipe.style_guideline" :readonly="!isEditMode" />
+        <WaterBlock v-if="recipe.water_profiles" :water="recipe.water_profiles" :readonly="!isEditMode" />
+        <MashBlock v-if="recipe.mash_profile" :mash="recipe.mash_profile" :readonly="!isEditMode" />
+        <FermentationBlock :recipe="recipe" :readonly="!isEditMode" />
+        <NotesBlock :recipe="recipe" :readonly="!isEditMode" />
       </div>
     </div>
 

@@ -1,6 +1,11 @@
 <template>
-  <div v-if="water && water.length > 0" class="bg-card rounded-lg border border-border p-6 shadow-sm">
-    <h3 class="text-lg font-semibold text-card-foreground mb-4">Water Profile</h3>
+  <div v-if="water && water.length > 0" class="bg-card rounded-lg border border-border p-6 shadow-sm" :class="{ 'opacity-90': readonly }">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-card-foreground">Water Profile</h3>
+      <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+        View Only
+      </span>
+    </div>
     
     <div class="space-y-4">
       <div v-for="(profile, index) in water" :key="index" class="p-4 bg-cyan-100/20 dark:bg-cyan-900/20 rounded-lg">
@@ -75,6 +80,7 @@ interface WaterProfile {
 
 interface Props {
   water: WaterProfile[]
+  readonly?: boolean
 }
 
 defineProps<Props>()

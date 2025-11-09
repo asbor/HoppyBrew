@@ -1,6 +1,11 @@
 <template>
-  <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
-    <h2 class="text-xl font-semibold text-card-foreground mb-4">Recipe Overview</h2>
+  <div class="bg-card rounded-lg border border-border p-6 shadow-sm" :class="{ 'opacity-90': readonly }">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold text-card-foreground">Recipe Overview</h2>
+      <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+        View Only
+      </span>
+    </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Basic Information -->
@@ -88,6 +93,7 @@ import type { Recipe } from '@/composables/useRecipes'
 
 interface Props {
   recipe: Recipe
+  readonly?: boolean
 }
 
 defineProps<Props>()

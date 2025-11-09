@@ -335,6 +335,7 @@ import { Icon } from '#components'
 
 const props = defineProps<{
   batch: any
+  readonly?: boolean
 }>()
 
 const emit = defineEmits<{

@@ -1,8 +1,13 @@
 <template>
-  <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
+  <div class="bg-card rounded-lg border border-border p-6 shadow-sm" :class="{ 'opacity-90': readonly }">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-semibold text-card-foreground">Miscellaneous</h3>
-      <span class="text-sm text-muted-foreground">{{ miscs.length }} item{{ miscs.length !== 1 ? 's' : '' }}</span>
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-muted-foreground">{{ miscs.length }} item{{ miscs.length !== 1 ? 's' : '' }}</span>
+        <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+          View Only
+        </span>
+      </div>
     </div>
 
     <div class="space-y-3">
@@ -67,6 +72,7 @@ interface Misc {
 
 interface Props {
   miscs: Misc[]
+  readonly?: boolean
 }
 
 const props = defineProps<Props>()

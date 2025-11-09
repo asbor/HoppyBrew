@@ -1,6 +1,11 @@
 <template>
-  <div v-if="styleProfile || styleGuideline" class="bg-card rounded-lg border border-border p-6 shadow-sm">
-    <h3 class="text-lg font-semibold text-card-foreground mb-4">Style Information</h3>
+  <div v-if="styleProfile || styleGuideline" class="bg-card rounded-lg border border-border p-6 shadow-sm" :class="{ 'opacity-90': readonly }">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-card-foreground">Style Information</h3>
+      <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+        View Only
+      </span>
+    </div>
     
     <!-- Style Profile -->
     <div v-if="styleProfile" class="mb-4 p-4 bg-amber-100/20 dark:bg-amber-900/20 rounded-lg">
@@ -89,6 +94,7 @@ interface StyleGuideline {
 interface Props {
   styleProfile?: StyleProfile
   styleGuideline?: StyleGuideline
+  readonly?: boolean
 }
 
 defineProps<Props>()

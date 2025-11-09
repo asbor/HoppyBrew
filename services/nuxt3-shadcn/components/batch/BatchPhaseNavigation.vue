@@ -77,43 +77,48 @@
 
           <!-- Phase Actions -->
           <div class="space-y-3">
-            <h4 class="font-medium">Available Actions</h4>
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-medium">Available Actions</h4>
+              <span v-if="readonly" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+                View Only
+              </span>
+            </div>
             
             <!-- Phase-specific action buttons -->
             <template v-if="currentPhase === 'planning'">
-              <Button @click="$emit('phase-change', 'brew_day')" class="w-full">
+              <Button @click="$emit('phase-change', 'brew_day')" class="w-full" :disabled="readonly">
                 <Icon name="mdi:fire" class="mr-2 h-4 w-4" />
                 Start Brew Day
               </Button>
             </template>
             
             <template v-else-if="currentPhase === 'brew_day'">
-              <Button @click="$emit('phase-change', 'primary_fermentation')" class="w-full">
+              <Button @click="$emit('phase-change', 'primary_fermentation')" class="w-full" :disabled="readonly">
                 <Icon name="mdi:flask" class="mr-2 h-4 w-4" />
                 Start Fermentation
               </Button>
             </template>
             
             <template v-else-if="currentPhase === 'primary_fermentation'">
-              <Button @click="$emit('phase-change', 'secondary_fermentation')" class="w-full" variant="outline">
+              <Button @click="$emit('phase-change', 'secondary_fermentation')" class="w-full" variant="outline" :disabled="readonly">
                 <Icon name="mdi:flask-outline" class="mr-2 h-4 w-4" />
                 Move to Secondary
               </Button>
-              <Button @click="$emit('phase-change', 'conditioning')" class="w-full">
+              <Button @click="$emit('phase-change', 'conditioning')" class="w-full" :disabled="readonly">
                 <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
                 Start Conditioning
               </Button>
             </template>
             
             <template v-else-if="currentPhase === 'secondary_fermentation'">
-              <Button @click="$emit('phase-change', 'conditioning')" class="w-full">
+              <Button @click="$emit('phase-change', 'conditioning')" class="w-full" :disabled="readonly">
                 <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
                 Start Conditioning
               </Button>
             </template>
             
             <template v-else-if="currentPhase === 'conditioning'">
-              <Button @click="$emit('phase-change', 'packaged')" class="w-full">
+              <Button @click="$emit('phase-change', 'packaged')" class="w-full" :disabled="readonly">
                 <Icon name="mdi:bottle-wine" class="mr-2 h-4 w-4" />
                 Package Beer
               </Button>
@@ -148,6 +153,7 @@ import { Icon } from '#components'
 const props = defineProps<{
   currentPhase: string
   batchData?: any
+  readonly?: boolean
 }>()
 
 const emit = defineEmits<{

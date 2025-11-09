@@ -21,7 +21,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Icon } from '#components'
 
-defineProps<{ batch: any }>()
+defineProps<{ batch: any; readonly?: boolean }>()
 defineEmits<{
   'package-batch': []
   'update-batch': [data: any]
