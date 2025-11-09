@@ -244,3 +244,71 @@ async def duplicate_water_profile(
     db.commit()
     db.refresh(duplicate)
     return duplicate
+
+
+@router.post(
+    "/water-profiles/calculate-recipe-adjustments",
+    summary="Calculate water adjustments for recipe",
+    response_description="Recommended water adjustments for a recipe",
+)
+async def calculate_recipe_water_adjustments(
+    source_profile_id: int,
+    target_profile_id: int,
+    water_volume_gal: float,
+    db: Session = Depends(get_db),
+):
+    """
+    Calculate recommended mineral additions for a recipe based on source and target water profiles.
+
+    This endpoint helps brewers adjust their water chemistry to match a target profile
+    suitable for the beer style they're brewing.
+    """
+    # Get source profile
+    source = (
+        db.query(models.WaterProfiles)
+        .filter(models.WaterProfiles.id == source_profile_id)
+        .first()
+    )
+    if not source:
+        raise HTTPException(status_code=404, detail="Source water profile not found")
+
+    # Get target profile
+    target = (
+        db.query(models.WaterProfiles)
+        .filter(models.WaterProfiles.id == target_profile_id)
+        .first()
+    )
+    if not target:
+        raise HTTPException(status_code=404, detail="Target water profile not found")
+
+    # Convert profiles to dictionaries for calculation
+    source_dict = {
+        "calcium": float(source.calcium),
+        "magnesium": float(source.magnesium),
+        "sodium": float(source.sodium),
+        "chloride": float(source.chloride),
+        "sulfate": float(source.sulfate),
+        "bicarbonate": float(source.bicarbonate),
+    }
+
+    target_dict = {
+        "calcium": float(target.calcium),
+        "magnesium": float(target.magnesium),
+        "sodium": float(target.sodium),
+        "chloride": float(target.chloride),
+        "sulfate": float(target.sulfate),
+        "bicarbonate": float(target.bicarbonate),
+    }
+
+    # Calculate mineral additions
+    from modules.brewing_calculations import calculate_mineral_additions
+
+    result = calculate_mineral_additions(
+        source_dict, target_dict, water_volume_gal
+    )
+
+    # Add profile names for clarity
+    result["source_profile_name"] = source.name
+    result["target_profile_name"] = target.name
+
+    return result

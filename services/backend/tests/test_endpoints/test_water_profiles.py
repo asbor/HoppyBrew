@@ -340,3 +340,65 @@ def test_profile_type_validation(client: TestClient):
     }
     response = client.post("/water-profiles", json=profile_data)
     assert response.status_code == 422  # Validation error
+
+
+def test_calculate_recipe_water_adjustments(client: TestClient):
+    """Test calculating water adjustments for a recipe."""
+    # Create source profile (RO water)
+    source_data = {
+        "name": "RO Water",
+        "profile_type": "source",
+        "calcium": 0,
+        "magnesium": 0,
+        "sodium": 0,
+        "chloride": 0,
+        "sulfate": 0,
+        "bicarbonate": 0,
+    }
+    source_response = client.post("/water-profiles", json=source_data)
+    assert source_response.status_code == 201
+    source_id = source_response.json()["id"]
+
+    # Create target profile (IPA water)
+    target_data = {
+        "name": "IPA Target",
+        "profile_type": "target",
+        "style_category": "IPA",
+        "calcium": 100,
+        "magnesium": 10,
+        "sodium": 15,
+        "chloride": 60,
+        "sulfate": 200,
+        "bicarbonate": 50,
+    }
+    target_response = client.post("/water-profiles", json=target_data)
+    assert target_response.status_code == 201
+    target_id = target_response.json()["id"]
+
+    # Calculate adjustments
+    response = client.post(
+        "/water-profiles/calculate-recipe-adjustments",
+        params={
+            "source_profile_id": source_id,
+            "target_profile_id": target_id,
+            "water_volume_gal": 6.0,
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+
+    # Should have additions and profiles
+    assert "additions" in data
+    assert "resulting_profile" in data
+    assert "target_profile" in data
+    assert "source_profile_name" in data
+    assert "target_profile_name" in data
+
+    # Profile names should match
+    assert data["source_profile_name"] == "RO Water"
+    assert data["target_profile_name"] == "IPA Target"
+
+    # Should have some salt additions
+    additions = data["additions"]
+    total_salts = sum(additions.values())
+    assert total_salts > 0, "Should recommend some salt additions"
