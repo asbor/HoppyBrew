@@ -242,8 +242,10 @@ async def delete_qc_test(
     
     # Delete associated photo if exists
     if db_qc_test.photo_path:
-        photo_file = Path(db_qc_test.photo_path)
-        if photo_file.exists():
+        photo_file = Path(db_qc_test.photo_path).resolve()
+        upload_dir = Path(settings.UPLOAD_DIR).resolve() / "qc_photos"
+        # Security: Only delete if within upload directory
+        if str(photo_file).startswith(str(upload_dir)) and photo_file.exists():
             photo_file.unlink()
     
     db.delete(db_qc_test)
@@ -299,16 +301,33 @@ async def upload_qc_test_photo(
             detail=f"File too large. Maximum size: {settings.MAX_UPLOAD_SIZE / 1024 / 1024}MB"
         )
     
-    # Generate unique filename
-    file_extension = Path(file.filename).suffix
+    # Generate unique filename with validated extension
+    # Only allow specific safe image extensions
+    ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp'}
+    file_extension = Path(file.filename).suffix.lower()
+    
+    if file_extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
+        )
+    
     unique_filename = f"qc_test_{qc_test_id}_{uuid.uuid4()}{file_extension}"
     
-    # Ensure upload directory exists
-    upload_dir = Path(settings.UPLOAD_DIR) / "qc_photos"
+    # Ensure upload directory exists with absolute path
+    upload_dir = Path(settings.UPLOAD_DIR).resolve() / "qc_photos"
     upload_dir.mkdir(parents=True, exist_ok=True)
     
-    # Save file
-    file_path = upload_dir / unique_filename
+    # Save file with absolute path
+    file_path = (upload_dir / unique_filename).resolve()
+    
+    # Security: Ensure the resolved path is still within upload directory
+    if not str(file_path).startswith(str(upload_dir)):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file path"
+        )
+    
     try:
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
@@ -318,8 +337,9 @@ async def upload_qc_test_photo(
     
     # Delete old photo if exists
     if db_qc_test.photo_path:
-        old_photo = Path(db_qc_test.photo_path)
-        if old_photo.exists():
+        old_photo = Path(db_qc_test.photo_path).resolve()
+        # Security: Only delete if within upload directory
+        if str(old_photo).startswith(str(upload_dir)) and old_photo.exists():
             old_photo.unlink()
     
     # Update QC test with photo path
