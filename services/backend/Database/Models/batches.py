@@ -13,6 +13,7 @@ class Batches(Base):
         Index("ix_batches_recipe_id", "recipe_id"),
         Index("ix_batches_recipe_id_batch_number", "recipe_id", "batch_number"),
         Index("ix_batches_status", "status"),
+        Index("ix_batches_equipment_id", "equipment_id"),
     )
     id = Column(Integer, primary_key=True, index=True)
     batch_name = Column(String, nullable=False)
@@ -31,6 +32,9 @@ class Batches(Base):
         nullable=False,
     )
     recipe = relationship("Recipes", back_populates="batches")
+    
+    equipment_id = Column(Integer, ForeignKey("equipment.id"), nullable=True, index=True)
+    equipment_profile = relationship("EquipmentProfiles", back_populates="batches")
     batch_log = relationship(
         "BatchLogs",
         back_populates="batch",

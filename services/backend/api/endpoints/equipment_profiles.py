@@ -10,6 +10,39 @@ from typing import List
 router = APIRouter()
 
 
+def profile_to_dict(profile: models.EquipmentProfiles) -> dict:
+    """Convert equipment profile model to dictionary."""
+    return {
+        "id": str(profile.id),
+        "name": profile.name,
+        "version": profile.version,
+        "boil_size": profile.boil_size,
+        "batch_size": profile.batch_size,
+        "tun_volume": profile.tun_volume,
+        "tun_weight": profile.tun_weight,
+        "tun_specific_heat": profile.tun_specific_heat,
+        "top_up_water": profile.top_up_water,
+        "trub_chiller_loss": profile.trub_chiller_loss,
+        "evap_rate": profile.evap_rate,
+        "boil_time": profile.boil_time,
+        "calc_boil_volume": profile.calc_boil_volume,
+        "lauter_deadspace": profile.lauter_deadspace,
+        "top_up_kettle": profile.top_up_kettle,
+        "hop_utilization": profile.hop_utilization,
+        "brewhouse_efficiency": profile.brewhouse_efficiency,
+        "mash_efficiency": profile.mash_efficiency,
+        "notes": profile.notes,
+        "display_boil_size": profile.display_boil_size,
+        "display_batch_size": profile.display_batch_size,
+        "display_tun_volume": profile.display_tun_volume,
+        "display_tun_weight": profile.display_tun_weight,
+        "display_top_up_water": profile.display_top_up_water,
+        "display_trub_chiller_loss": profile.display_trub_chiller_loss,
+        "display_lauter_deadspace": profile.display_lauter_deadspace,
+        "display_top_up_kettle": profile.display_top_up_kettle,
+    }
+
+
 @router.get("/equipment", response_model=List[dict])
 async def get_equipment_profiles(db: Session = Depends(get_db)):
     """
@@ -21,36 +54,7 @@ async def get_equipment_profiles(db: Session = Depends(get_db)):
     )
 
     # Convert to dict to match frontend expectations
-    result = []
-    for profile in profiles:
-        profile_dict = {
-            "id": str(profile.id),
-            "name": profile.name,
-            "version": profile.version,
-            "boil_size": profile.boil_size,
-            "batch_size": profile.batch_size,
-            "tun_volume": profile.tun_volume,
-            "tun_weight": profile.tun_weight,
-            "tun_specific_heat": profile.tun_specific_heat,
-            "top_up_water": profile.top_up_water,
-            "trub_chiller_loss": profile.trub_chiller_loss,
-            "evap_rate": profile.evap_rate,
-            "boil_time": profile.boil_time,
-            "calc_boil_volume": profile.calc_boil_volume,
-            "lauter_deadspace": profile.lauter_deadspace,
-            "top_up_kettle": profile.top_up_kettle,
-            "hop_utilization": profile.hop_utilization,
-            "notes": profile.notes,
-            "display_boil_size": profile.display_boil_size,
-            "display_batch_size": profile.display_batch_size,
-            "display_tun_volume": profile.display_tun_volume,
-            "display_tun_weight": profile.display_tun_weight,
-            "display_top_up_water": profile.display_top_up_water,
-            "display_trub_chiller_loss": profile.display_trub_chiller_loss,
-            "display_lauter_deadspace": profile.display_lauter_deadspace,
-            "display_top_up_kettle": profile.display_top_up_kettle,
-        }
-        result.append(profile_dict)
+    result = [profile_to_dict(profile) for profile in profiles]
 
     return result
 
@@ -80,33 +84,7 @@ async def create_equipment_profile(
     db.commit()
     db.refresh(db_profile)
 
-    return {
-        "id": str(db_profile.id),
-        "name": db_profile.name,
-        "version": db_profile.version,
-        "boil_size": db_profile.boil_size,
-        "batch_size": db_profile.batch_size,
-        "tun_volume": db_profile.tun_volume,
-        "tun_weight": db_profile.tun_weight,
-        "tun_specific_heat": db_profile.tun_specific_heat,
-        "top_up_water": db_profile.top_up_water,
-        "trub_chiller_loss": db_profile.trub_chiller_loss,
-        "evap_rate": db_profile.evap_rate,
-        "boil_time": db_profile.boil_time,
-        "calc_boil_volume": db_profile.calc_boil_volume,
-        "lauter_deadspace": db_profile.lauter_deadspace,
-        "top_up_kettle": db_profile.top_up_kettle,
-        "hop_utilization": db_profile.hop_utilization,
-        "notes": db_profile.notes,
-        "display_boil_size": db_profile.display_boil_size,
-        "display_batch_size": db_profile.display_batch_size,
-        "display_tun_volume": db_profile.display_tun_volume,
-        "display_tun_weight": db_profile.display_tun_weight,
-        "display_top_up_water": db_profile.display_top_up_water,
-        "display_trub_chiller_loss": db_profile.display_trub_chiller_loss,
-        "display_lauter_deadspace": db_profile.display_lauter_deadspace,
-        "display_top_up_kettle": db_profile.display_top_up_kettle,
-    }
+    return profile_to_dict(db_profile)
 
 
 @router.get("/equipment/{profile_id}", response_model=dict)
@@ -124,33 +102,7 @@ async def get_equipment_profile(profile_id: int, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=404, detail="Equipment profile not found")
 
-    return {
-        "id": str(profile.id),
-        "name": profile.name,
-        "version": profile.version,
-        "boil_size": profile.boil_size,
-        "batch_size": profile.batch_size,
-        "tun_volume": profile.tun_volume,
-        "tun_weight": profile.tun_weight,
-        "tun_specific_heat": profile.tun_specific_heat,
-        "top_up_water": profile.top_up_water,
-        "trub_chiller_loss": profile.trub_chiller_loss,
-        "evap_rate": profile.evap_rate,
-        "boil_time": profile.boil_time,
-        "calc_boil_volume": profile.calc_boil_volume,
-        "lauter_deadspace": profile.lauter_deadspace,
-        "top_up_kettle": profile.top_up_kettle,
-        "hop_utilization": profile.hop_utilization,
-        "notes": profile.notes,
-        "display_boil_size": profile.display_boil_size,
-        "display_batch_size": profile.display_batch_size,
-        "display_tun_volume": profile.display_tun_volume,
-        "display_tun_weight": profile.display_tun_weight,
-        "display_top_up_water": profile.display_top_up_water,
-        "display_trub_chiller_loss": profile.display_trub_chiller_loss,
-        "display_lauter_deadspace": profile.display_lauter_deadspace,
-        "display_top_up_kettle": profile.display_top_up_kettle,
-    }
+    return profile_to_dict(profile)
 
 
 @router.put("/equipment/{profile_id}", response_model=dict)
@@ -198,33 +150,7 @@ async def update_equipment_profile(
     db.commit()
     db.refresh(profile)
 
-    return {
-        "id": str(profile.id),
-        "name": profile.name,
-        "version": profile.version,
-        "boil_size": profile.boil_size,
-        "batch_size": profile.batch_size,
-        "tun_volume": profile.tun_volume,
-        "tun_weight": profile.tun_weight,
-        "tun_specific_heat": profile.tun_specific_heat,
-        "top_up_water": profile.top_up_water,
-        "trub_chiller_loss": profile.trub_chiller_loss,
-        "evap_rate": profile.evap_rate,
-        "boil_time": profile.boil_time,
-        "calc_boil_volume": profile.calc_boil_volume,
-        "lauter_deadspace": profile.lauter_deadspace,
-        "top_up_kettle": profile.top_up_kettle,
-        "hop_utilization": profile.hop_utilization,
-        "notes": profile.notes,
-        "display_boil_size": profile.display_boil_size,
-        "display_batch_size": profile.display_batch_size,
-        "display_tun_volume": profile.display_tun_volume,
-        "display_tun_weight": profile.display_tun_weight,
-        "display_top_up_water": profile.display_top_up_water,
-        "display_trub_chiller_loss": profile.display_trub_chiller_loss,
-        "display_lauter_deadspace": profile.display_lauter_deadspace,
-        "display_top_up_kettle": profile.display_top_up_kettle,
-    }
+    return profile_to_dict(profile)
 
 
 @router.delete("/equipment/{profile_id}", response_model=dict)
