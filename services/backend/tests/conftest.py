@@ -50,6 +50,40 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 
+# Mock authentication for tests
+def override_get_current_active_user():
+    """Override get_current_active_user for testing"""
+    from Database.Models.users import Users, UserRole
+    # Create a mock user for testing
+    db = TestingSessionLocal()
+    try:
+        # Try to get or create test user
+        user = db.query(Users).filter(Users.username == "testuser").first()
+        if not user:
+            user = Users(
+                id=1,
+                username="testuser",
+                email="test@example.com",
+                hashed_password="$2b$12$test",
+                is_active=True,
+                role=UserRole.brewer,
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        return user
+    finally:
+        db.close()
+
+
+# Import auth functions and override them
+try:
+    from auth import get_current_active_user
+    app.dependency_overrides[get_current_active_user] = override_get_current_active_user
+except ImportError:
+    pass
+
+
 @pytest.fixture(scope="function", autouse=True)
 def setup_and_teardown():
     logger.debug("Creating test database")
