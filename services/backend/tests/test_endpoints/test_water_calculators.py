@@ -451,3 +451,125 @@ class TestWaterChemistryIntegration:
         assert "estimated_ph" in ph_data
         assert "residual_alkalinity" in ph_data
         assert 5.0 <= ph_data["estimated_ph"] <= 6.0
+
+
+class TestMashPhEndpoint:
+    """Tests for enhanced mash pH calculator endpoint."""
+
+    def test_calculate_mash_ph_pale_malt(self):
+        """Test mash pH calculation with pale malt."""
+        response = client.post(
+            "/calculators/mash-ph",
+            json={
+                "water_profile": {
+                    "calcium": 75,
+                    "magnesium": 10,
+                    "sodium": 15,
+                    "chloride": 60,
+                    "sulfate": 120,
+                    "bicarbonate": 50,
+                },
+                "grain_bill_lbs": 11.0,
+                "water_volume_gal": 4.5,
+                "grain_color_lovibond": 3.0,
+                "target_ph": 5.4,
+            },
+        )
+        assert response.status_code == 200
+        data = response.json()
+
+        # Should return all pH calculation fields
+        assert "estimated_ph" in data
+        assert "target_ph" in data
+        assert "ph_difference" in data
+        assert "residual_alkalinity" in data
+        assert "base_grain_ph" in data
+        assert "water_to_grist_ratio" in data
+        assert "acid_addition_ml" in data
+        assert "acid_type" in data
+        assert "notes" in data
+
+        # pH should be in reasonable range
+        assert 5.0 <= data["estimated_ph"] <= 6.2
+        assert data["target_ph"] == 5.4
+
+    def test_calculate_mash_ph_dark_beer(self):
+        """Test mash pH calculation with darker grains."""
+        response = client.post(
+            "/calculators/mash-ph",
+            json={
+                "water_profile": {
+                    "calcium": 50,
+                    "magnesium": 10,
+                    "sodium": 15,
+                    "chloride": 75,
+                    "sulfate": 60,
+                    "bicarbonate": 100,
+                },
+                "grain_bill_lbs": 12.0,
+                "water_volume_gal": 5.0,
+                "grain_color_lovibond": 15.0,  # Darker grain
+                "target_ph": 5.4,
+            },
+        )
+        assert response.status_code == 200
+        data = response.json()
+
+        # Darker grains should result in lower base grain pH
+        assert data["base_grain_ph"] < 5.8
+        assert 5.0 <= data["estimated_ph"] <= 6.2
+
+    def test_calculate_mash_ph_high_alkalinity(self):
+        """Test mash pH with high alkalinity water."""
+        response = client.post(
+            "/calculators/mash-ph",
+            json={
+                "water_profile": {
+                    "calcium": 30,
+                    "magnesium": 5,
+                    "sodium": 10,
+                    "chloride": 40,
+                    "sulfate": 30,
+                    "bicarbonate": 200,  # High alkalinity
+                },
+                "grain_bill_lbs": 10.0,
+                "water_volume_gal": 4.0,
+                "grain_color_lovibond": 3.0,
+                "target_ph": 5.4,
+            },
+        )
+        assert response.status_code == 200
+        data = response.json()
+
+        # High alkalinity should result in higher pH
+        assert data["residual_alkalinity"] > 50
+        # Should recommend acid addition
+        if data["estimated_ph"] > 5.45:
+            assert data["acid_addition_ml"] > 0
+
+    def test_calculate_mash_ph_ro_water(self):
+        """Test mash pH with RO water (low alkalinity)."""
+        response = client.post(
+            "/calculators/mash-ph",
+            json={
+                "water_profile": {
+                    "calcium": 0,
+                    "magnesium": 0,
+                    "sodium": 0,
+                    "chloride": 0,
+                    "sulfate": 0,
+                    "bicarbonate": 0,
+                },
+                "grain_bill_lbs": 11.0,
+                "water_volume_gal": 4.5,
+                "grain_color_lovibond": 3.0,
+                "target_ph": 5.4,
+            },
+        )
+        assert response.status_code == 200
+        data = response.json()
+
+        # RO water should have very low or negative RA
+        assert data["residual_alkalinity"] < 20
+        # pH should be close to grain base pH
+        assert abs(data["estimated_ph"] - data["base_grain_ph"]) < 0.3

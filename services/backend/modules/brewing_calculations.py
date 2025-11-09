@@ -29,6 +29,7 @@ __all__ = [
     "calculate_mineral_additions",
     "calculate_salt_ion_contribution",
     "calculate_water_adjustment",
+    "calculate_mash_ph",
 ]
 
 
@@ -668,3 +669,121 @@ def calculate_water_adjustment(
         resulting_profile[ion] = round(resulting_profile[ion], 1)
 
     return resulting_profile
+
+
+def calculate_mash_ph(
+    water_profile: dict,
+    grain_bill_lbs: Number,
+    water_volume_gal: Number,
+    grain_color_lovibond: Number = 3.0,
+    target_ph: Number = 5.4,
+) -> dict:
+    """
+    Calculate predicted mash pH with grain bill consideration and acid addition recommendations.
+
+    This is an enhanced pH calculation that considers:
+    - Water chemistry (residual alkalinity)
+    - Grain bill size and color
+    - Water to grist ratio
+    - Recommended acid additions to reach target pH
+
+    Args:
+        water_profile: Dictionary with ion concentrations (ppm)
+        grain_bill_lbs: Total grain weight in pounds
+        water_volume_gal: Mash water volume in gallons
+        grain_color_lovibond: Average grain color in Lovibond (default 3.0 for pale malt)
+        target_ph: Target mash pH (default 5.4)
+
+    Returns:
+        Dictionary with pH prediction, residual alkalinity, and acid recommendations
+    """
+    grain_weight = _coerce_positive(grain_bill_lbs, "grain_bill_lbs")
+    water_vol = _coerce_positive(water_volume_gal, "water_volume_gal")
+    grain_color = _coerce_positive(
+        grain_color_lovibond, "grain_color_lovibond", allow_zero=True
+    )
+    target = _coerce_positive(target_ph, "target_ph")
+
+    # Validate required keys
+    required_keys = ["calcium", "magnesium", "bicarbonate"]
+    for key in required_keys:
+        if key not in water_profile:
+            raise ValueError(f"water_profile must contain '{key}' key")
+
+    calcium = _coerce_positive(water_profile["calcium"], "calcium", allow_zero=True)
+    magnesium = _coerce_positive(
+        water_profile["magnesium"], "magnesium", allow_zero=True
+    )
+    bicarbonate = _coerce_positive(
+        water_profile["bicarbonate"], "bicarbonate", allow_zero=True
+    )
+
+    # Calculate alkalinity as CaCO3 equivalent
+    alkalinity = bicarbonate * 0.8202
+
+    # Calculate residual alkalinity (Kolbach formula)
+    residual_alkalinity = alkalinity - (calcium / 3.5 + magnesium / 7.0)
+
+    # Calculate water to grist ratio
+    water_liters = water_vol * 3.78541
+    grain_kg = grain_weight * 0.453592
+    if grain_kg > 0:
+        water_to_grist_ratio = water_liters / grain_kg  # L/kg
+    else:
+        water_to_grist_ratio = 2.5  # Default typical ratio
+
+    # Base pH from grain (varies with color)
+    # Pale malts: ~5.8 pH, darker malts: lower pH
+    # Approximate relationship: pH decreases ~0.01 per °L above 3
+    base_grain_ph = 5.8 - (max(0, grain_color - 3.0) * 0.01)
+    base_grain_ph = max(5.2, min(5.8, base_grain_ph))  # Clamp to reasonable range
+
+    # pH impact from residual alkalinity
+    # Higher RA raises pH, lower RA lowers pH
+    # Rule of thumb: 1 mEq/L RA raises pH by ~0.1 in a typical mash
+    # Dilution factor: more water means less buffering from grain
+    dilution_factor = min(1.0, water_to_grist_ratio / 3.0)
+    ph_from_ra = residual_alkalinity / 50.0 * dilution_factor
+
+    # Estimate mash pH
+    estimated_ph = base_grain_ph + ph_from_ra
+
+    # Clamp to reasonable brewing range
+    estimated_ph = max(5.0, min(6.2, estimated_ph))
+
+    # Calculate acid addition if pH is too high
+    ph_difference = estimated_ph - target
+    acid_addition_ml = 0.0
+    acid_type = "lactic acid (88%)"
+
+    if ph_difference > 0.05:  # pH is too high
+        # Approximate: 1 mL of 88% lactic acid per gallon lowers pH by ~0.1
+        # This is a rough guideline and should be verified with pH meter
+        acid_addition_ml = (ph_difference / 0.1) * water_vol
+        acid_addition_ml = round(acid_addition_ml, 1)
+
+    # Calculate alkalinity reduction needed (as CaCO3)
+    alkalinity_reduction_needed = 0.0
+    if ph_difference > 0.05:
+        # Approximate: need to reduce alkalinity by ~17 ppm (as CaCO3) per 0.1 pH drop
+        alkalinity_reduction_needed = (ph_difference / 0.1) * 17.0
+        alkalinity_reduction_needed = round(alkalinity_reduction_needed, 1)
+
+    return {
+        "estimated_ph": round(estimated_ph, 2),
+        "target_ph": target,
+        "ph_difference": round(ph_difference, 2),
+        "residual_alkalinity": round(residual_alkalinity, 1),
+        "base_grain_ph": round(base_grain_ph, 2),
+        "water_to_grist_ratio": round(water_to_grist_ratio, 2),
+        "acid_addition_ml": acid_addition_ml,
+        "acid_type": acid_type,
+        "alkalinity_reduction_needed": alkalinity_reduction_needed,
+        "notes": (
+            "Predicted pH is acceptable"
+            if abs(ph_difference) <= 0.05
+            else f"Add {acid_addition_ml} mL of {acid_type} to reach target pH"
+            if ph_difference > 0.05
+            else "pH is below target, consider reducing acid mineral additions"
+        ),
+    }

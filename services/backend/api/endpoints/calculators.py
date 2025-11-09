@@ -19,6 +19,7 @@ from modules.brewing_calculations import (
     calculate_salt_ion_contribution,
     calculate_mineral_additions,
     calculate_water_adjustment,
+    calculate_mash_ph,
 )
 
 router = APIRouter()
@@ -665,3 +666,98 @@ async def calc_water_adjustment(
         request.water_volume_gal,
     )
     return WaterAdjustmentResponse(**result)
+
+
+# Enhanced mash pH calculator
+
+
+class MashPhRequest(BaseModel):
+    water_profile: dict = Field(
+        ...,
+        description="Water profile with ion concentrations in ppm",
+    )
+    grain_bill_lbs: float = Field(..., gt=0, description="Total grain weight in pounds")
+    water_volume_gal: float = Field(..., gt=0, description="Mash water volume in gallons")
+    grain_color_lovibond: float = Field(
+        3.0, ge=0, description="Average grain color in Lovibond (default 3.0)"
+    )
+    target_ph: float = Field(5.4, gt=0, le=14, description="Target mash pH (default 5.4)")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "water_profile": {
+                    "calcium": 75,
+                    "magnesium": 10,
+                    "sodium": 15,
+                    "chloride": 60,
+                    "sulfate": 120,
+                    "bicarbonate": 50,
+                },
+                "grain_bill_lbs": 11.0,
+                "water_volume_gal": 4.5,
+                "grain_color_lovibond": 5.0,
+                "target_ph": 5.4,
+            }
+        }
+    )
+
+
+class MashPhResponse(BaseModel):
+    estimated_ph: float = Field(..., description="Estimated mash pH")
+    target_ph: float = Field(..., description="Target mash pH")
+    ph_difference: float = Field(..., description="Difference from target")
+    residual_alkalinity: float = Field(..., description="Residual alkalinity")
+    base_grain_ph: float = Field(..., description="Base pH from grain")
+    water_to_grist_ratio: float = Field(..., description="Water to grist ratio (L/kg)")
+    acid_addition_ml: float = Field(..., description="Recommended acid addition in mL")
+    acid_type: str = Field(..., description="Type of acid recommended")
+    alkalinity_reduction_needed: float = Field(
+        ..., description="Alkalinity reduction needed (ppm as CaCO3)"
+    )
+    notes: str = Field(..., description="Recommendation notes")
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "estimated_ph": 5.45,
+                "target_ph": 5.4,
+                "ph_difference": 0.05,
+                "residual_alkalinity": 23.5,
+                "base_grain_ph": 5.78,
+                "water_to_grist_ratio": 3.2,
+                "acid_addition_ml": 0.0,
+                "acid_type": "lactic acid (88%)",
+                "alkalinity_reduction_needed": 0.0,
+                "notes": "Predicted pH is acceptable",
+            }
+        }
+    )
+
+
+@router.post(
+    "/calculators/mash-ph",
+    response_model=MashPhResponse,
+    summary="Calculate mash pH with grain consideration",
+    response_description="Predicted mash pH with acid addition recommendations",
+)
+async def calc_mash_ph(
+    request: MashPhRequest,
+) -> MashPhResponse:
+    """
+    Calculate predicted mash pH with grain bill consideration.
+    
+    This enhanced pH calculator considers:
+    - Water chemistry (residual alkalinity)
+    - Grain bill size and color
+    - Water to grist ratio
+    - Provides acid addition recommendations to reach target pH
+    """
+    result = calculate_mash_ph(
+        request.water_profile,
+        request.grain_bill_lbs,
+        request.water_volume_gal,
+        request.grain_color_lovibond,
+        request.target_ph,
+    )
+    return MashPhResponse(**result)
