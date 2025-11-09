@@ -36,6 +36,7 @@ from .recipe_versions import RecipeVersion
 from .recipe_ratings import RecipeRating
 from .recipe_comments import RecipeComment
 from .batch_ingredients import BatchIngredient, InventoryTransaction
+from .users import Users
 
 __all__ = [
     "Recipes",
@@ -82,4 +83,5 @@ __all__ = [
     "RecipeComment",
     "BatchIngredient",
     "InventoryTransaction",
+    "Users",
 ]
