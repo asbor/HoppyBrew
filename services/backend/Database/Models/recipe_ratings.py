@@ -1,6 +1,6 @@
 # services/backend/Database/Models/recipe_ratings.py
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Text, Index
+from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime, Text, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base

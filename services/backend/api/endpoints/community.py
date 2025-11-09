@@ -1,9 +1,9 @@
 # api/endpoints/community.py
 
 from fastapi import APIRouter, HTTPException, Depends, status
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
-from typing import List, Optional
+from typing import List
 from database import get_db
 import Database.Models as models
 import Database.Schemas.community as community_schemas
