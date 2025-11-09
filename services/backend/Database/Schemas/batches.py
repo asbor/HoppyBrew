@@ -1,12 +1,15 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from .batch_logs import BatchLog
 from .hops import InventoryHop
 from .fermentables import InventoryFermentable
 from .miscs import InventoryMisc
 from .yeasts import InventoryYeast
 from Database.enums import BatchStatus
+
+if TYPE_CHECKING:
+    from .packaging_details import PackagingDetails
 
 
 BATCH_BASE_EXAMPLE = {
@@ -146,6 +149,7 @@ class Batch(BatchBase):
     inventory_fermentables: List[InventoryFermentable]
     inventory_miscs: List[InventoryMisc]
     inventory_yeasts: List[InventoryYeast]
+    packaging_details: Optional["PackagingDetails"] = None
 
     model_config = ConfigDict(
         from_attributes=True, json_schema_extra={"example": BATCH_FULL_EXAMPLE}

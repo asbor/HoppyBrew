@@ -25,6 +25,7 @@ from .endpoints import (
     homeassistant,
     devices,
     calculators,
+    packaging,
 )
 
 # create the router and include all the routers from the endpoints folder
@@ -67,3 +68,7 @@ router.include_router(homeassistant.router, tags=["homeassistant"])
 # Include the calculators router
 
 router.include_router(calculators.router, tags=["calculators"])
+
+# Include the packaging router
+
+router.include_router(packaging.router, tags=["packaging"])

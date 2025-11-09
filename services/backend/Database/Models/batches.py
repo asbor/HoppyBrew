@@ -74,3 +74,9 @@ class Batches(Base):
         back_populates="batch",
         cascade="all, delete-orphan",
     )
+    packaging_details = relationship(
+        "PackagingDetails",
+        back_populates="batch",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )

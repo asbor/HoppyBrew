@@ -118,6 +118,12 @@ from .batch_ingredients import (
     IngredientTrackingResponse,
     InventoryAvailability,
 )
+from .packaging_details import (
+    PackagingDetailsBase,
+    PackagingDetailsCreate,
+    PackagingDetailsUpdate,
+    PackagingDetails,
+)
 
 __all__ = [
     "SugarBase",
@@ -217,4 +223,8 @@ __all__ = [
     "ConsumeIngredientsRequest",
     "IngredientTrackingResponse",
     "InventoryAvailability",
+    "PackagingDetailsBase",
+    "PackagingDetailsCreate",
+    "PackagingDetailsUpdate",
+    "PackagingDetails",
 ]
