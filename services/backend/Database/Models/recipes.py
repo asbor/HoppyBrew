@@ -1,8 +1,17 @@
 # services/backend/Database/Models/recipes.py
 
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, Index
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, Index, Enum, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from database import Base
+import enum
+
+
+class RecipeVisibility(enum.Enum):
+    """Recipe visibility options"""
+    private = "private"
+    public = "public"
+    unlisted = "unlisted"  # Public but not in listings
 
 
 class Recipes(Base):
@@ -10,11 +19,19 @@ class Recipes(Base):
     __table_args__ = (
         Index("ix_recipes_origin_recipe_id", "origin_recipe_id"),
         Index("ix_recipes_name_version", "name", "version"),
+        Index("ix_recipes_user_id", "user_id"),
+        Index("ix_recipes_visibility", "visibility"),
     )
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     is_batch = Column(Boolean, default=False)
     origin_recipe_id = Column(Integer, ForeignKey("recipes.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=True)
+    visibility = Column(Enum(RecipeVisibility), default=RecipeVisibility.private, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
+    updated_at = Column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=True
+    )
     origin_recipe = relationship(
         "Recipes",
         remote_side=[id],
@@ -116,4 +133,21 @@ class Recipes(Base):
         back_populates="recipe",
         cascade="all, delete-orphan",
         order_by="RecipeVersion.version_number.desc()",
+    )
+    # Community features relationships
+    owner = relationship("Users", back_populates="recipes")
+    ratings = relationship(
+        "RecipeRating",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    comments = relationship(
+        "RecipeComment",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
+    )
+    stars = relationship(
+        "RecipeStar",
+        back_populates="recipe",
+        cascade="all, delete-orphan",
     )

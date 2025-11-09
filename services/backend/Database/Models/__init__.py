@@ -1,6 +1,6 @@
 # services/backend/Database/Models/__init__.py
 
-from .recipes import Recipes
+from .recipes import Recipes, RecipeVisibility
 from .batches import Batches
 from .batch_logs import BatchLogs
 from .batch_workflow_history import BatchWorkflowHistory
@@ -34,9 +34,14 @@ from .devices import Device
 from .fermentation_readings import FermentationReadings
 from .recipe_versions import RecipeVersion
 from .batch_ingredients import BatchIngredient, InventoryTransaction
+from .recipe_ratings import RecipeRating
+from .recipe_comments import RecipeComment
+from .recipe_stars import RecipeStar
+from .users import Users, UserRole
 
 __all__ = [
     "Recipes",
+    "RecipeVisibility",
     "Batches",
     "BatchLogs",
     "BatchWorkflowHistory",
@@ -78,4 +83,9 @@ __all__ = [
     "RecipeVersion",
     "BatchIngredient",
     "InventoryTransaction",
+    "RecipeRating",
+    "RecipeComment",
+    "RecipeStar",
+    "Users",
+    "UserRole",
 ]

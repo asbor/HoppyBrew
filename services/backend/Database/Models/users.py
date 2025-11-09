@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum, Text
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
 import enum
@@ -65,6 +66,18 @@ class Users(Base):
     updated_at = Column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
+    
+    # User profile fields
+    bio = Column(Text, nullable=True)
+    avatar_url = Column(String(500), nullable=True)
+    website = Column(String(500), nullable=True)
+    location = Column(String(200), nullable=True)
+    
+    # Community relationships
+    recipes = relationship("Recipes", back_populates="owner")
+    recipe_ratings = relationship("RecipeRating", back_populates="user", cascade="all, delete-orphan")
+    recipe_comments = relationship("RecipeComment", back_populates="user", cascade="all, delete-orphan")
+    starred_recipes = relationship("RecipeStar", back_populates="user", cascade="all, delete-orphan")
 
     @property
     def full_name(self):

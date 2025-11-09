@@ -120,6 +120,7 @@ class RecipeBase(BaseModel):
     display_secondary_temp: Optional[str] = None
     display_tertiary_temp: Optional[str] = None
     display_age_temp: Optional[str] = None
+    visibility: Optional[str] = "private"  # private, public, unlisted
     # List of objects for each ingredient type
     hops: List[RecipeHopBase] = Field(default_factory=list)
     fermentables: List[RecipeFermentableBase] = Field(default_factory=list)
@@ -133,6 +134,7 @@ class Recipe(RecipeBase):
     id: int
     is_batch: Optional[bool] = False
     origin_recipe_id: Optional[int] = None
+    user_id: Optional[int] = None
     # Override with full schemas that include IDs
     hops: List[RecipeHop] = Field(default_factory=list)
     fermentables: List[RecipeFermentable] = Field(default_factory=list)
@@ -147,6 +149,8 @@ class Recipe(RecipeBase):
                 "id": 42,
                 "is_batch": False,
                 "origin_recipe_id": None,
+                "user_id": 1,
+                "visibility": "public",
             }
         },
     )
