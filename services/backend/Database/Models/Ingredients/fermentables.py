@@ -17,13 +17,14 @@ class RecipeFermentable(Base):
     __tablename__ = "recipe_fermentables"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=True)
+    version = Column(Integer, nullable=True)
     type = Column(String, nullable=True)
     yield_ = Column(Float, nullable=True)
     color = Column(Integer, nullable=True)
     origin = Column(String, nullable=True)
     supplier = Column(String, nullable=True)
     notes = Column(String, nullable=True)
-    potential = Column(Float, nullable=True)  # Corrected to Float
+    potential = Column(Float, nullable=True)
     amount = Column(Float, nullable=True)
     cost_per_unit = Column(Float, nullable=True)
     manufacturing_date = Column(Date, nullable=True)
@@ -36,6 +37,17 @@ class RecipeFermentable(Base):
     used_in = Column(String, nullable=True)
     stage = Column(String, nullable=True)  # mash/boil/fermentation
     duration = Column(Integer, nullable=True)  # duration in minutes
+    add_after_boil = Column(Boolean, nullable=True)
+    coarse_fine_diff = Column(Float, nullable=True)
+    moisture = Column(Float, nullable=True)
+    diastatic_power = Column(Float, nullable=True)
+    protein = Column(Float, nullable=True)
+    max_in_batch = Column(Float, nullable=True)
+    recommend_mash = Column(Boolean, nullable=True)
+    ibu_gal_per_lb = Column(Float, nullable=True)
+    display_amount = Column(String, nullable=True)
+    inventory = Column(String, nullable=True)
+    display_color = Column(String, nullable=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="fermentables")
 

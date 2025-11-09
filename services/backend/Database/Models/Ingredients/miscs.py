@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -7,17 +7,18 @@ class RecipeMisc(Base):
     __tablename__ = "recipe_miscs"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=True)
+    version = Column(Integer, nullable=True)
     type = Column(String, nullable=True)
     use = Column(String, nullable=True)
     amount_is_weight = Column(Boolean, nullable=True)
     use_for = Column(String, nullable=True)
     notes = Column(String, nullable=True)
-    amount = Column(Integer, nullable=True)
-    time = Column(Integer, nullable=True)
+    amount = Column(Float, nullable=True)
+    time = Column(Float, nullable=True)
     display_amount = Column(String, nullable=True)
-    inventory = Column(Integer, nullable=True)
+    inventory = Column(String, nullable=True)
     display_time = Column(String, nullable=True)
-    batch_size = Column(Integer, nullable=True)
+    batch_size = Column(Float, nullable=True)
     stage = Column(String, nullable=True)  # mash/boil/fermentation
     duration = Column(Integer, nullable=True)  # duration in minutes
     recipe_id = Column(Integer, ForeignKey("recipes.id"))

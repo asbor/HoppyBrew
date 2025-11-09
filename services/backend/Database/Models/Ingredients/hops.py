@@ -9,6 +9,7 @@ class RecipeHop(Base):
     __tablename__ = "recipe_hops"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=True)
+    version = Column(Integer, nullable=True)
     origin = Column(String, nullable=True)
     alpha = Column(Float, nullable=True)
     type = Column(String, nullable=True)
@@ -24,6 +25,11 @@ class RecipeHop(Base):
     display_amount = Column(String, nullable=True)
     inventory = Column(String, nullable=True)
     display_time = Column(String, nullable=True)
+    substitutes = Column(String, nullable=True)
+    humulene = Column(Float, nullable=True)
+    caryophyllene = Column(Float, nullable=True)
+    cohumulone = Column(Float, nullable=True)
+    myrcene = Column(Float, nullable=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="hops")
 
