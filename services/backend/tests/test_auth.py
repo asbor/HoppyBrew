@@ -103,6 +103,6 @@ def test_admin_endpoint_requires_admin_role(client, db_session):
     )
     token = response.json()["access_token"]
 
-    # Try to access admin endpoint
-    response = client.get("/admin/test", headers={"Authorization": f"Bearer {token}"})
+    # Try to access admin endpoint (list users)
+    response = client.get("/users/", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 403

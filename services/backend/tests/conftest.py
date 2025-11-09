@@ -33,8 +33,15 @@ logger.debug(f"Environment variable TESTING set to: {os.environ['TESTING']}")
 # Database setup for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 logger.debug(f"SQLALCHEMY_DATABASE_URL set to: {SQLALCHEMY_DATABASE_URL}")
+
+# For SQLite in-memory databases, we need to use a StaticPool to share 
+# the same database connection across all threads/sessions
+from sqlalchemy.pool import StaticPool
+
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,  # Critical for SQLite :memory: to work with tests
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -53,7 +60,17 @@ app.dependency_overrides[get_db] = override_get_db
 @pytest.fixture(scope="function", autouse=True)
 def setup_and_teardown():
     logger.debug("Creating test database")
+    logger.debug(f"Tables in metadata before create_all: {sorted(Base.metadata.tables.keys())[:10]}")
+    logger.debug(f"User table in metadata: {'user' in Base.metadata.tables}")
     Base.metadata.create_all(bind=engine)
+    
+    # Verify tables were created
+    from sqlalchemy import inspect
+    inspector = inspect(engine)
+    created_tables = inspector.get_table_names()
+    logger.debug(f"Tables created: {len(created_tables)}")
+    logger.debug(f"User table created: {'user' in created_tables}")
+    
     yield
     logger.debug("Dropping test database")
     Base.metadata.drop_all(bind=engine)
