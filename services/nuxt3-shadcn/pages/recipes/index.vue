@@ -12,13 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import type { Recipe } from '@/composables/useRecipes'
@@ -46,7 +46,7 @@ const batchForm = ref<Partial<BatchCreate>>({
 // Filtered recipes based on search
 const filteredRecipes = computed(() => {
   if (!searchQuery.value) return recipes.value
-  
+
   const query = searchQuery.value.toLowerCase()
   return recipes.value.filter(recipe =>
     recipe.name.toLowerCase().includes(query) ||
@@ -85,7 +85,7 @@ function openStartBrewDialog(recipe: Recipe) {
 
 async function handleStartBrew() {
   if (!selectedRecipe.value) return
-  
+
   const batchData: BatchCreate = {
     recipe_id: selectedRecipe.value.id,
     batch_name: batchForm.value.batch_name || `${selectedRecipe.value.name} Batch`,
@@ -94,9 +94,9 @@ async function handleStartBrew() {
     brewer: batchForm.value.brewer || selectedRecipe.value.brewer || 'Unknown',
     brew_date: batchForm.value.brew_date || new Date().toISOString()
   }
-  
+
   const result = await createBatch(batchData)
-  
+
   if (!result.error.value && result.data.value) {
     showStartBrewDialog.value = false
     // Navigate to the new batch detail page
@@ -139,14 +139,10 @@ onMounted(async () => {
     <!-- Search & Filters -->
     <div class="flex flex-col md:flex-row gap-4">
       <div class="flex-1">
-        <Input
-          v-model="searchQuery"
-          placeholder="Search recipes by name, type, or brewer..."
-          class="max-w-md"
-        >
-          <template #prefix>
-            <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
-          </template>
+        <Input v-model="searchQuery" placeholder="Search recipes by name, type, or brewer..." class="max-w-md">
+        <template #prefix>
+          <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
+        </template>
         </Input>
       </div>
     </div>
@@ -209,7 +205,7 @@ onMounted(async () => {
           <TableBody>
             <TableRow v-for="recipe in filteredRecipes" :key="recipe.id">
               <TableCell class="font-medium">
-                <NuxtLink :href="`/recipes/${recipe.id}`" class="hover:underline">
+                <NuxtLink :to="`/recipes/${recipe.id}`" class="hover:underline">
                   {{ recipe.name }}
                 </NuxtLink>
               </TableCell>
@@ -232,25 +228,17 @@ onMounted(async () => {
                 {{ formatNumber(recipe.efficiency, 0) }}%
               </TableCell>
               <TableCell class="text-right space-x-2">
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  @click="openStartBrewDialog(recipe)"
-                  title="Start brewing this recipe"
-                >
+                <Button variant="default" size="sm" @click="openStartBrewDialog(recipe)"
+                  title="Start brewing this recipe">
                   <Icon name="mdi:flask" class="h-4 w-4" />
                 </Button>
                 <Button asChild variant="ghost" size="sm">
-                  <NuxtLink :href="`/recipes/${recipe.id}`">
+                  <NuxtLink :to="`/recipes/${recipe.id}`">
                     <Icon name="mdi:pencil" class="h-4 w-4" />
                   </NuxtLink>
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  @click="deleteRecipe(recipe.id)"
-                  class="text-destructive hover:text-destructive"
-                >
+                <Button variant="ghost" size="sm" @click="deleteRecipe(recipe.id)"
+                  class="text-destructive hover:text-destructive">
                   <Icon name="mdi:delete" class="h-4 w-4" />
                 </Button>
               </TableCell>
@@ -269,77 +257,42 @@ onMounted(async () => {
             Create a new batch from "{{ selectedRecipe?.name }}" and begin brewing
           </DialogDescription>
         </DialogHeader>
-        
+
         <div class="space-y-4 py-4">
           <div class="space-y-2">
             <Label for="batch_name">Batch Name</Label>
-            <Input 
-              id="batch_name" 
-              v-model="batchForm.batch_name" 
-              placeholder="My IPA - Batch 1"
-              required
-            />
+            <Input id="batch_name" v-model="batchForm.batch_name" placeholder="My IPA - Batch 1" required />
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="batch_number">Batch Number</Label>
-              <Input 
-                id="batch_number" 
-                v-model.number="batchForm.batch_number" 
-                type="number"
-                min="1"
-                required
-              />
+              <Input id="batch_number" v-model.number="batchForm.batch_number" type="number" min="1" required />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="batch_size_form">Batch Size (L)</Label>
-              <Input 
-                id="batch_size_form" 
-                v-model.number="batchForm.batch_size" 
-                type="number"
-                step="0.1"
-                min="0"
-                required
-              />
+              <Input id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1" min="0"
+                required />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <Label for="batch_brewer">Brewer</Label>
-            <Input 
-              id="batch_brewer" 
-              v-model="batchForm.brewer" 
-              placeholder="Brewer name"
-              required
-            />
+            <Input id="batch_brewer" v-model="batchForm.brewer" placeholder="Brewer name" required />
           </div>
-          
+
           <div class="space-y-2">
             <Label for="brew_date">Brew Date</Label>
-            <Input 
-              id="brew_date" 
-              v-model="batchForm.brew_date" 
-              type="date"
-              required
-            />
+            <Input id="brew_date" v-model="batchForm.brew_date" type="date" required />
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button 
-            type="button" 
-            variant="outline" 
-            @click="showStartBrewDialog = false"
-          >
+          <Button type="button" variant="outline" @click="showStartBrewDialog = false">
             Cancel
           </Button>
-          <Button 
-            type="button" 
-            @click="handleStartBrew"
-            :disabled="batchLoading"
-          >
+          <Button type="button" @click="handleStartBrew" :disabled="batchLoading">
             <Icon v-if="batchLoading" name="mdi:loading" class="mr-2 h-4 w-4 animate-spin" />
             Start Brewing
           </Button>

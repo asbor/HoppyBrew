@@ -1,8 +1,8 @@
 import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict
-from database import engine, Base
 from api.router import router
 from fastapi.middleware.cors import CORSMiddleware
 from logger_config import get_logger
@@ -96,21 +96,40 @@ tags_metadata = [
 ]
 
 # Get logger instance
+logger = get_logger("main")
 
-logger = get_logger("Main")
 
-# Connect to the database (bind the engine)
-# Create the tables in the database (create_all)
-# Only create tables if not in testing mode
-if os.getenv("TESTING", "0") != "1":
-    logger.info("Connecting to the database and creating tables")
-    Base.metadata.create_all(bind=engine, checkfirst=True)
-else:
-    logger.info("Testing mode detected - skipping automatic table creation")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Application lifespan context manager.
+    Handles startup and shutdown events for the FastAPI application.
+    """
+    # Startup
+    logger.info("Starting HoppyBrew API")
+    
+    # Initialize database on startup (not at import time)
+    if os.getenv("TESTING", "0") != "1":
+        from database import initialize_database, Base
+        
+        logger.info("Initializing database connection")
+        engine = initialize_database()
+        
+        logger.info("Creating database tables")
+        Base.metadata.create_all(bind=engine, checkfirst=True)
+        logger.info("Database tables ready")
+    else:
+        logger.info("Testing mode detected - skipping automatic table creation")
+    
+    logger.info("HoppyBrew API started successfully")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down HoppyBrew API")
 
-# Create the FastAPI app and include the router from the endpoints folder
 
-logger.info("Creating FastAPI app and including the router")
+# Create the FastAPI app with lifespan management
 app = FastAPI(
     title="HoppyBrew API",
     description=(
@@ -136,6 +155,7 @@ app = FastAPI(
         "docExpansion": "list",
         "displayRequestDuration": True,
     },
+    lifespan=lifespan,
 )
 app.include_router(router)
 
