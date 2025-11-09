@@ -74,3 +74,9 @@ class Batches(Base):
         back_populates="batch",
         cascade="all, delete-orphan",
     )
+    quality_control_tests = relationship(
+        "QualityControlTest",
+        back_populates="batch",
+        cascade="all, delete-orphan",
+        order_by="QualityControlTest.test_date.desc()",
+    )

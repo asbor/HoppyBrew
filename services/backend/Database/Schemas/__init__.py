@@ -118,6 +118,14 @@ from .batch_ingredients import (
     IngredientTrackingResponse,
     InventoryAvailability,
 )
+from .quality_control_tests import (
+    QualityControlTestBase,
+    QualityControlTestCreate,
+    QualityControlTestUpdate,
+    QualityControlTest,
+    BJCPScoreInput,
+    BJCPScoreResult,
+)
 
 __all__ = [
     "SugarBase",
@@ -217,4 +225,10 @@ __all__ = [
     "ConsumeIngredientsRequest",
     "IngredientTrackingResponse",
     "InventoryAvailability",
+    "QualityControlTestBase",
+    "QualityControlTestCreate",
+    "QualityControlTestUpdate",
+    "QualityControlTest",
+    "BJCPScoreInput",
+    "BJCPScoreResult",
 ]
