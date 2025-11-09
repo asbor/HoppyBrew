@@ -205,12 +205,109 @@ MASH_TEMPLATES = [
 ]
 
 
+# ============================================================================
+# TEMPLATE ROUTES - Must come BEFORE parameterized routes like /mash/{profile_id}
+# ============================================================================
+
+@router.get("/mash/templates", response_model=List[Dict[str, Any]])
+async def get_mash_templates():
+    """
+    Get all available mash profile templates.
+    Returns pre-configured mash profiles with common brewing schedules.
+    """
+    return MASH_TEMPLATES
+
+
+@router.post("/mash/from-template/{template_id}", response_model=dict, status_code=201)
+async def create_mash_from_template(
+    template_id: str, custom_name: str = None, db: Session = Depends(get_db)
+):
+    """
+    Create a new mash profile from a template.
+
+    Args:
+        template_id: ID of the template to use
+        custom_name: Optional custom name for the profile (defaults to template name)
+    """
+    # Find the template
+    template = next(
+        (t for t in MASH_TEMPLATES if t["id"] == template_id), None)
+
+    if not template:
+        raise HTTPException(
+            status_code=404, detail=f"Template '{template_id}' not found")
+
+    # Use custom name or template name
+    profile_name = custom_name if custom_name else template["name"]
+
+    # Check if profile with same name already exists
+    existing = (
+        db.query(models.MashProfiles)
+        .filter(models.MashProfiles.name == profile_name)
+        .first()
+    )
+
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Mash profile with name '{profile_name}' already exists",
+        )
+
+    # Create the mash profile
+    profile_data = {
+        "name": profile_name,
+        "version": 1,
+        "grain_temp": template["grain_temp"],
+        "tun_temp": template["tun_temp"],
+        "sparge_temp": template["sparge_temp"],
+        "ph": template["ph"],
+        "notes": template.get("notes", "") + f" (Created from template: {template['name']})",
+        "display_grain_temp": f"{template['grain_temp']} °C",
+        "display_tun_temp": f"{template['tun_temp']} °C",
+        "display_sparge_temp": f"{template['sparge_temp']} °C",
+    }
+
+    db_profile = models.MashProfiles(**profile_data)
+    db.add(db_profile)
+    db.commit()
+    db.refresh(db_profile)
+
+    # Create mash steps from template
+    for step_data in template.get("steps", []):
+        step = models.MashStep(
+            name=step_data["name"],
+            type=step_data["type"],
+            step_temp=step_data["step_temp"],
+            step_time=step_data["step_time"],
+            ramp_time=step_data.get("ramp_time", 0),
+            description=step_data.get("description", ""),
+            display_step_temp=f"{step_data['step_temp']} °C",
+            display_step_time=f"{step_data['step_time']} min",
+            display_ramp_time=f"{step_data.get('ramp_time', 0)} min",
+            mash_profile_id=db_profile.id,
+        )
+        db.add(step)
+
+    db.commit()
+
+    return {
+        "id": str(db_profile.id),
+        "name": db_profile.name,
+        "message": f"Mash profile created from template: {template['name']}",
+    }
+
+
+# ============================================================================
+# MASH PROFILE CRUD ROUTES
+# ============================================================================
+
 @router.get("/mash", response_model=List[dict])
 async def get_mash_profiles(db: Session = Depends(get_db)):
     """
     List all mash profiles.
     """
-    profiles = db.query(models.MashProfiles).order_by(models.MashProfiles.name).all()
+    profiles = db.query(models.MashProfiles).order_by(
+        models.MashProfiles.name).all()
 
     # Convert to dict to match frontend expectations
     result = []
@@ -500,13 +597,15 @@ async def update_mash_step(
     """
     Update an existing mash step.
     """
-    step = db.query(models.MashStep).filter(models.MashStep.id == step_id).first()
+    step = db.query(models.MashStep).filter(
+        models.MashStep.id == step_id).first()
 
     if not step:
         raise HTTPException(status_code=404, detail="Mash step not found")
 
     # Update only provided fields
-    update_data = step_update.model_dump(exclude_unset=True, exclude={"mash_id"})
+    update_data = step_update.model_dump(
+        exclude_unset=True, exclude={"mash_id"})
     for key, value in update_data.items():
         if hasattr(step, key):
             setattr(step, key, value)
@@ -539,7 +638,8 @@ async def delete_mash_step(step_id: int, db: Session = Depends(get_db)):
     """
     Delete a mash step.
     """
-    step = db.query(models.MashStep).filter(models.MashStep.id == step_id).first()
+    step = db.query(models.MashStep).filter(
+        models.MashStep.id == step_id).first()
 
     if not step:
         raise HTTPException(status_code=404, detail="Mash step not found")
@@ -551,99 +651,4 @@ async def delete_mash_step(step_id: int, db: Session = Depends(get_db)):
         "id": step.id,
         "name": step.name,
         "message": "Mash step deleted successfully",
-    }
-
-
-# Mash Profile Templates endpoint
-
-
-@router.get("/mash/templates/list", response_model=List[Dict[str, Any]])
-async def get_mash_templates():
-    """
-    Get all available mash profile templates.
-    Returns pre-configured mash profiles with common brewing schedules.
-    """
-    return MASH_TEMPLATES
-
-
-@router.post("/mash/from-template/{template_id}", response_model=dict, status_code=201)
-async def create_mash_from_template(
-    template_id: str, custom_name: str = None, db: Session = Depends(get_db)
-):
-    """
-    Create a new mash profile from a template.
-    
-    Args:
-        template_id: ID of the template to use
-        custom_name: Optional custom name for the profile (defaults to template name)
-    """
-    # Find the template
-    template = next((t for t in MASH_TEMPLATES if t["id"] == template_id), None)
-    
-    if not template:
-        raise HTTPException(status_code=404, detail=f"Template '{template_id}' not found")
-    
-    # Use custom name or template name
-    profile_name = custom_name if custom_name else template["name"]
-    
-    # Check if profile with same name already exists
-    existing = (
-        db.query(models.MashProfiles)
-        .filter(models.MashProfiles.name == profile_name)
-        .first()
-    )
-    
-    if existing:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Mash profile with name '{profile_name}' already exists",
-        )
-    
-    # Create the mash profile
-    profile_data = {
-        "name": profile_name,
-        "version": 1,
-        "grain_temp": template["grain_temp"],
-        "tun_temp": template["tun_temp"],
-        "sparge_temp": template["sparge_temp"],
-        "ph": template["ph"],
-        "notes": template.get("notes", "") + f" (Created from template: {template['name']})",
-        "display_grain_temp": f"{template['grain_temp']} °C",
-        "display_tun_temp": f"{template['tun_temp']} °C",
-        "display_sparge_temp": f"{template['sparge_temp']} °C",
-    }
-    
-    db_profile = models.MashProfiles(**profile_data)
-    db.add(db_profile)
-    db.commit()
-    db.refresh(db_profile)
-    
-    # Create the mash steps from template
-    created_steps = []
-    for step_template in template["steps"]:
-        step_data = {
-            "mash_id": db_profile.id,
-            "name": step_template["name"],
-            "version": 1,
-            "type": step_template["type"],
-            "step_temp": step_template["step_temp"],
-            "step_time": step_template["step_time"],
-            "ramp_time": step_template.get("ramp_time", 0),
-            "description": step_template.get("description", ""),
-            "decoction_amt": step_template.get("decoction_amt"),
-            "display_step_temp": f"{step_template['step_temp']} °C",
-        }
-        
-        db_step = models.MashStep(**step_data)
-        db.add(db_step)
-        created_steps.append(step_template["name"])
-    
-    db.commit()
-    
-    return {
-        "id": str(db_profile.id),
-        "name": db_profile.name,
-        "template_used": template["name"],
-        "steps_created": len(created_steps),
-        "message": f"Mash profile created successfully from template with {len(created_steps)} steps",
     }
