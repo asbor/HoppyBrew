@@ -1,14 +1,13 @@
 from fastapi import APIRouter
-from database import SessionLocal
 from typing import Annotated, List
 from fastapi import Depends
 from database import get_db
+from sqlalchemy.orm import Session
 import Database.Models as models
 import Database.Schemas as schemas
 
-db_dependency = Annotated[SessionLocal, Depends(get_db)]
+db_dependency = Annotated[Session, Depends(get_db)]
 router = APIRouter()
-db = SessionLocal()
 
 
 @router.get(

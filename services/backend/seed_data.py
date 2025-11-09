@@ -14,11 +14,14 @@ Run with: python seed_data.py
 
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine, Base
+from database import get_session_local, initialize_database, Base
 import Database.Models as models
 
-# Create all tables
-Base.metadata.create_all(bind=engine)
+def ensure_tables_exist():
+    """Ensure all database tables are created before seeding."""
+    from database import get_engine
+    engine = get_engine()
+    Base.metadata.create_all(bind=engine)
 
 
 def clear_database(db: Session):
@@ -1155,6 +1158,12 @@ def main():
     print("HoppyBrew Database Seeding")
     print("=" * 60)
 
+    # Initialize database and ensure tables exist
+    initialize_database()
+    ensure_tables_exist()
+    
+    # Get session factory and create session
+    SessionLocal = get_session_local()
     db = SessionLocal()
 
     try:
