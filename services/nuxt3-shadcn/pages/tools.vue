@@ -5,6 +5,7 @@ import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Button } from '~/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
+import HopScheduleOptimizer from '~/components/tools/HopScheduleOptimizer.vue'
 
 // ABV Calculator State
 const og = ref<number>(1.050)
@@ -292,7 +293,7 @@ const mashPH = computed(() => {
     </div>
 
     <Tabs default-value="abv" class="w-full">
-      <TabsList class="grid w-full grid-cols-4 lg:grid-cols-8">
+      <TabsList class="grid w-full grid-cols-4 lg:grid-cols-9">
         <TabsTrigger value="abv">ABV</TabsTrigger>
         <TabsTrigger value="ibu">IBU</TabsTrigger>
         <TabsTrigger value="srm">SRM</TabsTrigger>
@@ -301,6 +302,7 @@ const mashPH = computed(() => {
         <TabsTrigger value="dilution">Dilution</TabsTrigger>
         <TabsTrigger value="yeast">Yeast</TabsTrigger>
         <TabsTrigger value="water">Water Adjust</TabsTrigger>
+        <TabsTrigger value="hop-schedule">Hop Schedule</TabsTrigger>
       </TabsList>
 
       <!-- ABV Calculator -->
@@ -762,6 +764,11 @@ const mashPH = computed(() => {
             </div>
           </CardContent>
         </Card>
+      </TabsContent>
+
+      <!-- Hop Schedule Optimizer -->
+      <TabsContent value="hop-schedule">
+        <HopScheduleOptimizer />
       </TabsContent>
 
     </Tabs>
