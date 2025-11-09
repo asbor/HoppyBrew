@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ChevronLeft, Edit, Copy, Play } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -43,6 +43,9 @@ onMounted(async () => {
     batchForm.value.batch_name = generateBatchName(recipe.value.name)
     batchForm.value.batch_size = recipe.value.batch_size
     batchForm.value.brewer = recipe.value.brewer || ''
+  } else if (result.error.value) {
+    // Handle error - recipe not found or API error
+    console.error('Failed to load recipe:', result.error.value)
   }
 })
 
@@ -73,7 +76,7 @@ function openStartBrewDialog() {
 
 async function handleStartBrew() {
   if (!recipe.value) return
-  
+
   const batchData: BatchCreate = {
     recipe_id: recipeId,
     batch_name: batchForm.value.batch_name || `${recipe.value.name} Batch`,
@@ -82,9 +85,9 @@ async function handleStartBrew() {
     brewer: batchForm.value.brewer || recipe.value.brewer || 'Unknown',
     brew_date: batchForm.value.brew_date || new Date().toISOString()
   }
-  
+
   const result = await createBatch(batchData)
-  
+
   if (!result.error.value && result.data.value) {
     showStartBrewDialog.value = false
     // Navigate to the new batch detail page
@@ -93,16 +96,6 @@ async function handleStartBrew() {
     alert(`Failed to create batch: ${result.error.value}`)
   }
 }
-
-// Handle recipe not found
-watchEffect(() => {
-  if (!isLoading.value && !recipe.value && !recipeError.value) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'Recipe not found'
-    })
-  }
-})
 </script>
 
 <template>
@@ -140,7 +133,7 @@ watchEffect(() => {
           <h1 class="text-3xl font-bold text-gray-900">{{ recipe.name }}</h1>
           <p v-if="recipe.type" class="text-lg text-gray-600 mt-1">{{ recipe.type }}</p>
         </div>
-        
+
         <div class="flex space-x-2">
           <Button variant="outline" @click="editRecipe">
             <Edit class="h-4 w-4 mr-2" />
@@ -191,37 +184,24 @@ watchEffect(() => {
       <!-- Ingredients Sections -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Fermentables -->
-        <FermentablesBlock 
-          v-if="recipe.fermentables && recipe.fermentables.length > 0"
-          :fermentables="recipe.fermentables" 
-        />
+        <FermentablesBlock v-if="recipe.fermentables && recipe.fermentables.length > 0"
+          :fermentables="recipe.fermentables" />
 
         <!-- Hops -->
-        <HopsBlock 
-          v-if="recipe.hops && recipe.hops.length > 0"
-          :hops="recipe.hops" 
-        />
+        <HopsBlock v-if="recipe.hops && recipe.hops.length > 0" :hops="recipe.hops" />
 
         <!-- Yeasts -->
-        <YeastBlock 
-          v-if="recipe.yeasts && recipe.yeasts.length > 0"
-          :yeasts="recipe.yeasts" 
-        />
+        <YeastBlock v-if="recipe.yeasts && recipe.yeasts.length > 0" :yeasts="recipe.yeasts" />
 
         <!-- Miscs -->
-        <MiscsBlock 
-          v-if="recipe.miscs && recipe.miscs.length > 0"
-          :miscs="recipe.miscs" 
-        />
+        <MiscsBlock v-if="recipe.miscs && recipe.miscs.length > 0" :miscs="recipe.miscs" />
       </div>
 
       <!-- Additional Information Blocks -->
       <div class="space-y-6">
         <EquipmentBlock v-if="recipe.equipment_profiles" :equipment="recipe.equipment_profiles" />
-        <StyleBlock v-if="recipe.style_profile || recipe.style_guideline" 
-          :style-profile="recipe.style_profile"
-          :style-guideline="recipe.style_guideline" 
-        />
+        <StyleBlock v-if="recipe.style_profile || recipe.style_guideline" :style-profile="recipe.style_profile"
+          :style-guideline="recipe.style_guideline" />
         <WaterBlock v-if="recipe.water_profiles" :water="recipe.water_profiles" />
         <MashBlock v-if="recipe.mash_profile" :mash="recipe.mash_profile" />
         <FermentationBlock :recipe="recipe" />
@@ -238,77 +218,42 @@ watchEffect(() => {
             Create a new batch from this recipe and begin brewing
           </DialogDescription>
         </DialogHeader>
-        
+
         <div class="space-y-4 py-4">
           <div class="space-y-2">
             <Label for="batch_name">Batch Name</Label>
-            <Input 
-              id="batch_name" 
-              v-model="batchForm.batch_name" 
-              placeholder="My IPA - Batch 1"
-              required
-            />
+            <Input id="batch_name" v-model="batchForm.batch_name" placeholder="My IPA - Batch 1" required />
           </div>
-          
+
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="batch_number">Batch Number</Label>
-              <Input 
-                id="batch_number" 
-                v-model.number="batchForm.batch_number" 
-                type="number"
-                min="1"
-                required
-              />
+              <Input id="batch_number" v-model.number="batchForm.batch_number" type="number" min="1" required />
             </div>
-            
+
             <div class="space-y-2">
               <Label for="batch_size_form">Batch Size (L)</Label>
-              <Input 
-                id="batch_size_form" 
-                v-model.number="batchForm.batch_size" 
-                type="number"
-                step="0.1"
-                min="0"
-                required
-              />
+              <Input id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1" min="0"
+                required />
             </div>
           </div>
-          
+
           <div class="space-y-2">
             <Label for="batch_brewer">Brewer</Label>
-            <Input 
-              id="batch_brewer" 
-              v-model="batchForm.brewer" 
-              placeholder="Brewer name"
-              required
-            />
+            <Input id="batch_brewer" v-model="batchForm.brewer" placeholder="Brewer name" required />
           </div>
-          
+
           <div class="space-y-2">
             <Label for="brew_date">Brew Date</Label>
-            <Input 
-              id="brew_date" 
-              v-model="batchForm.brew_date" 
-              type="date"
-              required
-            />
+            <Input id="brew_date" v-model="batchForm.brew_date" type="date" required />
           </div>
         </div>
-        
+
         <DialogFooter>
-          <Button 
-            type="button" 
-            variant="outline" 
-            @click="showStartBrewDialog = false"
-          >
+          <Button type="button" variant="outline" @click="showStartBrewDialog = false">
             Cancel
           </Button>
-          <Button 
-            type="button" 
-            @click="handleStartBrew"
-            :disabled="batchLoading"
-          >
+          <Button type="button" @click="handleStartBrew" :disabled="batchLoading">
             <Icon v-if="batchLoading" name="mdi:loading" class="mr-2 h-4 w-4 animate-spin" />
             Start Brewing
           </Button>

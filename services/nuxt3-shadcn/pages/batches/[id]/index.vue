@@ -128,10 +128,11 @@
       <BatchEditDialog v-model:open="showEditDialog" :batch="currentBatch" @save="handleBatchUpdate" />
 
       <!-- Add Reading Dialog -->
-      <BatchReadingDialog v-model:open="showReadingDialog" :batch-id="currentBatch.id" @save="handleReadingAdded" />
+      <BatchReadingDialog v-model:open="showReadingDialog" :batch-id="String(currentBatch.id)"
+        @save="handleReadingAdded" />
 
       <!-- Add Note Dialog -->
-      <BatchNoteDialog v-model:open="showNoteDialog" :batch-id="currentBatch.id" @save="handleNoteAdded" />
+      <BatchNoteDialog v-model:open="showNoteDialog" :batch-id="String(currentBatch.id)" @save="handleNoteAdded" />
     </template>
   </div>
 </template>
@@ -195,7 +196,7 @@ const formatDate = (date: string | Date) => {
 // Phase transition handlers
 const handlePhaseChange = async (newPhase: string) => {
   if (currentBatch.value) {
-    await updateStatus(currentBatch.value.id, newPhase)
+    await updateStatus(String(currentBatch.value.id), { status: newPhase })
   }
 }
 
