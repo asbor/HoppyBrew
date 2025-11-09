@@ -45,7 +45,7 @@
           </p>
         </div>
         <div class="flex gap-2">
-          <Button @click="showEditDialog = true" variant="outline">
+          <Button @click="showEditDialog = true" variant="outline" :disabled="!isEditMode">
             <Icon name="mdi:pencil" class="mr-2 h-4 w-4" />
             Edit Batch
           </Button>
@@ -105,14 +105,19 @@
       <!-- Quick Actions Sidebar -->
       <Card class="sticky top-4">
         <CardHeader>
-          <CardTitle class="text-lg">Quick Actions</CardTitle>
+          <div class="flex items-center justify-between">
+            <CardTitle class="text-lg">Quick Actions</CardTitle>
+            <span v-if="!isEditMode" class="text-xs text-muted-foreground px-2 py-1 bg-blue-100 rounded-full">
+              View Only
+            </span>
+          </div>
         </CardHeader>
         <CardContent class="space-y-3">
-          <Button @click="addReading" class="w-full" variant="outline">
+          <Button @click="addReading" class="w-full" variant="outline" :disabled="!isEditMode">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             Add Reading
           </Button>
-          <Button @click="addNote" class="w-full" variant="outline">
+          <Button @click="addNote" class="w-full" variant="outline" :disabled="!isEditMode">
             <Icon name="mdi:note-plus" class="mr-2 h-4 w-4" />
             Add Note
           </Button>

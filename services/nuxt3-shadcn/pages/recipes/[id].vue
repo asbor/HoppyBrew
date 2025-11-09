@@ -138,7 +138,7 @@ async function handleStartBrew() {
         </div>
 
         <div class="flex space-x-2">
-          <Button variant="outline" @click="editRecipe">
+          <Button variant="outline" @click="editRecipe" :disabled="!isEditMode">
             <Edit class="h-4 w-4 mr-2" />
             Edit
           </Button>
