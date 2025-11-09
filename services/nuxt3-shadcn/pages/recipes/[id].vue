@@ -104,7 +104,7 @@ async function handleStartBrew() {
     <div v-if="isLoading && !recipe" class="flex justify-center">
       <div class="text-center">
         <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-        <p class="mt-4 text-gray-600">Loading recipe...</p>
+        <p class="mt-4 text-muted-foreground">Loading recipe...</p>
       </div>
     </div>
 
@@ -130,8 +130,8 @@ async function handleStartBrew() {
               Back to Recipes
             </nuxt-link>
           </div>
-          <h1 class="text-3xl font-bold text-gray-900">{{ recipe.name }}</h1>
-          <p v-if="recipe.type" class="text-lg text-gray-600 mt-1">{{ recipe.type }}</p>
+          <h1 class="text-3xl font-bold text-foreground">{{ recipe.name }}</h1>
+          <p v-if="recipe.type" class="text-lg text-muted-foreground mt-1">{{ recipe.type }}</p>
         </div>
 
         <div class="flex space-x-2">
