@@ -8,6 +8,7 @@ class RecipeYeast(Base):
     __tablename__ = "recipe_yeasts"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=True)
+    version = Column(Integer, nullable=True)
     type = Column(String, nullable=True)
     form = Column(String, nullable=True)
     amount = Column(Float, nullable=True)
@@ -25,6 +26,11 @@ class RecipeYeast(Base):
     add_to_secondary = Column(Boolean, nullable=True)
     stage = Column(String, nullable=True)  # mash/boil/fermentation
     duration = Column(Integer, nullable=True)  # duration in minutes
+    display_amount = Column(String, nullable=True)
+    disp_min_temp = Column(String, nullable=True)
+    disp_max_temp = Column(String, nullable=True)
+    inventory = Column(String, nullable=True)
+    culture_date = Column(String, nullable=True)
     recipe_id = Column(Integer, ForeignKey("recipes.id"))
     recipe = relationship("Recipes", back_populates="yeasts")
 
