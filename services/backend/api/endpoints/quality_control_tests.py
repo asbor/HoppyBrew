@@ -194,9 +194,14 @@ async def delete_quality_control_test(qc_test_id: int, db: Session = Depends(get
     try:
         # Delete associated photo if exists
         if db_qc_test.photo_url:
-            photo_path = UPLOAD_DIR / Path(db_qc_test.photo_url).name
-            if photo_path.exists():
-                photo_path.unlink()
+            # Extract filename from URL (e.g., "/qc_photos/filename.jpg" -> "filename.jpg")
+            filename = Path(db_qc_test.photo_url).name
+            # Only delete if it's a valid filename without path traversal
+            if filename and not any(bad in filename for bad in ['..', '/', '\\']):
+                photo_path = UPLOAD_DIR / filename
+                # Ensure the file is within UPLOAD_DIR
+                if photo_path.resolve().is_relative_to(UPLOAD_DIR.resolve()) and photo_path.exists():
+                    photo_path.unlink()
         
         db.delete(db_qc_test)
         db.commit()
@@ -229,11 +234,23 @@ async def upload_qc_photo(
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
     
+    # Validate file extension
+    ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+    file_extension = Path(file.filename).suffix.lower()
+    if file_extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
+        )
+    
     try:
-        # Generate unique filename
-        file_extension = Path(file.filename).suffix
+        # Generate unique filename with validated extension
         unique_filename = f"qc_{qc_test_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{file_extension}"
         file_path = UPLOAD_DIR / unique_filename
+        
+        # Ensure the file_path is within UPLOAD_DIR (prevent path traversal)
+        if not file_path.resolve().is_relative_to(UPLOAD_DIR.resolve()):
+            raise HTTPException(status_code=400, detail="Invalid file path")
         
         # Save file
         with file_path.open("wb") as buffer:
