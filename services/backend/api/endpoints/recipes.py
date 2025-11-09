@@ -381,6 +381,136 @@ async def scale_recipe(
     )
 
 
+@router.post(
+    "/recipes/{recipe_id}/scale-to-equipment/{equipment_id}",
+    response_model=schemas.RecipeScaleToEquipmentResponse,
+)
+async def scale_recipe_to_equipment(
+    recipe_id: int,
+    equipment_id: int,
+    db: Session = Depends(get_db),
+):
+    """
+    Scale a recipe to match an equipment profile's batch size and boil size.
+    
+    This endpoint automatically scales recipes based on equipment profiles,
+    allowing brewers to adapt recipes to their specific brewing equipment.
+    """
+    # Fetch the recipe
+    recipe = _fetch_recipe(db, recipe_id)
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    # Fetch the equipment profile
+    equipment = (
+        db.query(models.EquipmentProfiles)
+        .filter(models.EquipmentProfiles.id == equipment_id)
+        .first()
+    )
+    if not equipment:
+        raise HTTPException(status_code=404, detail="Equipment profile not found")
+
+    # Validate equipment has required fields
+    if equipment.batch_size is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Equipment profile is missing batch_size value for scaling.",
+        )
+
+    recipe_model = schemas.Recipe.model_validate(recipe)
+    if recipe_model.batch_size is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Recipe is missing a batch_size value for scaling.",
+        )
+
+    try:
+        original_batch_size = float(recipe_model.batch_size)
+        target_batch_size = float(equipment.batch_size)
+    except (TypeError, ValueError):
+        raise HTTPException(
+            status_code=400,
+            detail="Recipe and equipment batch_size must be valid numeric values.",
+        )
+
+    if target_batch_size <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Equipment batch size must be greater than zero.",
+        )
+
+    scale_factor = target_batch_size / original_batch_size
+
+    # Build scaled recipe data
+    scaled_recipe_data = recipe_model.model_dump()
+    scaled_recipe_data["batch_size"] = target_batch_size
+    
+    # Use equipment's boil_size if available, otherwise scale proportionally
+    if equipment.boil_size is not None:
+        scaled_recipe_data["boil_size"] = float(equipment.boil_size)
+    else:
+        scaled_recipe_data["boil_size"] = _scale_value(
+            recipe_model.boil_size, scale_factor
+        )
+
+    # Scale all ingredients
+    scaled_recipe_data["hops"] = [
+        {**hop.model_dump(), "amount": _scale_value(hop.amount, scale_factor)}
+        for hop in recipe_model.hops
+    ]
+    scaled_recipe_data["fermentables"] = [
+        {
+            **fermentable.model_dump(),
+            "amount": _scale_value(fermentable.amount, scale_factor),
+        }
+        for fermentable in recipe_model.fermentables
+    ]
+    scaled_recipe_data["yeasts"] = [
+        {**yeast.model_dump(), "amount": _scale_value(yeast.amount, scale_factor)}
+        for yeast in recipe_model.yeasts
+    ]
+
+    scaled_miscs = []
+    for misc in recipe_model.miscs:
+        misc_data = misc.model_dump()
+        misc_data["amount"] = _scale_value(misc_data.get("amount"), scale_factor)
+        if misc_data.get("batch_size") is not None:
+            misc_data["batch_size"] = _scale_value(
+                misc_data.get("batch_size"), scale_factor
+            )
+        scaled_miscs.append(misc_data)
+    scaled_recipe_data["miscs"] = scaled_miscs
+
+    scaled_recipe = schemas.Recipe(**scaled_recipe_data)
+    boil_volume = scaled_recipe.boil_size
+    
+    # Calculate metrics for the scaled recipe
+    metrics = _calculate_recipe_metrics(
+        scaled_recipe,
+        target_batch_size=target_batch_size,
+        boil_volume=boil_volume,
+    )
+    
+    # Update scaled recipe with calculated metrics
+    if metrics.abv is not None:
+        scaled_recipe.abv = metrics.abv
+        scaled_recipe.est_abv = metrics.abv
+    if metrics.ibu is not None:
+        scaled_recipe.ibu = metrics.ibu
+    if metrics.srm is not None:
+        scaled_recipe.est_color = metrics.srm
+
+    return schemas.RecipeScaleToEquipmentResponse(
+        original_batch_size=original_batch_size,
+        target_batch_size=target_batch_size,
+        scale_factor=scale_factor,
+        scaled_recipe=scaled_recipe,
+        metrics=metrics,
+        equipment_profile_id=equipment.id,
+        equipment_profile_name=equipment.name or "Unnamed Equipment",
+    )
+
+
 # Individual ingredient CRUD endpoints
 
 

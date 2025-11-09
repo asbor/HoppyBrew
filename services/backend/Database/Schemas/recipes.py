@@ -177,3 +177,23 @@ class RecipeScaleResponse(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={"example": RECIPE_SCALE_RESPONSE_EXAMPLE}
     )
+
+
+class RecipeScaleToEquipmentResponse(BaseModel):
+    original_batch_size: float
+    target_batch_size: float
+    scale_factor: float
+    scaled_recipe: Recipe
+    metrics: RecipeMetrics
+    equipment_profile_id: int
+    equipment_profile_name: str
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                **RECIPE_SCALE_RESPONSE_EXAMPLE,
+                "equipment_profile_id": 1,
+                "equipment_profile_name": "10 Gallon Electric Brewery",
+            }
+        }
+    )

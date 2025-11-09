@@ -12,6 +12,7 @@ from .recipes import (
     RecipeMetrics,
     RecipeScaleRequest,
     RecipeScaleResponse,
+    RecipeScaleToEquipmentResponse,
 )
 from .batches import Batch, BatchCreate, BatchBase, BatchUpdate
 from .batch_logs import BatchLogBase
@@ -143,6 +144,7 @@ __all__ = [
     "RecipeMetrics",
     "RecipeScaleRequest",
     "RecipeScaleResponse",
+    "RecipeScaleToEquipmentResponse",
     "Batch",
     "BatchCreate",
     "BatchBase",
