@@ -1,58 +1,58 @@
 <template>
-  <div v-if="hasFermentationData" class="bg-white rounded-lg border p-6 shadow-sm">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Fermentation Schedule</h3>
+  <div v-if="hasFermentationData" class="bg-card rounded-lg border border-border p-6 shadow-sm">
+    <h3 class="text-lg font-semibold text-card-foreground mb-4">Fermentation Schedule</h3>
     
     <div class="space-y-4">
       <!-- Primary Fermentation -->
-      <div v-if="recipe.primary_age || recipe.primary_temp" class="p-4 bg-blue-50 rounded-lg">
+      <div v-if="recipe.primary_age || recipe.primary_temp" class="p-4 bg-blue-100/20 dark:bg-blue-900/20 rounded-lg">
         <div class="flex items-center justify-between mb-2">
-          <h4 class="font-medium text-blue-900">Primary Fermentation</h4>
-          <div class="text-sm text-blue-700">Stage 1</div>
+          <h4 class="font-medium text-blue-900 dark:text-blue-200">Primary Fermentation</h4>
+          <div class="text-sm text-blue-700 dark:text-blue-300">Stage 1</div>
         </div>
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div v-if="recipe.primary_age">
-            <span class="text-blue-700">Duration:</span>
-            <span class="ml-2 font-medium">{{ recipe.primary_age }} days</span>
+            <span class="text-blue-700 dark:text-blue-300">Duration:</span>
+            <span class="ml-2 font-medium text-card-foreground">{{ recipe.primary_age }} days</span>
           </div>
           <div v-if="recipe.primary_temp || recipe.display_primary_temp">
-            <span class="text-blue-700">Temperature:</span>
-            <span class="ml-2 font-medium">{{ recipe.display_primary_temp || `${recipe.primary_temp}°C` }}</span>
+            <span class="text-blue-700 dark:text-blue-300">Temperature:</span>
+            <span class="ml-2 font-medium text-card-foreground">{{ recipe.display_primary_temp || `${recipe.primary_temp}°C` }}</span>
           </div>
         </div>
       </div>
 
       <!-- Secondary Fermentation -->
-      <div v-if="recipe.secondary_age || recipe.secondary_temp" class="p-4 bg-purple-50 rounded-lg">
+      <div v-if="recipe.secondary_age || recipe.secondary_temp" class="p-4 bg-purple-100/20 dark:bg-purple-900/20 rounded-lg">
         <div class="flex items-center justify-between mb-2">
-          <h4 class="font-medium text-purple-900">Secondary Fermentation</h4>
-          <div class="text-sm text-purple-700">Stage 2</div>
+          <h4 class="font-medium text-purple-900 dark:text-purple-200">Secondary Fermentation</h4>
+          <div class="text-sm text-purple-700 dark:text-purple-300">Stage 2</div>
         </div>
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div v-if="recipe.secondary_age">
-            <span class="text-purple-700">Duration:</span>
-            <span class="ml-2 font-medium">{{ recipe.secondary_age }} days</span>
+            <span class="text-purple-700 dark:text-purple-300">Duration:</span>
+            <span class="ml-2 font-medium text-card-foreground">{{ recipe.secondary_age }} days</span>
           </div>
           <div v-if="recipe.secondary_temp || recipe.display_secondary_temp">
-            <span class="text-purple-700">Temperature:</span>
-            <span class="ml-2 font-medium">{{ recipe.display_secondary_temp || `${recipe.secondary_temp}°C` }}</span>
+            <span class="text-purple-700 dark:text-purple-300">Temperature:</span>
+            <span class="ml-2 font-medium text-card-foreground">{{ recipe.display_secondary_temp || `${recipe.secondary_temp}°C` }}</span>
           </div>
         </div>
       </div>
 
       <!-- Tertiary/Aging -->
-      <div v-if="recipe.tertiary_age || recipe.age" class="p-4 bg-amber-50 rounded-lg">
+      <div v-if="recipe.tertiary_age || recipe.age" class="p-4 bg-amber-100/20 dark:bg-amber-900/20 rounded-lg">
         <div class="flex items-center justify-between mb-2">
-          <h4 class="font-medium text-amber-900">Conditioning/Aging</h4>
-          <div class="text-sm text-amber-700">Final Stage</div>
+          <h4 class="font-medium text-amber-900 dark:text-amber-200">Conditioning/Aging</h4>
+          <div class="text-sm text-amber-700 dark:text-amber-300">Final Stage</div>
         </div>
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div v-if="recipe.tertiary_age || recipe.age">
-            <span class="text-amber-700">Duration:</span>
-            <span class="ml-2 font-medium">{{ recipe.tertiary_age || recipe.age }} days</span>
+            <span class="text-amber-700 dark:text-amber-300">Duration:</span>
+            <span class="ml-2 font-medium text-card-foreground">{{ recipe.tertiary_age || recipe.age }} days</span>
           </div>
           <div v-if="recipe.age_temp || recipe.display_age_temp || recipe.display_tertiary_temp">
-            <span class="text-amber-700">Temperature:</span>
-            <span class="ml-2 font-medium">
+            <span class="text-amber-700 dark:text-amber-300">Temperature:</span>
+            <span class="ml-2 font-medium text-card-foreground">
               {{ recipe.display_tertiary_temp || recipe.display_age_temp || `${recipe.age_temp}°C` }}
             </span>
           </div>
@@ -60,14 +60,14 @@
       </div>
 
       <!-- Summary -->
-      <div v-if="totalDuration > 0" class="p-3 bg-gray-100 rounded-lg">
+      <div v-if="totalDuration > 0" class="p-3 bg-muted/50 rounded-lg">
         <div class="flex justify-between text-sm">
-          <span class="text-gray-600">Total Fermentation Time:</span>
-          <span class="font-medium">{{ totalDuration }} days</span>
+          <span class="text-muted-foreground">Total Fermentation Time:</span>
+          <span class="font-medium text-card-foreground">{{ totalDuration }} days</span>
         </div>
         <div v-if="recipe.fermentation_stages" class="flex justify-between text-sm mt-1">
-          <span class="text-gray-600">Number of Stages:</span>
-          <span class="font-medium">{{ recipe.fermentation_stages }}</span>
+          <span class="text-muted-foreground">Number of Stages:</span>
+          <span class="font-medium text-card-foreground">{{ recipe.fermentation_stages }}</span>
         </div>
       </div>
     </div>

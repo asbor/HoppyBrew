@@ -1,19 +1,19 @@
 <template>
-  <div class="bg-white rounded-lg border p-6 shadow-sm">
+  <div class="bg-card rounded-lg border border-border p-6 shadow-sm">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold text-gray-900">Miscellaneous</h3>
-      <span class="text-sm text-gray-500">{{ miscs.length }} item{{ miscs.length !== 1 ? 's' : '' }}</span>
+      <h3 class="text-lg font-semibold text-card-foreground">Miscellaneous</h3>
+      <span class="text-sm text-muted-foreground">{{ miscs.length }} item{{ miscs.length !== 1 ? 's' : '' }}</span>
     </div>
 
     <div class="space-y-3">
       <div 
         v-for="(misc, index) in sortedMiscs" 
         :key="index"
-        class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+        class="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
       >
         <div class="flex-1">
           <div class="flex items-center space-x-3">
-            <div class="font-medium text-gray-900">
+            <div class="font-medium text-card-foreground">
               {{ misc.name || 'Unnamed Addition' }}
             </div>
             <div v-if="misc.type" class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
@@ -21,20 +21,20 @@
             </div>
           </div>
           
-          <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+          <div class="mt-1 flex items-center space-x-4 text-sm text-muted-foreground">
             <span v-if="misc.use" class="font-medium">{{ misc.use }}</span>
             <span v-if="misc.time">{{ formatTime(misc.time, misc.display_time) }}</span>
             <span v-if="misc.amount_is_weight === false">Volume</span>
             <span v-else-if="misc.amount_is_weight === true">Weight</span>
           </div>
           
-          <div v-if="misc.use_for" class="mt-1 text-sm text-gray-600">
+          <div v-if="misc.use_for" class="mt-1 text-sm text-muted-foreground">
             {{ misc.use_for }}
           </div>
         </div>
 
         <div class="text-right">
-          <div class="font-semibold text-gray-900">
+          <div class="font-semibold text-card-foreground">
             {{ formatAmount(misc.amount, misc.display_amount, misc.amount_is_weight) }}
           </div>
         </div>
@@ -42,10 +42,10 @@
     </div>
 
     <!-- Notes for miscs with descriptions -->
-    <div v-if="miscsWithNotes.length > 0" class="mt-4 pt-4 border-t border-gray-200 space-y-2">
+    <div v-if="miscsWithNotes.length > 0" class="mt-4 pt-4 border-t border-border space-y-2">
       <div v-for="misc in miscsWithNotes" :key="misc.name" class="text-sm">
-        <div class="font-medium text-gray-700">{{ misc.name }}:</div>
-        <div class="text-gray-600 ml-2">{{ misc.notes || misc.use_for }}</div>
+        <div class="font-medium text-card-foreground">{{ misc.name }}:</div>
+        <div class="text-muted-foreground ml-2">{{ misc.notes || misc.use_for }}</div>
       </div>
     </div>
   </div>

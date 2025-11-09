@@ -54,14 +54,14 @@ function handleDelete() {
         </CardHeader>
 
         <CardContent class="px-4 py-2 flex-1">
-            <CardDescription class="line-clamp-4">
+            <CardDescription class="line-clamp-4 text-muted-foreground">
                 {{ truncatedDescription }}
             </CardDescription>
         </CardContent>
         
         <CardFooter class="flex flex-col gap-3 py-3 px-4">
             <!-- Stats Row -->
-            <div class="flex w-full items-center justify-between text-sm">
+            <div class="flex w-full items-center justify-between text-sm text-card-foreground">
                 <div class="flex items-center gap-1">
                     <label class="font-bold">ABV:</label>
                     <p>{{ card.abv?.toFixed(1) || 'N/A' }}%</p>
