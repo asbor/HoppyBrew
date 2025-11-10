@@ -55,7 +55,7 @@
     "@vitest/coverage-v8": "^1.6.0",
     "@vue/test-utils": "^2.4.5",
     "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-vue": "^9.26.0",
     "happy-dom": "^20.0.2",
