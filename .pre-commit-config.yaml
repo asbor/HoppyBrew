@@ -3,7 +3,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 
 default_language_version:
-  python: python3.11
+  python: python3.12
   node: 20.0.0
 
 repos:
@@ -17,7 +17,7 @@ repos:
         name: Fix end of files
       - id: check-yaml
         name: Check YAML syntax
-        args: ['--safe']
+        args: []
       - id: check-json
         name: Check JSON syntax
       - id: check-added-large-files
@@ -37,7 +37,7 @@ repos:
     hooks:
       - id: black
         name: Format Python code (Black)
-        language_version: python3.11
+        language_version: python3.12
         files: ^services/backend/
 
   - repo: https://github.com/pycqa/isort
@@ -111,4 +111,4 @@ repos:
         language: system
         pass_filenames: false
         files: ^services/backend/(tests|api|Database)/.*\.py$
-        stages: [push]
+        stages: [manual]

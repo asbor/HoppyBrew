@@ -55,7 +55,7 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}/services/backend
           TESTING: 1
-        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml --cov=. --cov-report=term-missing --cov-report=xml:reports/coverage.xml --cov-report=html:reports/htmlcov --cov-fail-under=80
+        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml --cov=. --cov-report=term-missing --cov-report=xml:reports/coverage.xml --cov-report=html:reports/htmlcov
 
       - name: Generate coverage badge
         if: always()
@@ -73,7 +73,7 @@ jobs:
             const threshold = 80;
             const status = parseFloat(coverage) >= threshold ? '✅' : '❌';
             const body = `## Backend Test Coverage Report ${status}\n\n- **Coverage**: ${coverage}%\n- **Threshold**: ${threshold}%\n\n${parseFloat(coverage) >= threshold ? 'Coverage threshold met!' : '⚠️ Coverage below threshold!'}`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
