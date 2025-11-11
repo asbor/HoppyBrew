@@ -26,6 +26,7 @@ class Settings:
         )
 
         # Database Configuration
+        self.DATABASE_URL_OVERRIDE: Optional[str] = os.getenv("DATABASE_URL")
         self.DATABASE_USER: str = os.getenv("DATABASE_USER", "postgres")
         self.DATABASE_PASSWORD: str = os.getenv("DATABASE_PASSWORD", "postgres")
         self.DATABASE_HOST: str = os.getenv("DATABASE_HOST", "localhost")
@@ -112,6 +113,9 @@ class Settings:
         """Construct database URL from individual components"""
         if os.getenv("TESTING") == "1":
             return self.TEST_DATABASE_URL
+        # Check for explicit DATABASE_URL override (for SQLite)
+        if self.DATABASE_URL_OVERRIDE:
+            return self.DATABASE_URL_OVERRIDE
         return (
             f"postgresql+psycopg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}"
             f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"

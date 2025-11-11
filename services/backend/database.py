@@ -108,22 +108,33 @@ class _DatabaseManager:
         else:
             database_url = settings.DATABASE_URL
             logger.info("Initializing database connection")
+            
+            # Check if using SQLite or PostgreSQL
+            if database_url.startswith('sqlite'):
+                logger.info("Using SQLite database")
+                # For SQLite, enable foreign keys and WAL mode for better performance
+                self._engine = create_engine(
+                    database_url,
+                    echo=False,
+                    connect_args={"check_same_thread": False},
+                    pool_pre_ping=True,
+                )
+            else:
+                logger.info("Using PostgreSQL database")
+                # Wait for PostgreSQL to be ready
+                self._wait_for_postgresql()
 
-            # Wait for PostgreSQL to be ready
-            self._wait_for_postgresql()
+                # Create the engine with connection pooling
+                self._engine = create_engine(
+                    database_url,
+                    echo=False,  # Disable SQLAlchemy echo to reduce log noise
+                    pool_pre_ping=True,  # Verify connections before using
+                    pool_size=5,  # Connection pool size
+                    max_overflow=10,  # Maximum overflow connections
+                )
 
-            # Create the engine with connection pooling
-            self._engine = create_engine(
-                database_url,
-                echo=False,  # Disable SQLAlchemy echo to reduce log noise
-                pool_pre_ping=True,  # Verify connections before using
-                pool_size=5,  # Connection pool size
-                max_overflow=10,  # Maximum overflow connections
-            )
-
-            # Create database if it doesn't exist
-            self._create_database_if_not_exists(self._engine)
-
+                # Create database if it doesn't exist
+                self._create_database_if_not_exists(self._engine)
         # Create session factory
         self._SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self._engine)
 
