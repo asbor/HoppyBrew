@@ -10,8 +10,8 @@ interface ApiResponse<T> {
 }
 
 export const useApi = () => {
-  const config = useRuntimeConfig()
-  const API_BASE_URL = config.public.API_URL || 'http://localhost:8000'
+  const { apiBaseUrl } = useApiConfig()
+  const API_BASE_URL = apiBaseUrl
 
   /**
    * Generic GET request
