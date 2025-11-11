@@ -35,8 +35,6 @@
   </p>
 </div>
 
-
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>📑 Table of Contents</summary>
@@ -45,24 +43,16 @@
     <li><a href="#architecture-overview">Architecture Overview</a></li>
     <li><a href="#key-features">Key Features</a></li>
     <li><a href="#quick-start">Quick Start (5 Minutes)</a></li>
-    <li><a href="#built-with">Tech Stack</a></li>
+    <li><a href="#tech-stack">Tech Stack</a></li>
     <li><a href="#project-structure">Project Structure</a></li>
-    <li><a href="#detailed-setup">Detailed Setup</a>
-      <ul>
-        <li><a href="#docker-deployment">Docker Deployment</a></li>
-        <li><a href="#local-development">Local Development</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
     <li><a href="#documentation">Documentation</a></li>
+    <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
-
-
 
 <!-- ABOUT THE PROJECT -->
 
@@ -124,46 +114,40 @@ HoppyBrew follows a modern, cloud-native architecture with clear separation of c
 
 ## Key Features
 
-- 🍺 **Recipe Management**: Create, edit, and manage brewing recipes with detailed ingredient tracking
+- 🍺 **Recipe Management**: Create, edit, and manage brewing recipes
   - Import/export BeerXML format
   - Clone existing recipes
-  - Calculate brewing statistics (OG, FG, ABV, IBU, SRM)
+  - Calculate OG, FG, ABV, IBU, SRM
   
-- 📊 **Batch Tracking**: Monitor active brewing batches through all stages of production
-  - Track fermentation progress with gravity readings
+- 📊 **Batch Tracking**: Monitor batches through all production stages
+  - Track fermentation with gravity readings
   - Record temperature and pH measurements
-  - Manage brew day timeline and notes
+  - Manage brew day timeline
   
-- 📦 **Inventory Management**: Track hops, fermentables, yeasts, and miscellaneous ingredients
+- 📦 **Inventory Management**: Track all ingredients
   - Real-time stock levels
   - Automatic deduction on batch creation
   - Low stock alerts
   
-- 🏠 **HomeAssistant Integration**: Monitor your brewing processes through HomeAssistant dashboards
+- 🏠 **HomeAssistant Integration**: Smart home monitoring
   - REST sensor endpoints
   - Real-time batch status
   - Temperature and gravity monitoring
   
-- 🧮 **Brewing Calculators**: Built-in calculators for common brewing needs
+- �� **Brewing Calculators**: Common brewing calculations
   - Strike water temperature
-  - Alcohol by volume (ABV)
+  - ABV calculation
   - Priming sugar amounts
   - Yeast starter calculations
   
-- 🎯 **Style Guidelines**: BJCP style database for recipe formulation
+- 🎯 **Style Guidelines**: BJCP style database
   - Complete style categories
   - Target ranges for OG, FG, IBU, SRM
-  - Style recommendations
 
-- 🌡️ **Equipment & Water Profiles**: Manage brewing equipment and water chemistry
+- 🌡️ **Equipment & Water Profiles**: Equipment and chemistry management
   - Equipment efficiency tracking
   - Boil-off rate calculations
   - Water profile management
-
-- 🐳 **Self-Hosted**: Run on your own infrastructure with full control over your data
-  - Docker-based deployment
-  - No external dependencies
-  - Complete data privacy
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -176,7 +160,7 @@ Get HoppyBrew running in under 5 minutes using Docker Compose:
 ### Prerequisites
 - Docker & Docker Compose installed ([Get Docker](https://docs.docker.com/get-docker/))
 - 2GB RAM minimum, 4GB recommended
-- Port 8000 (backend) and 3000 (frontend) available
+- Ports 8000 (backend) and 3000 (frontend) available
 
 ### Installation
 
@@ -189,7 +173,7 @@ Get HoppyBrew running in under 5 minutes using Docker Compose:
 2. **Configure environment**
    ```bash
    cp .env.example .env
-   # Edit .env if you need to change database credentials or ports
+   # Edit .env if needed to change database credentials or ports
    ```
 
 3. **Start the application**
@@ -209,41 +193,38 @@ Get HoppyBrew running in under 5 minutes using Docker Compose:
 
 That's it! You now have a fully functional brewing management system. 
 
-🆘 **Having issues?** Check the [Troubleshooting Guide](wiki/Development-Guide.md#troubleshooting) or [open an issue](https://github.com/asbor/HoppyBrew/issues).
+🆘 **Having issues?** Check the [Troubleshooting Guide](DEVELOPMENT_GUIDE.md#troubleshooting) or [open an issue](https://github.com/asbor/HoppyBrew/issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## Built With
+## Tech Stack
 
-The project leverages modern, production-ready technologies:
-
-### Core Stack
+### Core Technologies
 
 | Layer | Technology | Version | Purpose |
-| --- | --- | --- | --- |
+|-------|-----------|---------|---------|
 | **Frontend** | [![Vue.js][Vue.js]][Vue-url] Nuxt 3 | 3.16.0+ | SPA framework with SSR support |
-| **UI Components** | shadcn-vue | Latest | Accessible component library |
-| **Backend** | [![FastAPI][FastAPI.org]][FastAPI-url] | Latest | High-performance Python API framework |
-| **API Validation** | [![pydantic][pydantic]][pydantic-url] | Latest | Type-safe data validation |
-| **Web Server** | [![uvicorn][uvicorn]][uvicorn-url] | Latest | ASGI web server |
+| **UI** | shadcn-vue | Latest | Accessible component library |
+| **Backend** | [![FastAPI][FastAPI.org]][FastAPI-url] | Latest | High-performance Python API |
+| **Validation** | [![pydantic][pydantic]][pydantic-url] | Latest | Type-safe data validation |
+| **Server** | [![uvicorn][uvicorn]][uvicorn-url] | Latest | ASGI web server |
 | **Database** | [![PostgreSQL][PostgreSQL.org]][PostgreSQL-url] | 16+ | Primary data store |
-| **ORM** | [![sqlalchemy][sqlalchemy]][sqlalchemy-url] | 2.x | Database abstraction layer |
+| **ORM** | [![sqlalchemy][sqlalchemy]][sqlalchemy-url] | 2.x | Database abstraction |
 | **Caching** | [![Redis][Redis]][Redis-url] | Latest | Session & cache store |
-| **Testing (Backend)** | pytest | Latest | Unit & integration testing |
-| **Testing (Frontend)** | Vitest + Playwright | Latest | Component & E2E testing |
-| **Containerization** | [![Docker.com][Docker.com]][Docker-url] | Latest | Application packaging |
+| **Containers** | [![Docker.com][Docker.com]][Docker-url] | Latest | Application packaging |
 
 ### Development Tools
 
 | Category | Tools |
-| --- | --- |
+|----------|-------|
 | **IDE** | [![VsCode][VsCode]][VsCode-url] |
 | **Documentation** | [![Markdown][Markdown]][Markdown-url] [![PlantUML][PlantUML]][PlantUML-url] |
 | **Version Control** | [![Git-scm][Git-scm]][Git-scm-url] [![GitHub][GitHub]][GitHub-url] |
 | **CI/CD** | GitHub Actions |
-| **Code Quality** | Black (Python), Prettier (JS), ESLint |
+| **Code Quality** | Black, Prettier, ESLint |
+| **Testing** | pytest, Vitest, Playwright |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -251,531 +232,203 @@ The project leverages modern, production-ready technologies:
 
 ## Project Structure
 
-This repository is organized to maintain clarity and ease of navigation:
-
 ```
 HoppyBrew/
-├── services/           # Application services
-│   ├── backend/       # FastAPI backend with database models and endpoints
-│   └── nuxt3-shadcn/  # Nuxt 3 frontend with shadcn-vue UI components
+├── services/
+│   ├── backend/       # FastAPI backend with database models
+│   └── nuxt3-shadcn/  # Nuxt 3 frontend with shadcn-vue UI
 ├── documents/         # Project documentation
-│   ├── docs/          # Architecture and design documentation
-│   ├── archive/       # Historical documentation and archived files
-│   ├── status/        # Development status logs
-│   └── templates/     # Documentation templates
-├── .agents/           # AI agent configuration files
+│   ├── docs/          # Architecture and design docs
+│   └── images/        # Images and diagrams
+├── wiki/              # GitHub wiki pages
 ├── alembic/           # Database migrations
-├── data/              # Application data storage
 ├── seeds/             # Database seed scripts
 ├── tools/             # Utility tools and scripts
-├── CHANGELOG.md       # Version history
-├── CONTRIBUTING.md    # Contribution guidelines
-├── README.md          # This file
-├── ROADMAP.md         # Project roadmap
-├── TODO.md            # Task tracking
-└── docker-compose.yml # Docker orchestration
+├── .github/           # GitHub workflows
+├── docker-compose.yml # Docker orchestration
+├── API_DOCUMENTATION.md        # Complete API reference
+├── DEVELOPMENT_GUIDE.md        # Development setup guide
+├── CONTRIBUTING.md             # Contribution guidelines
+├── SECURITY.md                 # Security policy
+├── README.md                   # This file
+├── ROADMAP.md                  # Project roadmap
+└── TODO.md                     # Task tracking
 ```
-
-For detailed project documentation, see the [ROADMAP](ROADMAP.md) and [TODO](TODO.md) files.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## Detailed Setup
+## Documentation
 
-Choose your deployment method based on your needs:
+HoppyBrew has comprehensive documentation to help you get started:
 
-- **🐳 Docker (Recommended)**: Production-ready, easiest setup
-- **💻 Local Development**: For contributing or customizing
+### 📚 Core Documentation
+
+- **[API Documentation](API_DOCUMENTATION.md)** - Complete REST API reference
+  - All endpoints with examples
+  - Request/response schemas
+  - Error handling
+  - Integration guides (HomeAssistant, Python, TypeScript)
+  
+- **[Development Guide](DEVELOPMENT_GUIDE.md)** - Local setup and development
+  - Environment setup
+  - Testing guide
+  - Debugging procedures
+  - Troubleshooting common issues
+  
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute
+  - Code standards
+  - Pull request process
+  - Testing requirements
+  
+- **[Security Policy](SECURITY.md)** - Security information
+  - Vulnerability reporting
+  - Security updates
+  - Current security status
+
+### 🌐 Wiki Pages
+
+The [GitHub Wiki](wiki/Home.md) contains detailed documentation:
+
+- **[Home](wiki/Home.md)** - Wiki overview and quick links
+- **[Architecture](wiki/Architecture.md)** - System architecture and design
+- **[API Reference](wiki/API-Reference.md)** - Detailed API documentation
+- **[Database Schema](wiki/Database-Schema.md)** - Database structure
+- **[Development Guide](wiki/Development-Guide.md)** - Local development setup
+- **[Deployment Guide](wiki/Deployment-Guide.md)** - Production deployment
+- **[Frontend Guide](wiki/Frontend-Guide.md)** - Frontend architecture
+- **[User Onboarding](wiki/User-Onboarding.md)** - Getting started guide
+- **[Diagram Catalog](wiki/Diagram-Catalog.md)** - Architecture diagrams
+
+### 🎯 Quick References
+
+- **Interactive API Docs**: http://localhost:8000/docs (when running)
+- **[Roadmap](ROADMAP.md)** - Project direction and milestones
+- **[TODO](TODO.md)** - Current tasks and backlog
+- **[Changelog](CHANGELOG.md)** - Version history
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## Docker Deployment
-
-### Using Pre-built Images (Recommended)
-
-HoppyBrew provides pre-built images on Docker Hub and GitHub Container Registry.
-
-Before you start, make sure you have the database set up. You can either use PostgreSQL or SQLite. If you choose to use PostgreSQL, make sure you have it installed on your machine. If you choose to use SQLite, you can skip this step.
-
-Note: The following steps assume you are running locally on a Linux machine. If you are using a different operating system, the steps may vary.
-
-### The database
-
-1. **Install PostgreSQL on your machine**
-
-    ```sh
-    sudo apt update
-    sudo apt install postgresql postgresql-contrib
-    ```
-
-    The installation process will create a new user called `postgres` with the role `postgres`. It will also create a new system account with the same name. To use PostgreSQL, you need to log in as the `postgres` user.
-
-    The HoppyBrew application will create a new database called `hoppybrew_db` upon startup. You can change the database name in the `.env` file.
-
-    Should you chose to remove the database, you can do so by running the following command:
-
-    ```sh
-    sudo -u postgres psql -c "DROP DATABASE hoppybrew_db"
-    ```
-
-### Load sample data
-
-The repository includes a comprehensive demo dataset so you can explore the
-interface with meaningful recipes, inventory, and batches. After installing the
-dependencies you can populate your database with:
-
-```sh
-# Use SQLite for a quick demo
-TESTING=1 TEST_DATABASE_URL=sqlite:///./hoppybrew_demo.db \
-  python seeds/seed_sample_dataset.py
-
-# Or seed an already running backend container (PostgreSQL)
-docker exec hoppybrew-backend python /app/seeds/seed_sample_dataset.py
-```
-
-The script is idempotent; running it again updates existing records instead of
-creating duplicates.
-
-### The application
-
-1. **Clone the repository**
-
-    ```sh
-    git clone
-    ```
-
-2. **Navigate to the project directory**
-
-    ```sh
-    cd iu-project-software-engineering
-    ```
-
-3. **Create a virtual environment**
-
-    ```sh
-    python3 -m venv .venv
-    ```
-
-4. **Activate the virtual environment**
-
-    ```sh
-    source .venv/bin/activate
-    ```
-
-5. **Install the required packages**
-
-    ```sh
-    pip install -r /docker/requirements.txt
-    ```
-
-6. **Run the project**
-
-    ```sh
-    uvicorn main:app --reload
-    ```
-
-7. **Open your browser and navigate to `http://localhost:8000`**
-8. **You should see the project running**
-
-At this point, you should have the project running locally on your machine. You can now move on to the next steps to set up the database and start using the application.
-
-To stop the project, press `Ctrl + C` in the terminal.
-
-## Docker Deployment
-
-### Using Pre-built Docker Images (Recommended for Unraid/Self-Hosting)
-
-HoppyBrew provides pre-built Docker images on both GitHub Container Registry and DockerHub. Using these images is the easiest way to deploy HoppyBrew, especially for Unraid servers and other self-hosted deployments.
-
-#### Available Images
-
-**DockerHub (Recommended for Unraid):**
-- Backend: `<dockerhub_username>/hoppybrew-backend:latest`
-- Frontend: `<dockerhub_username>/hoppybrew-frontend:latest`
-
-**GitHub Container Registry:**
-- Backend: `ghcr.io/asbor/hoppybrew-backend:latest`
-- Frontend: `ghcr.io/asbor/hoppybrew-frontend:latest`
-
-#### Quick Start with Docker Compose
-
-Create a `docker-compose.yml` file with the following content:
-
-```yaml
-version: '3.8'
-
-services:
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: hoppybrew_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  backend:
-    image: <dockerhub_username>/hoppybrew-backend:latest
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_HOST: db
-      DATABASE_PORT: 5432
-      DATABASE_NAME: hoppybrew_db
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres
-    depends_on:
-      db:
-        condition: service_healthy
-
-  frontend:
-    image: <dockerhub_username>/hoppybrew-frontend:latest
-    ports:
-      - "3000:3000"
-    environment:
-      API_BASE_URL: http://backend:8000
-      HOST: 0.0.0.0
-    depends_on:
-      - backend
-
-volumes:
-  postgres_data:
-```
-
-Then run:
-```sh
-docker-compose up -d
-```
-
-Access the application at:
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-
-#### Unraid Template
-
-For Unraid users, images are automatically pulled from DockerHub. Add the HoppyBrew template to your Community Applications.
-
-#### Version Tags
-
-Images are tagged with:
-- `latest` - Latest stable release from main branch
-- `vX.Y.Z` - Specific version releases (e.g., `v1.0.0`)
-- `X.Y.Z` - Semantic version without 'v' prefix
-- `X.Y` - Minor version (e.g., `1.0` for latest 1.0.x)
-- `X` - Major version (e.g., `1` for latest 1.x.x)
-- `<sha>` - Specific commit SHA
-
-### Prerequisites for Docker Deployment
-
-To run the project using Docker, you need to have the following software installed on your machine:
-
-* Docker
-
-### Installation for Docker Deployment
-
-In order to run the application using Docker, follow the steps below:
-
-1. **Run postgres database in a docker container**
-
-    ```sh
-    docker run --name hoppybrew-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5432:5432 -d postgres
-    ```
-    Where:
-    - `--name hoppybrew-db` specifies the name of the container
-    - `-e POSTGRES_PASSWORD=postgres` specifies the password for the database
-    - `-e POSTGRES_USER=postgres` specifies the username for the database
-    - `-p 5432:5432` specifies the port mapping for the database
-    - `-d postgres` specifies the image to use for the container
-    - You can change the values for `POSTGRES_PASSWORD`, `POSTGRES_USER`, and `POSTGRES_DB` to suit your needs
-    - You can also change the port mapping to a different port if needed
-
-    This command will first pull the PostgreSQL image from Docker Hub and then run the container with the specified options.
-
-2. **Build the Docker image for the application**
-
-    ```sh
-    docker build -t hoppybrew_image .
-    ```
-
-3. **Run the Docker container**
-
-    ```sh
-    docker run -d -p 127.0.0.1:8000:8000\
-        --env NAME=HoppyBrew\
-        --env DATABASE_HOST=host.docker.internal\
-        --env DATABASE_PORT=5455\
-        --env DATABASE_NAME=hoppybrew_db\
-        --env DATABASE_USER=postgres\
-        --env DATABASE_PASSWORD=postgres\
-        --name hoppybrew_container hoppybrew_image
-    ```
-
-    Where:
-    - `--name hoppybrew_container hoppybrew_image` specifies the name of the container and the image to use for the container
-    - `-d` specifies that the container should run in detached mode
-    - `-p -p 127.0.0.1:8000:8000` specifies the port mapping for the container
-    - `--env NAME=HoppyBrew` specifies the name of the application
-    - `--env DATABASE_HOST=host.docker.internal` specifies the host for the database container
-    - `--env DATABASE_PORT=5455` specifies the port for the database container
-    - `--env DATABASE_NAME=hoppybrew_db` specifies the name of the database
-    - `--env DATABASE_USER=postgres` specifies the username for the database
-    - `--env DATABASE_PASSWORD=postgres` specifies the password for the database
-
-4. **Open your browser and navigate to [http://localhost:8000](http://localhost:8000)**
-5. **You should see the project running**
-
-At this point, you should have the project running in a Docker container on your machine. You can now move on to the next steps to set up the database and start using the application.
-
-## Setting the environment variables as default values in the Dockerfile
-
-Instead of passing the environment variables as command-line arguments when running the Docker container, you can set the default values in the Dockerfile. This way, you don't have to specify the environment variables every time you run the container.
-
-As it turns out, you can not directly set the environment variables in the Dockerfile. This is because the environment variables are set at runtime, not at build time. However you create some arguments in the Dockerfile and then pass the arguments to the environment variables at runtime. Here's how you can do it:
-
-![An overview of ARG and ENV availability.](https://vsupalov.com/images/docker-env-vars/docker_environment_build_args.png)
-
-> Note: in the image, there is a rectangle around Dockerfile. This is a bit confusing. It should be around the “build image” step only. But that would be harder to read…
-
-```Dockerfile
-# Arguments for the environment variables
-ARG NAME=HoppyBrew
-ARG DATABASE_HOST=host.docker.internal
-ARG DATABASE_PORT=5455
-ARG DATABASE_USER=postgres
-ARG DATABASE_PASSWORD=postgres
-
-# Environment variables
-ENV NAME $NAME
-ENV DATABASE_HOST $DATABASE_HOST
-ENV DATABASE_PORT $DATABASE_PORT
-ENV DATABASE_USER $DATABASE_USER
-ENV DATABASE_PASSWORD $DATABASE_PASSWORD
-```
-
-Now you can run the Docker container without specifying all the environment variables:
-
-```sh
-docker run -d -p 127.0.0.1:8000:8000 --name hoppybrew_container hoppybrew_image
-```
-
-The benefit with this approach is when you pull the image from Docker, the environment variables are already set with the default values. This is particularly useful when you pull the image to a unraid server, because Unraid is then able to generate a template for the container with the default values.
-
-## Docker compose
-
-To run the project using Docker Compose, follow the steps below:
-
-1. **Create a `docker-compose.yml` file**
-
-    ```yml
-    version: '3.8'
-
-    services:
-      # This will create a PostgreSQL database service based on the official PostgreSQL image. If the image is not available locally, Docker will pull it from Docker Hub.
-      hoppybrew-db:
-        image: postgres
-        environment:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: hoppybrew_db
-        ports:
-          - "5455:5432"
-
-      # This will create an application service based on the Dockerfile in the current directory.
-      hoppybrew-app:
-        build: .
-        environment:
-          NAME: HoppyBrew
-          DATABASE_HOST: hoppybrew-db
-          DATABASE_PORT: 5455
-          DATABASE_NAME: hoppybrew_db
-          DATABASE_USER: postgres
-          DATABASE_PASSWORD: postgres
-        ports:
-          - "8000:8000"
-    ```
-    Where:
-    - `hoppybrew-db` is the name of the database service
-    - `hoppybrew-app` is the name of the application service
-    - `image: postgres` specifies the image to use for the database service
-    - `build: .` specifies the build context for the application service
-    - `environment` specifies the environment variables for the services
-    - `ports` specifies the port mapping for the services
-    - You can change the values for `POSTGRES_PASSWORD`, `POSTGRES_USER`, and `POSTGRES_DB` to suit your needs
-    - You can also change the port mapping to a different port if needed
-    - You can add additional services to the `docker-compose.yml` file as needed
-
-2. **Run the Docker Compose stack**
-
-    ```sh
-    docker-compose up
-    ```
-    This command will first build the Docker image for the application and then run the Docker Compose stack with the specified services.
-
-
-## FAQ
-
-### ERROR: [Errno 98] Address already in use
-
-This error occurs when the port you are trying to use is already in use by another process. To fix this error, you can either stop the process using the port or change the port number in the command.
-
-### How do I change the port number?
-
-To change the port number, you can add the `--port` flag followed by the port number you want to use. For example, to run the project on port 5000, you can use the following command:
-
-```sh
-uvicorn main:app --reload --port 5000
-```
-
-### How do i connect PGAdmin to the PostgreSQL database?
-
-To connect PGAdmin to the PostgreSQL database, follow the steps below:
-
-1. Open PGAdmin and click on the `Add New Server` button
-2. Enter the connection details:
-    - Hostname/Address: `localhost`
-    - Port: `5432`
-    - Maintenance Database: `hoppybrew`
-    - Username: `username`
-    - Password: `password`
-3. Click `Save` to save the connection details
-4. You should now see the new server listed in the left sidebar
-
-### How do i distinguish between the local and docker postgres database?
-
-To distinguish between the local and docker PostgreSQL databases, you can use different port numbers for the two databases. For example, you can use port 5432 for the local database and port 5455 for the docker database. This way, you can connect to the correct database based on the port number.
-
-### What are the most frequently used Docker commands?
-
-Here are some of the most frequently used Docker commands:
-
-- `docker ps` - List all running containers
-- `docker ps -a` - List all containers (running and stopped)
-- `docker images` - List all images
-- `docker build -t <image_name> .` - Build a Docker image
-- `docker run -d -p <host_port>:<container_port> <image_name>` - Run a Docker container in detached mode
-- `docker stop <container_id>` - Stop a running container
-- `docker rm <container_id>` - Remove a stopped container
-- `docker rmi <image_id>` - Remove an image
-- `docker exec -it <container_id> /bin/bash` - Start a shell in a running container
-- `docker logs <container_id>` - View the logs of a container
-- `docker-compose up` - Start a Docker Compose stack
-- `docker-compose down` - Stop a Docker Compose stack
-- `docker-compose logs` - View the logs of a Docker Compose stack
-- `docker-compose ps` - List all services in a Docker Compose stack
-- `docker-compose exec <service_name> /bin/bash` - Start a shell in a service container
-
-
-
-
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-
-### Docker Deployment
-
-#### Prerequisites for Docker Deployment
-
-To run the project using Docker, you need to have the following software installed on your machine:
-
-* Docker
-
-
-
-
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-- Backend: `docker compose up backend db`
-- Frontend: `cd services/nuxt3-shadcn && yarn dev`
-- For detailed setup, see [`Project Setup Guide.md`](Project%20Setup%20Guide.md).
+### Running with Docker Compose
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+### Local Development
+
+**Backend:**
+```bash
+cd services/backend
+source .venv/bin/activate
+uvicorn main:app --reload
+```
+
+**Frontend:**
+```bash
+cd services/nuxt3-shadcn
+yarn dev
+```
 
 ### HomeAssistant Integration
 
-HoppyBrew includes native HomeAssistant integration for monitoring your brewing batches. See [HOMEASSISTANT_INTEGRATION.md](HOMEASSISTANT_INTEGRATION.md) for setup instructions.
+Add to your `configuration.yaml`:
 
-Quick example:
 ```yaml
 sensor:
   - platform: rest
     name: "Brewery Status"
-    resource: http://your-hoppybrew-host:8000/api/homeassistant/summary
+    resource: http://your-hoppybrew-host:8000/homeassistant/summary
     value_template: "{{ value_json.active_batches }}"
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- High-level direction lives in [`ROADMAP.md`](ROADMAP.md).
-- Actionable backlog is tracked in [`TODO.md`](TODO.md).
-- Open issues capture feature requests and bugs.
+See [API Documentation](API_DOCUMENTATION.md#homeassistant-integration) for complete integration guide.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
 
-
-<!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community amazing! Any contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+### How to Contribute
 
-- Multi-agent contributors should review the collaboration contract in [`AI_AGENT_MANIFEST.md`](AI_AGENT_MANIFEST.md) before starting work.
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit your Changes (`git commit -m 'feat: add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+### Before Contributing
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
+- Check [open issues](https://github.com/asbor/HoppyBrew/issues)
+- Review [ROADMAP.md](ROADMAP.md) for project direction
+- Follow the [Development Guide](DEVELOPMENT_GUIDE.md) for setup
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
 
+## Roadmap
 
-<!-- LICENSE -->
+See [ROADMAP.md](ROADMAP.md) for the full project roadmap.
+
+**Current Focus Areas:**
+- ✅ Infrastructure improvements (CI/CD, security)
+- ✅ Documentation enhancement
+- 🔄 Code quality improvements
+- 📋 Testing strategy implementation
+- 🚀 Feature enhancements
+
+Track our progress in [Issues](https://github.com/asbor/HoppyBrew/issues) and [Projects](https://github.com/asbor/HoppyBrew/projects).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See [LICENSE.txt](LICENSE.txt) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
 
-
-<!-- CONTACT -->
 ## Contact
 
-Project Link: [HoppyBrew](https://github.com/asbor/HoppyBrew)
+**Project Link**: [https://github.com/asbor/HoppyBrew](https://github.com/asbor/HoppyBrew)
+
+**Issues**: [https://github.com/asbor/HoppyBrew/issues](https://github.com/asbor/HoppyBrew/issues)
+
+**Discussions**: [https://github.com/asbor/HoppyBrew/discussions](https://github.com/asbor/HoppyBrew/discussions)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
 
-
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
 This project is an original AI-assisted development showcasing modern brewing management technology.
 
+- Thanks to all contributors
+- Inspired by Brewfather
+- Built with amazing open-source tools
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [forks-shield]: https://img.shields.io/github/forks/asbor/HoppyBrew.svg?style=for-the-badge
@@ -788,21 +441,16 @@ This project is an original AI-assisted development showcasing modern brewing ma
 [license-url]: https://github.com/asbor/HoppyBrew/blob/main/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: www.linkedin.com/in/asbjørn-bordoy-89b0462a
-[product-screenshot]: documents/images/screenshot.png
 [Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
 [Vue-url]: https://vuejs.org/
 [Python-url]: https://www.python.org/
 [Python.org]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
-[Flask.pocoo]: https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white
-[Flask-url]: https://flask.palletsprojects.com/en/2.0.x/
 [Docker.com]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
 [Docker-url]: https://www.docker.com/
 [PostgreSQL.org]: https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
 [PostgreSQL-url]: https://www.postgresql.org/
 [FastAPI.org]: https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi
 [FastAPI-url]: https://fastapi.tiangolo.com/
-[Unraid]: https://img.shields.io/badge/Unraid-3776AB?style=for-the-badge&logo=unraid&logoColor=white
-[Unraid-url]: https://unraid.net/
 [sqlalchemy]: https://img.shields.io/badge/sqlalchemy-316192?style=for-the-badge&logo=sqlalchemy&logoColor=white
 [sqlalchemy-url]: https://www.sqlalchemy.org/
 [pydantic]: https://img.shields.io/badge/pydantic-005571?style=for-the-badge&logo=pydantic
@@ -813,24 +461,11 @@ This project is an original AI-assisted development showcasing modern brewing ma
 [Markdown-url]: https://www.markdownguide.org/
 [PlantUML]: https://img.shields.io/badge/PlantUML-000000?style=for-the-badge&logo=plantuml&logoColor=white
 [PlantUML-url]: https://plantuml.com/
-[pandoc]: https://img.shields.io/badge/pandoc-000000?style=for-the-badge&logo=pandoc&logoColor=white
-[pandoc-url]: https://pandoc.org/
-[dockerhub.com]: https://img.shields.io/badge/DockerHub-2496ED?style=for-the-badge&logo=docker&logoColor=white
-[dockerhub-url]: https://hub.docker.com/
-[gitbook]: https://img.shields.io/badge/GitBook-7B36ED?style=for-the-badge&logo=gitbook&logoColor=white
-[gitbook-url]: https://www.gitbook.com/
-[Alpine Linux]: https://img.shields.io/badge/Alpine_Linux-0D597F?style=for-the-badge&logo=alpinelinux&logoColor=white
-[Alpine Linux-url]: https://alpinelinux.org/
-[Ubuntu]: https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white
-[Ubuntu-url]: https://ubuntu.com/
 [uvicorn]: https://img.shields.io/badge/uvicorn-316192?style=for-the-badge&logo=uvicorn&logoColor=white
 [uvicorn-url]: https://www.uvicorn.org/
 [Git-scm]: https://img.shields.io/badge/Git-181717?style=for-the-badge&logo=git&logoColor=F05032
 [Git-scm-url]: https://git-scm.com/
 [VsCode]: https://img.shields.io/badge/Visual_Studio_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white
 [VsCode-url]: https://code.visualstudio.com/
-[SQLite]: https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white
-[SQLite-url]: https://www.sqlite.org/
 [Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
 [Redis-url]: https://redis.io/
-
