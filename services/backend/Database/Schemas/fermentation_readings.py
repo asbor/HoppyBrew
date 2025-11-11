@@ -4,19 +4,20 @@ from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from typing import Optional
 
-
 FERMENTATION_READING_BASE_EXAMPLE = {
     "timestamp": "2024-03-21T14:30:00Z",
     "gravity": 1.048,
     "temperature": 18.5,
     "ph": 5.4,
     "notes": "Active fermentation observed, krausen forming nicely",
+    "source": "manual",
 }
 
 FERMENTATION_READING_FULL_EXAMPLE = {
     **FERMENTATION_READING_BASE_EXAMPLE,
     "id": 1,
     "batch_id": 11,
+    "device_id": None,
     "created_at": "2024-03-21T14:30:00Z",
 }
 
@@ -44,6 +45,8 @@ class FermentationReadingBase(BaseModel):
     )
     ph: Optional[float] = Field(None, description="pH level of the fermenting beer")
     notes: Optional[str] = Field(None, description="Additional notes about the reading")
+    device_id: Optional[int] = Field(None, description="Device that created this reading")
+    source: Optional[str] = Field("manual", description="Source of reading: manual, ispindel, tilt")
 
     model_config = ConfigDict(
         json_schema_extra={"example": FERMENTATION_READING_BASE_EXAMPLE}
@@ -60,6 +63,8 @@ class FermentationReadingUpdate(BaseModel):
     temperature: Optional[float] = None
     ph: Optional[float] = None
     notes: Optional[str] = None
+    device_id: Optional[int] = None
+    source: Optional[str] = None
 
     model_config = ConfigDict(
         json_schema_extra={

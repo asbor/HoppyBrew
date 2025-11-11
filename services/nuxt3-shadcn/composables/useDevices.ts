@@ -18,9 +18,19 @@ export interface Device {
   configuration?: {
     update_interval?: number
     battery_warning_threshold?: number
+    cloud_url?: string
+    hydrometer_id?: string
+    [key: string]: any
+  }
+  alert_config?: {
+    enable_alerts?: boolean
+    temperature_min?: number
+    temperature_max?: number
     [key: string]: any
   }
   is_active: boolean
+  batch_id?: number
+  last_reading_at?: string
   created_at: string
   updated_at?: string
 }
@@ -33,7 +43,9 @@ export interface DeviceCreate {
   api_token?: string
   calibration_data?: Record<string, any>
   configuration?: Record<string, any>
+  alert_config?: Record<string, any>
   is_active?: boolean
+  batch_id?: number
 }
 
 export interface DeviceUpdate {
@@ -44,7 +56,9 @@ export interface DeviceUpdate {
   api_token?: string
   calibration_data?: Record<string, any>
   configuration?: Record<string, any>
+  alert_config?: Record<string, any>
   is_active?: boolean
+  batch_id?: number
 }
 
 export const useDevices = () => {
@@ -92,6 +106,28 @@ export const useDevices = () => {
     return await updateDevice(deviceId, { is_active: isActive })
   }
 
+  /**
+   * Associate device with batch for automatic data collection
+   */
+  const associateDeviceWithBatch = async (deviceId: number, batchId: number) => {
+    return await api.post(`/devices/${deviceId}/batch/${batchId}/associate`, {})
+  }
+
+  /**
+   * Dissociate device from batch (manual override)
+   */
+  const dissociateDeviceFromBatch = async (deviceId: number) => {
+    return await api.delete(`/devices/${deviceId}/batch`)
+  }
+
+  /**
+   * Get devices associated with a specific batch
+   */
+  const getDevicesByBatch = async (batchId: number) => {
+    const devices = await getAllDevices()
+    return devices.filter((device: Device) => device.batch_id === batchId)
+  }
+
   return {
     getAllDevices,
     getDevice,
@@ -99,5 +135,8 @@ export const useDevices = () => {
     updateDevice,
     deleteDevice,
     toggleDeviceStatus,
+    associateDeviceWithBatch,
+    dissociateDeviceFromBatch,
+    getDevicesByBatch,
   }
 }

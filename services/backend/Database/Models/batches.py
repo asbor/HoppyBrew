@@ -77,3 +77,7 @@ class Batches(Base):
         back_populates="batch",
         cascade="all, delete-orphan",
     )
+    devices = relationship(
+        "Device",
+        back_populates="batch",
+    )
