@@ -8,12 +8,15 @@ updates:
       day: "monday"
       time: "06:00"
     open-pull-requests-limit: 5
+    reviewers:
+      - "asbor"
     labels:
       - "dependencies"
       - "python"
       - "automated"
     commit-message:
       prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
       include: "scope"
 
   # Frontend Node dependencies
@@ -24,12 +27,16 @@ updates:
       day: "monday"
       time: "06:00"
     open-pull-requests-limit: 5
+    reviewers:
+      - "asbor"
     labels:
       - "dependencies"
       - "javascript"
       - "automated"
+    versioning-strategy: increase
     commit-message:
       prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
       include: "scope"
 
   # Backend Dockerfile
