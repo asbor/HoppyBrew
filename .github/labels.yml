@@ -1,0 +1,174 @@
+# GitHub Labels Configuration
+# This file can be used with github-label-sync or similar tools
+# to automatically create/update repository labels
+
+# Type Labels
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "feature"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "enhancement"
+  color: "84b6eb"
+  description: "Improvement to existing feature"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Documentation improvements"
+
+- name: "performance"
+  color: "ff9800"
+  description: "Performance optimization"
+
+- name: "refactoring"
+  color: "fbca04"
+  description: "Code refactoring"
+
+- name: "security"
+  color: "ee0701"
+  description: "Security-related issue"
+
+- name: "dependencies"
+  color: "0366d6"
+  description: "Dependency updates"
+
+- name: "infrastructure"
+  color: "0e8a16"
+  description: "DevOps, CI/CD, deployment"
+
+# Priority Labels
+- name: "P0-critical"
+  color: "b60205"
+  description: "Critical - Fix ASAP (24h SLA)"
+
+- name: "P1-high"
+  color: "d93f0b"
+  description: "High priority (1 week SLA)"
+
+- name: "P2-medium"
+  color: "fbca04"
+  description: "Medium priority (1 month SLA)"
+
+- name: "P3-low"
+  color: "0e8a16"
+  description: "Low priority (Backlog)"
+
+# Area Labels
+- name: "area: backend"
+  color: "5319e7"
+  description: "Backend/API related"
+
+- name: "area: frontend"
+  color: "1d76db"
+  description: "Frontend/UI related"
+
+- name: "area: database"
+  color: "006b75"
+  description: "Database schema/migrations"
+
+- name: "area: docker"
+  color: "0db7ed"
+  description: "Docker/containerization"
+
+- name: "area: ci-cd"
+  color: "28a745"
+  description: "CI/CD pipelines"
+
+- name: "area: testing"
+  color: "d4c5f9"
+  description: "Testing infrastructure"
+
+- name: "area: security"
+  color: "ff0000"
+  description: "Security components"
+
+- name: "area: docs"
+  color: "0075ca"
+  description: "Documentation"
+
+# Status Labels
+- name: "status: blocked"
+  color: "d93f0b"
+  description: "Blocked by another issue/PR"
+
+- name: "status: in-progress"
+  color: "fbca04"
+  description: "Currently being worked on"
+
+- name: "status: needs-discussion"
+  color: "d4c5f9"
+  description: "Requires team discussion"
+
+- name: "status: needs-review"
+  color: "0e8a16"
+  description: "Waiting for code review"
+
+- name: "status: needs-testing"
+  color: "fef2c0"
+  description: "Needs manual testing"
+
+- name: "status: on-hold"
+  color: "cccccc"
+  description: "Temporarily paused"
+
+- name: "status: duplicate"
+  color: "cfd3d7"
+  description: "Duplicate issue"
+
+- name: "status: wontfix"
+  color: "ffffff"
+  description: "Will not be fixed"
+
+- name: "status: stale"
+  color: "eeeeee"
+  description: "No activity for 6+ months"
+
+# Difficulty Labels
+- name: "good first issue"
+  color: "7057ff"
+  description: "Easy for newcomers"
+
+- name: "intermediate"
+  color: "008672"
+  description: "Moderate complexity"
+
+- name: "advanced"
+  color: "d93f0b"
+  description: "Complex implementation"
+
+# Special Labels
+- name: "help wanted"
+  color: "008672"
+  description: "Seeking contributors"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information requested"
+
+- name: "breaking change"
+  color: "ff0000"
+  description: "Introduces breaking changes"
+
+- name: "needs-reproduction"
+  color: "fef2c0"
+  description: "Cannot reproduce"
+
+- name: "hacktoberfest"
+  color: "ff6b6b"
+  description: "Hacktoberfest eligible"
+
+- name: "automated"
+  color: "ededed"
+  description: "Created by automation"
+
+# Language-specific labels (used by Dependabot)
+- name: "python"
+  color: "3572A5"
+  description: "Python related"
+
+- name: "javascript"
+  color: "f1e05a"
+  description: "JavaScript related"

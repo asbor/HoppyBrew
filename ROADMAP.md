@@ -113,3 +113,92 @@ Leverage multiple specialised AI agents orchestrated by a coordinator to manage 
 - Automate notifications (GitHub issues/PRs tagged by agent role) so progress remains transparent.
 
 By following this roadmap and collaboration model, HoppyBrew can transition from a course project into a sustainable, extensible platform for the homebrewing community.
+
+---
+
+## Milestone-Based Planning
+
+The HoppyBrew project now follows a structured milestone-based approach for planning and tracking work. For detailed milestone definitions, see [.github/MILESTONES.md](.github/MILESTONES.md).
+
+### Active Milestones
+
+#### v1.0 - Core Platform Release (Q1 2026)
+**Status**: In Progress  
+Production-ready self-hosted brewing management platform with core features:
+- Stable backend API with authentication
+- Recipe management
+- Batch tracking
+- Inventory management
+- Docker deployment
+- Essential documentation
+
+#### v1.1 - UX Enhancement (Q2 2026)
+**Status**: Planning  
+Focus on user experience improvements:
+- Enhanced recipe editor
+- Improved batch monitoring
+- Better inventory tracking UI
+- Mobile responsiveness
+- Accessibility standards (WCAG 2.1 AA)
+
+#### v1.2 - Integration Features (Q3 2026)
+**Status**: Planned  
+External integrations and automation:
+- BeerXML import/export improvements
+- HomeAssistant integration enhancements
+- Hardware integrations (Tilt, etc.)
+- API webhooks
+- Backup/restore functionality
+
+#### v2.0 - Advanced Features (Q4 2026)
+**Status**: Future  
+Advanced brewing management:
+- Multi-user collaboration
+- Recipe sharing marketplace
+- Advanced analytics
+- Equipment profile management
+- Cost tracking
+- Water chemistry calculator
+
+### Continuous Milestones
+
+- **Technical Debt**: Ongoing code quality and maintenance
+- **Documentation**: Comprehensive guides and references
+
+### Issue Triage and Organization
+
+The project uses a systematic approach to issue management:
+
+- **Priority Levels**: P0-critical, P1-high, P2-medium, P3-low
+- **Label Taxonomy**: Type, Priority, Area, Status, Difficulty
+- **Triage Process**: Weekly reviews and monthly backlog grooming
+
+See the following guides for details:
+- [Label Taxonomy](.github/LABELS.md)
+- [Triage Guide](.github/TRIAGE.md)
+- [Contributing Guide](CONTRIBUTING.md)
+
+### Project Health Metrics
+
+**Current Status** (as of 2025-11-11):
+- Active Issues: ~30-35 (post-cleanup)
+- Issue Labeling: Target 100%
+- Priority Assignment: Target >90%
+- Milestone Coverage: Target >80%
+
+**Quality Targets**:
+- Test Coverage: >70%
+- Code Quality: Score >B
+- Security: Zero critical/high vulnerabilities
+- Documentation: >80% coverage
+
+### Getting Involved
+
+Contributors can find suitable issues using:
+- `good first issue` - Easy for newcomers
+- `intermediate` - Moderate complexity
+- `advanced` - Complex implementation
+- `help wanted` - Actively seeking contributors
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
+

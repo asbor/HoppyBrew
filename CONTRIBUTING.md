@@ -142,17 +142,30 @@ This project supports multi-agent AI collaboration. If you're an AI agent:
 
 ## Issue Reporting
 
+### Reporting Bugs
 When reporting bugs:
-- Use the bug report template
+- Use the [bug report template](.github/ISSUE_TEMPLATE/bug-report---.md)
 - Include steps to reproduce
 - Provide environment details (OS, Python version, etc.)
 - Include relevant error messages and logs
 
+### Requesting Features
 When requesting features:
-- Use the feature request template
+- Use the [feature request template](.github/ISSUE_TEMPLATE/feature-request---.md)
 - Clearly describe the use case
 - Explain the expected behavior
 - Consider implementation complexity
+
+### Other Issue Types
+We also have templates for:
+- [Security vulnerabilities](.github/ISSUE_TEMPLATE/security-vulnerability.md) - Please report critical issues privately
+- [Documentation improvements](.github/ISSUE_TEMPLATE/documentation-improvement.md)
+- [Performance issues](.github/ISSUE_TEMPLATE/performance-issue.md)
+
+### Understanding Labels and Priorities
+- See [Label Taxonomy](.github/LABELS.md) for label meanings
+- See [Triage Guide](.github/TRIAGE.md) for priority definitions
+- See [Milestones](.github/MILESTONES.md) for release planning
 
 ## Code of Conduct
 
