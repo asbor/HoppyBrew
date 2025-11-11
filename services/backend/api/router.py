@@ -24,6 +24,7 @@ from .endpoints import (
     trigger_beer_styles_processing,
     homeassistant,
     devices,
+    device_data_ingestion,
     calculators,
     yeast_management,
 )
@@ -45,6 +46,7 @@ router.include_router(styles.router, tags=["styles"])
 router.include_router(beer_styles.router, tags=["beer_styles"])
 router.include_router(references.router, tags=["references"])
 router.include_router(devices.router, tags=["devices"])
+router.include_router(device_data_ingestion.router, tags=["device_integration"])
 
 # Profile routers
 

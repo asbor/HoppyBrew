@@ -16,6 +16,11 @@ DEVICE_BASE_EXAMPLE = {
         "update_interval": 900,  # 15 minutes in seconds
         "battery_warning_threshold": 3.5,
     },
+    "alert_config": {
+        "temperature_min": 16.0,
+        "temperature_max": 22.0,
+        "enable_alerts": True,
+    },
     "is_active": True,
 }
 
@@ -28,7 +33,9 @@ class DeviceBase(BaseModel):
     api_token: Optional[str] = None
     calibration_data: Optional[Dict[str, Any]] = None
     configuration: Optional[Dict[str, Any]] = None
+    alert_config: Optional[Dict[str, Any]] = None
     is_active: bool = True
+    batch_id: Optional[int] = None
 
     model_config = ConfigDict(json_schema_extra={"example": DEVICE_BASE_EXAMPLE})
 
@@ -45,7 +52,9 @@ class DeviceUpdate(BaseModel):
     api_token: Optional[str] = None
     calibration_data: Optional[Dict[str, Any]] = None
     configuration: Optional[Dict[str, Any]] = None
+    alert_config: Optional[Dict[str, Any]] = None
     is_active: Optional[bool] = None
+    batch_id: Optional[int] = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -56,6 +65,7 @@ class DeviceUpdate(BaseModel):
 
 class DeviceInDBBase(DeviceBase):
     id: int
+    last_reading_at: Optional[datetime] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 
@@ -67,6 +77,7 @@ class DeviceInDBBase(DeviceBase):
                 "id": 1,
                 "created_at": "2024-03-01T10:00:00Z",
                 "updated_at": "2024-03-15T09:30:00Z",
+                "last_reading_at": "2024-03-15T09:25:00Z",
             }
         },
     )

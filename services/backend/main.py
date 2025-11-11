@@ -93,6 +93,10 @@ tags_metadata = [
         "name": "calculators",
         "description": "Brewing calculation utilities for strike water, ABV, priming sugar, yeast starters, and more.",
     },
+    {
+        "name": "device_integration",
+        "description": "Device data ingestion endpoints for Tilt and iSpindel temperature controllers with automatic reading imports.",
+    },
 ]
 
 # Get logger instance
@@ -118,8 +122,17 @@ async def lifespan(app: FastAPI):
         logger.info("Creating database tables")
         Base.metadata.create_all(bind=engine, checkfirst=True)
         logger.info("Database tables ready")
+        
+        # Start device polling background task
+        try:
+            from modules.device_poller import start_device_poller
+            logger.info("Starting device polling background task")
+            await start_device_poller()
+            logger.info("Device polling started")
+        except Exception as e:
+            logger.error(f"Failed to start device polling: {e}")
     else:
-        logger.info("Testing mode detected - skipping automatic table creation")
+        logger.info("Testing mode detected - skipping automatic table creation and device polling")
     
     logger.info("HoppyBrew API started successfully")
     
@@ -127,6 +140,16 @@ async def lifespan(app: FastAPI):
     
     # Shutdown
     logger.info("Shutting down HoppyBrew API")
+    
+    # Stop device polling
+    if os.getenv("TESTING", "0") != "1":
+        try:
+            from modules.device_poller import stop_device_poller
+            logger.info("Stopping device polling background task")
+            await stop_device_poller()
+            logger.info("Device polling stopped")
+        except Exception as e:
+            logger.error(f"Error stopping device polling: {e}")
 
 
 # Create the FastAPI app with lifespan management
