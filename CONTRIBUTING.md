@@ -161,6 +161,148 @@ When requesting features:
 - Help others learn and grow
 - Give credit where credit is due
 
+## Dependency Management
+
+### Philosophy
+We maintain a proactive approach to dependency management to:
+- Keep dependencies current with security patches
+- Minimize breaking changes through regular small updates
+- Maintain compatibility across the stack
+- Prevent accumulation of technical debt
+
+### Automated Tools
+- **Dependabot**: Automatically creates PRs for dependency updates weekly
+- **Security Scanning**: Daily scans with pip-audit, yarn audit, and Trivy
+- **Dependency Review**: Blocks PRs with high-severity vulnerabilities
+
+### Update Process
+
+#### For Maintainers
+1. **Review Dependabot PRs**
+   - Check the changelog for breaking changes
+   - Review test results in CI
+   - Merge patch updates quickly (x.y.Z)
+   - Test minor updates locally before merging (x.Y.0)
+   - Plan major updates carefully (X.0.0)
+
+2. **Manual Updates**
+   - Check for outdated dependencies: `pip list --outdated` or `npm outdated`
+   - Categorize by risk level (see DEPENDENCY_AUDIT.md)
+   - Update in phases: patch → minor → major
+   - Always run full test suite after updates
+
+3. **Security Updates**
+   - Prioritize security patches immediately
+   - Check vulnerability details in GitHub Security
+   - Test authentication and sensitive operations
+   - Document any workarounds or breaking changes
+
+#### For Contributors
+When adding new dependencies:
+
+**Python (services/backend/requirements.txt):**
+```bash
+# Add to requirements.txt with specific version
+pip install package-name==x.y.z
+pip freeze | grep package-name >> requirements.txt
+# Run tests
+pytest -v
+```
+
+**Node.js (services/nuxt3-shadcn/package.json):**
+```bash
+# Add with exact version
+npm install package-name@x.y.z
+# Or yarn
+yarn add package-name@x.y.z
+# Run tests
+npm test
+```
+
+**Dependency Review Checklist:**
+- [ ] Is this dependency actively maintained?
+- [ ] Does it have known security vulnerabilities?
+- [ ] Is the license compatible (check LICENSE.txt)?
+- [ ] Can we use an existing dependency instead?
+- [ ] Is the version pinned (not using wildcard ranges)?
+- [ ] Have you run the test suite?
+
+### Version Pinning Strategy
+- **Production dependencies**: Pin to exact versions (e.g., `package==1.2.3`)
+- **Development dependencies**: Pin to exact versions for consistency
+- **Lock files**: Always commit `yarn.lock` or `package-lock.json`
+
+### Risk Categories
+
+#### 🟢 Low Risk - Patch Updates (x.y.Z)
+- Bug fixes only
+- No breaking changes
+- Quick review and merge
+- Example: `2.0.30 → 2.0.44`
+
+#### 🟡 Medium Risk - Minor Updates (x.Y.0)
+- New features added
+- Possible deprecations
+- Requires testing
+- Example: `2.7.3 → 2.12.4`
+
+#### 🔴 High Risk - Major Updates (X.0.0)
+- Breaking changes expected
+- Requires migration plan
+- Extensive testing needed
+- Dedicated PR with documentation
+- Example: `3.11.2 → 4.0.0`
+
+### Testing Requirements
+
+**Before merging dependency updates:**
+- [ ] All CI/CD checks pass
+- [ ] Backend tests pass: `pytest -v`
+- [ ] Frontend tests pass: `npm test`
+- [ ] Security scans pass (pip-audit, yarn audit)
+- [ ] Manual smoke testing completed
+- [ ] No new linter warnings
+
+**For Major Updates:**
+- [ ] Review migration guide
+- [ ] Update related documentation
+- [ ] Test all affected features
+- [ ] Update CHANGELOG.md
+- [ ] Consider backward compatibility
+
+### Emergency Security Updates
+
+If a critical vulnerability is discovered:
+
+1. **Immediate Response**
+   ```bash
+   # Check vulnerability details
+   pip-audit -r requirements.txt  # Python
+   npm audit                      # Node.js
+   ```
+
+2. **Apply Fix**
+   - Update to patched version immediately
+   - Create emergency PR
+   - Skip normal review cycle if critical
+
+3. **Validate**
+   - Run full test suite
+   - Deploy to staging
+   - Monitor for issues
+
+4. **Document**
+   - Update SECURITY_SUMMARY.md
+   - Document in PR and CHANGELOG.md
+   - Notify team of changes
+
+### Resources
+- [DEPENDENCY_AUDIT.md](DEPENDENCY_AUDIT.md) - Current audit report
+- [Dependabot Configuration](.github/dependabot.yml)
+- [Security Scanning Workflow](.github/workflows/security-scan.yml)
+- [Python Packaging Guide](https://packaging.python.org/)
+- [npm Documentation](https://docs.npmjs.com/)
+
 ## Questions?
 
 - Open a Discussion for general questions
