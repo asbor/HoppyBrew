@@ -7,6 +7,12 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
+<!-- CODE QUALITY BADGES -->
+[![Tests][tests-shield]][tests-url]
+[![Python Quality][python-quality-shield]][python-quality-url]
+[![Frontend Quality][frontend-quality-shield]][frontend-quality-url]
+[![Security][security-shield]][security-url]
+
 
 
 <!-- PROJECT LOGO -->
@@ -702,4 +708,14 @@ This project is an original AI-assisted development showcasing modern brewing ma
 [SQLite-url]: https://www.sqlite.org/
 [Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
 [Redis-url]: https://redis.io/
+
+<!-- CODE QUALITY BADGE LINKS -->
+[tests-shield]: https://img.shields.io/github/actions/workflow/status/asbor/HoppyBrew/test-suite.yml?branch=main&style=for-the-badge&label=Tests
+[tests-url]: https://github.com/asbor/HoppyBrew/actions/workflows/test-suite.yml
+[python-quality-shield]: https://img.shields.io/github/actions/workflow/status/asbor/HoppyBrew/python-quality.yml?branch=main&style=for-the-badge&label=Python%20Quality
+[python-quality-url]: https://github.com/asbor/HoppyBrew/actions/workflows/python-quality.yml
+[frontend-quality-shield]: https://img.shields.io/github/actions/workflow/status/asbor/HoppyBrew/frontend-quality.yml?branch=main&style=for-the-badge&label=Frontend%20Quality
+[frontend-quality-url]: https://github.com/asbor/HoppyBrew/actions/workflows/frontend-quality.yml
+[security-shield]: https://img.shields.io/github/actions/workflow/status/asbor/HoppyBrew/security-scan.yml?branch=main&style=for-the-badge&label=Security
+[security-url]: https://github.com/asbor/HoppyBrew/actions/workflows/security-scan.yml
 
