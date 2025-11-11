@@ -162,12 +162,12 @@ class BeerXMLRecipe(BaseModel):
 def _get_text(element: ET.Element, tag: str, default: Any = None) -> Any:
     """
     Safely extract text content from an XML element.
-    
+
     Args:
         element: Parent XML element
         tag: Tag name to find
         default: Default value if tag not found or empty
-        
+
     Returns:
         Text content or default value
     """
@@ -251,7 +251,11 @@ def _parse_fermentable(ferm_element: ET.Element) -> BeerXMLFermentable:
         diastatic_power=_get_float(ferm_element, 'DIASTATIC_POWER'),
         protein=_get_float(ferm_element, 'PROTEIN'),
         max_in_batch=_get_float(ferm_element, 'MAX_IN_BATCH'),
-        recommend_mash=_get_bool(ferm_element, 'RECOMMEND_MASH') if ferm_element.find('RECOMMEND_MASH') is not None else None,
+        recommend_mash=(
+            _get_bool(ferm_element, 'RECOMMEND_MASH')
+            if ferm_element.find('RECOMMEND_MASH') is not None
+            else None
+        ),
         ibu_gal_per_lb=_get_float(ferm_element, 'IBU_GAL_PER_LB'),
         display_amount=_get_text(ferm_element, 'DISPLAY_AMOUNT'),
         potential=_get_float(ferm_element, 'POTENTIAL'),
@@ -309,7 +313,7 @@ def _parse_misc(misc_element: ET.Element) -> BeerXMLMisc:
 
 def _parse_recipe(recipe_element: ET.Element) -> BeerXMLRecipe:
     """Parse a RECIPE element from BeerXML"""
-    
+
     # Parse hops
     hops = []
     hops_element = recipe_element.find('HOPS')
@@ -317,10 +321,10 @@ def _parse_recipe(recipe_element: ET.Element) -> BeerXMLRecipe:
         for hop_elem in hops_element.findall('HOP'):
             try:
                 hops.append(_parse_hop(hop_elem))
-            except (ValidationError, ValueError) as e:
+            except (ValidationError, ValueError):
                 # Skip malformed hops but continue parsing
                 pass
-    
+
     # Parse fermentables
     fermentables = []
     fermentables_element = recipe_element.find('FERMENTABLES')
@@ -328,10 +332,10 @@ def _parse_recipe(recipe_element: ET.Element) -> BeerXMLRecipe:
         for ferm_elem in fermentables_element.findall('FERMENTABLE'):
             try:
                 fermentables.append(_parse_fermentable(ferm_elem))
-            except (ValidationError, ValueError) as e:
+            except (ValidationError, ValueError):
                 # Skip malformed fermentables but continue parsing
                 pass
-    
+
     # Parse yeasts
     yeasts = []
     yeasts_element = recipe_element.find('YEASTS')
@@ -339,10 +343,10 @@ def _parse_recipe(recipe_element: ET.Element) -> BeerXMLRecipe:
         for yeast_elem in yeasts_element.findall('YEAST'):
             try:
                 yeasts.append(_parse_yeast(yeast_elem))
-            except (ValidationError, ValueError) as e:
+            except (ValidationError, ValueError):
                 # Skip malformed yeasts but continue parsing
                 pass
-    
+
     # Parse miscs
     miscs = []
     miscs_element = recipe_element.find('MISCS')
@@ -350,10 +354,10 @@ def _parse_recipe(recipe_element: ET.Element) -> BeerXMLRecipe:
         for misc_elem in miscs_element.findall('MISC'):
             try:
                 miscs.append(_parse_misc(misc_elem))
-            except (ValidationError, ValueError) as e:
+            except (ValidationError, ValueError):
                 # Skip malformed miscs but continue parsing
                 pass
-    
+
     return BeerXMLRecipe(
         name=_get_text(recipe_element, 'NAME', ''),
         version=_get_int(recipe_element, 'VERSION', 1),
@@ -406,13 +410,13 @@ def _parse_recipe(recipe_element: ET.Element) -> BeerXMLRecipe:
 def parse_beerxml(xml_content: bytes) -> List[BeerXMLRecipe]:
     """
     Parse BeerXML content and return a list of recipes.
-    
+
     Args:
         xml_content: Raw XML content as bytes
-        
+
     Returns:
         List of BeerXMLRecipe objects
-        
+
     Raises:
         BeerXMLParseError: If XML is malformed or invalid
     """
@@ -420,9 +424,9 @@ def parse_beerxml(xml_content: bytes) -> List[BeerXMLRecipe]:
         tree = ET.ElementTree(ET.fromstring(xml_content))
     except ET.ParseError as e:
         raise BeerXMLParseError(f"Invalid XML format: {str(e)}")
-    
+
     root = tree.getroot()
-    
+
     # Handle both RECIPES and RECIPE as root elements
     if root.tag == 'RECIPE':
         recipe_elements = [root]
@@ -432,32 +436,32 @@ def parse_beerxml(xml_content: bytes) -> List[BeerXMLRecipe]:
         raise BeerXMLParseError(
             f"Invalid root element: expected RECIPES or RECIPE, got {root.tag}"
         )
-    
+
     if not recipe_elements:
         raise BeerXMLParseError("No RECIPE elements found in XML")
-    
+
     recipes = []
     for recipe_elem in recipe_elements:
         try:
             recipe = _parse_recipe(recipe_elem)
             recipes.append(recipe)
-        except ValidationError as e:
+        except ValidationError:
             # Skip recipes that fail validation
             pass
-    
+
     if not recipes:
         raise BeerXMLParseError("No valid recipes could be parsed from XML")
-    
+
     return recipes
 
 
 def validate_beerxml(xml_content: bytes) -> Dict[str, Any]:
     """
     Validate BeerXML content without parsing into full objects.
-    
+
     Args:
         xml_content: Raw XML content as bytes
-        
+
     Returns:
         Dictionary with validation results:
         {
@@ -473,16 +477,16 @@ def validate_beerxml(xml_content: bytes) -> Dict[str, Any]:
         "errors": [],
         "warnings": []
     }
-    
+
     try:
         tree = ET.ElementTree(ET.fromstring(xml_content))
     except ET.ParseError as e:
         result["valid"] = False
         result["errors"].append(f"Invalid XML format: {str(e)}")
         return result
-    
+
     root = tree.getroot()
-    
+
     # Check root element
     if root.tag not in ('RECIPES', 'RECIPE'):
         result["valid"] = False
@@ -490,28 +494,28 @@ def validate_beerxml(xml_content: bytes) -> Dict[str, Any]:
             f"Invalid root element: expected RECIPES or RECIPE, got {root.tag}"
         )
         return result
-    
+
     # Get recipe elements
     if root.tag == 'RECIPE':
         recipe_elements = [root]
     else:
         recipe_elements = root.findall('RECIPE')
-    
+
     if not recipe_elements:
         result["valid"] = False
         result["errors"].append("No RECIPE elements found in XML")
         return result
-    
+
     result["recipe_count"] = len(recipe_elements)
-    
+
     # Validate each recipe has required fields
     for i, recipe_elem in enumerate(recipe_elements, 1):
         name = _get_text(recipe_elem, 'NAME')
         if not name:
             result["warnings"].append(f"Recipe {i} missing NAME field")
-        
+
         version = _get_text(recipe_elem, 'VERSION')
         if not version:
             result["warnings"].append(f"Recipe {i} ({name or 'unnamed'}) missing VERSION field")
-    
+
     return result

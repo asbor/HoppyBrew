@@ -107,24 +107,24 @@ async def lifespan(app: FastAPI):
     """
     # Startup
     logger.info("Starting HoppyBrew API")
-    
+
     # Initialize database on startup (not at import time)
     if os.getenv("TESTING", "0") != "1":
         from database import initialize_database, Base
-        
+
         logger.info("Initializing database connection")
         engine = initialize_database()
-        
+
         logger.info("Creating database tables")
         Base.metadata.create_all(bind=engine, checkfirst=True)
         logger.info("Database tables ready")
     else:
         logger.info("Testing mode detected - skipping automatic table creation")
-    
+
     logger.info("HoppyBrew API started successfully")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down HoppyBrew API")
 

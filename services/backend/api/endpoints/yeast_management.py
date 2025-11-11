@@ -30,13 +30,13 @@ async def get_yeast_strains(
 ):
     """Get all yeast strains with optional filtering"""
     query = db.query(models.YeastStrain)
-    
+
     if laboratory:
         query = query.filter(models.YeastStrain.laboratory.ilike(f"%{laboratory}%"))
-    
+
     if yeast_type:
         query = query.filter(models.YeastStrain.type.ilike(f"%{yeast_type}%"))
-    
+
     strains = query.offset(skip).limit(limit).all()
     return strains
 
@@ -77,11 +77,11 @@ async def update_yeast_strain(
     db_strain = db.query(models.YeastStrain).filter(models.YeastStrain.id == strain_id).first()
     if not db_strain:
         raise HTTPException(status_code=404, detail="Yeast strain not found")
-    
+
     update_data = strain.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_strain, key, value)
-    
+
     try:
         db.commit()
         db.refresh(db_strain)
@@ -97,7 +97,7 @@ async def delete_yeast_strain(strain_id: int, db: Session = Depends(get_db)):
     db_strain = db.query(models.YeastStrain).filter(models.YeastStrain.id == strain_id).first()
     if not db_strain:
         raise HTTPException(status_code=404, detail="Yeast strain not found")
-    
+
     try:
         db.delete(db_strain)
         db.commit()
@@ -119,13 +119,13 @@ async def get_yeast_harvests(
 ):
     """Get all yeast harvests with optional filtering"""
     query = db.query(models.YeastHarvest)
-    
+
     if yeast_strain_id:
         query = query.filter(models.YeastHarvest.yeast_strain_id == yeast_strain_id)
-    
+
     if status:
         query = query.filter(models.YeastHarvest.status == status)
-    
+
     harvests = query.order_by(models.YeastHarvest.harvest_date.desc()).offset(skip).limit(limit).all()
     return harvests
 
@@ -151,7 +151,7 @@ async def create_yeast_harvest(
     ).first()
     if not strain:
         raise HTTPException(status_code=404, detail="Yeast strain not found")
-    
+
     # If parent harvest specified, verify it exists and increment generation
     if harvest.parent_harvest_id:
         parent = db.query(models.YeastHarvest).filter(
@@ -162,12 +162,12 @@ async def create_yeast_harvest(
         # Auto-increment generation from parent
         if harvest.generation <= parent.generation:
             harvest.generation = parent.generation + 1
-    
+
     try:
         harvest_data = harvest.model_dump()
         if harvest_data.get("harvest_date") is None:
             harvest_data["harvest_date"] = datetime.now()
-            
+
         db_harvest = models.YeastHarvest(**harvest_data)
         db.add(db_harvest)
         db.commit()
@@ -188,11 +188,11 @@ async def update_yeast_harvest(
     db_harvest = db.query(models.YeastHarvest).filter(models.YeastHarvest.id == harvest_id).first()
     if not db_harvest:
         raise HTTPException(status_code=404, detail="Yeast harvest not found")
-    
+
     update_data = harvest.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_harvest, key, value)
-    
+
     try:
         db.commit()
         db.refresh(db_harvest)
@@ -208,7 +208,7 @@ async def delete_yeast_harvest(harvest_id: int, db: Session = Depends(get_db)):
     db_harvest = db.query(models.YeastHarvest).filter(models.YeastHarvest.id == harvest_id).first()
     if not db_harvest:
         raise HTTPException(status_code=404, detail="Yeast harvest not found")
-    
+
     try:
         db.delete(db_harvest)
         db.commit()
@@ -224,14 +224,14 @@ async def get_harvest_genealogy(harvest_id: int, db: Session = Depends(get_db)):
     harvest = db.query(models.YeastHarvest).filter(models.YeastHarvest.id == harvest_id).first()
     if not harvest:
         raise HTTPException(status_code=404, detail="Yeast harvest not found")
-    
+
     # Build genealogy tree
     genealogy = {
         "current": harvest,
         "ancestors": [],
         "descendants": []
     }
-    
+
     # Get ancestors
     current = harvest
     while current.parent_harvest_id:
@@ -243,13 +243,13 @@ async def get_harvest_genealogy(harvest_id: int, db: Session = Depends(get_db)):
             current = parent
         else:
             break
-    
+
     # Get descendants (recursive function would be better for deep trees)
     def get_children(parent_id):
         return db.query(models.YeastHarvest).filter(
             models.YeastHarvest.parent_harvest_id == parent_id
         ).all()
-    
+
     def build_descendants(parent_id):
         children = get_children(parent_id)
         result = []
@@ -259,9 +259,9 @@ async def get_harvest_genealogy(harvest_id: int, db: Session = Depends(get_db)):
                 "children": build_descendants(child.id)
             })
         return result
-    
+
     genealogy["descendants"] = build_descendants(harvest_id)
-    
+
     return genealogy
 
 
@@ -271,7 +271,7 @@ async def get_harvest_genealogy(harvest_id: int, db: Session = Depends(get_db)):
 async def calculate_yeast_viability(request: schemas.ViabilityCalculationRequest):
     """
     Calculate yeast viability based on age, storage conditions, and generation.
-    
+
     This endpoint helps brewers determine if their yeast is still viable
     and whether a starter is needed.
     """
@@ -297,7 +297,7 @@ async def get_inventory_yeast_viability(
 ):
     """
     Calculate current viability for an inventory yeast item.
-    
+
     Uses stored information about the yeast to calculate current viability.
     """
     yeast = db.query(models.InventoryYeast).filter(
@@ -305,13 +305,13 @@ async def get_inventory_yeast_viability(
     ).first()
     if not yeast:
         raise HTTPException(status_code=404, detail="Inventory yeast not found")
-    
+
     # Determine form from yeast data
     yeast_form = yeast.form or "Liquid"
-    
+
     # Use stored viability or default to 100
     initial_viability = yeast.current_viability or 100.0
-    
+
     # Calculate viability
     result = YeastViabilityCalculator.calculate_viability(
         yeast_form=yeast_form,
@@ -320,7 +320,7 @@ async def get_inventory_yeast_viability(
         initial_viability=initial_viability,
         generation=yeast.generation or 0
     )
-    
+
     # Update stored viability
     try:
         yeast.current_viability = result["current_viability"]
@@ -328,5 +328,5 @@ async def get_inventory_yeast_viability(
         db.commit()
     except Exception:
         db.rollback()
-    
+
     return result

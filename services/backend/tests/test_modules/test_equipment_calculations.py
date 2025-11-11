@@ -1,6 +1,5 @@
 """Tests for equipment calculation utilities."""
 
-import pytest
 from utils.equipment_calculations import (
     calculate_pre_boil_volume,
     calculate_strike_water_volume,
@@ -84,13 +83,13 @@ def test_calculate_total_water_needed():
         lauter_deadspace=1.0,
         mash_thickness=3.0,
     )
-    
+
     assert "strike_water" in result
     assert "sparge_water" in result
     assert "total_water" in result
     assert "pre_boil_volume" in result
     assert "grain_absorption" in result
-    
+
     assert result["strike_water"] == 15.0  # 5kg * 3L/kg
     assert result["grain_absorption"] == 5.0  # 5kg * 1L/kg
     assert result["pre_boil_volume"] == 32.0  # 20L + 10L evap + 2L loss
@@ -105,7 +104,7 @@ def test_calculate_total_water_needed_no_grain():
         grain_weight=0,
         trub_chiller_loss=2.0,
     )
-    
+
     assert result["strike_water"] == 0.0
     assert result["grain_absorption"] == 0.0
     # For extract brewing, we just need the pre-boil volume
@@ -119,7 +118,7 @@ def test_calculate_total_water_needed_invalid():
         boil_time=60,
         evap_rate=10.0,
     )
-    
+
     assert result["strike_water"] == 0.0
     assert result["sparge_water"] == 0.0
     assert result["total_water"] == 0.0
@@ -164,7 +163,7 @@ def test_calculate_efficiency_invalid():
         target_og=1.050,
     )
     assert result == 0.0
-    
+
     result = calculate_efficiency(
         actual_og=1.050,
         target_og=1.0,  # Target OG of 1.0 is invalid
@@ -180,7 +179,7 @@ def test_calculate_volume_loss():
         boil_time=60,
         evap_rate=10.0,
     )
-    
+
     assert result["trub_chiller_loss"] == 2.0
     assert result["lauter_deadspace"] == 1.0
     assert result["evaporation_loss"] == 10.0  # 10L/hr * 1hr
@@ -195,7 +194,7 @@ def test_calculate_volume_loss_no_evap():
         boil_time=0,
         evap_rate=10.0,
     )
-    
+
     assert result["evaporation_loss"] == 0.0
     assert result["total_loss"] == 3.0  # 2 + 1
 
@@ -208,7 +207,7 @@ def test_calculate_volume_loss_minimal():
         boil_time=60,
         evap_rate=5.0,
     )
-    
+
     assert result["trub_chiller_loss"] == 0.0
     assert result["lauter_deadspace"] == 0.0
     assert result["evaporation_loss"] == 5.0

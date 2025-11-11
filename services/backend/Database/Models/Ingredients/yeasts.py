@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from datetime import datetime
 from database import Base
 
 
@@ -55,7 +54,7 @@ class InventoryYeast(Base):
     max_reuse = Column(Integer, nullable=True)
     add_to_secondary = Column(Boolean, nullable=True)
     batch_id = Column(Integer, ForeignKey("batches.id"))
-    
+
     # Yeast management fields
     yeast_strain_id = Column(Integer, ForeignKey("yeast_strains.id"), nullable=True)
     manufacture_date = Column(DateTime, nullable=True)
@@ -64,7 +63,7 @@ class InventoryYeast(Base):
     harvest_id = Column(Integer, ForeignKey("yeast_harvests.id"), nullable=True)
     current_viability = Column(Float, nullable=True)  # Percentage 0-100
     last_viability_check = Column(DateTime, nullable=True)
-    
+
     # Relationships
     batch = relationship("Batches", back_populates="inventory_yeasts")
     strain = relationship("YeastStrain", back_populates="inventory_items")

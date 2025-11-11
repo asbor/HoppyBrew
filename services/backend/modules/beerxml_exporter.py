@@ -18,19 +18,19 @@ class BeerXMLExportError(Exception):
 def _add_element(parent: ET.Element, tag: str, text: Any, optional: bool = True) -> Optional[ET.Element]:
     """
     Add a child element with text content to a parent element.
-    
+
     Args:
         parent: Parent XML element
         tag: Tag name for the new element
         text: Text content (will be converted to string)
         optional: If True, skip if text is None or empty
-        
+
     Returns:
         The created element or None if skipped
     """
     if optional and (text is None or text == ''):
         return None
-    
+
     elem = ET.SubElement(parent, tag)
     if text is not None:
         elem.text = str(text)
@@ -40,7 +40,7 @@ def _add_element(parent: ET.Element, tag: str, text: Any, optional: bool = True)
 def _export_hop(parent: ET.Element, hop: models.RecipeHop) -> None:
     """Export a hop to BeerXML format"""
     hop_elem = ET.SubElement(parent, 'HOP')
-    
+
     _add_element(hop_elem, 'NAME', hop.name, optional=False)
     _add_element(hop_elem, 'VERSION', hop.version or 1)
     _add_element(hop_elem, 'ALPHA', hop.alpha)
@@ -66,17 +66,17 @@ def _export_hop(parent: ET.Element, hop: models.RecipeHop) -> None:
 def _export_fermentable(parent: ET.Element, fermentable: models.RecipeFermentable) -> None:
     """Export a fermentable to BeerXML format"""
     ferm_elem = ET.SubElement(parent, 'FERMENTABLE')
-    
+
     _add_element(ferm_elem, 'NAME', fermentable.name, optional=False)
     _add_element(ferm_elem, 'VERSION', fermentable.version or 1)
     _add_element(ferm_elem, 'TYPE', fermentable.type)
     _add_element(ferm_elem, 'AMOUNT', fermentable.amount)
     _add_element(ferm_elem, 'YIELD', fermentable.yield_)
     _add_element(ferm_elem, 'COLOR', fermentable.color)
-    
+
     if fermentable.add_after_boil is not None:
         _add_element(ferm_elem, 'ADD_AFTER_BOIL', 'TRUE' if fermentable.add_after_boil else 'FALSE')
-    
+
     _add_element(ferm_elem, 'ORIGIN', fermentable.origin)
     _add_element(ferm_elem, 'SUPPLIER', fermentable.supplier)
     _add_element(ferm_elem, 'NOTES', fermentable.notes)
@@ -85,10 +85,10 @@ def _export_fermentable(parent: ET.Element, fermentable: models.RecipeFermentabl
     _add_element(ferm_elem, 'DIASTATIC_POWER', fermentable.diastatic_power)
     _add_element(ferm_elem, 'PROTEIN', fermentable.protein)
     _add_element(ferm_elem, 'MAX_IN_BATCH', fermentable.max_in_batch)
-    
+
     if fermentable.recommend_mash is not None:
         _add_element(ferm_elem, 'RECOMMEND_MASH', 'TRUE' if fermentable.recommend_mash else 'FALSE')
-    
+
     _add_element(ferm_elem, 'IBU_GAL_PER_LB', fermentable.ibu_gal_per_lb)
     _add_element(ferm_elem, 'DISPLAY_AMOUNT', fermentable.display_amount)
     _add_element(ferm_elem, 'POTENTIAL', fermentable.potential)
@@ -99,16 +99,16 @@ def _export_fermentable(parent: ET.Element, fermentable: models.RecipeFermentabl
 def _export_yeast(parent: ET.Element, yeast: models.RecipeYeast) -> None:
     """Export a yeast to BeerXML format"""
     yeast_elem = ET.SubElement(parent, 'YEAST')
-    
+
     _add_element(yeast_elem, 'NAME', yeast.name, optional=False)
     _add_element(yeast_elem, 'VERSION', yeast.version or 1)
     _add_element(yeast_elem, 'TYPE', yeast.type)
     _add_element(yeast_elem, 'FORM', yeast.form)
     _add_element(yeast_elem, 'AMOUNT', yeast.amount)
-    
+
     if yeast.amount_is_weight is not None:
         _add_element(yeast_elem, 'AMOUNT_IS_WEIGHT', 'TRUE' if yeast.amount_is_weight else 'FALSE')
-    
+
     _add_element(yeast_elem, 'LABORATORY', yeast.laboratory)
     _add_element(yeast_elem, 'PRODUCT_ID', yeast.product_id)
     _add_element(yeast_elem, 'MIN_TEMPERATURE', yeast.min_temperature)
@@ -119,10 +119,10 @@ def _export_yeast(parent: ET.Element, yeast: models.RecipeYeast) -> None:
     _add_element(yeast_elem, 'BEST_FOR', yeast.best_for)
     _add_element(yeast_elem, 'MAX_REUSE', yeast.max_reuse)
     _add_element(yeast_elem, 'TIMES_CULTURED', yeast.times_cultured)
-    
+
     if yeast.add_to_secondary is not None:
         _add_element(yeast_elem, 'ADD_TO_SECONDARY', 'TRUE' if yeast.add_to_secondary else 'FALSE')
-    
+
     _add_element(yeast_elem, 'DISPLAY_AMOUNT', yeast.display_amount)
     _add_element(yeast_elem, 'DISP_MIN_TEMP', yeast.disp_min_temp)
     _add_element(yeast_elem, 'DISP_MAX_TEMP', yeast.disp_max_temp)
@@ -133,17 +133,17 @@ def _export_yeast(parent: ET.Element, yeast: models.RecipeYeast) -> None:
 def _export_misc(parent: ET.Element, misc: models.RecipeMisc) -> None:
     """Export a miscellaneous ingredient to BeerXML format"""
     misc_elem = ET.SubElement(parent, 'MISC')
-    
+
     _add_element(misc_elem, 'NAME', misc.name, optional=False)
     _add_element(misc_elem, 'VERSION', misc.version or 1)
     _add_element(misc_elem, 'TYPE', misc.type)
     _add_element(misc_elem, 'USE', misc.use)
     _add_element(misc_elem, 'AMOUNT', misc.amount)
     _add_element(misc_elem, 'TIME', misc.time)
-    
+
     if misc.amount_is_weight is not None:
         _add_element(misc_elem, 'AMOUNT_IS_WEIGHT', 'TRUE' if misc.amount_is_weight else 'FALSE')
-    
+
     _add_element(misc_elem, 'USE_FOR', misc.use_for)
     _add_element(misc_elem, 'NOTES', misc.notes)
     _add_element(misc_elem, 'DISPLAY_AMOUNT', misc.display_amount)
@@ -155,11 +155,11 @@ def _export_misc(parent: ET.Element, misc: models.RecipeMisc) -> None:
 def _export_recipe(parent: ET.Element, recipe: models.Recipes) -> None:
     """Export a single recipe to BeerXML format"""
     recipe_elem = ET.SubElement(parent, 'RECIPE')
-    
+
     # Required fields
     _add_element(recipe_elem, 'NAME', recipe.name or 'Untitled Recipe', optional=False)
     _add_element(recipe_elem, 'VERSION', recipe.version or 1)
-    
+
     # Optional recipe fields
     _add_element(recipe_elem, 'TYPE', recipe.type)
     _add_element(recipe_elem, 'BREWER', recipe.brewer)
@@ -168,31 +168,31 @@ def _export_recipe(parent: ET.Element, recipe: models.Recipes) -> None:
     _add_element(recipe_elem, 'BOIL_SIZE', recipe.boil_size)
     _add_element(recipe_elem, 'BOIL_TIME', recipe.boil_time)
     _add_element(recipe_elem, 'EFFICIENCY', recipe.efficiency)
-    
+
     # Hops
     if recipe.hops:
         hops_elem = ET.SubElement(recipe_elem, 'HOPS')
         for hop in recipe.hops:
             _export_hop(hops_elem, hop)
-    
+
     # Fermentables
     if recipe.fermentables:
         fermentables_elem = ET.SubElement(recipe_elem, 'FERMENTABLES')
         for fermentable in recipe.fermentables:
             _export_fermentable(fermentables_elem, fermentable)
-    
+
     # Yeasts
     if recipe.yeasts:
         yeasts_elem = ET.SubElement(recipe_elem, 'YEASTS')
         for yeast in recipe.yeasts:
             _export_yeast(yeasts_elem, yeast)
-    
+
     # Miscs
     if recipe.miscs:
         miscs_elem = ET.SubElement(recipe_elem, 'MISCS')
         for misc in recipe.miscs:
             _export_misc(miscs_elem, misc)
-    
+
     # Additional recipe fields
     _add_element(recipe_elem, 'NOTES', recipe.notes)
     _add_element(recipe_elem, 'TASTE_NOTES', recipe.taste_notes)
@@ -231,30 +231,30 @@ def _export_recipe(parent: ET.Element, recipe: models.Recipes) -> None:
 def export_to_beerxml(recipes: List[models.Recipes], pretty_print: bool = True) -> str:
     """
     Export one or more recipes to BeerXML format.
-    
+
     Args:
         recipes: List of Recipe model objects to export
         pretty_print: If True, format XML with indentation
-        
+
     Returns:
         BeerXML formatted string
-        
+
     Raises:
         BeerXMLExportError: If export fails
     """
     if not recipes:
         raise BeerXMLExportError("No recipes provided for export")
-    
+
     # Create root element
     root = ET.Element('RECIPES')
-    
+
     # Export each recipe
     for recipe in recipes:
         try:
             _export_recipe(root, recipe)
         except Exception as e:
             raise BeerXMLExportError(f"Failed to export recipe '{recipe.name}': {str(e)}")
-    
+
     # Convert to string
     if pretty_print:
         # Use minidom for pretty printing
@@ -273,11 +273,11 @@ def export_to_beerxml(recipes: List[models.Recipes], pretty_print: bool = True) 
 def export_recipe_to_beerxml(recipe: models.Recipes, pretty_print: bool = True) -> str:
     """
     Export a single recipe to BeerXML format.
-    
+
     Args:
         recipe: Recipe model object to export
         pretty_print: If True, format XML with indentation
-        
+
     Returns:
         BeerXML formatted string
     """

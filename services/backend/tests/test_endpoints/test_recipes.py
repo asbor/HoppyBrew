@@ -294,14 +294,14 @@ def test_scale_recipe_to_equipment_endpoint(client, db_session):
     assert response.status_code == 200, response.text
 
     data = response.json()
-    
+
     # Verify scaling results
     assert data["original_batch_size"] == pytest.approx(original_batch)
     assert data["target_batch_size"] == pytest.approx(equipment_data["batch_size"])
     assert data["scale_factor"] == pytest.approx(
         equipment_data["batch_size"] / original_batch
     )
-    
+
     # Verify equipment profile info is included
     assert data["equipment_profile_id"] == equipment_id
     assert data["equipment_profile_name"] == equipment_data["name"]
@@ -364,10 +364,6 @@ def test_scale_recipe_to_equipment_with_missing_equipment(client):
     response = client.post(f"/recipes/{recipe_id}/scale-to-equipment/999999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Equipment profile not found"
-
-
-    metrics = data["metrics"]
-    assert set(metrics.keys()) == {"abv", "ibu", "srm"}
 
 
 # Tests for individual ingredient CRUD operations

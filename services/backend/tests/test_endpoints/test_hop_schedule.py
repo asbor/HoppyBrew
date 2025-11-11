@@ -42,19 +42,19 @@ async def test_calculate_hop_schedule():
 
     assert result.total_ibu > 0
     assert len(result.hop_contributions) == 2
-    
+
     # First hop (Magnum) should have higher IBU contribution
     magnum = result.hop_contributions[0]
     assert magnum.name == "Magnum"
     assert magnum.ibu > 30  # Expected ~41-42 IBU
     assert magnum.utilization > 20  # Expected ~23%
-    
+
     # Second hop (Cascade) should have lower IBU contribution
     cascade = result.hop_contributions[1]
     assert cascade.name == "Cascade"
     assert cascade.ibu > 5  # Expected ~9-10 IBU
     assert cascade.utilization > 10  # Expected ~11%
-    
+
     # Total should be sum of contributions
     assert abs(result.total_ibu - (magnum.ibu + cascade.ibu)) < 0.1
 
@@ -94,11 +94,11 @@ async def test_get_hop_substitutions_cascade():
 
     assert result.original_hop == "Cascade"
     assert len(result.substitutes) > 0
-    
+
     # Check that substitutes are sorted by similarity score
     for i in range(len(result.substitutes) - 1):
         assert result.substitutes[i].similarity_score >= result.substitutes[i + 1].similarity_score
-    
+
     # Centennial should be a top substitute for Cascade
     sub_names = [sub.name for sub in result.substitutes]
     assert "Centennial" in sub_names

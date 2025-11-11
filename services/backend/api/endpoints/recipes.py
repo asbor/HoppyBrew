@@ -392,7 +392,7 @@ async def scale_recipe_to_equipment(
 ):
     """
     Scale a recipe to match an equipment profile's batch size and boil size.
-    
+
     This endpoint automatically scales recipes based on equipment profiles,
     allowing brewers to adapt recipes to their specific brewing equipment.
     """
@@ -444,7 +444,7 @@ async def scale_recipe_to_equipment(
     # Build scaled recipe data
     scaled_recipe_data = recipe_model.model_dump()
     scaled_recipe_data["batch_size"] = target_batch_size
-    
+
     # Use equipment's boil_size if available, otherwise scale proportionally
     if equipment.boil_size is not None:
         scaled_recipe_data["boil_size"] = float(equipment.boil_size)
@@ -483,14 +483,14 @@ async def scale_recipe_to_equipment(
 
     scaled_recipe = schemas.Recipe(**scaled_recipe_data)
     boil_volume = scaled_recipe.boil_size
-    
+
     # Calculate metrics for the scaled recipe
     metrics = _calculate_recipe_metrics(
         scaled_recipe,
         target_batch_size=target_batch_size,
         boil_volume=boil_volume,
     )
-    
+
     # Update scaled recipe with calculated metrics
     if metrics.abv is not None:
         scaled_recipe.abv = metrics.abv
@@ -862,23 +862,23 @@ async def import_beerxml_recipes(
 ):
     """
     Import recipes from BeerXML format.
-    
+
     This endpoint accepts a BeerXML file and imports all recipes found within it.
     The import process validates the XML structure and creates new recipe records
     with all associated ingredients.
-    
+
     Returns a summary of the import operation including success count and any errors.
     """
     from modules.beerxml_parser import parse_beerxml, BeerXMLParseError, validate_beerxml
     from pydantic import BaseModel
-    
+
     class BeerXMLImportResponse(BaseModel):
         message: str
         imported_count: int
         skipped_count: int
         errors: List[str]
         recipe_ids: List[int]
-    
+
     # Read file content
     try:
         content = await file.read()
@@ -887,7 +887,7 @@ async def import_beerxml_recipes(
             status_code=400,
             detail=f"Failed to read uploaded file: {str(e)}"
         )
-    
+
     # Validate XML first
     validation = validate_beerxml(content)
     if not validation["valid"]:
@@ -895,7 +895,7 @@ async def import_beerxml_recipes(
             status_code=400,
             detail=f"Invalid BeerXML: {', '.join(validation['errors'])}"
         )
-    
+
     # Parse recipes
     try:
         beerxml_recipes = parse_beerxml(content)
@@ -904,12 +904,12 @@ async def import_beerxml_recipes(
             status_code=400,
             detail=f"Failed to parse BeerXML: {str(e)}"
         )
-    
+
     imported_count = 0
     skipped_count = 0
     errors = []
     recipe_ids = []
-    
+
     for beerxml_recipe in beerxml_recipes:
         try:
             # Create recipe record
@@ -955,10 +955,10 @@ async def import_beerxml_recipes(
                 display_tertiary_temp=beerxml_recipe.display_tertiary_temp,
                 display_age_temp=beerxml_recipe.display_age_temp,
             )
-            
+
             db.add(db_recipe)
             db.flush()  # Get the recipe ID
-            
+
             # Add hops
             for hop in beerxml_recipe.hops:
                 db_hop = models.RecipeHop(
@@ -985,7 +985,7 @@ async def import_beerxml_recipes(
                     display_time=hop.display_time,
                 )
                 db.add(db_hop)
-            
+
             # Add fermentables
             for ferm in beerxml_recipe.fermentables:
                 db_ferm = models.RecipeFermentable(
@@ -1013,7 +1013,7 @@ async def import_beerxml_recipes(
                     display_color=ferm.display_color,
                 )
                 db.add(db_ferm)
-            
+
             # Add yeasts
             for yeast in beerxml_recipe.yeasts:
                 db_yeast = models.RecipeYeast(
@@ -1042,7 +1042,7 @@ async def import_beerxml_recipes(
                     culture_date=yeast.culture_date,
                 )
                 db.add(db_yeast)
-            
+
             # Add miscs
             for misc in beerxml_recipe.miscs:
                 db_misc = models.RecipeMisc(
@@ -1062,16 +1062,16 @@ async def import_beerxml_recipes(
                     batch_size=misc.batch_size,
                 )
                 db.add(db_misc)
-            
+
             db.commit()
             recipe_ids.append(db_recipe.id)
             imported_count += 1
-            
+
         except Exception as e:
             db.rollback()
             skipped_count += 1
             errors.append(f"Failed to import recipe '{beerxml_recipe.name}': {str(e)}")
-    
+
     return BeerXMLImportResponse(
         message=f"Import completed: {imported_count} recipes imported, {skipped_count} skipped",
         imported_count=imported_count,
@@ -1088,17 +1088,17 @@ async def export_recipe_beerxml(
 ):
     """
     Export a single recipe to BeerXML format.
-    
+
     Returns the recipe in BeerXML format as a downloadable file.
     """
     from modules.beerxml_exporter import export_recipe_to_beerxml, BeerXMLExportError
     from fastapi.responses import Response
-    
+
     # Fetch recipe with all relationships
     recipe = _fetch_recipe(db, recipe_id)
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
-    
+
     try:
         xml_content = export_recipe_to_beerxml(recipe, pretty_print=True)
     except BeerXMLExportError as e:
@@ -1106,11 +1106,11 @@ async def export_recipe_beerxml(
             status_code=500,
             detail=f"Failed to export recipe: {str(e)}"
         )
-    
+
     # Generate filename
     safe_name = "".join(c for c in recipe.name if c.isalnum() or c in (' ', '-', '_')).strip()
     filename = f"{safe_name or 'recipe'}_{recipe_id}.xml"
-    
+
     return Response(
         content=xml_content.encode('utf-8'),
         media_type="application/xml",
@@ -1127,31 +1127,31 @@ async def export_multiple_recipes_beerxml(
 ):
     """
     Export multiple recipes to a single BeerXML file.
-    
+
     Accepts a list of recipe IDs and returns them in a single BeerXML file.
     """
     from modules.beerxml_exporter import export_to_beerxml, BeerXMLExportError
     from fastapi.responses import Response
-    
+
     if not recipe_ids:
         raise HTTPException(
             status_code=400,
             detail="No recipe IDs provided"
         )
-    
+
     # Fetch all recipes
     recipes = []
     for recipe_id in recipe_ids:
         recipe = _fetch_recipe(db, recipe_id)
         if recipe:
             recipes.append(recipe)
-    
+
     if not recipes:
         raise HTTPException(
             status_code=404,
             detail="No recipes found with the provided IDs"
         )
-    
+
     try:
         xml_content = export_to_beerxml(recipes, pretty_print=True)
     except BeerXMLExportError as e:
@@ -1159,7 +1159,7 @@ async def export_multiple_recipes_beerxml(
             status_code=500,
             detail=f"Failed to export recipes: {str(e)}"
         )
-    
+
     return Response(
         content=xml_content.encode('utf-8'),
         media_type="application/xml",
