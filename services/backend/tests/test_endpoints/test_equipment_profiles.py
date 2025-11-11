@@ -155,7 +155,7 @@ def test_update_to_duplicate_name_fails(client: TestClient):
     # Create two profiles
     profile1_data = {"name": "Profile A", "batch_size": 20}
     profile2_data = {"name": "Profile B", "batch_size": 25}
-    
+
     client.post("/equipment", json=profile1_data)
     create_response = client.post("/equipment", json=profile2_data)
     profile2_id = create_response.json()["id"]
@@ -175,17 +175,17 @@ def test_efficiency_tracking(client: TestClient):
         "brewhouse_efficiency": 72.5,
         "mash_efficiency": 82.5,
     }
-    
+
     # Create profile
     create_response = client.post("/equipment", json=profile_data)
     assert create_response.status_code == 201
     profile_id = create_response.json()["id"]
-    
+
     # Verify efficiency values are returned
     data = create_response.json()
     assert data["brewhouse_efficiency"] == 72.5
     assert data["mash_efficiency"] == 82.5
-    
+
     # Get profile and verify efficiency values persist
     get_response = client.get(f"/equipment/{profile_id}")
     assert get_response.status_code == 200
@@ -203,16 +203,16 @@ def test_partial_update_preserves_fields(client: TestClient):
         "brewhouse_efficiency": 75.0,
         "mash_efficiency": 85.0,
     }
-    
+
     # Create profile
     create_response = client.post("/equipment", json=profile_data)
     profile_id = create_response.json()["id"]
-    
+
     # Update only efficiency
     update_data = {"brewhouse_efficiency": 80.0}
     response = client.put(f"/equipment/{profile_id}", json=update_data)
     assert response.status_code == 200
-    
+
     data = response.json()
     assert data["brewhouse_efficiency"] == 80.0
     assert data["mash_efficiency"] == 85.0  # Should be preserved
@@ -232,10 +232,10 @@ def test_volume_fields(client: TestClient):
         "top_up_kettle": 0,
         "top_up_water": 0,
     }
-    
+
     response = client.post("/equipment", json=profile_data)
     assert response.status_code == 201
-    
+
     data = response.json()
     assert data["batch_size"] == 20
     assert data["boil_size"] == 30
@@ -248,7 +248,7 @@ def test_batch_equipment_association(client: TestClient, db_session):
     """Test that batches can be associated with equipment profiles."""
     from Database.Models import Batches, EquipmentProfiles, Recipes
     from datetime import datetime
-    
+
     # Create a recipe first (needed for batch)
     recipe = Recipes(
         name="Test Recipe for Equipment",
@@ -262,7 +262,7 @@ def test_batch_equipment_association(client: TestClient, db_session):
     db_session.add(recipe)
     db_session.commit()
     db_session.refresh(recipe)
-    
+
     # Create an equipment profile
     profile_data = {
         "name": "Test Equipment for Batch",
@@ -272,7 +272,7 @@ def test_batch_equipment_association(client: TestClient, db_session):
     equipment_response = client.post("/equipment", json=profile_data)
     assert equipment_response.status_code == 201
     equipment_id = int(equipment_response.json()["id"])
-    
+
     # Create a batch with equipment association
     batch = Batches(
         batch_name="Test Batch with Equipment",
@@ -286,13 +286,13 @@ def test_batch_equipment_association(client: TestClient, db_session):
     db_session.add(batch)
     db_session.commit()
     db_session.refresh(batch)
-    
+
     # Verify the association
     assert batch.equipment_id == equipment_id
     assert batch.equipment_profile is not None
     assert batch.equipment_profile.name == "Test Equipment for Batch"
     assert batch.equipment_profile.brewhouse_efficiency == 75.0
-    
+
     # Verify from equipment side
     equipment = db_session.query(EquipmentProfiles).filter(
         EquipmentProfiles.id == equipment_id

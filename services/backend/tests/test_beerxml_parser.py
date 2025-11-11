@@ -3,7 +3,6 @@ Tests for BeerXML import/export functionality
 """
 
 import pytest
-import io
 from modules.beerxml_parser import (
     parse_beerxml,
     validate_beerxml,
@@ -89,10 +88,10 @@ EMPTY_RECIPES = b"""<?xml version="1.0" encoding="utf-8"?>
 def test_parse_valid_beerxml():
     """Test parsing valid BeerXML content"""
     recipes = parse_beerxml(VALID_BEERXML)
-    
+
     assert len(recipes) == 1
     recipe = recipes[0]
-    
+
     # Check recipe fields
     assert recipe.name == "Test IPA"
     assert recipe.version == 1
@@ -106,7 +105,7 @@ def test_parse_valid_beerxml():
     assert recipe.og == 1.055
     assert recipe.fg == 1.012
     assert recipe.ibu == 45.0
-    
+
     # Check hops
     assert len(recipe.hops) == 1
     hop = recipe.hops[0]
@@ -116,7 +115,7 @@ def test_parse_valid_beerxml():
     assert hop.use == "Boil"
     assert hop.time == 60.0
     assert hop.form == "Pellet"
-    
+
     # Check fermentables
     assert len(recipe.fermentables) == 1
     ferm = recipe.fermentables[0]
@@ -125,7 +124,7 @@ def test_parse_valid_beerxml():
     assert ferm.amount == 4.5
     assert ferm.yield_ == 80.0
     assert ferm.color == 2.5
-    
+
     # Check yeasts
     assert len(recipe.yeasts) == 1
     yeast = recipe.yeasts[0]
@@ -133,7 +132,7 @@ def test_parse_valid_beerxml():
     assert yeast.type == "Ale"
     assert yeast.form == "Dry"
     assert yeast.attenuation == 75.0
-    
+
     # Check miscs
     assert len(recipe.miscs) == 1
     misc = recipe.miscs[0]
@@ -147,7 +146,7 @@ def test_parse_invalid_xml():
     """Test parsing invalid XML raises error"""
     with pytest.raises(BeerXMLParseError) as exc_info:
         parse_beerxml(INVALID_XML)
-    
+
     assert "Invalid XML format" in str(exc_info.value)
 
 
@@ -155,14 +154,14 @@ def test_parse_empty_recipes():
     """Test parsing empty RECIPES element raises error"""
     with pytest.raises(BeerXMLParseError) as exc_info:
         parse_beerxml(EMPTY_RECIPES)
-    
+
     assert "No valid recipes" in str(exc_info.value)
 
 
 def test_validate_valid_beerxml():
     """Test validation of valid BeerXML"""
     result = validate_beerxml(VALID_BEERXML)
-    
+
     assert result["valid"] is True
     assert result["recipe_count"] == 1
     assert len(result["errors"]) == 0
@@ -171,7 +170,7 @@ def test_validate_valid_beerxml():
 def test_validate_invalid_xml():
     """Test validation of invalid XML"""
     result = validate_beerxml(INVALID_XML)
-    
+
     assert result["valid"] is False
     assert len(result["errors"]) > 0
     assert "Invalid XML format" in result["errors"][0]
@@ -180,7 +179,7 @@ def test_validate_invalid_xml():
 def test_validate_empty_recipes():
     """Test validation of empty recipes"""
     result = validate_beerxml(EMPTY_RECIPES)
-    
+
     assert result["valid"] is False
     assert "No RECIPE elements found" in result["errors"][0]
 
@@ -195,9 +194,9 @@ def test_parse_single_recipe_root():
  <BATCH_SIZE>19.0</BATCH_SIZE>
 </RECIPE>
 """
-    
+
     recipes = parse_beerxml(single_recipe_xml)
-    
+
     assert len(recipes) == 1
     assert recipes[0].name == "Single Recipe"
     assert recipes[0].type == "Extract"
@@ -219,9 +218,9 @@ def test_parse_multiple_recipes():
 </RECIPE>
 </RECIPES>
 """
-    
+
     recipes = parse_beerxml(multi_recipe_xml)
-    
+
     assert len(recipes) == 2
     assert recipes[0].name == "Recipe 1"
     assert recipes[1].name == "Recipe 2"
@@ -269,10 +268,10 @@ def test_parse_recipe_with_optional_fields():
  <DISPLAY_FG>1.012 SG</DISPLAY_FG>
 </RECIPE>
 """
-    
+
     recipes = parse_beerxml(full_recipe_xml)
     recipe = recipes[0]
-    
+
     assert recipe.name == "Full Recipe"
     assert recipe.asst_brewer == "Assistant"
     assert recipe.taste_notes == "Hoppy and bitter"
@@ -306,10 +305,10 @@ def test_parse_boolean_fields():
  </FERMENTABLES>
 </RECIPE>
 """
-    
+
     recipes = parse_beerxml(bool_xml)
     ferm = recipes[0].fermentables[0]
-    
+
     assert ferm.add_after_boil is True
     assert ferm.recommend_mash is False
 
@@ -323,10 +322,10 @@ def test_parse_recipe_with_missing_ingredients():
  <BATCH_SIZE>20.0</BATCH_SIZE>
 </RECIPE>
 """
-    
+
     recipes = parse_beerxml(minimal_xml)
     recipe = recipes[0]
-    
+
     assert recipe.name == "Minimal Recipe"
     assert len(recipe.hops) == 0
     assert len(recipe.fermentables) == 0

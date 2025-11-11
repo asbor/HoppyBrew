@@ -4,7 +4,6 @@ Seed data for common yeast strains.
 This script populates the yeast_strains table with commonly used brewing yeast strains.
 """
 from sqlalchemy.orm import Session
-from datetime import datetime
 from typing import List, Dict, Any
 
 # Common yeast strains data
@@ -78,7 +77,7 @@ YEAST_STRAINS_DATA: List[Dict[str, Any]] = [
         "max_reuse": 5,
         "viability_days_dry": 1095
     },
-    
+
     # White Labs Liquid Yeasts
     {
         "name": "California Ale",
@@ -148,7 +147,7 @@ YEAST_STRAINS_DATA: List[Dict[str, Any]] = [
         "max_reuse": 5,
         "viability_days_liquid": 180
     },
-    
+
     # Wyeast Liquid Yeasts
     {
         "name": "American Ale",
@@ -224,24 +223,24 @@ YEAST_STRAINS_DATA: List[Dict[str, Any]] = [
 def seed_yeast_strains(db: Session) -> int:
     """
     Seed the database with common yeast strains.
-    
+
     Args:
         db: Database session
-        
+
     Returns:
         Number of strains added
     """
     from Database.Models import YeastStrain
-    
+
     added_count = 0
-    
+
     for strain_data in YEAST_STRAINS_DATA:
         # Check if strain already exists
         existing = db.query(YeastStrain).filter(
             YeastStrain.laboratory == strain_data["laboratory"],
             YeastStrain.product_id == strain_data["product_id"]
         ).first()
-        
+
         if existing:
             # Update existing strain
             for key, value in strain_data.items():
@@ -253,7 +252,7 @@ def seed_yeast_strains(db: Session) -> int:
             db.add(strain)
             added_count += 1
             print(f"Added yeast strain: {strain_data['laboratory']} {strain_data['product_id']}")
-    
+
     try:
         db.commit()
         print(f"\nSuccessfully seeded {added_count} new yeast strains")
@@ -267,7 +266,7 @@ def seed_yeast_strains(db: Session) -> int:
 if __name__ == "__main__":
     """Run this script to seed yeast strains"""
     from database import SessionLocal
-    
+
     print("Seeding yeast strains...")
     db = SessionLocal()
     try:

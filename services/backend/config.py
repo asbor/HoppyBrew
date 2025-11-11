@@ -112,7 +112,10 @@ class Settings:
         """Construct database URL from individual components"""
         if os.getenv("TESTING") == "1":
             return self.TEST_DATABASE_URL
-        return f"postgresql+psycopg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
+        return (
+            f"postgresql+psycopg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}"
+            f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
+        )
 
     @property
     def is_production(self) -> bool:

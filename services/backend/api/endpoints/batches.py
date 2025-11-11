@@ -348,15 +348,22 @@ async def consume_ingredients(
             if not inventory_item:
                 raise HTTPException(
                     status_code=404,
-                    detail=f"Inventory item {ingredient.inventory_item_id} of type {ingredient.inventory_item_type} not found",
+                    detail=(
+                        f"Inventory item {ingredient.inventory_item_id} "
+                        f"of type {ingredient.inventory_item_type} not found"
+                    ),
                 )
 
             # Check if item has sufficient stock (if inventory field exists and is numeric)
             current_stock = _get_inventory_stock(inventory_item)
             if current_stock is not None and current_stock < ingredient.quantity_used:
+                item_name = getattr(inventory_item, 'name', 'item')
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Insufficient stock for {getattr(inventory_item, 'name', 'item')}. Available: {current_stock}, Required: {ingredient.quantity_used}",
+                    detail=(
+                        f"Insufficient stock for {item_name}. "
+                        f"Available: {current_stock}, Required: {ingredient.quantity_used}"
+                    ),
                 )
 
             # Create batch_ingredient record

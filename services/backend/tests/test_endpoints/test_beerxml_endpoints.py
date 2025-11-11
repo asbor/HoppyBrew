@@ -4,7 +4,6 @@ Tests for BeerXML import/export API endpoints
 
 import pytest
 import io
-from fastapi.testclient import TestClient
 
 
 # Sample BeerXML for testing
@@ -72,23 +71,23 @@ def test_import_beerxml_success(client, db_session):
     files = {
         "file": ("test_recipe.xml", io.BytesIO(SAMPLE_BEERXML), "application/xml")
     }
-    
+
     response = client.post("/api/recipes/import/beerxml", files=files)
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["imported_count"] == 1
     assert data["skipped_count"] == 0
     assert len(data["errors"]) == 0
     assert len(data["recipe_ids"]) == 1
     assert "Import completed" in data["message"]
-    
+
     # Verify recipe was created in database
     recipe_id = data["recipe_ids"][0]
     response = client.get(f"/api/recipes/{recipe_id}")
     assert response.status_code == 200
-    
+
     recipe = response.json()
     assert recipe["name"] == "API Test IPA"
     assert recipe["type"] == "All Grain"
@@ -106,9 +105,9 @@ def test_import_beerxml_invalid_xml(client):
     files = {
         "file": ("invalid.xml", io.BytesIO(invalid_xml), "application/xml")
     }
-    
+
     response = client.post("/api/recipes/import/beerxml", files=files)
-    
+
     assert response.status_code == 400
     assert "Invalid XML format" in response.json()["detail"]
 
@@ -122,9 +121,9 @@ def test_import_beerxml_empty_recipes(client):
     files = {
         "file": ("empty.xml", io.BytesIO(empty_xml), "application/xml")
     }
-    
+
     response = client.post("/api/recipes/import/beerxml", files=files)
-    
+
     assert response.status_code == 400
     assert "Invalid BeerXML" in response.json()["detail"]
 
@@ -147,16 +146,16 @@ def test_import_beerxml_multiple_recipes(client, db_session):
 </RECIPE>
 </RECIPES>
 """
-    
+
     files = {
         "file": ("multi.xml", io.BytesIO(multi_recipe_xml), "application/xml")
     }
-    
+
     response = client.post("/api/recipes/import/beerxml", files=files)
-    
+
     assert response.status_code == 200
     data = response.json()
-    
+
     assert data["imported_count"] == 2
     assert len(data["recipe_ids"]) == 2
 
@@ -164,13 +163,13 @@ def test_import_beerxml_multiple_recipes(client, db_session):
 def test_export_single_recipe_beerxml(client, db_session, sample_recipe):
     """Test exporting a single recipe to BeerXML"""
     recipe_id = sample_recipe["id"]
-    
+
     response = client.get(f"/api/recipes/{recipe_id}/export/beerxml")
-    
+
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/xml; charset=utf-8"
     assert "attachment" in response.headers["content-disposition"]
-    
+
     # Verify XML is valid and contains recipe data
     xml_content = response.content
     assert b"<RECIPES>" in xml_content
@@ -182,7 +181,7 @@ def test_export_single_recipe_beerxml(client, db_session, sample_recipe):
 def test_export_nonexistent_recipe(client):
     """Test exporting non-existent recipe returns 404"""
     response = client.get("/api/recipes/99999/export/beerxml")
-    
+
     assert response.status_code == 404
     assert "Recipe not found" in response.json()["detail"]
 
@@ -200,18 +199,18 @@ def test_export_multiple_recipes_beerxml(client, db_session, sample_recipe):
         "yeasts": [],
         "miscs": [],
     }
-    
+
     create_response = client.post("/api/recipes", json=recipe_data)
     assert create_response.status_code == 200
     second_recipe_id = create_response.json()["id"]
-    
+
     # Export both recipes
     recipe_ids = [sample_recipe["id"], second_recipe_id]
     response = client.post("/api/recipes/export/beerxml", json=recipe_ids)
-    
+
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/xml; charset=utf-8"
-    
+
     # Verify both recipes are in the XML
     xml_content = response.content
     assert b"<RECIPES>" in xml_content
@@ -222,7 +221,7 @@ def test_export_multiple_recipes_beerxml(client, db_session, sample_recipe):
 def test_export_multiple_recipes_empty_list(client):
     """Test exporting with empty recipe list returns error"""
     response = client.post("/api/recipes/export/beerxml", json=[])
-    
+
     assert response.status_code == 400
     assert "No recipe IDs provided" in response.json()["detail"]
 
@@ -230,7 +229,7 @@ def test_export_multiple_recipes_empty_list(client):
 def test_export_multiple_recipes_invalid_ids(client):
     """Test exporting with all invalid IDs returns error"""
     response = client.post("/api/recipes/export/beerxml", json=[99998, 99999])
-    
+
     assert response.status_code == 404
     assert "No recipes found" in response.json()["detail"]
 
@@ -241,34 +240,34 @@ def test_roundtrip_import_export(client, db_session):
     files = {
         "file": ("test_recipe.xml", io.BytesIO(SAMPLE_BEERXML), "application/xml")
     }
-    
+
     import_response = client.post("/api/recipes/import/beerxml", files=files)
     assert import_response.status_code == 200
-    
+
     recipe_id = import_response.json()["recipe_ids"][0]
-    
+
     # Export the same recipe
     export_response = client.get(f"/api/recipes/{recipe_id}/export/beerxml")
     assert export_response.status_code == 200
-    
+
     exported_xml = export_response.content
-    
+
     # Re-import the exported XML
     files2 = {
         "file": ("reimport.xml", io.BytesIO(exported_xml), "application/xml")
     }
-    
+
     reimport_response = client.post("/api/recipes/import/beerxml", files=files2)
     assert reimport_response.status_code == 200
-    
+
     reimport_data = reimport_response.json()
     assert reimport_data["imported_count"] == 1
-    
+
     # Verify the re-imported recipe has the same data
     new_recipe_id = reimport_data["recipe_ids"][0]
     original_recipe = client.get(f"/api/recipes/{recipe_id}").json()
     new_recipe = client.get(f"/api/recipes/{new_recipe_id}").json()
-    
+
     # Compare key fields (excluding IDs and auto-generated fields)
     assert original_recipe["name"] == new_recipe["name"]
     assert original_recipe["type"] == new_recipe["type"]
@@ -288,20 +287,20 @@ def test_import_beerxml_with_special_characters(client, db_session):
  <NOTES>Notes with "quotes" and 'apostrophes'</NOTES>
 </RECIPE>
 """
-    
+
     files = {
         "file": ("special.xml", io.BytesIO(special_chars_xml), "application/xml")
     }
-    
+
     response = client.post("/api/recipes/import/beerxml", files=files)
-    
+
     assert response.status_code == 200
     data = response.json()
     assert data["imported_count"] == 1
-    
+
     recipe_id = data["recipe_ids"][0]
     recipe = client.get(f"/api/recipes/{recipe_id}").json()
-    
+
     assert "Special <Characters>" in recipe["name"]
     assert "quotes" in recipe["notes"]
 
@@ -354,7 +353,7 @@ def sample_recipe(client, db_session):
             }
         ],
     }
-    
+
     response = client.post("/api/recipes", json=recipe_data)
     assert response.status_code == 200
     return response.json()
