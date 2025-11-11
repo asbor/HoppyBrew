@@ -77,6 +77,8 @@ The project, undertaken as part of the Software Engineering course at the Facult
 - **Recipe Management**: Create, edit, and manage brewing recipes with detailed ingredient tracking
 - **Batch Tracking**: Monitor active brewing batches through all stages of production
 - **Inventory Management**: Track hops, fermentables, yeasts, and miscellaneous ingredients
+- **Temperature Control Integration**: Automatic fermentation monitoring with Tilt and iSpindel devices
+- **Temperature Alerts**: Configure alerts for fermentation temperature thresholds
 - **HomeAssistant Integration**: Monitor your brewing processes through HomeAssistant dashboards
 - **Self-Hosted**: Run on your own infrastructure with full control over your data
 
@@ -584,6 +586,16 @@ sensor:
     resource: http://your-hoppybrew-host:8000/api/homeassistant/summary
     value_template: "{{ value_json.active_batches }}"
 ```
+
+### Temperature Control Integration
+
+HoppyBrew supports automatic fermentation monitoring with Tilt and iSpindel devices. See [DEVICE_INTEGRATION.md](DEVICE_INTEGRATION.md) for setup instructions.
+
+Features:
+- Automatic data import every 15 minutes
+- Temperature alerts and notifications
+- Support for iSpindel (WiFi) and Tilt (Bluetooth/Cloud)
+- Real-time fermentation tracking
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
