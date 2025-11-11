@@ -9,6 +9,7 @@
   * [Frontend Component Guide](Frontend-Guide)
   * [Deployment Guide](Deployment-Guide)
   * [Operations Runbook](Operations-Runbook)
+  * [Troubleshooting](Troubleshooting)
 * **People**
   * [User Onboarding](User-Onboarding)
   * [Contributing](../CONTRIBUTING)

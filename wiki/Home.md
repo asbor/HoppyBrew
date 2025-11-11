@@ -10,6 +10,7 @@ Welcome to the living documentation for the HoppyBrew platform. This wiki captur
 - [Frontend Component Guide](Frontend-Guide.md)
 - [Development Guide](Development-Guide.md)
 - [Deployment Guide](Deployment-Guide.md)
+- [Troubleshooting](Troubleshooting.md)
 - [User Onboarding](User-Onboarding.md)
 - [Diagram Catalog](Diagram-Catalog.md)
 
