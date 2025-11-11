@@ -103,7 +103,8 @@ class BatchBase(BaseModel):
     status: BatchStatus = BatchStatus.PLANNING
     equipment_id: Optional[int] = None
 
-    model_config = ConfigDict(json_schema_extra={"example": BATCH_BASE_EXAMPLE})
+    model_config = ConfigDict(
+        json_schema_extra={"example": BATCH_BASE_EXAMPLE})
 
 
 class BatchCreate(BatchBase):
@@ -131,7 +132,7 @@ class BatchUpdate(BaseModel):
                 "batch_size": 21.0,
                 "brewer": "Alex Brewer",
                 "brew_date": "2024-03-28T08:00:00Z",
-                "status": "brew_day",
+                "status": "brewing",
             }
         }
     )

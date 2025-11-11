@@ -71,7 +71,7 @@
         </template>
 
         <!-- Brew Day Phase -->
-        <template v-else-if="currentBatch.status === 'brew_day'">
+        <template v-else-if="currentBatch.status === 'brewing'">
           <BatchBrewingPhase :batch="currentBatch" @start-fermentation="startFermentation"
             @update-batch="handleBatchUpdate" />
         </template>
@@ -201,7 +201,7 @@ const handlePhaseChange = async (newPhase: string) => {
 }
 
 const startBrewDay = async () => {
-  await handlePhaseChange('brew_day')
+  await handlePhaseChange('brewing')
 }
 
 const startFermentation = async () => {

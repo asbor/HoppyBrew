@@ -79,11 +79,12 @@ const newBatch = ref<NewBatch>({
 });
 const loading = ref(false);
 const router = useRouter();
+const { buildUrl } = useApiConfig();
 
 async function fetchRecipes() {
     try {
         loading.value = true;
-        const response = await fetch('http://localhost:8000/recipes', {
+        const response = await fetch(buildUrl('/recipes'), {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -103,7 +104,7 @@ async function fetchRecipes() {
 
 async function createBatch() {
     try {
-        const response = await fetch('http://localhost:8000/batches', {
+        const response = await fetch(buildUrl('/batches'), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

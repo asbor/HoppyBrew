@@ -7,11 +7,12 @@ const searchQuery = ref('');
 const suggestions = ref([]);
 const selectedSuggestionIndex = ref(-1);
 const suggestionsDropdown = ref(null);
+const { buildUrl } = useApiConfig();
 
 async function fetchStyleGuidelines() {
     try {
         loading.value = true;
-        const response = await fetch('http://localhost:8000/style_guidelines', {
+        const response = await fetch(buildUrl('/style_guidelines'), {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

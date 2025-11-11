@@ -26,8 +26,7 @@ export function getBatchStatusColor(status: BatchStatus | string): string {
     complete: 'bg-green-600',        // Darker green for completion
     archived: 'bg-gray-400',         // Light gray for archived
     
-    // Legacy status names for backward compatibility
-    brew_day: 'bg-amber-500',
+    // Legacy status names for backward compatibility (deprecated - will be removed)
     primary_fermentation: 'bg-sky-500',
     secondary_fermentation: 'bg-blue-500',
     packaged: 'bg-emerald-500',

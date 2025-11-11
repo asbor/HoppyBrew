@@ -71,7 +71,7 @@ services:
       - ./services/nuxt3-shadcn:/app
     command: sh -c "yarn && yarn dev --host 0.0.0.0"
     environment:
-      - API_BASE_URL=http://localhost:8000
+      - API_BASE_URL=http://hoppybrew-backend-1:8000
       - HOST=0.0.0.0
     networks:
       - my-network

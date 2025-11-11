@@ -276,6 +276,18 @@ HoppyBrew has comprehensive documentation to help you get started:
   - Testing guide
   - Debugging procedures
   - Troubleshooting common issues
+
+- **[Debugging Guide](DEBUGGING_GUIDE.md)** - Troubleshooting connectivity issues
+  - Common connectivity problems and solutions
+  - Docker networking configuration
+  - Step-by-step diagnostic procedures
+  - Quick reference for resolving API connection errors
+
+- **[API Best Practices](API_BEST_PRACTICES.md)** - Frontend API integration guide
+  - How to properly make API calls
+  - Using composables correctly
+  - Migration guide for refactoring code
+  - Common patterns and anti-patterns
   
 - **[Contributing Guide](CONTRIBUTING.md)** - How to contribute
   - Code standards

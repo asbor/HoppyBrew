@@ -67,12 +67,13 @@ const reference = ref({
 
 const isLoading = ref(false);
 const isLoadingTitle = ref('Loading...');
+const { buildUrl } = useApiConfig();
 
 async function createReference() {
     isLoading.value = true;
     isLoadingTitle.value = 'Saving reference...';
     try {
-        await axios.post('http://localhost:8000/references', reference.value);
+        await axios.post(buildUrl('/references'), reference.value);
         router.push('/references');
     } catch (error) {
         console.error(error);
