@@ -69,12 +69,13 @@ const reference = ref({
 
 const isLoading = ref(false);
 const isLoadingTitle = ref('Loading...');
+const { buildUrl } = useApiConfig();
 
 async function getReferenceProfile(id: number) {
     isLoading.value = true;
     isLoadingTitle.value = 'Loading reference...';
     try {
-        const response = await axios.get(`http://localhost:8000/references/${id}`);
+        const response = await axios.get(buildUrl(`/references/${id}`));
         reference.value = response.data;
     } catch (error) {
         console.error(error);
@@ -87,7 +88,7 @@ async function updateReference() {
     isLoading.value = true;
     isLoadingTitle.value = 'Updating reference...';
     try {
-        await axios.put(`http://localhost:8000/references/${reference.value.id}`, reference.value);
+        await axios.put(buildUrl(`/references/${reference.value.id}`), reference.value);
         router.back();
     } catch (error) {
         console.error(error);
