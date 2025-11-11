@@ -32,7 +32,7 @@
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "lucide-vue-next": "^0.553.0",
-    "nuxt": "^3.11.2",
+    "nuxt": "^3.16.0",
     "nuxt-highcharts": "^3.1.1",
     "nuxt-socket-io": "^3.0.13",
     "radix-vue": "^1.9.17",
