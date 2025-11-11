@@ -226,29 +226,89 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo;
-            const title = `Security scan alerts for ${context.runId}`;
+            const title = '🔒 Security Scan Alert - Vulnerabilities Detected';
+            const timestamp = new Date().toISOString();
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`;
             const body = [
-              'Automated MCP alert for security scan findings.',
+              '## Security Scan Results',
               '',
               core.getInput('markdown'),
               '',
-              '_Generated automatically by the security workflow._',
+              `**Last Updated:** ${timestamp}`,
+              `**Workflow Run:** [#${context.runId}](${runUrl})`,
+              '',
+              '_This issue is automatically updated when security scans fail. It will be closed when all scans pass._',
             ].join('\n');
+            
+            // Search for existing open security alert issue
             const { data: existing } = await github.rest.search.issuesAndPullRequests({
-              q: `repo:${owner}/${repo} "${title}" in:title state:open label:security-alert`,
+              q: `repo:${owner}/${repo} "${title}" in:title is:issue is:open label:security-alert`,
             });
+            
             if (existing.total_count > 0) {
-              core.info('Existing security alert issue detected; skipping creation.');
-              return;
+              // Update existing issue
+              const issueNumber = existing.items[0].number;
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body,
+              });
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `Security scan failed again. Updated issue with latest results from [run #${context.runId}](${runUrl}).`,
+              });
+              core.info(`Updated existing security alert issue #${issueNumber}`);
+            } else {
+              // Create new issue
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: ['security-alert', 'automated'],
+              });
+              core.info('Created new security alert issue');
             }
-            await github.rest.issues.create({
-              owner,
-              repo,
-              title,
-              body,
-              labels: ['security-alert', 'automated'],
-            });
           markdown: ${{ steps.summary.outputs.markdown }}
+
+      - name: "MCP: Close issue when scans pass"
+        if: steps.summary.outputs.failed == 'false'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const title = '🔒 Security Scan Alert - Vulnerabilities Detected';
+            
+            // Search for existing open security alert issue
+            const { data: existing } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${owner}/${repo} "${title}" in:title is:issue is:open label:security-alert`,
+            });
+            
+            if (existing.total_count > 0) {
+              const issueNumber = existing.items[0].number;
+              const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`;
+              
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `✅ All security scans are now passing! Closing this issue. See [run #${context.runId}](${runUrl}) for details.`,
+              });
+              
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                state: 'closed',
+              });
+              
+              core.info(`Closed security alert issue #${issueNumber} as all scans passed`);
+            } else {
+              core.info('No open security alert issue found');
+            }
 
       - name: Fail workflow if security issues found
         if: steps.summary.outputs.failed == 'true'
