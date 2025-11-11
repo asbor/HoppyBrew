@@ -54,7 +54,32 @@ jobs:
       - name: Run pytest with verbose output
         env:
           PYTHONPATH: ${{ github.workspace }}/services/backend
-        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml --cov=services/backend --cov-report=term-missing --cov-report=xml:reports/coverage.xml --cov-report=html:reports/htmlcov
+          TESTING: 1
+        run: pytest -vv --color=yes --junitxml=reports/pytest-unit.xml --cov=. --cov-report=term-missing --cov-report=xml:reports/coverage.xml --cov-report=html:reports/htmlcov
+
+      - name: Generate coverage badge
+        if: always()
+        run: |
+          COVERAGE=$(python -c "import xml.etree.ElementTree as ET; tree = ET.parse('reports/coverage.xml'); root = tree.getroot(); print(f\"{float(root.attrib['line-rate'])*100:.1f}\")")
+          echo "Coverage: ${COVERAGE}%"
+          echo "COVERAGE=${COVERAGE}" >> $GITHUB_ENV
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const coverage = process.env.COVERAGE || 'N/A';
+            const threshold = 80;
+            const status = parseFloat(coverage) >= threshold ? '✅' : '❌';
+            const body = `## Backend Test Coverage Report ${status}\n\n- **Coverage**: ${coverage}%\n- **Threshold**: ${threshold}%\n\n${parseFloat(coverage) >= threshold ? 'Coverage threshold met!' : '⚠️ Coverage below threshold!'}`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
 
       - name: Upload coverage report
         if: always()

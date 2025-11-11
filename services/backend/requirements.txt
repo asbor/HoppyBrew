@@ -37,6 +37,17 @@ httpx==0.28.1
 selenium==4.38.0
 factory-boy==3.3.0
 
-# Code Quality
+# Code Quality & Development Tools
 flake8==7.3.0
+black==23.12.1
+isort==5.13.2
+mypy==1.8.0
+pylint==3.0.3
+bandit==1.7.6
+radon==6.0.1
+pre-commit==3.6.0
+
+# Type stubs for mypy
+types-requests==2.31.0.20240125
+types-PyYAML==6.0.12.12
 
