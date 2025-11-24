@@ -35,7 +35,7 @@ pytest-asyncio==0.23.7
 pytest-cov==5.0.0
 httpx==0.28.1
 selenium==4.38.0
-factory-boy==3.3.0
+factory-boy==3.3.3
 
 # Code Quality
 flake8==7.3.0
