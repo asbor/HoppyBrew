@@ -91,7 +91,7 @@ jobs:
           echo "FRONTEND_ARCHIVE=frontend-${{ github.sha }}.tar.gz" >> $GITHUB_ENV
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: release-packages
           path: |
