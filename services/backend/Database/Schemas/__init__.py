@@ -244,3 +244,6 @@ __all__ = [
     "IngredientTrackingResponse",
     "InventoryAvailability",
 ]
+
+# Rebuild models with forward references after all imports are complete
+Recipe.model_rebuild()

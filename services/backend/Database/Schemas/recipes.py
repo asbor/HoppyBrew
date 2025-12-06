@@ -1,11 +1,15 @@
 # Database/Schemas/recipes_hops.py
 
+from __future__ import annotations
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Any
+from typing import List, Optional, TYPE_CHECKING
 from .hops import RecipeHopBase, RecipeHop
 from .fermentables import RecipeFermentableBase, RecipeFermentable
 from .miscs import RecipeMiscBase, RecipeMisc
 from .yeasts import RecipeYeastBase, RecipeYeast
+
+if TYPE_CHECKING:
+    from .beer_styles import BeerStyle
 
 
 RECIPE_SAMPLE_HOP = {
@@ -141,7 +145,7 @@ class Recipe(RecipeBase):
     miscs: List[RecipeMisc] = Field(default_factory=list)
     yeasts: List[RecipeYeast] = Field(default_factory=list)
     # Beer style relationship (optional - loaded when style_id is set)
-    style: Optional[Any] = None
+    style: Optional["BeerStyle"] = None
 
     model_config = ConfigDict(
         from_attributes=True,  # Pydantic v2: renamed from orm_mode

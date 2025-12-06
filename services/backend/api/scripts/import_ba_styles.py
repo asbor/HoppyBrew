@@ -36,8 +36,8 @@ def parse_range(value: str) -> tuple:
 
     value = value.strip()
 
-    # Handle single values
-    if "-" not in value or value.count("-") == 1 and value.startswith("-"):
+    # Handle single values (no dash, or negative number like -5)
+    if "-" not in value or (value.count("-") == 1 and value.startswith("-")):
         try:
             val = float(value.replace("%", "").strip())
             return (val, val)
@@ -62,7 +62,8 @@ def extract_style_data(text: str) -> List[Dict[str, Any]]:
     Extract beer style data from parsed PDF text.
 
     This is a heuristic parser that looks for common patterns in
-    BA style guide PDFs.
+    BA style guide PDFs. The parsing is based on typical BA PDF structure
+    and may need refinement for specific PDF versions.
     """
     styles = []
 
@@ -71,9 +72,10 @@ def extract_style_data(text: str) -> List[Dict[str, Any]]:
 
     # Look for patterns like "Style Name" followed by vitals
     lines = text.split("\n")
-    current_style = None
+    current_style: Dict[str, Any] = {"name": "Unknown Style", "description": ""}
+    has_vitals = False
 
-    for i, line in enumerate(lines):
+    for line in lines:
         line = line.strip()
 
         # Skip empty lines
@@ -101,24 +103,30 @@ def extract_style_data(text: str) -> List[Dict[str, Any]]:
             r"SRM[:\s]+(\d+\.?\d*)\s*[-–]\s*(\d+\.?\d*)", line, re.IGNORECASE
         )
 
-        if current_style is None:
-            current_style = {"name": "Unknown Style", "description": ""}
-
         if og_match:
             current_style["og_min"] = float(og_match.group(1))
             current_style["og_max"] = float(og_match.group(2))
+            has_vitals = True
         elif fg_match:
             current_style["fg_min"] = float(fg_match.group(1))
             current_style["fg_max"] = float(fg_match.group(2))
+            has_vitals = True
         elif abv_match:
             current_style["abv_min"] = float(abv_match.group(1))
             current_style["abv_max"] = float(abv_match.group(2))
+            has_vitals = True
         elif ibu_match:
             current_style["ibu_min"] = int(ibu_match.group(1))
             current_style["ibu_max"] = int(ibu_match.group(2))
+            has_vitals = True
         elif srm_match:
             current_style["color_min_srm"] = float(srm_match.group(1))
             current_style["color_max_srm"] = float(srm_match.group(2))
+            has_vitals = True
+
+    # Add the current style if it has any vitals extracted
+    if has_vitals:
+        styles.append(current_style)
 
     return styles
 
@@ -128,6 +136,7 @@ def extract_styles_from_tables(pdf_path: str) -> List[Dict[str, Any]]:
     Extract style data from tables in the PDF.
 
     BA style guides often use tables for vitals data.
+    Returns a list of style data dictionaries.
     """
     styles = []
 
@@ -150,12 +159,6 @@ def extract_styles_from_tables(pdf_path: str) -> List[Dict[str, Any]]:
                     ):
                         if "style" in row_text.lower() and row_text.count("\t") < 3:
                             continue
-
-            # Also extract text for descriptions
-            text = page.extract_text()
-            if text:
-                # Process text for style descriptions
-                pass
 
     return styles
 
