@@ -240,9 +240,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Plus, Eye, Pencil, Trash2, AlertCircle, Loader2 } from 'lucide-vue-next'
+import { useApi } from '@/composables/useApi'
 
 interface EquipmentProfile {
-  id: string
+  id: number
   name: string
   version?: number
   batch_size: number
@@ -269,6 +270,7 @@ interface EquipmentProfile {
   display_top_up_kettle?: string
 }
 
+const api = useApi()
 const profiles = ref<EquipmentProfile[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -311,12 +313,13 @@ const fetchProfiles = async () => {
   error.value = null
   
   try {
-    const { data, error: fetchError } = await useApi('/equipment')
-    
-    if (fetchError.value) {
-      error.value = fetchError.value.message
-    } else if (data.value) {
-      profiles.value = data.value
+    const response = await api.get<EquipmentProfile[]>('/equipment')
+
+    if (response.error.value) {
+      error.value = response.error.value
+      profiles.value = []
+    } else {
+      profiles.value = response.data.value || []
     }
   } catch (e: any) {
     error.value = e.message || 'Failed to load equipment profiles'
@@ -380,23 +383,17 @@ const saveProfile = async () => {
   
   try {
     if (isEditing.value && selectedProfile.value) {
-      const { error: updateError } = await useApi(`/equipment/${selectedProfile.value.id}`, {
-        method: 'PUT',
-        body: formData.value
-      })
+      const response = await api.put<EquipmentProfile>(`/equipment/${selectedProfile.value.id}`, formData.value)
       
-      if (updateError.value) {
-        error.value = updateError.value.message
+      if (response.error.value) {
+        error.value = response.error.value
         return
       }
     } else {
-      const { error: createError } = await useApi('/equipment', {
-        method: 'POST',
-        body: formData.value
-      })
+      const response = await api.post<EquipmentProfile>('/equipment', formData.value)
       
-      if (createError.value) {
-        error.value = createError.value.message
+      if (response.error.value) {
+        error.value = response.error.value
         return
       }
     }
@@ -416,12 +413,10 @@ const deleteProfile = async (profile: EquipmentProfile) => {
   }
   
   try {
-    const { error: deleteError } = await useApi(`/equipment/${profile.id}`, {
-      method: 'DELETE'
-    })
+    const response = await api.delete(`/equipment/${profile.id}`)
     
-    if (deleteError.value) {
-      error.value = deleteError.value.message
+    if (response.error.value) {
+      error.value = response.error.value
       return
     }
     

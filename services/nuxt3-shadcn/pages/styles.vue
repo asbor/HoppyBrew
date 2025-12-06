@@ -1,17 +1,19 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const loading = ref(false);
+const error = ref('');
 const style_guidelines = ref([]);
 const searchQuery = ref('');
 const suggestions = ref([]);
 const selectedSuggestionIndex = ref(-1);
 const suggestionsDropdown = ref(null);
+const { buildUrl } = useApiConfig();
 
 async function fetchStyleGuidelines() {
     try {
         loading.value = true;
-        const response = await fetch('http://localhost:8000/style_guidelines', {
+        const response = await fetch(buildUrl('/style_guidelines'), {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -21,9 +23,11 @@ async function fetchStyleGuidelines() {
             throw new Error('Failed to fetch style_guidelines');
         }
         style_guidelines.value = await response.json();
-        loading.value = false;
     } catch (error) {
         console.error(error);
+        error.value = error instanceof Error ? error.message : 'Failed to load style guidelines';
+    } finally {
+        loading.value = false;
     }
 }
 
@@ -112,6 +116,8 @@ onUnmounted(() => {
             </div>
             <div class="grid gap-4 lg:grid-cols-2">
                 <div v-if="loading">Loading...</div>
+                <div v-else-if="error" class="text-destructive">{{ error }}</div>
+                <div v-else-if="searchStyleGuidelines().length === 0" class="text-muted-foreground">No styles found.</div>
                 <template v-else>
                     <StyleCard v-for="(style, index) in searchStyleGuidelines()" :key="index" :style="style" />
                 </template>

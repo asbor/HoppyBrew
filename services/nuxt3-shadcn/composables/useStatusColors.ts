@@ -24,14 +24,7 @@ export function getBatchStatusColor(status: BatchStatus | string): string {
     conditioning: 'bg-purple-500',   // Purple for conditioning
     packaging: 'bg-emerald-500',     // Green for packaging
     complete: 'bg-green-600',        // Darker green for completion
-    archived: 'bg-gray-400',         // Light gray for archived
-    
-    // Legacy status names for backward compatibility
-    brew_day: 'bg-amber-500',
-    primary_fermentation: 'bg-sky-500',
-    secondary_fermentation: 'bg-blue-500',
-    packaged: 'bg-emerald-500',
-    completed: 'bg-green-600',
+    archived: 'bg-gray-400'          // Light gray for archived
   }
   
   return colors[status] || 'bg-slate-500' // Default to slate for unknown statuses

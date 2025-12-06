@@ -12,10 +12,10 @@ export default defineNuxtConfig({
     componentDir: './components/ui'
   },
   runtimeConfig: {
-    API_URL: process.env.API_BASE_URL || "http://localhost:8000",
     public: {
-      API_URL: process.env.API_BASE_URL || "http://localhost:8000",
-    }
+      // Allow runtime override via NUXT_PUBLIC_API_URL to avoid baking the backend URL at build time
+      API_URL: process.env.NUXT_PUBLIC_API_URL || "http://localhost:8000",
+    },
   },
   generate: {
     fallback: true

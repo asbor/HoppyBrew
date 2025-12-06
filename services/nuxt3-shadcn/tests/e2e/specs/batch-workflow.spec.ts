@@ -131,7 +131,7 @@ test.describe('Batch Workflow', () => {
 
     await mockMultipleApis(page, [
       { pattern: /\/batches\/.*$/, response: batch, method: 'GET' },
-      { pattern: /\/batches\/.*$/, response: { ...batch, status: 'completed' }, method: 'PUT' }
+      { pattern: /\/batches\/.*$/, response: { ...batch, status: 'complete' }, method: 'PUT' }
     ])
 
     await batchPage.navigateToDetails(batch.id)
@@ -166,7 +166,7 @@ test.describe('Batch Workflow', () => {
     const batches = [
       generateBatchData({ name: 'Active Batch 1', status: 'fermenting' }),
       generateBatchData({ name: 'Active Batch 2', status: 'brewing' }),
-      generateBatchData({ name: 'Completed Batch', status: 'completed' })
+      generateBatchData({ name: 'Completed Batch', status: 'complete' })
     ]
 
     await mockMultipleApis(page, [
@@ -186,7 +186,7 @@ test.describe('Batch Workflow', () => {
   test('should archive completed batch', async ({ page }) => {
     const batch = generateBatchData({
       name: 'Archive Me',
-      status: 'completed'
+      status: 'complete'
     })
 
     await mockMultipleApis(page, [

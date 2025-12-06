@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -165,6 +165,14 @@ class BeerStyle(BeerStyleBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class BeerStyleMatch(BaseModel):
+    """Suggestion result with a simple distance score (lower is better)."""
+
+    style: BeerStyle
+    score: float
+    matched_fields: List[str] = []
 
 
 class BeerStyleSearch(BaseModel):

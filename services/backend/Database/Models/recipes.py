@@ -51,6 +51,7 @@ class Recipes(Base):
     est_fg = Column(Float)
     est_color = Column(Float)
     ibu = Column(Float)
+    image_url = Column(String, nullable=True)
     ibu_method = Column(String)
     est_abv = Column(Float)
     abv = Column(Float)
@@ -64,6 +65,9 @@ class Recipes(Base):
     display_secondary_temp = Column(String)
     display_tertiary_temp = Column(String)
     display_age_temp = Column(String)
+    # Style association (BJCP/BA/etc.)
+    style_id = Column(Integer, ForeignKey("beer_styles.id"), nullable=True, index=True)
+    style = relationship("BeerStyle")
     hops = relationship(
         "RecipeHop",
         back_populates="recipe",

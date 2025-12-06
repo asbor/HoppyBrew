@@ -274,6 +274,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { Plus, Eye, Pencil, Trash2, AlertCircle, Loader2 } from 'lucide-vue-next'
+import { useApi } from '@/composables/useApi'
 
 interface WaterProfile {
   id: number
@@ -292,6 +293,7 @@ interface WaterProfile {
   is_default: boolean
 }
 
+const api = useApi()
 const profiles = ref<WaterProfile[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -333,12 +335,13 @@ const fetchProfiles = async () => {
   error.value = null
 
   try {
-    const { data, error: fetchError } = await useApi('/water-profiles')
+    const response = await api.get<WaterProfile[]>('/water-profiles')
 
-    if (fetchError && fetchError.value) {
-      error.value = fetchError.value.message || 'Failed to load water profiles'
-    } else if (data && data.value) {
-      profiles.value = data.value
+    if (response.error.value) {
+      error.value = response.error.value || 'Failed to load water profiles'
+      profiles.value = []
+    } else {
+      profiles.value = response.data.value || []
     }
   } catch (e: any) {
     error.value = e.message || 'Failed to load water profiles'
@@ -398,23 +401,17 @@ const saveProfile = async () => {
 
   try {
     if (isEditing.value && selectedProfile.value) {
-      const { error: updateError } = await useApi(`/water-profiles/${selectedProfile.value.id}`, {
-        method: 'PUT',
-        body: formData.value
-      })
+      const response = await api.put<WaterProfile>(`/water-profiles/${selectedProfile.value.id}`, formData.value)
 
-      if (updateError && updateError.value) {
-        error.value = updateError.value.message || 'Failed to update water profile'
+      if (response.error.value) {
+        error.value = response.error.value || 'Failed to update water profile'
         return
       }
     } else {
-      const { error: createError } = await useApi('/water-profiles', {
-        method: 'POST',
-        body: formData.value
-      })
+      const response = await api.post<WaterProfile>('/water-profiles', formData.value)
 
-      if (createError && createError.value) {
-        error.value = createError.value.message || 'Failed to create water profile'
+      if (response.error.value) {
+        error.value = response.error.value || 'Failed to create water profile'
         return
       }
     }
@@ -436,12 +433,10 @@ const deleteProfile = async (profile: WaterProfile) => {
   }
 
   try {
-    const { error: deleteError } = await useApi(`/water-profiles/${profile.id}`, {
-      method: 'DELETE'
-    })
+    const response = await api.delete(`/water-profiles/${profile.id}`)
 
-    if (deleteError && deleteError.value) {
-      error.value = deleteError.value.message || 'Failed to delete water profile'
+    if (response.error.value) {
+      error.value = response.error.value || 'Failed to delete water profile'
       return
     }
 

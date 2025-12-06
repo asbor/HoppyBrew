@@ -3,48 +3,29 @@
     <!-- Phase Timeline -->
     <div class="relative">
       <div class="flex justify-between mb-8">
-        <div 
-          v-for="(phase, index) in phases" 
-          :key="phase.key"
-          class="flex flex-col items-center relative z-10"
+        <div v-for="(phase, index) in phases" :key="phase.key" class="flex flex-col items-center relative z-10"
           :class="{ 'cursor-pointer': isPhaseAccessible(phase.key) }"
-          @click="isPhaseAccessible(phase.key) && $emit('phase-change', phase.key)"
-        >
+          @click="isPhaseAccessible(phase.key) && $emit('phase-change', phase.key)">
           <!-- Phase Icon -->
-          <div 
-            class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300"
-            :class="getPhaseIconClass(phase.key)"
-          >
-            <Icon 
-              :name="phase.icon" 
-              class="h-6 w-6"
-              :class="getPhaseIconColor(phase.key)"
-            />
+          <div class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300"
+            :class="getPhaseIconClass(phase.key)">
+            <Icon :name="phase.icon" class="h-6 w-6" :class="getPhaseIconColor(phase.key)" />
           </div>
-          
+
           <!-- Phase Label -->
           <div class="mt-2 text-center">
-            <p 
-              class="text-sm font-medium transition-colors duration-300"
-              :class="getPhaseTextClass(phase.key)"
-            >
+            <p class="text-sm font-medium transition-colors duration-300" :class="getPhaseTextClass(phase.key)">
               {{ phase.label }}
             </p>
-            <p 
-              v-if="getPhaseDate(phase.key)" 
-              class="text-xs text-muted-foreground mt-1"
-            >
+            <p v-if="getPhaseDate(phase.key)" class="text-xs text-muted-foreground mt-1">
               {{ formatDate(getPhaseDate(phase.key)) }}
             </p>
           </div>
-          
+
           <!-- Connection Line -->
-          <div 
-            v-if="index < phases.length - 1"
+          <div v-if="index < phases.length - 1"
             class="absolute top-6 left-full w-full h-0.5 transition-colors duration-300"
-            :class="getConnectionLineClass(index)"
-            style="transform: translateX(-50%)"
-          />
+            :class="getConnectionLineClass(index)" style="transform: translateX(-50%)" />
         </div>
       </div>
     </div>
@@ -57,7 +38,7 @@
           <div>
             <h3 class="text-lg font-semibold mb-2">{{ getCurrentPhase()?.label }}</h3>
             <p class="text-muted-foreground mb-4">{{ getCurrentPhase()?.description }}</p>
-            
+
             <!-- Phase Stats -->
             <div class="space-y-2">
               <div class="flex justify-between">
@@ -78,55 +59,44 @@
           <!-- Phase Actions -->
           <div class="space-y-3">
             <h4 class="font-medium">Available Actions</h4>
-            
+
             <!-- Phase-specific action buttons -->
             <template v-if="currentPhase === 'planning'">
-              <Button @click="$emit('phase-change', 'brew_day')" class="w-full">
+              <Button @click="$emit('phase-change', 'brewing')" class="w-full">
                 <Icon name="mdi:fire" class="mr-2 h-4 w-4" />
                 Start Brew Day
               </Button>
             </template>
-            
-            <template v-else-if="currentPhase === 'brew_day'">
-              <Button @click="$emit('phase-change', 'primary_fermentation')" class="w-full">
+
+            <template v-else-if="currentPhase === 'brewing'">
+              <Button @click="$emit('phase-change', 'fermenting')" class="w-full">
                 <Icon name="mdi:flask" class="mr-2 h-4 w-4" />
                 Start Fermentation
               </Button>
             </template>
-            
-            <template v-else-if="currentPhase === 'primary_fermentation'">
-              <Button @click="$emit('phase-change', 'secondary_fermentation')" class="w-full" variant="outline">
-                <Icon name="mdi:flask-outline" class="mr-2 h-4 w-4" />
-                Move to Secondary
-              </Button>
+
+            <template v-else-if="currentPhase === 'fermenting'">
               <Button @click="$emit('phase-change', 'conditioning')" class="w-full">
                 <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
                 Start Conditioning
               </Button>
             </template>
-            
-            <template v-else-if="currentPhase === 'secondary_fermentation'">
-              <Button @click="$emit('phase-change', 'conditioning')" class="w-full">
-                <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
-                Start Conditioning
-              </Button>
-            </template>
-            
+
             <template v-else-if="currentPhase === 'conditioning'">
-              <Button @click="$emit('phase-change', 'packaged')" class="w-full">
+              <Button @click="$emit('phase-change', 'packaging')" class="w-full">
                 <Icon name="mdi:bottle-wine" class="mr-2 h-4 w-4" />
                 Package Beer
               </Button>
             </template>
-            
-            <template v-else-if="currentPhase === 'packaged'">
-              <Button @click="$emit('phase-change', 'completed')" class="w-full">
+
+            <template v-else-if="currentPhase === 'packaging'">
+              <Button @click="$emit('phase-change', 'complete')" class="w-full">
                 <Icon name="mdi:check-circle" class="mr-2 h-4 w-4" />
                 Mark Complete
               </Button>
             </template>
-            
-            <template v-else-if="currentPhase === 'completed'">
+
+            <template v-else-if="currentPhase === 'complete'">
               <Button @click="$emit('phase-change', 'archived')" class="w-full" variant="outline">
                 <Icon name="mdi:archive" class="mr-2 h-4 w-4" />
                 Archive Batch
@@ -162,22 +132,16 @@ const phases = [
     description: 'Recipe planning and preparation phase. Review ingredients and prepare for brew day.'
   },
   {
-    key: 'brew_day',
+    key: 'brewing',
     label: 'Brewing',
     icon: 'mdi:fire',
     description: 'Active brewing process. Mashing, boiling, and wort preparation.'
   },
   {
-    key: 'primary_fermentation',
-    label: 'Primary',
+    key: 'fermenting',
+    label: 'Fermentation',
     icon: 'mdi:flask',
     description: 'Primary fermentation phase. Yeast converts sugars to alcohol and CO2.'
-  },
-  {
-    key: 'secondary_fermentation',
-    label: 'Secondary',
-    icon: 'mdi:flask-outline',
-    description: 'Secondary fermentation for clarity and flavor development.'
   },
   {
     key: 'conditioning',
@@ -186,13 +150,13 @@ const phases = [
     description: 'Cold conditioning phase for clarity and flavor maturation.'
   },
   {
-    key: 'packaged',
-    label: 'Packaged',
+    key: 'packaging',
+    label: 'Packaging',
     icon: 'mdi:bottle-wine',
     description: 'Beer has been packaged into bottles or kegs.'
   },
   {
-    key: 'completed',
+    key: 'complete',
     label: 'Complete',
     icon: 'mdi:check-circle',
     description: 'Brewing process completed. Ready for consumption.'
@@ -270,16 +234,15 @@ const getConnectionLineClass = (index: number) => {
 const getPhaseDate = (phaseKey: string) => {
   // This would come from batch data in a real implementation
   // For now, return mock dates based on phase
-  const mockDates = {
+  const phaseDates: Record<string, string | null | undefined> = {
     planning: props.batchData?.created_at,
-    brew_day: props.batchData?.brew_date,
-    primary_fermentation: props.batchData?.fermentation_start_date,
-    secondary_fermentation: props.batchData?.secondary_start_date,
+    brewing: props.batchData?.brew_date,
+    fermenting: props.batchData?.fermentation_start_date,
     conditioning: props.batchData?.conditioning_start_date,
-    packaged: props.batchData?.packaging_date,
-    completed: props.batchData?.completion_date
+    packaging: props.batchData?.packaging_date,
+    complete: props.batchData?.completion_date,
   }
-  return mockDates[phaseKey as keyof typeof mockDates]
+  return phaseDates[phaseKey]
 }
 
 const formatDate = (date: string | Date | null) => {
@@ -294,7 +257,7 @@ const formatDate = (date: string | Date | null) => {
 const getDaysInCurrentPhase = () => {
   const phaseStartDate = getPhaseDate(props.currentPhase)
   if (!phaseStartDate) return 0
-  
+
   const start = new Date(phaseStartDate)
   const now = new Date()
   const diffTime = Math.abs(now.getTime() - start.getTime())

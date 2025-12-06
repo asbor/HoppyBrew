@@ -37,12 +37,13 @@ async function fetchLogContent() {
 
   try {
     const response = await api.get<{ log_content: string }>('/api/logs')
-    const newLogContent = response.data.value?.log_content
-    
-    if (newLogContent && newLogContent !== previousLogContent.value) {
+    const newLogContent = response.data.value?.log_content ?? ''
+
+    // Always update on first load, and whenever content changes
+    if (previousLogContent.value === null || newLogContent !== previousLogContent.value) {
       logContent.value = newLogContent
       previousLogContent.value = newLogContent
-      
+
       if (isAutoScroll.value) {
         scrollToBottom()
       }

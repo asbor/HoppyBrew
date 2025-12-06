@@ -25,6 +25,7 @@ def _with_relationships(query):
     Apply the common joinedload options needed to return full recipe payloads.
     """
     return query.options(
+        joinedload(models.Recipes.style),
         joinedload(models.Recipes.hops),
         joinedload(models.Recipes.fermentables),
         joinedload(models.Recipes.yeasts),
@@ -170,7 +171,7 @@ async def create_recipe(recipe: schemas.RecipeBase, db: Session = Depends(get_db
         )
     # Exclude the related fields when creating the Recipes instance
     db_recipe = models.Recipes(
-        **recipe.model_dump(exclude={"hops", "fermentables", "yeasts", "miscs"})
+        **recipe.model_dump(exclude={"hops", "fermentables", "yeasts", "miscs", "style"})
     )
     db.add(db_recipe)
     db.commit()
@@ -218,7 +219,7 @@ async def update_recipe(
     # Update the recipe
 
     for key, value in recipe.model_dump(
-        exclude={"hops", "fermentables", "yeasts", "miscs"}
+        exclude={"hops", "fermentables", "yeasts", "miscs", "style"}
     ).items():
         setattr(db_recipe, key, value)
     # Update hops

@@ -6,6 +6,7 @@ from .hops import RecipeHopBase, RecipeHop
 from .fermentables import RecipeFermentableBase, RecipeFermentable
 from .miscs import RecipeMiscBase, RecipeMisc
 from .yeasts import RecipeYeastBase, RecipeYeast
+from .beer_styles import BeerStyle
 
 
 RECIPE_SAMPLE_HOP = {
@@ -103,6 +104,7 @@ class RecipeBase(BaseModel):
     age: Optional[int] = None
     age_temp: Optional[float] = None
     carbonation_used: Optional[str] = None
+    image_url: Optional[str] = None
     est_og: Optional[float] = None
     est_fg: Optional[float] = None
     est_color: Optional[float] = None
@@ -112,6 +114,7 @@ class RecipeBase(BaseModel):
     abv: Optional[float] = None
     actual_efficiency: Optional[float] = None
     calories: Optional[float] = None
+    style_id: Optional[int] = None
     display_batch_size: Optional[str] = None
     display_boil_size: Optional[str] = None
     display_og: Optional[str] = None
@@ -138,6 +141,7 @@ class Recipe(RecipeBase):
     fermentables: List[RecipeFermentable] = Field(default_factory=list)
     miscs: List[RecipeMisc] = Field(default_factory=list)
     yeasts: List[RecipeYeast] = Field(default_factory=list)
+    style: Optional[BeerStyle] = None
 
     model_config = ConfigDict(
         from_attributes=True,  # Pydantic v2: renamed from orm_mode

@@ -2,12 +2,15 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 BATCH_LOG_EXAMPLE = {
-    "log_entry": "Gravity checked at 1.012 before dry hop addition.",
+    "activity": "Gravity checked at 1.012 before dry hop addition.",
+    "notes": "Dry hop scheduled tomorrow.",
+    "timestamp": "2024-03-22T09:00:00Z",
 }
 
 
 class BatchLogBase(BaseModel):
-    log_entry: str
+    activity: str
+    notes: str | None = None
 
     model_config = ConfigDict(json_schema_extra={"example": BATCH_LOG_EXAMPLE})
 
@@ -22,7 +25,7 @@ class BatchLogCreate(BatchLogBase):
 
 class BatchLog(BatchLogBase):
     id: int
-    created_at: datetime
+    timestamp: datetime | None = None
 
     model_config = ConfigDict(
         from_attributes=True,
@@ -30,7 +33,6 @@ class BatchLog(BatchLogBase):
             "example": {
                 **BATCH_LOG_EXAMPLE,
                 "id": 5,
-                "created_at": "2024-03-22T09:00:00Z",
             }
         },
     )

@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useApi } from '@/composables/useApi'
 
 // Define interface for mash profile
 interface MashProfile {
@@ -28,25 +29,20 @@ interface MashProfile {
 const mashProfiles = ref<MashProfile[]>([])
 const loading = ref(false)
 const error = ref('')
+const api = useApi()
 
 async function fetchMashProfiles() {
   loading.value = true
   error.value = ''
   
   try {
-    const response = await fetch('http://localhost:8000/mash', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-    })
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch mash profiles')
+    const response = await api.get<MashProfile[]>('/mash')
+
+    if (response.error.value) {
+      throw new Error(response.error.value)
     }
-    
-    const data = await response.json()
-    mashProfiles.value = data
+
+    mashProfiles.value = response.data.value || []
   } catch (err: any) {
     error.value = err.message || 'Failed to fetch mash profiles'
     console.error('Error fetching mash profiles:', err)
@@ -61,12 +57,10 @@ async function deleteMashProfile(id: string, name: string) {
   }
 
   try {
-    const response = await fetch(`http://localhost:8000/mash/${id}`, {
-      method: 'DELETE',
-    })
-    
-    if (!response.ok) {
-      throw new Error('Failed to delete mash profile')
+    const response = await api.delete(`/mash/${id}`)
+
+    if (response.error.value) {
+      throw new Error(response.error.value)
     }
     
     // Remove from list

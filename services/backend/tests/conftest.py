@@ -1,3 +1,9 @@
+import os
+
+# Set environment variable for testing BEFORE any other imports
+os.environ["TESTING"] = "1"
+os.environ.setdefault("TEST_DATABASE_URL", "sqlite:///:memory:")
+
 import Database.Models
 from database import Base, get_db
 from main import app
@@ -8,10 +14,6 @@ import pkgutil
 import importlib
 import logging
 import pytest
-import os
-
-# Set environment variable for testing BEFORE any other imports
-os.environ["TESTING"] = "1"
 
 
 # Ensure the model package and its submodules load so Base.metadata sees every table
