@@ -1778,15 +1778,10 @@
   resolved "https://registry.yarnpkg.com/@poppinss/exception/-/exception-1.2.2.tgz#8d30d42e126c54fe84e997433e4dcac610090743"
   integrity sha512-m7bpKCD4QMlFCjA/nKTs23fuvoVFoA83brRKmObCUNmi/9tVu8Ve3w4YQAnJu4q3Tjf5fr685HYIC/IA2zHRSg==
 
-"@rolldown/pluginutils@1.0.0-beta.29":
-  version "1.0.0-beta.29"
-  resolved "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.29.tgz"
-  integrity sha512-NIJgOsMjbxAXvoGq/X0gD7VPMQ8j9g0BiDaNjVNVjvl+iKXxL3Jre0v31RmBYeLEmkbj2s02v8vFTbUXi5XS2Q==
-
-"@rolldown/pluginutils@^1.0.0-beta.34":
-  version "1.0.0-beta.49"
-  resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.49.tgz#36916d2bc4fe42e56db3b54e1715e2e83dfaed30"
-  integrity sha512-HLlu3Qn3ePmNCbfehwKWXQMzX/2rzcL6Jmpo+Dl3xnq46TGMyJAgO+IsS8ka7IDLeD3wcoOhjJwxTdIdbrFhGw==
+"@rolldown/pluginutils@1.0.0-beta.50", "@rolldown/pluginutils@^1.0.0-beta.34":
+  version "1.0.0-beta.50"
+  resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.50.tgz#a12f07e9095b8901debcc17d98b4350f0cc64633"
+  integrity sha512-5e76wQiQVeL1ICOZVUg4LSOVYg9jyhGCin+icYozhsUzM+fHE7kddi1bdiE0jwVqTfkjba3jUFbEkoC9WkdvyA==
 
 "@rollup/plugin-alias@^5.1.1":
   version "5.1.1"
@@ -2734,12 +2729,12 @@
     "@rolldown/pluginutils" "^1.0.0-beta.34"
     "@vue/babel-plugin-jsx" "^1.5.0"
 
-"@vitejs/plugin-vue@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-6.0.1.tgz"
-  integrity sha512-+MaE752hU0wfPFJEUAIxqw18+20euHHdxVtMvbFcOEpjEyfqXH/5DCoTHiVJ0J29EhTJdoTkjEv5YBKU9dnoTw==
+"@vitejs/plugin-vue@^6.0.1", "@vitejs/plugin-vue@^6.0.2":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-6.0.2.tgz#318d1828fe73e4a0b73f473040dcb3ad52db38ec"
+  integrity sha512-iHmwV3QcVGGvSC1BG5bZ4z6iwa1SOpAPWmnjOErd4Ske+lZua5K9TtAVdx0gMBClJ28DViCbSmZitjWZsWO3LA==
   dependencies:
-    "@rolldown/pluginutils" "1.0.0-beta.29"
+    "@rolldown/pluginutils" "1.0.0-beta.50"
 
 "@vitest/coverage-v8@^1.6.0":
   version "1.6.1"
