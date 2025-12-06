@@ -47,7 +47,7 @@ defineEmits<Emits>()
 
 const items = ref([
   // Dashboard
-  { title: "Dashboard", path: "/", icon: "ri:dashboard-line" },
+  { title: "Dashboard", path: "/dashboard", icon: "ri:dashboard-line" },
   // Beer brewing recipe
   { title: "Recipes", path: "/recipes", icon: "lucide:book-open-text" },
   // Beer brewing batches
@@ -64,6 +64,8 @@ const items = ref([
   { title: "Styles", path: "/styles", icon: "ri:file-list-3-line" },
   // Tools
   { title: "Tools", path: "/tools", icon: "ri:tools-line" },
+  // API Debug
+  { title: "API Debug", path: "/debug-api", icon: "ri:bug-line" },
   // Settings
   { title: "Settings", path: "/settings", icon: "ri:settings-3-line" },
   // Log

@@ -8,6 +8,7 @@ SQLAlchemy==2.0.30
 sqlalchemy-utils==0.42.0
 psycopg==3.2.12
 alembic==1.17.1
+pdfplumber==0.11.8
 
 # Data Validation
 pydantic==2.7.3
@@ -39,4 +40,3 @@ factory-boy==3.3.0
 
 # Code Quality
 flake8==7.3.0
-

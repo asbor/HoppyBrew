@@ -9,6 +9,7 @@ created when first accessed, avoiding repeated initialization on module import.
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from sqlalchemy.engine import Engine
+from sqlalchemy.engine.url import make_url
 import os
 import time
 from typing import Generator, Optional
@@ -42,14 +43,23 @@ class _DatabaseManager:
         logger = get_logger("database")
         logger.info("Waiting for PostgreSQL to be available")
 
+        # Parse host details from the configured DATABASE_URL so we stay in sync
+        # even when only a single URL override is provided.
+        url = make_url(settings.DATABASE_URL)
+        host = url.host or settings.DATABASE_HOST
+        port = url.port or settings.DATABASE_PORT
+        user = url.username or settings.DATABASE_USER
+        password = url.password or settings.DATABASE_PASSWORD
+        dbname = url.database or settings.DATABASE_NAME
+
         for i in range(max_retries):
             try:
                 conn = psycopg.connect(
-                    host=settings.DATABASE_HOST,
-                    port=settings.DATABASE_PORT,
-                    user=settings.DATABASE_USER,
-                    password=settings.DATABASE_PASSWORD,
-                    dbname="postgres",  # Connect to default database first
+                    host=host,
+                    port=port,
+                    user=user,
+                    password=password,
+                    dbname=dbname,
                 )
                 conn.close()
                 logger.info("PostgreSQL is available")

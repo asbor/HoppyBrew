@@ -76,8 +76,8 @@
             @update-batch="handleBatchUpdate" />
         </template>
 
-        <!-- Fermentation Phases -->
-        <template v-else-if="['primary_fermentation', 'secondary_fermentation'].includes(currentBatch.status)">
+        <!-- Fermentation Phase -->
+        <template v-else-if="currentBatch.status === 'fermenting'">
           <BatchFermentationPhase :batch="currentBatch" @start-conditioning="startConditioning"
             @update-batch="handleBatchUpdate" />
         </template>
@@ -88,13 +88,13 @@
             @update-batch="handleBatchUpdate" />
         </template>
 
-        <!-- Packaged Phase -->
-        <template v-else-if="currentBatch.status === 'packaged'">
+        <!-- Packaging Phase -->
+        <template v-else-if="currentBatch.status === 'packaging'">
           <BatchPackagedPhase :batch="currentBatch" @complete-batch="completeBatch" @update-batch="handleBatchUpdate" />
         </template>
 
-        <!-- Completed Phase -->
-        <template v-else-if="['completed', 'archived'].includes(currentBatch.status)">
+        <!-- Completed / Archived -->
+        <template v-else-if="['complete', 'archived'].includes(currentBatch.status)">
           <BatchCompletedPhase :batch="currentBatch" @archive-batch="archiveBatch" @update-batch="handleBatchUpdate" />
         </template>
       </div>
@@ -205,7 +205,7 @@ const startBrewDay = async () => {
 }
 
 const startFermentation = async () => {
-  await handlePhaseChange('primary_fermentation')
+  await handlePhaseChange('fermenting')
 }
 
 const startConditioning = async () => {
@@ -213,11 +213,11 @@ const startConditioning = async () => {
 }
 
 const packageBatch = async () => {
-  await handlePhaseChange('packaged')
+  await handlePhaseChange('packaging')
 }
 
 const completeBatch = async () => {
-  await handlePhaseChange('completed')
+  await handlePhaseChange('complete')
 }
 
 const archiveBatch = async () => {

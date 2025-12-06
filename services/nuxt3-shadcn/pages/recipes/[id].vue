@@ -13,16 +13,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { Recipe } from '@/composables/useRecipes'
 import type { BatchCreate } from '@/composables/useBatches'
+import BeerGlassIcon from '@/components/recipe/BeerGlassIcon.vue'
 
 const route = useRoute()
 const router = useRouter()
-const { fetchOne, loading: recipeLoading, error: recipeError } = useRecipes()
+const { fetchOne, update, loading: recipeLoading, error: recipeError } = useRecipes()
 const { create: createBatch, loading: batchLoading } = useBatches()
 const { generateBatchName } = useFormatters()
 
 const recipeId = route.params.id as string
 const recipe = ref<Recipe | null>(null)
 const isLoading = computed(() => recipeLoading.value)
+const imageUrlInput = ref<string>('')
+const imageSaving = ref(false)
 
 // Start Brew Dialog state
 const showStartBrewDialog = ref(false)
@@ -39,6 +42,7 @@ onMounted(async () => {
   const result = await fetchOne(recipeId)
   if (result.data.value) {
     recipe.value = result.data.value
+    imageUrlInput.value = result.data.value.image_url || ''
     // Pre-fill batch form with recipe defaults
     batchForm.value.batch_name = generateBatchName(recipe.value.name)
     batchForm.value.batch_size = recipe.value.batch_size
@@ -96,6 +100,36 @@ async function handleStartBrew() {
     alert(`Failed to create batch: ${result.error.value}`)
   }
 }
+
+const hasCustomImage = computed(() => !!recipe.value?.image_url)
+
+async function saveImageUrl(url: string | null) {
+  if (!recipe.value) return
+  imageSaving.value = true
+  const result = await update(String(recipe.value.id), { image_url: url })
+  if (!result.error.value && result.data.value) {
+    recipe.value = result.data.value
+    imageUrlInput.value = result.data.value.image_url || ''
+  }
+  imageSaving.value = false
+}
+
+async function onImageUrlSave() {
+  await saveImageUrl(imageUrlInput.value || null)
+}
+
+function onFileSelected(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = async () => {
+    const dataUrl = typeof reader.result === 'string' ? reader.result : ''
+    imageUrlInput.value = dataUrl
+    await saveImageUrl(dataUrl)
+  }
+  reader.readAsDataURL(file)
+}
 </script>
 
 <template>
@@ -123,15 +157,27 @@ async function handleStartBrew() {
     <div v-else-if="recipe" class="space-y-6">
       <!-- Header with Recipe Actions -->
       <div class="flex justify-between items-start">
-        <div>
-          <div class="flex items-center space-x-4 mb-2">
-            <nuxt-link to="/recipes" class="text-blue-600 hover:text-blue-800 flex items-center">
-              <ChevronLeft class="h-4 w-4 mr-1" />
-              Back to Recipes
-            </nuxt-link>
+        <div class="flex items-start gap-4">
+          <div class="w-20 h-20 rounded-lg bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
+            <img
+              v-if="hasCustomImage"
+              :src="recipe.image_url"
+              alt="Recipe image"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <BeerGlassIcon v-else :srm="recipe.est_color || recipe.abv" :label="recipe.est_color ? `${recipe.est_color.toFixed(0)} SRM` : ''" :size="72" />
           </div>
-          <h1 class="text-3xl font-bold text-foreground">{{ recipe.name }}</h1>
-          <p v-if="recipe.type" class="text-lg text-muted-foreground mt-1">{{ recipe.type }}</p>
+          <div>
+            <div class="flex items-center space-x-4 mb-2">
+              <nuxt-link to="/recipes" class="text-blue-600 hover:text-blue-800 flex items-center">
+                <ChevronLeft class="h-4 w-4 mr-1" />
+                Back to Recipes
+              </nuxt-link>
+            </div>
+            <h1 class="text-3xl font-bold text-foreground">{{ recipe.name }}</h1>
+            <p v-if="recipe.type" class="text-lg text-muted-foreground mt-1">{{ recipe.type }}</p>
+          </div>
         </div>
 
         <div class="flex space-x-2">
@@ -147,6 +193,27 @@ async function handleStartBrew() {
             <Play class="h-4 w-4 mr-2" />
             Start Batch
           </Button>
+        </div>
+      </div>
+
+      <!-- Image controls -->
+      <div class="bg-card rounded-lg border border-border p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h3 class="text-sm font-semibold text-card-foreground">Recipe Image</h3>
+          <p class="text-sm text-muted-foreground">Upload or link an image. If empty, a beer-color icon is shown.</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-3 md:items-center w-full md:w-auto">
+          <Input v-model="imageUrlInput" placeholder="https://example.com/image.jpg" class="md:w-72" />
+          <div class="flex gap-2">
+            <Button variant="outline" as="label">
+              <input type="file" accept="image/*" class="hidden" @change="onFileSelected" />
+              Upload
+            </Button>
+            <Button @click="onImageUrlSave" :disabled="imageSaving">
+              <Icon v-if="imageSaving" name="mdi:loading" class="h-4 w-4 mr-2 animate-spin" />
+              Save
+            </Button>
+          </div>
         </div>
       </div>
 

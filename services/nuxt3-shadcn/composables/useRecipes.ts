@@ -18,6 +18,7 @@ export interface Recipe {
   taste_rating?: number
   og?: number
   fg?: number
+  image_url?: string
   est_og?: number
   est_fg?: number
   est_color?: number
@@ -57,6 +58,7 @@ export interface RecipeCreate {
   boil_time: number
   efficiency: number
   brewer?: string
+  image_url?: string
   notes?: string
   [key: string]: any
 }

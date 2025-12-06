@@ -1,5 +1,9 @@
-# Use the official Node.js LTS image as a base
-FROM node:lts-alpine
+# Use a stable Node.js release that works with Nuxt 3 tooling
+FROM node:20-alpine
+
+# Allow API base URL to be injected at build time so the client bundle points to the right backend
+ARG API_URL=http://localhost:8000
+ENV NUXT_PUBLIC_API_URL=$API_URL
 
 # Set the working directory in the container
 WORKDIR /app

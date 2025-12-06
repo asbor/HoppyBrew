@@ -41,6 +41,6 @@ const emit = defineEmits<{
 const packageBeer = () => {
   // Handle packaging logic
   console.log('Package beer - navigating to packaged phase')
-  emit('update-batch', { status: 'packaged' })
+  emit('update-batch', { status: 'packaging' })
 }
 </script>

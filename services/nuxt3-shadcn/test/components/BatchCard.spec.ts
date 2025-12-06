@@ -53,7 +53,7 @@ describe('BatchCard.vue', () => {
   })
 
   it('handles different batch statuses', () => {
-    const completedBatch = { ...mockBatch, status: 'completed' }
+    const completedBatch = { ...mockBatch, status: 'complete' }
     const wrapper = mount(BatchCard, {
       props: {
         batch: completedBatch

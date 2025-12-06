@@ -69,24 +69,13 @@
             </template>
 
             <template v-else-if="currentPhase === 'brewing'">
-              <Button @click="$emit('phase-change', 'primary_fermentation')" class="w-full">
+              <Button @click="$emit('phase-change', 'fermenting')" class="w-full">
                 <Icon name="mdi:flask" class="mr-2 h-4 w-4" />
                 Start Fermentation
               </Button>
             </template>
 
-            <template v-else-if="currentPhase === 'primary_fermentation'">
-              <Button @click="$emit('phase-change', 'secondary_fermentation')" class="w-full" variant="outline">
-                <Icon name="mdi:flask-outline" class="mr-2 h-4 w-4" />
-                Move to Secondary
-              </Button>
-              <Button @click="$emit('phase-change', 'conditioning')" class="w-full">
-                <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
-                Start Conditioning
-              </Button>
-            </template>
-
-            <template v-else-if="currentPhase === 'secondary_fermentation'">
+            <template v-else-if="currentPhase === 'fermenting'">
               <Button @click="$emit('phase-change', 'conditioning')" class="w-full">
                 <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
                 Start Conditioning
@@ -94,20 +83,20 @@
             </template>
 
             <template v-else-if="currentPhase === 'conditioning'">
-              <Button @click="$emit('phase-change', 'packaged')" class="w-full">
+              <Button @click="$emit('phase-change', 'packaging')" class="w-full">
                 <Icon name="mdi:bottle-wine" class="mr-2 h-4 w-4" />
                 Package Beer
               </Button>
             </template>
 
-            <template v-else-if="currentPhase === 'packaged'">
-              <Button @click="$emit('phase-change', 'completed')" class="w-full">
+            <template v-else-if="currentPhase === 'packaging'">
+              <Button @click="$emit('phase-change', 'complete')" class="w-full">
                 <Icon name="mdi:check-circle" class="mr-2 h-4 w-4" />
                 Mark Complete
               </Button>
             </template>
 
-            <template v-else-if="currentPhase === 'completed'">
+            <template v-else-if="currentPhase === 'complete'">
               <Button @click="$emit('phase-change', 'archived')" class="w-full" variant="outline">
                 <Icon name="mdi:archive" class="mr-2 h-4 w-4" />
                 Archive Batch
@@ -149,16 +138,10 @@ const phases = [
     description: 'Active brewing process. Mashing, boiling, and wort preparation.'
   },
   {
-    key: 'primary_fermentation',
-    label: 'Primary',
+    key: 'fermenting',
+    label: 'Fermentation',
     icon: 'mdi:flask',
     description: 'Primary fermentation phase. Yeast converts sugars to alcohol and CO2.'
-  },
-  {
-    key: 'secondary_fermentation',
-    label: 'Secondary',
-    icon: 'mdi:flask-outline',
-    description: 'Secondary fermentation for clarity and flavor development.'
   },
   {
     key: 'conditioning',
@@ -167,13 +150,13 @@ const phases = [
     description: 'Cold conditioning phase for clarity and flavor maturation.'
   },
   {
-    key: 'packaged',
-    label: 'Packaged',
+    key: 'packaging',
+    label: 'Packaging',
     icon: 'mdi:bottle-wine',
     description: 'Beer has been packaged into bottles or kegs.'
   },
   {
-    key: 'completed',
+    key: 'complete',
     label: 'Complete',
     icon: 'mdi:check-circle',
     description: 'Brewing process completed. Ready for consumption.'
@@ -251,16 +234,15 @@ const getConnectionLineClass = (index: number) => {
 const getPhaseDate = (phaseKey: string) => {
   // This would come from batch data in a real implementation
   // For now, return mock dates based on phase
-  const mockDates = {
+  const phaseDates: Record<string, string | null | undefined> = {
     planning: props.batchData?.created_at,
     brewing: props.batchData?.brew_date,
-    primary_fermentation: props.batchData?.fermentation_start_date,
-    secondary_fermentation: props.batchData?.secondary_start_date,
+    fermenting: props.batchData?.fermentation_start_date,
     conditioning: props.batchData?.conditioning_start_date,
-    packaged: props.batchData?.packaging_date,
-    completed: props.batchData?.completion_date
+    packaging: props.batchData?.packaging_date,
+    complete: props.batchData?.completion_date,
   }
-  return mockDates[phaseKey as keyof typeof mockDates]
+  return phaseDates[phaseKey]
 }
 
 const formatDate = (date: string | Date | null) => {

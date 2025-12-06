@@ -124,6 +124,106 @@ async def delete_style_guideline_source(source_id: int, db: Session = Depends(ge
 
 
 # ============================================================================
+# Style Suggestions
+# ============================================================================
+
+
+def _distance_to_range(value: Optional[float], low: Optional[float], high: Optional[float]) -> Optional[float]:
+    if value is None or low is None or high is None:
+        return None
+    try:
+        low_f = float(low)
+        high_f = float(high)
+        val_f = float(value)
+    except (TypeError, ValueError):
+        return None
+    if low_f <= val_f <= high_f:
+        return 0.0
+    if val_f < low_f:
+        return float(low_f - val_f)
+    return float(val_f - high_f)
+
+
+def _score_style(style: models.BeerStyle, og=None, fg=None, abv=None, ibu=None, srm=None) -> (float, List[str]):
+    distances = []
+    matched = []
+
+    d = _distance_to_range(abv, style.abv_min, style.abv_max)
+    if d is not None:
+        distances.append(d)
+        matched.append("abv")
+
+    d = _distance_to_range(ibu, style.ibu_min, style.ibu_max)
+    if d is not None:
+        distances.append(d)
+        matched.append("ibu")
+
+    d = _distance_to_range(og, style.og_min, style.og_max)
+    if d is not None:
+        distances.append(d)
+        matched.append("og")
+
+    d = _distance_to_range(fg, style.fg_min, style.fg_max)
+    if d is not None:
+        distances.append(d)
+        matched.append("fg")
+
+    color_low = style.color_min_srm or style.color_min_ebc
+    color_high = style.color_max_srm or style.color_max_ebc
+    d = _distance_to_range(srm, color_low, color_high)
+    if d is not None:
+        distances.append(d)
+        matched.append("color")
+
+    if not distances:
+        return float("inf"), matched
+    return float(sum(distances)), matched
+
+
+@router.get(
+    "/beer-styles/suggest",
+    response_model=List[schemas.BeerStyleMatch],
+    summary="Suggest closest matching styles for given vitals",
+)
+async def suggest_styles(
+    og: Optional[float] = Query(None, description="Original gravity"),
+    fg: Optional[float] = Query(None, description="Final gravity"),
+    abv: Optional[float] = Query(None, description="ABV % (e.g., 5.5)"),
+    ibu: Optional[float] = Query(None, description="IBU"),
+    srm: Optional[float] = Query(None, description="SRM color"),
+    guideline_source_id: Optional[int] = None,
+    limit: int = 10,
+    db: Session = Depends(get_db),
+):
+    """
+    Return the closest beer styles based on provided vitals.
+    Lower score = closer match. Any subset of vitals may be provided.
+    """
+    query = db.query(models.BeerStyle)
+    if guideline_source_id is not None:
+        query = query.filter(models.BeerStyle.guideline_source_id == guideline_source_id)
+    styles = query.all()
+
+    scored = []
+    for style in styles:
+        score, matched_fields = _score_style(style, og=og, fg=fg, abv=abv, ibu=ibu, srm=srm)
+        if score != float("inf"):
+            scored.append((score, matched_fields, style))
+
+    scored.sort(key=lambda t: t[0])
+    results = []
+    for score, matched_fields, style in scored[: max(limit, 1)]:
+        results.append(
+            schemas.BeerStyleMatch(
+                style=style,
+                score=round(score, 3),
+                matched_fields=matched_fields,
+            )
+        )
+    return results
+
+
+# ============================================================================
 # Style Categories Endpoints
 # ============================================================================
 
