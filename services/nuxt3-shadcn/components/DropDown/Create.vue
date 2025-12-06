@@ -19,7 +19,8 @@ import {
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-56">
             <DropdownMenuItem class="flex items-center gap-2">
-                <NuxtLink href="/createRecipe"
+                <NuxtLink
+href="/createRecipe"
                     class="flex items-center hover:bg-neutral-300 rounded cursor-pointer p-2 gap-2 w-full">
                     <Icon size="20" name="prime:plus" />
                     <div class="flex flex-col gap-1">
@@ -29,7 +30,8 @@ import {
                 </NuxtLink>
             </DropdownMenuItem>
             <DropdownMenuItem>
-                <NuxtLink href="/ImportXML"
+                <NuxtLink
+href="/ImportXML"
                     class="flex items-center hover:bg-neutral-300 rounded cursor-pointer p-2 gap-2 w-full">
                     <Icon size="20" name="bx:bx-import" />
                     <div class="flex flex-col gap-1">

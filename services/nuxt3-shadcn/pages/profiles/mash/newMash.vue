@@ -136,7 +136,7 @@ const cancel = () => {
         <h1 class="text-3xl font-bold tracking-tight">Create Mash Profile</h1>
         <p class="text-muted-foreground">Design a step-by-step mash schedule</p>
       </div>
-      <Button @click="showTemplateSelector = true" variant="outline">
+      <Button variant="outline" @click="showTemplateSelector = true">
         Use Template
       </Button>
     </div>
@@ -176,8 +176,8 @@ const cancel = () => {
                 <Label for="grain_temp">Grain Temperature (°C)</Label>
                 <Input
                   id="grain_temp"
-                  type="number"
                   v-model.number="mash.grain_temp"
+                  type="number"
                   min="0"
                   max="50"
                 />
@@ -187,8 +187,8 @@ const cancel = () => {
                 <Label for="tun_temp">Tun Temperature (°C)</Label>
                 <Input
                   id="tun_temp"
-                  type="number"
                   v-model.number="mash.tun_temp"
+                  type="number"
                   min="0"
                   max="50"
                 />
@@ -198,8 +198,8 @@ const cancel = () => {
                 <Label for="sparge_temp">Sparge Temperature (°C)</Label>
                 <Input
                   id="sparge_temp"
-                  type="number"
                   v-model.number="mash.sparge_temp"
+                  type="number"
                   min="60"
                   max="85"
                 />
@@ -211,8 +211,8 @@ const cancel = () => {
                 <Label for="ph">Target pH</Label>
                 <Input
                   id="ph"
-                  type="number"
                   v-model.number="mash.ph"
+                  type="number"
                   min="4.0"
                   max="6.0"
                   step="0.1"
@@ -223,8 +223,8 @@ const cancel = () => {
                 <Label for="tun_weight">Tun Weight (lb)</Label>
                 <Input
                   id="tun_weight"
-                  type="number"
                   v-model.number="mash.tun_weight"
+                  type="number"
                   min="0"
                 />
               </div>
@@ -233,8 +233,8 @@ const cancel = () => {
                 <Label for="tun_specific_heat">Tun Specific Heat</Label>
                 <Input
                   id="tun_specific_heat"
-                  type="number"
                   v-model.number="mash.tun_specific_heat"
+                  type="number"
                   min="0"
                   step="0.1"
                 />
@@ -270,10 +270,10 @@ const cancel = () => {
 
     <!-- Actions -->
     <div class="flex justify-end gap-4">
-      <Button @click="cancel" variant="outline" :disabled="isLoading">
+      <Button variant="outline" :disabled="isLoading" @click="cancel">
         Cancel
       </Button>
-      <Button @click="saveMash" :disabled="isLoading">
+      <Button :disabled="isLoading" @click="saveMash">
         {{ isLoading ? 'Saving...' : 'Save Profile' }}
       </Button>
     </div>

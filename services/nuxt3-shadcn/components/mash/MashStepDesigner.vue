@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { TrashIcon, PlusIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
@@ -7,7 +8,6 @@ import { Label } from '~/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 import { Badge } from '~/components/ui/badge'
 import { Alert, AlertDescription } from '~/components/ui/alert'
-import { TrashIcon, PlusIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
 
 // Props
 const props = defineProps<{
@@ -181,7 +181,7 @@ const getStepTypeColor = (type: string) => {
           {{ steps.length }} step{{ steps.length !== 1 ? 's' : '' }} • Total time: {{ totalMashTime }} minutes
         </p>
       </div>
-      <Button @click="addNewStep" size="sm">
+      <Button size="sm" @click="addNewStep">
         <PlusIcon class="h-4 w-4 mr-2" />
         Add Step
       </Button>
@@ -190,7 +190,7 @@ const getStepTypeColor = (type: string) => {
     <!-- Steps list -->
     <div v-if="steps.length === 0" class="text-center py-8 border-2 border-dashed rounded-lg">
       <p class="text-muted-foreground mb-4">No mash steps defined yet</p>
-      <Button @click="addNewStep" variant="outline">
+      <Button variant="outline" @click="addNewStep">
         <PlusIcon class="h-4 w-4 mr-2" />
         Add First Step
       </Button>
@@ -245,36 +245,36 @@ const getStepTypeColor = (type: string) => {
             <!-- Actions -->
             <div class="flex-shrink-0 flex flex-col gap-1">
               <Button
-                @click="moveStepUp(index)"
                 variant="ghost"
                 size="sm"
                 :disabled="index === 0"
                 class="h-8 w-8 p-0"
+                @click="moveStepUp(index)"
               >
                 <ChevronUpIcon class="h-4 w-4" />
               </Button>
               <Button
-                @click="moveStepDown(index)"
                 variant="ghost"
                 size="sm"
                 :disabled="index === steps.length - 1"
                 class="h-8 w-8 p-0"
+                @click="moveStepDown(index)"
               >
                 <ChevronDownIcon class="h-4 w-4" />
               </Button>
               <Button
-                @click="editStep(step, index)"
                 variant="ghost"
                 size="sm"
                 class="h-8 w-8 p-0"
+                @click="editStep(step, index)"
               >
                 <span class="text-xs">✏️</span>
               </Button>
               <Button
-                @click="deleteStep(index)"
                 variant="ghost"
                 size="sm"
                 class="h-8 w-8 p-0 text-destructive"
+                @click="deleteStep(index)"
               >
                 <TrashIcon class="h-4 w-4" />
               </Button>
@@ -319,8 +319,8 @@ const getStepTypeColor = (type: string) => {
               <Label for="stepTemp">Temperature (°C) *</Label>
               <Input
                 id="stepTemp"
-                type="number"
                 v-model.number="editingStep!.step_temp"
+                type="number"
                 min="0"
                 max="100"
                 step="0.5"
@@ -331,8 +331,8 @@ const getStepTypeColor = (type: string) => {
               <Label for="stepTime">Duration (minutes) *</Label>
               <Input
                 id="stepTime"
-                type="number"
                 v-model.number="editingStep!.step_time"
+                type="number"
                 min="0"
                 max="300"
                 step="5"
@@ -344,8 +344,8 @@ const getStepTypeColor = (type: string) => {
             <Label for="rampTime">Ramp Time (minutes)</Label>
             <Input
               id="rampTime"
-              type="number"
               v-model.number="editingStep!.ramp_time"
+              type="number"
               min="0"
               max="60"
               step="1"
@@ -384,7 +384,7 @@ const getStepTypeColor = (type: string) => {
           </Alert>
 
           <div class="flex justify-end gap-2">
-            <Button @click="closeStepDialog" variant="outline">Cancel</Button>
+            <Button variant="outline" @click="closeStepDialog">Cancel</Button>
             <Button @click="saveStep">Save Step</Button>
           </div>
         </CardContent>

@@ -26,7 +26,7 @@
                     <Button variant="outline" @click="router.back()">
                         Cancel
                     </Button>
-                    <Button @click="saveRecipe" :disabled="saving">
+                    <Button :disabled="saving" @click="saveRecipe">
                         <Icon v-if="saving" name="mdi:loading" class="mr-2 h-4 w-4 animate-spin" />
                         Save Changes
                     </Button>

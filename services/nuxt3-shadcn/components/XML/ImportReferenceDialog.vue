@@ -6,7 +6,7 @@
         <AlertDialogContent>
             <AlertDialogHeader>
                 <AlertDialogTitle>Import References from XML</AlertDialogTitle>
-                <input type="file" @change="handleFileChange" accept=".xml" />
+                <input type="file" accept=".xml" @change="handleFileChange" />
                 <div v-if="importedReferences.length > 0">
                     <h2>Imported References:</h2>
                     <ul>

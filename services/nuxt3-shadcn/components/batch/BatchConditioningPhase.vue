@@ -7,7 +7,7 @@
       </CardHeader>
       <CardContent>
         <p>Conditioning phase component - placeholder for now</p>
-        <Button @click="$emit('package-batch')" class="mt-4">
+        <Button class="mt-4" @click="$emit('package-batch')">
           <Icon name="mdi:bottle-wine" class="mr-2 h-4 w-4" />
           Package Beer
         </Button>

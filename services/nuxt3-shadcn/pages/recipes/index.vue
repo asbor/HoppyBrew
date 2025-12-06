@@ -121,13 +121,13 @@ onMounted(async () => {
         <p class="text-muted-foreground">Your personal brewing recipe library</p>
       </div>
       <div class="flex gap-3">
-        <Button asChild variant="outline">
+        <Button as-child variant="outline">
           <NuxtLink href="/recipes/recipeCardWindow">
             <Icon name="mdi:view-grid" class="mr-2 h-4 w-4" />
             Card View
           </NuxtLink>
         </Button>
-        <Button asChild>
+        <Button as-child>
           <NuxtLink href="/recipes/newRecipe">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             New Recipe
@@ -167,7 +167,7 @@ onMounted(async () => {
         </CardDescription>
       </CardHeader>
       <CardFooter class="justify-center">
-        <Button asChild>
+        <Button as-child>
           <NuxtLink href="/recipes/newRecipe">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             Create First Recipe
@@ -228,17 +228,19 @@ onMounted(async () => {
                 {{ formatNumber(recipe.efficiency, 0) }}%
               </TableCell>
               <TableCell class="text-right space-x-2">
-                <Button variant="default" size="sm" @click="openStartBrewDialog(recipe)"
-                  title="Start brewing this recipe">
+                <Button
+variant="default" size="sm" title="Start brewing this recipe"
+                  @click="openStartBrewDialog(recipe)">
                   <Icon name="mdi:flask" class="h-4 w-4" />
                 </Button>
-                <Button asChild variant="ghost" size="sm">
+                <Button as-child variant="ghost" size="sm">
                   <NuxtLink :to="`/recipes/${recipe.id}`">
                     <Icon name="mdi:pencil" class="h-4 w-4" />
                   </NuxtLink>
                 </Button>
-                <Button variant="ghost" size="sm" @click="deleteRecipe(recipe.id)"
-                  class="text-destructive hover:text-destructive">
+                <Button
+variant="ghost" size="sm" class="text-destructive hover:text-destructive"
+                  @click="deleteRecipe(recipe.id)">
                   <Icon name="mdi:delete" class="h-4 w-4" />
                 </Button>
               </TableCell>
@@ -272,7 +274,8 @@ onMounted(async () => {
 
             <div class="space-y-2">
               <Label for="batch_size_form">Batch Size (L)</Label>
-              <Input id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1" min="0"
+              <Input
+id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1" min="0"
                 required />
             </div>
           </div>
@@ -292,7 +295,7 @@ onMounted(async () => {
           <Button type="button" variant="outline" @click="showStartBrewDialog = false">
             Cancel
           </Button>
-          <Button type="button" @click="handleStartBrew" :disabled="batchLoading">
+          <Button type="button" :disabled="batchLoading" @click="handleStartBrew">
             <Icon v-if="batchLoading" name="mdi:loading" class="mr-2 h-4 w-4 animate-spin" />
             Start Brewing
           </Button>

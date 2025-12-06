@@ -208,7 +208,7 @@ onMounted(fetchProfile)
                 Total duration: {{ totalDays }} days
               </CardDescription>
             </div>
-            <Button @click="addStep" variant="outline" size="sm">Add Step</Button>
+            <Button variant="outline" size="sm" @click="addStep">Add Step</Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -313,11 +313,11 @@ onMounted(fetchProfile)
                   <!-- Step Controls -->
                   <div class="flex flex-col gap-2">
                     <Button
-                      @click="step.id && removeStep(step.id, index)"
                       variant="destructive"
                       size="icon"
                       title="Remove step"
                       :disabled="!step.id"
+                      @click="step.id && removeStep(step.id, index)"
                     >
                       ✕
                     </Button>
@@ -331,8 +331,8 @@ onMounted(fetchProfile)
 
       <!-- Actions -->
       <div class="flex justify-between">
-        <Button @click="router.push('/profiles/fermentation')" variant="outline">Back to List</Button>
-        <Button @click="handleSave" :disabled="saving">
+        <Button variant="outline" @click="router.push('/profiles/fermentation')">Back to List</Button>
+        <Button :disabled="saving" @click="handleSave">
           {{ saving ? 'Saving...' : 'Save Changes' }}
         </Button>
       </div>

@@ -129,26 +129,26 @@ onBeforeUnmount(() => {
       </div>
       <div class="flex gap-2">
         <Button 
-          @click="togglePause" 
-          variant="outline"
+          variant="outline" 
           size="sm"
+          @click="togglePause"
         >
           <Icon :name="isPaused ? 'mdi:play' : 'mdi:pause'" class="mr-2 h-4 w-4" />
           {{ isPaused ? 'Resume' : 'Pause' }}
         </Button>
         <Button 
-          @click="scrollToBottom" 
-          variant="outline"
+          variant="outline" 
           size="sm"
+          @click="scrollToBottom"
         >
           <Icon name="mdi:arrow-down" class="mr-2 h-4 w-4" />
           Scroll to Bottom
         </Button>
         <Button 
-          @click="downloadLogs" 
-          variant="outline"
+          variant="outline" 
           size="sm"
           :disabled="!logContent"
+          @click="downloadLogs"
         >
           <Icon name="mdi:download" class="mr-2 h-4 w-4" />
           Download
@@ -185,8 +185,8 @@ onBeforeUnmount(() => {
       <div class="ml-auto flex items-center gap-2">
         <label class="text-sm text-muted-foreground flex items-center gap-2 cursor-pointer">
           <input 
-            type="checkbox" 
             v-model="isAutoScroll" 
+            type="checkbox" 
             class="rounded border-input"
           />
           Auto-scroll
@@ -203,8 +203,8 @@ onBeforeUnmount(() => {
         >
           <pre 
             v-if="logContent" 
-            v-html="formattedLogContent"
             class="p-4 whitespace-pre-wrap break-words"
+            v-html="formattedLogContent"
           ></pre>
           <div v-else class="p-8 text-center text-muted-foreground">
             <Icon name="mdi:file-document-outline" class="mx-auto h-12 w-12 mb-2" />

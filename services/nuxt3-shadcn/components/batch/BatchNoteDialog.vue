@@ -18,8 +18,8 @@
       </div>
 
       <DialogFooter>
-        <Button @click="$emit('update:open', false)" variant="outline">Cancel</Button>
-        <Button @click="save" :disabled="!noteText.trim()">Save Note</Button>
+        <Button variant="outline" @click="$emit('update:open', false)">Cancel</Button>
+        <Button :disabled="!noteText.trim()" @click="save">Save Note</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

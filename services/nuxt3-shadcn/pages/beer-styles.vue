@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { PlusCircle, BookOpen } from 'lucide-vue-next'
 import StyleBrowser from '~/components/StyleBrowser.vue'
 import StyleEditor from '~/components/StyleEditor.vue'
 import { Button } from '@/components/ui/button'
-import { PlusCircle, BookOpen } from 'lucide-vue-next'
 import type { BeerStyle } from '~/composables/useBeerStyles'
 
 // View state

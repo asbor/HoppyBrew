@@ -16,70 +16,83 @@
         <form @submit.prevent="saveFermentable">
           <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" v-model="fermentable.name" required placeholder="Optional"
+            <input
+id="name" v-model="fermentable.name" type="text" required placeholder="Optional"
               class="border-2 border-gray-300 rounded-lg p-2 w-full">
           </div>
           <div class="grid grid-cols-3 gap-4">
             <div>
               <label for="type">Type:</label>
-              <input type="text" id="type" v-model="fermentable.type" required placeholder="Optional"
+              <input
+id="type" v-model="fermentable.type" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="yield">Yield:</label>
-              <input type="number" id="yield" v-model="fermentable.yield_" required placeholder="Optional"
+              <input
+id="yield" v-model="fermentable.yield_" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="color">Color:</label>
-              <input type="number" id="color" v-model="fermentable.color" required placeholder="Optional"
+              <input
+id="color" v-model="fermentable.color" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="origin">Origin:</label>
-              <input type="text" id="origin" v-model="fermentable.origin" required placeholder="Optional"
+              <input
+id="origin" v-model="fermentable.origin" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="supplier">Supplier:</label>
-              <input type="text" id="supplier" v-model="fermentable.supplier" required placeholder="Optional"
+              <input
+id="supplier" v-model="fermentable.supplier" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="potential">Potential:</label>
-              <input type="number" id="potential" v-model="fermentable.potential" required placeholder="Optional"
+              <input
+id="potential" v-model="fermentable.potential" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="amount">Amount:</label>
-              <input type="number" id="amount" v-model="fermentable.amount" required placeholder="Optional"
+              <input
+id="amount" v-model="fermentable.amount" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="cost_per_unit">Cost per unit:</label>
-              <input type="number" id="cost_per_unit" v-model="fermentable.cost_per_unit" required
+              <input
+id="cost_per_unit" v-model="fermentable.cost_per_unit" type="number" required
                 placeholder="Optional" class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="manufacturing_date">Manufacturing Date:</label>
-              <input type="date" id="manufacturing_date" v-model="fermentable.manufacturing_date" required
+              <input
+id="manufacturing_date" v-model="fermentable.manufacturing_date" type="date" required
                 placeholder="Optional" class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="expiry_date">Expiry Date:</label>
-              <input type="date" id="expiry_date" v-model="fermentable.expiry_date" required placeholder="Optional"
+              <input
+id="expiry_date" v-model="fermentable.expiry_date" type="date" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
           </div>
           <div>
             <label for="lot_number">Lot Number:</label>
-            <input type="text" id="lot_number" v-model="fermentable.lot_number" required placeholder="Optional"
+            <input
+id="lot_number" v-model="fermentable.lot_number" type="text" required placeholder="Optional"
               class="border-2 border-gray-300 rounded-lg p-2 w-full">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="flex items-center gap-2 mt-4 mb-2">
               <div>
-                <input type="checkbox" id="exclude_from_total" v-model="fermentable.exclude_from_total"
+                <input
+id="exclude_from_total" v-model="fermentable.exclude_from_total" type="checkbox"
                   class="border-2 border-gray-300 rounded-lg p-2">
               </div>
               <div>
@@ -88,7 +101,8 @@
             </div>
             <div class="flex items-center gap-2 mt-4 mb-2">
               <div>
-                <input type="checkbox" id="not_fermentable" v-model="fermentable.not_fermentable"
+                <input
+id="not_fermentable" v-model="fermentable.not_fermentable" type="checkbox"
                   class="border-2 border-gray-300 rounded-lg p-2">
               </div>
               <div>
@@ -98,22 +112,26 @@
           </div>
           <div>
             <label for="notes">Notes:</label>
-            <textarea id="notes" v-model="fermentable.notes"
+            <textarea
+id="notes" v-model="fermentable.notes"
               class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
           </div>
           <div>
             <label for="description">Description:</label>
-            <textarea id="description" v-model="fermentable.description"
+            <textarea
+id="description" v-model="fermentable.description"
               class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
           </div>
           <div>
             <label for="substitutes">Substitutes:</label>
-            <textarea id="substitutes" v-model="fermentable.substitutes"
+            <textarea
+id="substitutes" v-model="fermentable.substitutes"
               class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
           </div>
           <div>
             <label for="used_in">Used in:</label>
-            <textarea id="used_in" v-model="fermentable.used_in"
+            <textarea
+id="used_in" v-model="fermentable.used_in"
               class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
           </div>
         </form>

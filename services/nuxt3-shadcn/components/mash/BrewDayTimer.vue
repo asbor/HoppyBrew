@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { PlayIcon, PauseIcon, StopIcon, CheckIcon } from '@heroicons/vue/24/outline'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Badge } from '~/components/ui/badge'
-import { PlayIcon, PauseIcon, StopIcon, CheckIcon } from '@heroicons/vue/24/outline'
 
 // Props
 const props = defineProps<{
@@ -267,26 +267,26 @@ onUnmounted(() => {
         <div class="flex gap-2">
           <Button 
             v-if="!isRunning"
-            @click="startTimer"
             class="flex-1"
             :disabled="!currentStep"
+            @click="startTimer"
           >
             <PlayIcon class="h-4 w-4 mr-2" />
             Start
           </Button>
           <Button 
             v-else-if="!isPaused"
-            @click="pauseTimer"
             class="flex-1"
             variant="outline"
+            @click="pauseTimer"
           >
             <PauseIcon class="h-4 w-4 mr-2" />
             Pause
           </Button>
           <Button 
             v-else
-            @click="startTimer"
             class="flex-1"
+            @click="startTimer"
           >
             <PlayIcon class="h-4 w-4 mr-2" />
             Resume
@@ -294,8 +294,8 @@ onUnmounted(() => {
           
           <Button 
             v-if="isRunning"
-            @click="stopTimer"
             variant="destructive"
+            @click="stopTimer"
           >
             <StopIcon class="h-4 w-4 mr-2" />
             Stop
@@ -303,8 +303,8 @@ onUnmounted(() => {
           
           <Button 
             v-if="isRunning && currentStepIndex < steps.length - 1"
-            @click="nextStep"
             variant="outline"
+            @click="nextStep"
           >
             Skip Step
           </Button>
@@ -331,7 +331,6 @@ onUnmounted(() => {
             <button
               v-for="(step, index) in steps"
               :key="index"
-              @click="isRunning ? skipToStep(index) : null"
               class="w-full text-left p-3 rounded-lg border transition-all"
               :class="{
                 'border-primary bg-primary/10': index === currentStepIndex,
@@ -339,6 +338,7 @@ onUnmounted(() => {
                 'border-gray-200 hover:border-gray-300': index > currentStepIndex,
                 'cursor-pointer': isRunning
               }"
+              @click="isRunning ? skipToStep(index) : null"
             >
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">

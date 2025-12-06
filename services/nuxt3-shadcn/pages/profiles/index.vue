@@ -12,7 +12,8 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <NuxtLink href="/profiles/equipment"
+            <NuxtLink
+href="/profiles/equipment"
                 class="flex items-center hover:bg-accent rounded-lg cursor-pointer p-4 gap-4 border transition-colors">
                 <Icon size="40" name="lucide:cooking-pot" />
                 <div class="flex flex-col gap-1">
@@ -21,7 +22,8 @@
                 </div>
             </NuxtLink>
 
-            <NuxtLink href="/profiles/mash"
+            <NuxtLink
+href="/profiles/mash"
                 class="flex items-center hover:bg-accent rounded-lg cursor-pointer p-4 gap-4 border transition-colors">
                 <Icon size="40" name="mi:temperature" />
                 <div class="flex flex-col gap-1">
@@ -30,7 +32,8 @@
                 </div>
             </NuxtLink>
 
-            <NuxtLink href="/profiles/fermentation"
+            <NuxtLink
+href="/profiles/fermentation"
                 class="flex items-center hover:bg-accent rounded-lg cursor-pointer p-4 gap-4 border transition-colors">
                 <Icon size="40" name="material-symbols:fluid-rounded" />
                 <div class="flex flex-col gap-1">
@@ -39,7 +42,8 @@
                 </div>
             </NuxtLink>
 
-            <NuxtLink href="/profiles/water"
+            <NuxtLink
+href="/profiles/water"
                 class="flex items-center hover:bg-accent rounded-lg cursor-pointer p-4 gap-4 border transition-colors">
                 <Icon size="40" name="ph:drop-fill" />
                 <div class="flex flex-col gap-1">
@@ -48,7 +52,8 @@
                 </div>
             </NuxtLink>
 
-            <NuxtLink href="/profiles/customStyles"
+            <NuxtLink
+href="/profiles/customStyles"
                 class="flex items-center hover:bg-accent rounded-lg cursor-pointer p-4 gap-4 border transition-colors">
                 <Icon size="40" name="ri:file-list-3-line" />
                 <div class="flex flex-col gap-1">

@@ -6,10 +6,10 @@
       </div>
       <div>
         <div class="flex gap-4">
-          <Button asChild>
+          <Button as-child>
             <NuxtLink href="/inventory/fermentables/newFermentable">New fermentable</NuxtLink>
           </Button>
-          <Button asChild>
+          <Button as-child>
             <BeerXMLImportFermentableDialog />
           </Button>
         </div>
@@ -63,7 +63,7 @@
             <TableCell>{{ fermentable.substitutes }}</TableCell>
             <TableCell>{{ fermentable.used_in }}</TableCell>
             <TableCell class="text-right">
-              <Button asChild class="mr-2">
+              <Button as-child class="mr-2">
                 <NuxtLink :href="`/inventory/fermentables/${fermentable.id}`">Edit</NuxtLink>
               </Button>
               <Button @click="deleteFermentable(fermentable.id)">Delete</Button>
@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import {
   Table,
   TableBody,
@@ -85,7 +86,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ref, onMounted } from 'vue';
 
 interface Fermentable {
   id: string;

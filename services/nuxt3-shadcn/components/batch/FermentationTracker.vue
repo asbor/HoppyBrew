@@ -11,11 +11,11 @@
             </CardDescription>
           </div>
           <div class="flex gap-2">
-            <Button @click="showReadingDialog = true" variant="default">
+            <Button variant="default" @click="showReadingDialog = true">
               <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
               Add Reading
             </Button>
-            <Button @click="refreshData" variant="outline">
+            <Button variant="outline" @click="refreshData">
               <Icon name="mdi:refresh" class="mr-2 h-4 w-4" />
               Refresh
             </Button>
@@ -41,7 +41,7 @@
           <CardDescription>{{ error }}</CardDescription>
         </CardHeader>
         <CardFooter class="justify-center">
-          <Button @click="refreshData" variant="outline">
+          <Button variant="outline" @click="refreshData">
             <Icon name="mdi:refresh" class="mr-2 h-4 w-4" />
             Try Again
           </Button>
@@ -191,10 +191,10 @@
                 <div class="flex items-center justify-between mb-1">
                   <span class="font-medium">{{ formatDateTime(reading.timestamp) }}</span>
                   <div class="flex gap-2">
-                    <Button @click="editReading(reading)" size="sm" variant="ghost">
+                    <Button size="sm" variant="ghost" @click="editReading(reading)">
                       <Icon name="mdi:pencil" class="h-4 w-4" />
                     </Button>
-                    <Button @click="deleteReading(reading.id)" size="sm" variant="ghost">
+                    <Button size="sm" variant="ghost" @click="deleteReading(reading.id)">
                       <Icon name="mdi:delete" class="h-4 w-4 text-red-500" />
                     </Button>
                   </div>
@@ -261,7 +261,7 @@
         </div>
 
         <DialogFooter>
-          <Button @click="showReadingDialog = false" variant="outline">Cancel</Button>
+          <Button variant="outline" @click="showReadingDialog = false">Cancel</Button>
           <Button @click="saveReading">{{ editingReading ? 'Update' : 'Save' }}</Button>
         </DialogFooter>
       </DialogContent>
@@ -271,12 +271,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import Highcharts from 'highcharts'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import Highcharts from 'highcharts'
 
 const props = defineProps<{
   batchId: number | string

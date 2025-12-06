@@ -67,7 +67,7 @@ onMounted(fetchProfiles)
         </p>
       </div>
       <div>
-        <Button asChild>
+        <Button as-child>
           <NuxtLink href="/profiles/fermentation/new">New Profile</NuxtLink>
         </Button>
       </div>
@@ -114,10 +114,10 @@ onMounted(fetchProfiles)
           <TableCell>{{ profile.steps?.length || 0 }}</TableCell>
           <TableCell>{{ getTotalDays(profile) }} days</TableCell>
           <TableCell class="text-right">
-            <Button asChild variant="outline" size="sm" class="mr-2">
+            <Button as-child variant="outline" size="sm" class="mr-2">
               <NuxtLink :href="`/profiles/fermentation/${profile.id}`">Edit</NuxtLink>
             </Button>
-            <Button @click="profile.id && handleDelete(profile.id)" variant="destructive" size="sm" :disabled="!profile.id">Delete</Button>
+            <Button variant="destructive" size="sm" :disabled="!profile.id" @click="profile.id && handleDelete(profile.id)">Delete</Button>
           </TableCell>
         </TableRow>
       </TableBody>

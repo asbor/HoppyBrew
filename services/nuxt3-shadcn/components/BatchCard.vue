@@ -94,19 +94,19 @@ function handleDelete() {
         
         <CardFooter class="flex gap-2 py-3 px-4 border-t">
             <Button 
-                @click="handleEdit" 
                 variant="default" 
-                size="sm"
+                size="sm" 
                 class="flex-1"
+                @click="handleEdit"
             >
                 <Icon name="mdi:eye" class="mr-1 h-4 w-4" />
                 View Details
             </Button>
             <Button 
-                @click="handleDelete" 
                 variant="outline" 
-                size="sm"
+                size="sm" 
                 class="text-destructive hover:text-destructive"
+                @click="handleDelete"
             >
                 <Icon name="mdi:delete" class="h-4 w-4" />
             </Button>

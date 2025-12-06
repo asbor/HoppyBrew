@@ -16,58 +16,69 @@
         <form @submit.prevent="updateMisc">
           <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" v-model="misc.name" required placeholder="Optional"
+            <input
+id="name" v-model="misc.name" type="text" required placeholder="Optional"
               class="border-2 border-gray-300 rounded-lg p-2 w-full">
           </div>
           <div class="grid grid-cols-3 gap-4">
             <div>
               <label for="type">Type:</label>
-              <input type="text" id="type" v-model="misc.type" required placeholder="Optional"
+              <input
+id="type" v-model="misc.type" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="use">Use:</label>
-              <input type="text" id="use" v-model="misc.use" required placeholder="Optional"
+              <input
+id="use" v-model="misc.use" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="amount">Amount:</label>
-              <input type="number" id="amount" v-model="misc.amount" required placeholder="Optional"
+              <input
+id="amount" v-model="misc.amount" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="amount_is_weight">Amount is Weight:</label>
-              <input type="checkbox" id="amount_is_weight" v-model="misc.amount_is_weight"
+              <input
+id="amount_is_weight" v-model="misc.amount_is_weight" type="checkbox"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="use_for">Use For:</label>
-              <input type="text" id="use_for" v-model="misc.use_for" required placeholder="Optional"
+              <input
+id="use_for" v-model="misc.use_for" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="time">Time:</label>
-              <input type="number" id="time" v-model="misc.time" required placeholder="Optional"
+              <input
+id="time" v-model="misc.time" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="batch_size">Batch Size:</label>
-              <input type="number" id="batch_size" v-model="misc.batch_size" required placeholder="Optional"
+              <input
+id="batch_size" v-model="misc.batch_size" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="display_amount">Display Amount:</label>
-              <input type="text" id="display_amount" v-model="misc.display_amount" required placeholder="Optional"
+              <input
+id="display_amount" v-model="misc.display_amount" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="inventory">Inventory:</label>
-              <input type="number" id="inventory" v-model="misc.inventory" required placeholder="Optional"
+              <input
+id="inventory" v-model="misc.inventory" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="display_time">Display Time:</label>
-              <input type="text" id="display_time" v-model="misc.display_time" required placeholder="Optional"
+              <input
+id="display_time" v-model="misc.display_time" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
           </div>

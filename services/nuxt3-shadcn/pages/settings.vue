@@ -144,9 +144,9 @@
 
           <div class="flex items-center space-x-2">
             <input 
-              type="checkbox" 
               id="is_active" 
-              v-model="deviceForm.is_active"
+              v-model="deviceForm.is_active" 
+              type="checkbox"
               class="rounded"
             />
             <Label for="is_active">Active</Label>

@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
   <Primitive
     :as="as"
     :as-child="asChild"
-    :for="for"
+    :for="props.for"
     :class="cn(
       'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
       props.class

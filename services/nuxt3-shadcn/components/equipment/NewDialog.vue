@@ -62,7 +62,7 @@ const formData = ref({
   display_top_up_kettle: '',
 });
 
-let mode = 'create';
+const mode = 'create';
 
 const saveEquipment = async () => {
   try {

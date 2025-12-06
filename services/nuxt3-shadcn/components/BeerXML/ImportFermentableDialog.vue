@@ -126,7 +126,7 @@ async function importFermentables() {
           Choose a BeerXML file to import fermentables.
         </AlertDialogDescription>
       </AlertDialogHeader>
-      <input type="file" @change="handleFileChange" accept=".xml" />
+      <input type="file" accept=".xml" @change="handleFileChange" />
       <div v-if="importedFermentables.length > 0">
         <h2>Imported Fermentables:</h2>
         <ul>

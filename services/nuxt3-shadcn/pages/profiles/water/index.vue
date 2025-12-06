@@ -13,8 +13,8 @@
       </div>
       <div class="flex gap-2">
         <button
-          @click="showCreateDialog = true"
           class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          @click="showCreateDialog = true"
         >
           + New Profile
         </button>
@@ -25,27 +25,27 @@
     <div class="flex gap-4 items-center bg-white p-4 rounded shadow">
       <div class="flex gap-2">
         <button
-          @click="filterType = 'all'"
           :class="['px-4 py-2 rounded', filterType === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200']"
+          @click="filterType = 'all'"
         >
           All
         </button>
         <button
-          @click="filterType = 'source'"
           :class="['px-4 py-2 rounded', filterType === 'source' ? 'bg-blue-600 text-white' : 'bg-gray-200']"
+          @click="filterType = 'source'"
         >
           Source
         </button>
         <button
-          @click="filterType = 'target'"
           :class="['px-4 py-2 rounded', filterType === 'target' ? 'bg-blue-600 text-white' : 'bg-gray-200']"
+          @click="filterType = 'target'"
         >
           Target
         </button>
       </div>
       <div class="flex gap-2">
         <label class="flex items-center gap-2">
-          <input type="checkbox" v-model="showDefaultOnly" />
+          <input v-model="showDefaultOnly" type="checkbox" />
           <span>Default profiles only</span>
         </label>
       </div>
@@ -86,32 +86,32 @@
             </div>
             <div class="flex gap-2">
               <button
-                @click="viewProfile(profile)"
                 class="text-blue-600 hover:text-blue-800"
                 title="View details"
+                @click="viewProfile(profile)"
               >
                 <Icon name="lucide:eye" size="20" />
               </button>
               <button
-                @click="duplicateProfile(profile.id)"
                 class="text-gray-600 hover:text-gray-800"
                 title="Duplicate"
+                @click="duplicateProfile(profile.id)"
               >
                 <Icon name="lucide:copy" size="20" />
               </button>
               <button
                 v-if="!profile.is_default"
-                @click="editProfile(profile)"
                 class="text-green-600 hover:text-green-800"
                 title="Edit"
+                @click="editProfile(profile)"
               >
                 <Icon name="lucide:edit" size="20" />
               </button>
               <button
                 v-if="!profile.is_default"
-                @click="confirmDelete(profile)"
                 class="text-red-600 hover:text-red-800"
                 title="Delete"
+                @click="confirmDelete(profile)"
               >
                 <Icon name="lucide:trash" size="20" />
               </button>
@@ -309,8 +309,8 @@
           <div class="flex gap-2 justify-end mt-6">
             <button
               type="button"
-              @click="closeDialog"
               class="px-4 py-2 border rounded hover:bg-gray-100"
+              @click="closeDialog"
             >
               Cancel
             </button>
@@ -334,14 +334,14 @@
         </p>
         <div class="flex gap-2 justify-end">
           <button
-            @click="profileToDelete = null"
             class="px-4 py-2 border rounded hover:bg-gray-100"
+            @click="profileToDelete = null"
           >
             Cancel
           </button>
           <button
-            @click="deleteProfile"
             class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            @click="deleteProfile"
           >
             Delete
           </button>

@@ -9,6 +9,7 @@ from database import Base, get_db
 from main import app
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
 from fastapi.testclient import TestClient
 import pkgutil
 import importlib
@@ -38,7 +39,7 @@ logger.debug(f"SQLALCHEMY_DATABASE_URL set to: {SQLALCHEMY_DATABASE_URL}")
 
 # For SQLite in-memory databases, we need to use a StaticPool to share
 # the same database connection across all threads/sessions
-from sqlalchemy.pool import StaticPool
+# from sqlalchemy.pool import StaticPool -> Moved to top imports
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

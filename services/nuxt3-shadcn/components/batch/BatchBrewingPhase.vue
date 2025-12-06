@@ -9,11 +9,11 @@
             <CardDescription>Active brewing session for {{ batch.batch_name }}</CardDescription>
           </div>
           <div class="flex gap-2">
-            <Button @click="pauseSession" variant="outline">
+            <Button variant="outline" @click="pauseSession">
               <Icon name="mdi:pause" class="mr-2 h-4 w-4" />
               Pause Session
             </Button>
-            <Button @click="$emit('start-fermentation')" :disabled="!isBrewingComplete">
+            <Button :disabled="!isBrewingComplete" @click="$emit('start-fermentation')">
               <Icon name="mdi:flask" class="mr-2 h-4 w-4" />
               Start Fermentation
             </Button>
@@ -98,7 +98,7 @@
         <CardHeader>
           <div class="flex items-center justify-between">
             <CardTitle class="text-lg">Measured Values</CardTitle>
-            <Button @click="showMeasurementDialog = true" size="sm">
+            <Button size="sm" @click="showMeasurementDialog = true">
               <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
               Add
             </Button>
@@ -224,11 +224,11 @@
 
             <!-- Mash Actions -->
             <div class="flex gap-2">
-              <Button @click="addMashReading" variant="outline" size="sm">
+              <Button variant="outline" size="sm" @click="addMashReading">
                 <Icon name="mdi:thermometer" class="mr-2 h-4 w-4" />
                 Add Reading
               </Button>
-              <Button @click="mashOut" variant="outline" size="sm">
+              <Button variant="outline" size="sm" @click="mashOut">
                 <Icon name="mdi:check" class="mr-2 h-4 w-4" />
                 Mash Out
               </Button>
@@ -249,7 +249,8 @@
           <div class="space-y-3">
             <!-- Hop Additions -->
             <div class="space-y-2">
-              <div v-for="hop in hopSchedule" :key="`${hop.name}-${hop.time}`"
+              <div
+v-for="hop in hopSchedule" :key="`${hop.name}-${hop.time}`"
                    class="flex justify-between items-center p-3 rounded border-l-4"
                    :class="getHopStatusClass(hop)">
                 <div>
@@ -260,7 +261,7 @@
                   <Badge :variant="getHopBadgeVariant(hop)">
                     {{ getHopStatus(hop) }}
                   </Badge>
-                  <Button v-if="hop.status === 'pending'" @click="addHop(hop)" size="sm">
+                  <Button v-if="hop.status === 'pending'" size="sm" @click="addHop(hop)">
                     <Icon name="mdi:plus" class="h-4 w-4" />
                   </Button>
                 </div>
@@ -272,15 +273,15 @@
               <p class="text-2xl font-bold text-amber-600">{{ boilTimer.display }}</p>
               <p class="text-sm text-muted-foreground">Boil Time Remaining</p>
               <div class="flex gap-2 mt-2 justify-center">
-                <Button @click="startBoilTimer" v-if="!boilTimer.running" size="sm">
+                <Button v-if="!boilTimer.running" size="sm" @click="startBoilTimer">
                   <Icon name="mdi:play" class="mr-2 h-4 w-4" />
                   Start
                 </Button>
-                <Button @click="pauseBoilTimer" v-if="boilTimer.running" size="sm" variant="outline">
+                <Button v-if="boilTimer.running" size="sm" variant="outline" @click="pauseBoilTimer">
                   <Icon name="mdi:pause" class="mr-2 h-4 w-4" />
                   Pause
                 </Button>
-                <Button @click="resetBoilTimer" size="sm" variant="outline">
+                <Button size="sm" variant="outline" @click="resetBoilTimer">
                   <Icon name="mdi:refresh" class="mr-2 h-4 w-4" />
                   Reset
                 </Button>
@@ -363,7 +364,7 @@
             <Icon name="mdi:note-text" class="h-5 w-5" />
             Brew Log
           </CardTitle>
-          <Button @click="showLogDialog = true" size="sm">
+          <Button size="sm" @click="showLogDialog = true">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             Add Entry
           </Button>
@@ -371,7 +372,8 @@
       </CardHeader>
       <CardContent>
         <div class="space-y-3">
-          <div v-for="entry in brewLog" :key="entry.id" 
+          <div
+v-for="entry in brewLog" :key="entry.id" 
                class="flex gap-3 p-3 bg-gray-50 rounded">
             <div class="text-xs text-muted-foreground">
               {{ formatTime(entry.timestamp) }}
@@ -392,7 +394,7 @@
           />
           <div class="flex justify-between mt-2">
             <p class="text-xs text-muted-foreground">Ctrl+Enter to save</p>
-            <Button @click="addQuickNote" size="sm">Save Note</Button>
+            <Button size="sm" @click="addQuickNote">Save Note</Button>
           </div>
         </div>
       </CardContent>

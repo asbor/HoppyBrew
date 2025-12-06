@@ -10,11 +10,11 @@
         <CardDescription>Move this batch to the next stage</CardDescription>
       </CardHeader>
       <CardContent class="space-y-3">
-        <Button @click="$emit('start-conditioning')" variant="default" class="w-full">
+        <Button variant="default" class="w-full" @click="$emit('start-conditioning')">
           <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
           Start Conditioning
         </Button>
-        <Button @click="packageBeer" variant="outline" class="w-full">
+        <Button variant="outline" class="w-full" @click="packageBeer">
           <Icon name="mdi:bottle-wine" class="mr-2 h-4 w-4" />
           Package Beer
         </Button>

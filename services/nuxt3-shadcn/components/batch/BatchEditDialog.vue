@@ -26,7 +26,7 @@
       </div>
 
       <DialogFooter>
-        <Button @click="$emit('update:open', false)" variant="outline">Cancel</Button>
+        <Button variant="outline" @click="$emit('update:open', false)">Cancel</Button>
         <Button @click="save">Save</Button>
       </DialogFooter>
     </DialogContent>

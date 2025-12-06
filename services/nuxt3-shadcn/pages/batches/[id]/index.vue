@@ -17,7 +17,7 @@
           <CardDescription>{{ error }}</CardDescription>
         </CardHeader>
         <CardFooter class="justify-center">
-          <Button @click="fetchBatch" variant="outline">
+          <Button variant="outline" @click="fetchBatch">
             <Icon name="mdi:refresh" class="mr-2 h-4 w-4" />
             Try Again
           </Button>
@@ -45,11 +45,11 @@
           </p>
         </div>
         <div class="flex gap-2">
-          <Button @click="showEditDialog = true" variant="outline">
+          <Button variant="outline" @click="showEditDialog = true">
             <Icon name="mdi:pencil" class="mr-2 h-4 w-4" />
             Edit Batch
           </Button>
-          <Button @click="duplicateBatch" variant="outline">
+          <Button variant="outline" @click="duplicateBatch">
             <Icon name="mdi:content-copy" class="mr-2 h-4 w-4" />
             Duplicate
           </Button>
@@ -72,19 +72,22 @@
 
         <!-- Brew Day Phase -->
         <template v-else-if="currentBatch.status === 'brewing'">
-          <BatchBrewingPhase :batch="currentBatch" @start-fermentation="startFermentation"
+          <BatchBrewingPhase
+:batch="currentBatch" @start-fermentation="startFermentation"
             @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Fermentation Phase -->
         <template v-else-if="currentBatch.status === 'fermenting'">
-          <BatchFermentationPhase :batch="currentBatch" @start-conditioning="startConditioning"
+          <BatchFermentationPhase
+:batch="currentBatch" @start-conditioning="startConditioning"
             @update-batch="handleBatchUpdate" />
         </template>
 
         <!-- Conditioning Phase -->
         <template v-else-if="currentBatch.status === 'conditioning'">
-          <BatchConditioningPhase :batch="currentBatch" @package-batch="packageBatch"
+          <BatchConditioningPhase
+:batch="currentBatch" @package-batch="packageBatch"
             @update-batch="handleBatchUpdate" />
         </template>
 
@@ -105,19 +108,19 @@
           <CardTitle class="text-lg">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent class="space-y-3">
-          <Button @click="addReading" class="w-full" variant="outline">
+          <Button class="w-full" variant="outline" @click="addReading">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             Add Reading
           </Button>
-          <Button @click="addNote" class="w-full" variant="outline">
+          <Button class="w-full" variant="outline" @click="addNote">
             <Icon name="mdi:note-plus" class="mr-2 h-4 w-4" />
             Add Note
           </Button>
-          <Button @click="generateBrewSheet" class="w-full" variant="outline">
+          <Button class="w-full" variant="outline" @click="generateBrewSheet">
             <Icon name="mdi:printer" class="mr-2 h-4 w-4" />
             Brew Sheet
           </Button>
-          <Button @click="exportData" class="w-full" variant="outline">
+          <Button class="w-full" variant="outline" @click="exportData">
             <Icon name="mdi:download" class="mr-2 h-4 w-4" />
             Export Data
           </Button>
@@ -128,7 +131,8 @@
       <BatchEditDialog v-model:open="showEditDialog" :batch="currentBatch" @save="handleBatchUpdate" />
 
       <!-- Add Reading Dialog -->
-      <BatchReadingDialog v-model:open="showReadingDialog" :batch-id="String(currentBatch.id)"
+      <BatchReadingDialog
+v-model:open="showReadingDialog" :batch-id="String(currentBatch.id)"
         @save="handleReadingAdded" />
 
       <!-- Add Note Dialog -->

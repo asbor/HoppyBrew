@@ -62,7 +62,7 @@
     display_top_up_kettle: '',
   });
   
-  let mode = 'edit'; // Change mode to 'edit'
+  const mode = 'edit'; // Change mode to 'edit'
   
   const saveEquipment = async () => {
     try {

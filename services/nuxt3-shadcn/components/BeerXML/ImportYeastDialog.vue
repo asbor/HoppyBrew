@@ -100,7 +100,7 @@ async function importYeast() {
         <AlertDialogContent>
             <AlertDialogHeader>
                 <AlertDialogTitle>Import Yeast from BeerXML</AlertDialogTitle>
-                <input type="file" @change="handleFileChangeYeast" accept=".xml" />
+                <input type="file" accept=".xml" @change="handleFileChangeYeast" />
                 <div v-if="importedYeast.length > 0">
                     <h2>Imported Yeast:</h2>
                     <ul>

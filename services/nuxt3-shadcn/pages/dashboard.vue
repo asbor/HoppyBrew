@@ -196,7 +196,7 @@ onMounted(async () => {
               </div>
             </div>
             <div class="mt-ha-sm pt-ha-sm border-t">
-              <Button asChild variant="outline" class="w-full">
+              <Button as-child variant="outline" class="w-full">
                 <NuxtLink href="/batches">View All Batches</NuxtLink>
               </Button>
             </div>
@@ -226,7 +226,7 @@ onMounted(async () => {
               </div>
             </div>
             <div class="mt-ha-sm pt-ha-sm border-t">
-              <Button asChild variant="outline" class="w-full">
+              <Button as-child variant="outline" class="w-full">
                 <NuxtLink href="/recipes">View All Recipes</NuxtLink>
               </Button>
             </div>
@@ -254,7 +254,7 @@ onMounted(async () => {
             </div>
           </div>
           <div class="mt-ha-sm pt-ha-sm border-t">
-            <Button asChild variant="outline" class="w-full">
+            <Button as-child variant="outline" class="w-full">
               <NuxtLink href="/inventory">Manage Inventory</NuxtLink>
             </Button>
           </div>
@@ -268,25 +268,25 @@ onMounted(async () => {
           <CardDescription>Common brewing tasks</CardDescription>
         </CardHeader>
         <CardContent class="grid gap-ha-xs md:grid-cols-4">
-          <Button asChild variant="default">
+          <Button as-child variant="default">
             <NuxtLink href="/recipes/newRecipe">
               <Icon name="mdi:plus" class="mr-ha-xs h-5 w-5" />
               New Recipe
             </NuxtLink>
           </Button>
-          <Button asChild variant="default">
+          <Button as-child variant="default">
             <NuxtLink href="/batches/newBatch">
               <Icon name="mdi:plus" class="mr-ha-xs h-5 w-5" />
               New Batch
             </NuxtLink>
           </Button>
-          <Button asChild variant="outline">
+          <Button as-child variant="outline">
             <NuxtLink href="/tools">
               <Icon name="mdi:calculator" class="mr-ha-xs h-5 w-5" />
               Calculators
             </NuxtLink>
           </Button>
-          <Button asChild variant="outline">
+          <Button as-child variant="outline">
             <NuxtLink href="/library">
               <Icon name="mdi:library" class="mr-ha-xs h-5 w-5" />
               Recipe Library

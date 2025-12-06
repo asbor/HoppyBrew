@@ -35,7 +35,7 @@
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold">Hop Additions</h3>
-          <Button @click="addHop" size="sm">
+          <Button size="sm" @click="addHop">
             <Plus class="h-4 w-4 mr-2" />
             Add Hop
           </Button>
@@ -48,7 +48,7 @@
         <div v-for="(hop, index) in hops" :key="index" class="p-4 border rounded-lg space-y-3">
           <div class="flex items-center justify-between">
             <span class="font-medium">Hop Addition {{ index + 1 }}</span>
-            <Button @click="removeHop(index)" variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" @click="removeHop(index)">
               <Trash2 class="h-4 w-4" />
             </Button>
           </div>
@@ -124,9 +124,9 @@
           <!-- Substitution Suggestions -->
           <div v-if="hop.name" class="pt-2">
             <Button
-              @click="showSubstitutions(hop.name, hop.alpha_acid)"
               variant="outline"
               size="sm"
+              @click="showSubstitutions(hop.name, hop.alpha_acid)"
             >
               <Search class="h-4 w-4 mr-2" />
               Find Substitutions
@@ -137,7 +137,7 @@
 
       <!-- Calculate Button -->
       <div class="flex justify-center">
-        <Button @click="calculateSchedule" :disabled="hops.length === 0 || calculating">
+        <Button :disabled="hops.length === 0 || calculating" @click="calculateSchedule">
           <Calculator class="h-4 w-4 mr-2" />
           {{ calculating ? 'Calculating...' : 'Calculate Hop Schedule' }}
         </Button>
@@ -277,12 +277,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { Plus, Trash2, Calculator, Search } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Button } from '~/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '~/components/ui/dialog'
-import { Plus, Trash2, Calculator, Search } from 'lucide-vue-next'
 
 interface HopAddition {
   name: string

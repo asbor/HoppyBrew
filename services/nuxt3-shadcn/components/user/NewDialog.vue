@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useHelpers } from '../composables/helpers'; // Adjust the import path as needed
 
 const { loading, open } = useHelpers();
-let mode = 'create'; // Initialize mode as 'create' by default
+const mode = 'create'; // Initialize mode as 'create' by default
 
 
 const formData = ref({

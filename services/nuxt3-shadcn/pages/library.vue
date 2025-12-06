@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { Star, BookOpen, Search, Plus, Filter, Grid3X3, List, ExternalLink } from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Star, BookOpen, Search, Plus, Filter, Grid3X3, List, ExternalLink } from 'lucide-vue-next'
 import {
   Table,
   TableBody,
@@ -250,15 +250,15 @@ onMounted(() => {
       </div>
       <div class="flex gap-2">
         <Button 
-          @click="viewMode = viewMode === 'cards' ? 'table' : 'cards'"
           aria-label="Toggle library view"
           variant="outline"
           size="sm"
+          @click="viewMode = viewMode === 'cards' ? 'table' : 'cards'"
         >
           <Grid3X3 v-if="viewMode === 'table'" class="h-4 w-4" />
           <List v-else class="h-4 w-4" />
         </Button>
-        <Button @click="router.push('/library/add')" class="flex items-center gap-2">
+        <Button class="flex items-center gap-2" @click="router.push('/library/add')">
           <Plus class="h-4 w-4" />
           Add Entry
         </Button>
@@ -318,7 +318,7 @@ onMounted(() => {
     <!-- Error State -->
     <div v-else-if="error" class="text-center py-12">
       <p class="text-destructive">{{ error }}</p>
-      <Button @click="loadLibraryEntries()" class="mt-4">Try Again</Button>
+      <Button class="mt-4" @click="loadLibraryEntries()">Try Again</Button>
     </div>
 
     <!-- Cards View -->
@@ -451,7 +451,7 @@ onMounted(() => {
       <p class="text-muted-foreground mt-2">
         {{ searchQuery || filterCategory !== 'all' ? 'Try adjusting your filters' : 'Start building your brewing library' }}
       </p>
-      <Button @click="router.push('/library/add')" class="mt-4">
+      <Button class="mt-4" @click="router.push('/library/add')">
         <Plus class="h-4 w-4 mr-2" />
         Add First Entry
       </Button>

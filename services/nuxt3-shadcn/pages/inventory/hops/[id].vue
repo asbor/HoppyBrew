@@ -16,7 +16,8 @@
         <form @submit.prevent="updateHop">
           <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" v-model="hop.name" required placeholder="Optional"
+            <input
+id="name" v-model="hop.name" type="text" required placeholder="Optional"
               class="border-2 border-gray-300 rounded-lg p-2 w-full">
           </div>
           <InventoryAmount>
@@ -25,7 +26,8 @@
               <label for="amount_EngUnit">kg</label>
             </div>
             <div>
-              <input type="number" id="amount" v-model="hop.amount" required placeholder="Optional"
+              <input
+id="amount" v-model="hop.amount" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
           </InventoryAmount>
@@ -35,7 +37,8 @@
               <label for="cost_EngUnit">EUR</label>
             </div>
             <div>
-              <input type="number" id="cost_per_unit" v-model="hop.cost_per_unit" required placeholder="Optional"
+              <input
+id="cost_per_unit" v-model="hop.cost_per_unit" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
           </CostPerUnit>
@@ -46,7 +49,8 @@
                 <label for="supplier">Supplier</label>
               </div>
               <div>
-                <input type="text" id="supplier" v-model="hop.supplier" required placeholder="Optional"
+                <input
+id="supplier" v-model="hop.supplier" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </Supplier>
@@ -55,7 +59,8 @@
                 <label for="origin">Origin</label>
               </div>
               <div>
-                <input type="text" id="origin" v-model="hop.origin" required placeholder="Optional"
+                <input
+id="origin" v-model="hop.origin" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </Origin>
@@ -64,7 +69,8 @@
                 <label for="type">Type</label>
               </div>
               <div>
-                <input type="text" id="type" v-model="hop.type" required placeholder="Optional"
+                <input
+id="type" v-model="hop.type" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </Type>
@@ -74,7 +80,8 @@
                 <label for="color_EngUnit">EBC</label>
               </div>
               <div>
-                <input type="number" id="color" v-model="hop.color" required placeholder="Optional"
+                <input
+id="color" v-model="hop.color" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </Color>
@@ -84,7 +91,8 @@
                 <label for="potential_EngUnit">PPG</label>
               </div>
               <div>
-                <input type="number" id="potential" v-model="hop.potential" required placeholder="Optional"
+                <input
+id="potential" v-model="hop.potential" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </Potential>
@@ -94,7 +102,8 @@
                 <label for="yield_EngUnit">%</label>
               </div>
               <div>
-                <input type="number" id="yield_" v-model="hop.yield_" required placeholder="Optional"
+                <input
+id="yield_" v-model="hop.yield_" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </Yield>
@@ -103,7 +112,8 @@
                 <label for="manufacturing_date">Manufacturing Date</label>
               </div>
               <div>
-                <input type="date" id="manufacturing_date" v-model="hop.manufacturing_date" required
+                <input
+id="manufacturing_date" v-model="hop.manufacturing_date" type="date" required
                   placeholder="Optional" class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </ManufacturingDate>
@@ -112,7 +122,8 @@
                 <label for="expiry_date">Expiry Date</label>
               </div>
               <div>
-                <input type="date" id="expiry_date" v-model="hop.expiry_date" required placeholder="Optional"
+                <input
+id="expiry_date" v-model="hop.expiry_date" type="date" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </ExpiryDate>
@@ -122,14 +133,16 @@
               <label for="lot_number">Lot Number</label>
             </div>
             <div>
-              <input type="text" id="lot_number" v-model="hop.lot_number" required placeholder="Optional"
+              <input
+id="lot_number" v-model="hop.lot_number" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
           </LotNumber>
           <div class="grid grid-cols-2 gap-4">
             <ExclFromTotal class="flex items-center gap-2 mt-4 mb-2">
               <div>
-                <input type="checkbox" id="excl_from_total" v-model="hop.excl_from_total" required
+                <input
+id="excl_from_total" v-model="hop.excl_from_total" type="checkbox" required
                   placeholder="Optional" class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
@@ -138,7 +151,8 @@
             </ExclFromTotal>
             <NotHop class="flex items-center gap-2 mt-4 mb-2">
               <div>
-                <input type="checkbox" id="not_hop" v-model="hop.not_hop" required placeholder="Optional"
+                <input
+id="not_hop" v-model="hop.not_hop" type="checkbox" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
@@ -151,7 +165,8 @@
               <label for="notes">Notes:</label>
             </div>
             <div class="flex fill-current w-full">
-              <textarea id="notes" v-model="hop.notes"
+              <textarea
+id="notes" v-model="hop.notes"
                 class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
             </div>
           </Notes>
@@ -161,7 +176,8 @@
                 <label for="description">Description:</label>
               </div>
               <div class="flex fill-current w-full">
-                <textarea id="description" v-model="hop.description"
+                <textarea
+id="description" v-model="hop.description"
                   class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
               </div>
             </Description>
@@ -170,7 +186,8 @@
                 <label for="substitutes">Substitutes:</label>
               </div>
               <div class="flex fill-current w-full">
-                <textarea id="substitutes" v-model="hop.substitutes"
+                <textarea
+id="substitutes" v-model="hop.substitutes"
                   class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
               </div>
             </Substitutes>
@@ -179,7 +196,8 @@
                 <label for="used_in">Used in:</label>
               </div>
               <div class="flex fill-current w-full">
-                <textarea id="used_in" v-model="hop.used_in"
+                <textarea
+id="used_in" v-model="hop.used_in"
                   class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
               </div>
             </UsedIn>

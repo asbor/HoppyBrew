@@ -1,4 +1,17 @@
 <script setup lang="ts">
+import { 
+  Settings, 
+  Plus, 
+  Edit3, 
+  Trash2, 
+  Copy, 
+  Beaker, 
+  Thermometer, 
+  Droplets,
+  Calculator,
+  FlaskConical,
+  Gauge
+} from 'lucide-vue-next'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,19 +30,6 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/components/ui/dialog'
-import { 
-  Settings, 
-  Plus, 
-  Edit3, 
-  Trash2, 
-  Copy, 
-  Beaker, 
-  Thermometer, 
-  Droplets,
-  Calculator,
-  FlaskConical,
-  Gauge
-} from 'lucide-vue-next'
 
 interface EquipmentProfile {
   id: number
@@ -302,7 +302,7 @@ onMounted(() => {
       </div>
       
       <Dialog v-model:open="newEquipmentDialog">
-        <DialogTrigger asChild>
+        <DialogTrigger as-child>
           <Button class="flex items-center gap-2">
             <Plus class="h-4 w-4" />
             New Profile
@@ -369,9 +369,9 @@ onMounted(() => {
                   <Label for="new-batch-size">Batch Size (L)</Label>
                   <Input 
                     id="new-batch-size" 
-                    type="number" 
+                    v-model.number="newEquipment.batch_size" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.batch_size"
                   />
                 </div>
                 
@@ -379,9 +379,9 @@ onMounted(() => {
                   <Label for="new-boil-size">Boil Size (L)</Label>
                   <Input 
                     id="new-boil-size" 
-                    type="number" 
+                    v-model.number="newEquipment.boil_size" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.boil_size"
                   />
                 </div>
                 
@@ -389,9 +389,9 @@ onMounted(() => {
                   <Label for="new-tun-volume">Tun Volume (L)</Label>
                   <Input 
                     id="new-tun-volume" 
-                    type="number" 
+                    v-model.number="newEquipment.tun_volume" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.tun_volume"
                   />
                 </div>
               </div>
@@ -411,9 +411,9 @@ onMounted(() => {
                   <Label for="new-trub-loss">Trub/Chiller Loss (L)</Label>
                   <Input 
                     id="new-trub-loss" 
-                    type="number" 
+                    v-model.number="newEquipment.trub_chiller_loss" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.trub_chiller_loss"
                   />
                 </div>
                 
@@ -421,9 +421,9 @@ onMounted(() => {
                   <Label for="new-lauter-deadspace">Lauter Deadspace (L)</Label>
                   <Input 
                     id="new-lauter-deadspace" 
-                    type="number" 
+                    v-model.number="newEquipment.lauter_deadspace" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.lauter_deadspace"
                   />
                 </div>
                 
@@ -431,9 +431,9 @@ onMounted(() => {
                   <Label for="new-top-up-water">Top-up Water (L)</Label>
                   <Input 
                     id="new-top-up-water" 
-                    type="number" 
+                    v-model.number="newEquipment.top_up_water" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.top_up_water"
                   />
                 </div>
                 
@@ -441,9 +441,9 @@ onMounted(() => {
                   <Label for="new-top-up-kettle">Top-up Kettle (L)</Label>
                   <Input 
                     id="new-top-up-kettle" 
-                    type="number" 
+                    v-model.number="newEquipment.top_up_kettle" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.top_up_kettle"
                   />
                 </div>
               </div>
@@ -463,9 +463,9 @@ onMounted(() => {
                   <Label for="new-hop-util">Hop Utilization (%)</Label>
                   <Input 
                     id="new-hop-util" 
-                    type="number" 
+                    v-model.number="newEquipment.hop_utilization" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.hop_utilization"
                   />
                 </div>
                 
@@ -473,8 +473,8 @@ onMounted(() => {
                   <Label for="new-boil-time">Boil Time (min)</Label>
                   <Input 
                     id="new-boil-time" 
-                    type="number"
                     v-model.number="newEquipment.boil_time"
+                    type="number"
                   />
                 </div>
                 
@@ -482,9 +482,9 @@ onMounted(() => {
                   <Label for="new-evap-rate">Evaporation Rate (%/hr)</Label>
                   <Input 
                     id="new-evap-rate" 
-                    type="number" 
+                    v-model.number="newEquipment.evap_rate" 
+                    type="number"
                     step="0.1"
-                    v-model.number="newEquipment.evap_rate"
                   />
                 </div>
                 
@@ -503,7 +503,7 @@ onMounted(() => {
             <Button variant="outline" @click="newEquipmentDialog = false">
               Cancel
             </Button>
-            <Button @click="createEquipment" :disabled="!newEquipment.name">
+            <Button :disabled="!newEquipment.name" @click="createEquipment">
               Create Profile
             </Button>
           </DialogFooter>
@@ -520,7 +520,7 @@ onMounted(() => {
     <!-- Error State -->
     <div v-else-if="error" class="text-center py-12">
       <p class="text-destructive">{{ error }}</p>
-      <Button @click="fetchEquipment()" class="mt-4">Try Again</Button>
+      <Button class="mt-4" @click="fetchEquipment()">Try Again</Button>
     </div>
 
     <!-- Equipment Cards -->
@@ -548,24 +548,24 @@ onMounted(() => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                @click="duplicateEquipment(equipmentItem)"
                 title="Duplicate"
+                @click="duplicateEquipment(equipmentItem)"
               >
                 <Copy class="h-3 w-3" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
-                @click="openEditDialog(equipmentItem)"
                 title="Edit"
+                @click="openEditDialog(equipmentItem)"
               >
                 <Edit3 class="h-3 w-3" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
-                @click="openDeleteDialog(equipmentItem)"
                 title="Delete"
+                @click="openDeleteDialog(equipmentItem)"
               >
                 <Trash2 class="h-3 w-3 text-destructive" />
               </Button>
@@ -613,7 +613,7 @@ onMounted(() => {
       <Settings class="h-12 w-12 text-muted-foreground mx-auto mb-4" />
       <h3 class="text-lg font-medium">No equipment profiles</h3>
       <p class="text-muted-foreground mt-2">Create your first equipment profile to get started</p>
-      <Button @click="newEquipmentDialog = true" class="mt-4">
+      <Button class="mt-4" @click="newEquipmentDialog = true">
         <Plus class="h-4 w-4 mr-2" />
         Create First Profile
       </Button>
@@ -641,18 +641,18 @@ onMounted(() => {
               <Label for="edit-batch-size">Batch Size (L)</Label>
               <Input 
                 id="edit-batch-size" 
-                type="number" 
+                v-model.number="selectedEquipment.batch_size" 
+                type="number"
                 step="0.1"
-                v-model.number="selectedEquipment.batch_size"
               />
             </div>
             <div>
               <Label for="edit-boil-size">Boil Size (L)</Label>
               <Input 
                 id="edit-boil-size" 
-                type="number" 
+                v-model.number="selectedEquipment.boil_size" 
+                type="number"
                 step="0.1"
-                v-model.number="selectedEquipment.boil_size"
               />
             </div>
           </div>

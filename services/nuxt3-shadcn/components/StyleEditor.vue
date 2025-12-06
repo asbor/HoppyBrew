@@ -180,7 +180,7 @@ onMounted(async () => {
     </div>
 
     <!-- Form -->
-    <form v-else @submit.prevent="handleSave" class="space-y-6">
+    <form v-else class="space-y-6" @submit.prevent="handleSave">
       <Tabs default-value="basic">
         <TabsList class="grid w-full grid-cols-3">
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
@@ -281,9 +281,9 @@ onMounted(async () => {
                   <Label for="abv_min">ABV Min (%)</Label>
                   <Input
                     id="abv_min"
+                    v-model.number="formData.abv_min"
                     type="number"
                     step="0.1"
-                    v-model.number="formData.abv_min"
                     placeholder="5.5"
                   />
                 </div>
@@ -291,9 +291,9 @@ onMounted(async () => {
                   <Label for="abv_max">ABV Max (%)</Label>
                   <Input
                     id="abv_max"
+                    v-model.number="formData.abv_max"
                     type="number"
                     step="0.1"
-                    v-model.number="formData.abv_max"
                     placeholder="7.5"
                   />
                 </div>
@@ -305,9 +305,9 @@ onMounted(async () => {
                   <Label for="og_min">OG Min</Label>
                   <Input
                     id="og_min"
+                    v-model.number="formData.og_min"
                     type="number"
                     step="0.001"
-                    v-model.number="formData.og_min"
                     placeholder="1.056"
                   />
                 </div>
@@ -315,9 +315,9 @@ onMounted(async () => {
                   <Label for="og_max">OG Max</Label>
                   <Input
                     id="og_max"
+                    v-model.number="formData.og_max"
                     type="number"
                     step="0.001"
-                    v-model.number="formData.og_max"
                     placeholder="1.070"
                   />
                 </div>
@@ -329,9 +329,9 @@ onMounted(async () => {
                   <Label for="fg_min">FG Min</Label>
                   <Input
                     id="fg_min"
+                    v-model.number="formData.fg_min"
                     type="number"
                     step="0.001"
-                    v-model.number="formData.fg_min"
                     placeholder="1.008"
                   />
                 </div>
@@ -339,9 +339,9 @@ onMounted(async () => {
                   <Label for="fg_max">FG Max</Label>
                   <Input
                     id="fg_max"
+                    v-model.number="formData.fg_max"
                     type="number"
                     step="0.001"
-                    v-model.number="formData.fg_max"
                     placeholder="1.014"
                   />
                 </div>
@@ -353,8 +353,8 @@ onMounted(async () => {
                   <Label for="ibu_min">IBU Min</Label>
                   <Input
                     id="ibu_min"
-                    type="number"
                     v-model.number="formData.ibu_min"
+                    type="number"
                     placeholder="40"
                   />
                 </div>
@@ -362,8 +362,8 @@ onMounted(async () => {
                   <Label for="ibu_max">IBU Max</Label>
                   <Input
                     id="ibu_max"
-                    type="number"
                     v-model.number="formData.ibu_max"
+                    type="number"
                     placeholder="70"
                   />
                 </div>
@@ -375,9 +375,9 @@ onMounted(async () => {
                   <Label for="color_min_srm">Color Min (SRM)</Label>
                   <Input
                     id="color_min_srm"
+                    v-model.number="formData.color_min_srm"
                     type="number"
                     step="0.1"
-                    v-model.number="formData.color_min_srm"
                     placeholder="6"
                   />
                   <p class="text-xs text-muted-foreground">
@@ -388,9 +388,9 @@ onMounted(async () => {
                   <Label for="color_max_srm">Color Max (SRM)</Label>
                   <Input
                     id="color_max_srm"
+                    v-model.number="formData.color_max_srm"
                     type="number"
                     step="0.1"
-                    v-model.number="formData.color_max_srm"
                     placeholder="14"
                   />
                   <p class="text-xs text-muted-foreground">
@@ -530,8 +530,8 @@ onMounted(async () => {
           <Button 
             type="button" 
             variant="outline"
-            @click="emit('cancelled')"
             :disabled="saving"
+            @click="emit('cancelled')"
           >
             Cancel
           </Button>

@@ -6,10 +6,10 @@
       </div>
       <div>
         <div class="flex gap-4">
-          <Button asChild>
+          <Button as-child>
             <NuxtLink href="/inventory/yeasts/newYeast">New Yeast</NuxtLink>
           </Button>
-          <Button asChild>
+          <Button as-child>
             <BeerXMLImportYeastDialog />
           </Button>
         </div>
@@ -59,7 +59,7 @@
             <TableCell>{{ yeast.inventory }}</TableCell>
             <TableCell>{{ yeast.display_amount }}</TableCell>
             <TableCell class="text-right">
-              <Button asChild class="mr-2">
+              <Button as-child class="mr-2">
                 <NuxtLink :href="`/inventory/yeasts/${yeast.id}`">Edit</NuxtLink>
               </Button>
               <Button @click="deleteYeast(yeast.id)">Delete</Button>
@@ -72,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import {
   Table,
   TableBody,
@@ -81,7 +82,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ref, onMounted } from 'vue';
 
 interface Yeast {
   id: string;

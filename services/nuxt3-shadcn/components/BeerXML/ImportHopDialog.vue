@@ -121,7 +121,7 @@ async function importHops() {
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>Import Hops from BeerXML</AlertDialogTitle>
-        <input type="file" @change="handleFileChange" accept=".xml" />
+        <input type="file" accept=".xml" @change="handleFileChange" />
         <div v-if="importedHops.length > 0">
           <h2>Imported Hops:</h2>
           <ul>

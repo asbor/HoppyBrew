@@ -162,25 +162,25 @@ const totalLowStock = computed(() =>
       </CardHeader>
       <CardContent>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button asChild variant="outline" class="h-auto py-4">
+          <Button as-child variant="outline" class="h-auto py-4">
             <NuxtLink href="/inventory/fermentables/newFermentable" class="flex flex-col items-center gap-2">
               <Icon size="24" name="mdi:plus-circle" />
               <span class="text-sm">Add Fermentable</span>
             </NuxtLink>
           </Button>
-          <Button asChild variant="outline" class="h-auto py-4">
+          <Button as-child variant="outline" class="h-auto py-4">
             <NuxtLink href="/inventory/hops/newHop" class="flex flex-col items-center gap-2">
               <Icon size="24" name="mdi:plus-circle" />
               <span class="text-sm">Add Hop</span>
             </NuxtLink>
           </Button>
-          <Button asChild variant="outline" class="h-auto py-4">
+          <Button as-child variant="outline" class="h-auto py-4">
             <NuxtLink href="/inventory/yeasts/newYeast" class="flex flex-col items-center gap-2">
               <Icon size="24" name="mdi:plus-circle" />
               <span class="text-sm">Add Yeast</span>
             </NuxtLink>
           </Button>
-          <Button asChild variant="outline" class="h-auto py-4">
+          <Button as-child variant="outline" class="h-auto py-4">
             <NuxtLink href="/inventory/miscs/newMisc" class="flex flex-col items-center gap-2">
               <Icon size="24" name="mdi:plus-circle" />
               <span class="text-sm">Add Misc</span>

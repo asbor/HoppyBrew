@@ -3,11 +3,13 @@
     <!-- Phase Timeline -->
     <div class="relative">
       <div class="flex justify-between mb-8">
-        <div v-for="(phase, index) in phases" :key="phase.key" class="flex flex-col items-center relative z-10"
+        <div
+v-for="(phase, index) in phases" :key="phase.key" class="flex flex-col items-center relative z-10"
           :class="{ 'cursor-pointer': isPhaseAccessible(phase.key) }"
           @click="isPhaseAccessible(phase.key) && $emit('phase-change', phase.key)">
           <!-- Phase Icon -->
-          <div class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300"
+          <div
+class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300"
             :class="getPhaseIconClass(phase.key)">
             <Icon :name="phase.icon" class="h-6 w-6" :class="getPhaseIconColor(phase.key)" />
           </div>
@@ -23,7 +25,8 @@
           </div>
 
           <!-- Connection Line -->
-          <div v-if="index < phases.length - 1"
+          <div
+v-if="index < phases.length - 1"
             class="absolute top-6 left-full w-full h-0.5 transition-colors duration-300"
             :class="getConnectionLineClass(index)" style="transform: translateX(-50%)" />
         </div>
@@ -62,42 +65,42 @@
 
             <!-- Phase-specific action buttons -->
             <template v-if="currentPhase === 'planning'">
-              <Button @click="$emit('phase-change', 'brewing')" class="w-full">
+              <Button class="w-full" @click="$emit('phase-change', 'brewing')">
                 <Icon name="mdi:fire" class="mr-2 h-4 w-4" />
                 Start Brew Day
               </Button>
             </template>
 
             <template v-else-if="currentPhase === 'brewing'">
-              <Button @click="$emit('phase-change', 'fermenting')" class="w-full">
+              <Button class="w-full" @click="$emit('phase-change', 'fermenting')">
                 <Icon name="mdi:flask" class="mr-2 h-4 w-4" />
                 Start Fermentation
               </Button>
             </template>
 
             <template v-else-if="currentPhase === 'fermenting'">
-              <Button @click="$emit('phase-change', 'conditioning')" class="w-full">
+              <Button class="w-full" @click="$emit('phase-change', 'conditioning')">
                 <Icon name="mdi:snowflake" class="mr-2 h-4 w-4" />
                 Start Conditioning
               </Button>
             </template>
 
             <template v-else-if="currentPhase === 'conditioning'">
-              <Button @click="$emit('phase-change', 'packaging')" class="w-full">
+              <Button class="w-full" @click="$emit('phase-change', 'packaging')">
                 <Icon name="mdi:bottle-wine" class="mr-2 h-4 w-4" />
                 Package Beer
               </Button>
             </template>
 
             <template v-else-if="currentPhase === 'packaging'">
-              <Button @click="$emit('phase-change', 'complete')" class="w-full">
+              <Button class="w-full" @click="$emit('phase-change', 'complete')">
                 <Icon name="mdi:check-circle" class="mr-2 h-4 w-4" />
                 Mark Complete
               </Button>
             </template>
 
             <template v-else-if="currentPhase === 'complete'">
-              <Button @click="$emit('phase-change', 'archived')" class="w-full" variant="outline">
+              <Button class="w-full" variant="outline" @click="$emit('phase-change', 'archived')">
                 <Icon name="mdi:archive" class="mr-2 h-4 w-4" />
                 Archive Batch
               </Button>

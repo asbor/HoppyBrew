@@ -148,9 +148,9 @@ function getStatusLabel(status: string) {
         <!-- Update Button -->
         <Button 
           v-if="validTransitions.length > 0"
-          @click="handleStatusUpdate"
           :disabled="!selectedStatus || loading"
           class="w-full"
+          @click="handleStatusUpdate"
         >
           {{ loading ? 'Updating...' : 'Update Status' }}
         </Button>

@@ -103,7 +103,7 @@ onMounted(() => {
               Start with a pre-configured mash profile and customize it to your needs
             </CardDescription>
           </div>
-          <Button @click="$emit('close')" variant="ghost" size="sm">✕</Button>
+          <Button variant="ghost" size="sm" @click="$emit('close')">✕</Button>
         </div>
       </CardHeader>
       
@@ -116,7 +116,7 @@ onMounted(() => {
         <!-- Error state -->
         <div v-else-if="error" class="text-center py-8">
           <p class="text-destructive">{{ error }}</p>
-          <Button @click="fetchTemplates" class="mt-4" variant="outline">Retry</Button>
+          <Button class="mt-4" variant="outline" @click="fetchTemplates">Retry</Button>
         </div>
 
         <!-- Templates list -->
@@ -232,8 +232,8 @@ onMounted(() => {
 
         <!-- Actions -->
         <div class="flex justify-end gap-2 pt-4 border-t">
-          <Button @click="$emit('close')" variant="outline">Cancel</Button>
-          <Button @click="useTemplate" :disabled="!selectedTemplate && selectedTemplate !== null">
+          <Button variant="outline" @click="$emit('close')">Cancel</Button>
+          <Button :disabled="!selectedTemplate && selectedTemplate !== null" @click="useTemplate">
             {{ selectedTemplate ? 'Use Template' : 'Continue' }}
           </Button>
         </div>

@@ -6,10 +6,10 @@
       </div>
       <div>
         <div class="flex gap-4">
-          <Button asChild>
+          <Button as-child>
             <NuxtLink href="/inventory/miscs/newMisc">New Misc</NuxtLink>
           </Button>
-          <Button asChild>
+          <Button as-child>
             <BeerXMLImportMiscDialog />
           </Button>
         </div>
@@ -51,7 +51,7 @@
             <TableCell>{{ misc.display_time }}</TableCell>
             <TableCell>{{ misc.batch_size }}</TableCell>
             <TableCell class="text-right">
-              <Button asChild class="mr-2">
+              <Button as-child class="mr-2">
                 <NuxtLink :href="`/inventory/miscs/${misc.id}`">Edit</NuxtLink>
               </Button>
               <Button @click="deleteMisc(misc.id)">Delete</Button>
@@ -64,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import {
   Table,
   TableBody,
@@ -73,7 +74,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ref, onMounted } from 'vue';
 
 interface Misc {
   id: string;

@@ -2,8 +2,8 @@
  * Helper utilities for common operations
  */
 export default function useHelpers() {
-  let loading = ref(false);
-  let open = ref(false);
+  const loading = ref(false);
+  const open = ref(false);
   
   return {
     loading,

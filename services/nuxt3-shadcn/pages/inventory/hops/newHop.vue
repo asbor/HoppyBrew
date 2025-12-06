@@ -16,75 +16,89 @@
         <form @submit.prevent="saveHop">
           <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" v-model="hop.name" required placeholder="Optional"
+            <input
+id="name" v-model="hop.name" type="text" required placeholder="Optional"
               class="border-2 border-gray-300 rounded-lg p-2 w-full">
           </div>
           <div class="grid grid-cols-3 gap-4">
             <div>
               <label for="type">Type:</label>
-              <input type="text" id="type" v-model="hop.type" required placeholder="Optional"
+              <input
+id="type" v-model="hop.type" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="alpha">Alpha:</label>
-              <input type="number" id="alpha" v-model="hop.alpha" required placeholder="Optional"
+              <input
+id="alpha" v-model="hop.alpha" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="beta">Beta:</label>
-              <input type="number" id="beta" v-model="hop.beta" required placeholder="Optional"
+              <input
+id="beta" v-model="hop.beta" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="origin">Origin:</label>
-              <input type="text" id="origin" v-model="hop.origin" required placeholder="Optional"
+              <input
+id="origin" v-model="hop.origin" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="form">Form:</label>
-              <input type="text" id="form" v-model="hop.form" required placeholder="Optional"
+              <input
+id="form" v-model="hop.form" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="use">Use:</label>
-              <input type="text" id="use" v-model="hop.use" required placeholder="Optional"
+              <input
+id="use" v-model="hop.use" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="hsi">HSI:</label>
-              <input type="number" id="hsi" v-model="hop.hsi" required placeholder="Optional"
+              <input
+id="hsi" v-model="hop.hsi" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="amount">Amount:</label>
-              <input type="number" id="amount" v-model="hop.amount" required placeholder="Optional"
+              <input
+id="amount" v-model="hop.amount" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="cost_per_unit">Cost per unit:</label>
-              <input type="number" id="cost_per_unit" v-model="hop.cost_per_unit" required placeholder="Optional"
+              <input
+id="cost_per_unit" v-model="hop.cost_per_unit" type="number" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="manufacturing_date">Manufacturing Date:</label>
-              <input type="date" id="manufacturing_date" v-model="hop.manufacturing_date" required
+              <input
+id="manufacturing_date" v-model="hop.manufacturing_date" type="date" required
                 placeholder="Optional" class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
             <div>
               <label for="expiry_date">Expiry Date:</label>
-              <input type="date" id="expiry_date" v-model="hop.expiry_date" required placeholder="Optional"
+              <input
+id="expiry_date" v-model="hop.expiry_date" type="date" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
             </div>
           </div>
           <div>
             <label for="lot_number">Lot Number:</label>
-            <input type="text" id="lot_number" v-model="hop.lot_number" required placeholder="Optional"
+            <input
+id="lot_number" v-model="hop.lot_number" type="text" required placeholder="Optional"
               class="border-2 border-gray-300 rounded-lg p-2 w-full">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="flex items-center gap-2 mt-4 mb-2">
               <div>
-                <input type="checkbox" id="exclude_from_total" v-model="hop.exclude_from_total"
+                <input
+id="exclude_from_total" v-model="hop.exclude_from_total" type="checkbox"
                   class="border-2 border-gray-300 rounded-lg p-2">
               </div>
               <div>
@@ -93,7 +107,8 @@
             </div>
             <div class="flex items-center gap-2 mt-4 mb-2">
               <div>
-                <input type="checkbox" id="not_hop" v-model="hop.not_hop"
+                <input
+id="not_hop" v-model="hop.not_hop" type="checkbox"
                   class="border-2 border-gray-300 rounded-lg p-2">
               </div>
               <div>
@@ -107,17 +122,20 @@
           </div>
           <div>
             <label for="description">Description:</label>
-            <textarea id="description" v-model="hop.description"
+            <textarea
+id="description" v-model="hop.description"
               class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
           </div>
           <div>
             <label for="substitutes">Substitutes:</label>
-            <textarea id="substitutes" v-model="hop.substitutes"
+            <textarea
+id="substitutes" v-model="hop.substitutes"
               class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
           </div>
           <div>
             <label for="used_in">Used in:</label>
-            <textarea id="used_in" v-model="hop.used_in"
+            <textarea
+id="used_in" v-model="hop.used_in"
               class="w-full border-2 border-gray-300 rounded-lg p-2"></textarea>
           </div>
         </form>

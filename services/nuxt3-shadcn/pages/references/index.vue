@@ -140,13 +140,13 @@ onMounted(fetchReferences)
             <Icon name="mdi:view-grid" class="h-4 w-4" />
           </Button>
         </div>
-        <Button asChild variant="outline" size="sm">
+        <Button as-child variant="outline" size="sm">
           <XMLImportReferenceDialog />
         </Button>
-        <Button asChild variant="outline" size="sm">
+        <Button as-child variant="outline" size="sm">
           <XMLExportReferenceDialog />
         </Button>
-        <Button asChild>
+        <Button as-child>
           <NuxtLink href="/references/newReferences">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             New Reference
@@ -210,7 +210,7 @@ onMounted(fetchReferences)
         </CardDescription>
       </CardHeader>
       <CardFooter class="justify-center">
-        <Button asChild>
+        <Button as-child>
           <NuxtLink href="/references/newReferences">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             Add First Reference
@@ -249,8 +249,8 @@ onMounted(fetchReferences)
                 <img 
                   :src="reference.favicon_url || DEFAULT_FAVICON_URL"
                   alt="Favicon" 
-                  @error="handleFaviconError"
                   class="w-8 h-8 object-contain"
+                  @error="handleFaviconError"
                 >
               </TableCell>
               <TableCell class="font-medium">{{ reference.name }}</TableCell>
@@ -269,7 +269,7 @@ onMounted(fetchReferences)
                 <Badge v-if="reference.category" variant="outline">{{ reference.category }}</Badge>
               </TableCell>
               <TableCell class="text-right space-x-2">
-                <Button asChild variant="ghost" size="sm">
+                <Button as-child variant="ghost" size="sm">
                   <NuxtLink :href="`/references/${reference.id}`">
                     <Icon name="mdi:pencil" class="h-4 w-4" />
                   </NuxtLink>
@@ -277,8 +277,8 @@ onMounted(fetchReferences)
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  @click="deleteReference(reference.id)"
                   class="text-destructive hover:text-destructive"
+                  @click="deleteReference(reference.id)"
                 >
                   <Icon name="mdi:delete" class="h-4 w-4" />
                 </Button>
@@ -297,8 +297,8 @@ onMounted(fetchReferences)
             <img 
               :src="reference.favicon_url || DEFAULT_FAVICON_URL"
               alt="Favicon" 
-              @error="handleFaviconError"
               class="w-12 h-12 object-contain shrink-0"
+              @error="handleFaviconError"
             >
             <div class="flex-1 min-w-0">
               <CardTitle class="text-base line-clamp-2">{{ reference.name }}</CardTitle>
@@ -317,26 +317,26 @@ onMounted(fetchReferences)
         
         <CardFooter class="flex gap-2 pt-3 border-t">
           <Button 
-            @click="openUrl(reference.url)" 
             variant="default" 
-            size="sm"
+            size="sm" 
             class="flex-1"
+            @click="openUrl(reference.url)"
           >
             <Icon name="mdi:open-in-new" class="mr-1 h-4 w-4" />
             Visit
           </Button>
           <Button 
-            @click="router.push(`/references/${reference.id}`)" 
             variant="outline" 
-            size="sm"
+            size="sm" 
+            @click="router.push(`/references/${reference.id}`)"
           >
             <Icon name="mdi:pencil" class="h-4 w-4" />
           </Button>
           <Button 
-            @click="deleteReference(reference.id)" 
             variant="outline" 
-            size="sm"
+            size="sm" 
             class="text-destructive hover:text-destructive"
+            @click="deleteReference(reference.id)"
           >
             <Icon name="mdi:delete" class="h-4 w-4" />
           </Button>

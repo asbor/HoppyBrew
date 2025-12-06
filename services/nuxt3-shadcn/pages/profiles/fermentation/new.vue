@@ -141,9 +141,9 @@ function getStepTypeLabel(value: string): string {
       </CardHeader>
       <CardContent>
         <div class="flex gap-2">
-          <Button @click="loadTemplate('ale')" variant="outline">Standard Ale</Button>
-          <Button @click="loadTemplate('lager')" variant="outline">Lager</Button>
-          <Button @click="loadTemplate('neipa')" variant="outline">NEIPA</Button>
+          <Button variant="outline" @click="loadTemplate('ale')">Standard Ale</Button>
+          <Button variant="outline" @click="loadTemplate('lager')">Lager</Button>
+          <Button variant="outline" @click="loadTemplate('neipa')">NEIPA</Button>
         </div>
       </CardContent>
     </Card>
@@ -191,7 +191,7 @@ function getStepTypeLabel(value: string): string {
               Total duration: {{ totalDays }} days
             </CardDescription>
           </div>
-          <Button @click="addStep" variant="outline" size="sm">Add Step</Button>
+          <Button variant="outline" size="sm" @click="addStep">Add Step</Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -276,24 +276,24 @@ function getStepTypeLabel(value: string): string {
                 <!-- Step Controls -->
                 <div class="flex flex-col gap-2">
                   <Button
-                    @click="moveStepUp(index)"
                     variant="outline"
                     size="icon"
                     :disabled="index === 0"
                     title="Move up"
+                    @click="moveStepUp(index)"
                   >
                     ↑
                   </Button>
                   <Button
-                    @click="moveStepDown(index)"
                     variant="outline"
                     size="icon"
                     :disabled="index === profile.steps!.length - 1"
                     title="Move down"
+                    @click="moveStepDown(index)"
                   >
                     ↓
                   </Button>
-                  <Button @click="removeStep(index)" variant="destructive" size="icon" title="Remove step"> ✕ </Button>
+                  <Button variant="destructive" size="icon" title="Remove step" @click="removeStep(index)"> ✕ </Button>
                 </div>
               </div>
             </CardContent>
@@ -304,8 +304,8 @@ function getStepTypeLabel(value: string): string {
 
     <!-- Actions -->
     <div class="flex justify-between">
-      <Button @click="router.push('/profiles/fermentation')" variant="outline">Cancel</Button>
-      <Button @click="handleSave" :disabled="saving">
+      <Button variant="outline" @click="router.push('/profiles/fermentation')">Cancel</Button>
+      <Button :disabled="saving" @click="handleSave">
         {{ saving ? 'Saving...' : 'Save Profile' }}
       </Button>
     </div>

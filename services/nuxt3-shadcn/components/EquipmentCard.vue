@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { defineProps } from 'vue';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { ref , defineProps } from 'vue';
 import { useRouter } from 'vue-router'; // Import Vue Router
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import EquipmentEditDialog from '@/components/equipment/EditDialog.vue'; // Import EquipmentEditDialog component
 
 const props = defineProps({
@@ -62,9 +61,9 @@ function editEquipment() {
       </div>
     </CardContent>
     <CardFooter class="flex justify-end px-4 py-2 bg-gray-100">
-      <button @click="deleteEquipment" class="text-red-500 hover:text-red-700 font-semibold">Delete</button>
+      <button class="text-red-500 hover:text-red-700 font-semibold" @click="deleteEquipment">Delete</button>
       <equipmentEditDialog />
-      <EditDialog :formData="props.card" />
+      <EditDialog :form-data="props.card" />
     </CardFooter>
   </Card>
 </template>

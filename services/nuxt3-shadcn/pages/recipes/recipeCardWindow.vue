@@ -106,7 +106,7 @@ onMounted(async () => {
                 <p class="text-muted-foreground">Your personal brewing recipe library</p>
             </div>
             <div class="flex gap-3">
-                <Button asChild variant="outline">
+                <Button as-child variant="outline">
                     <NuxtLink href="/recipes">
                         <Icon name="mdi:table" class="mr-2 h-4 w-4" />
                         Table View
@@ -120,7 +120,8 @@ onMounted(async () => {
         <main class="space-y-4">
             <!-- Search Bar -->
             <div>
-                <Input v-model="searchQuery" type="text" placeholder="Search for recipe by name, type, or brewer..."
+                <Input
+v-model="searchQuery" type="text" placeholder="Search for recipe by name, type, or brewer..."
                     class="max-w-md">
                 <template #prefix>
                     <Icon name="mdi:magnify" class="h-4 w-4 text-muted-foreground" />
@@ -149,7 +150,8 @@ onMounted(async () => {
 
             <!-- Recipe Cards Grid -->
             <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                <BeerCard v-for="recipe in filteredRecipes" :card="recipe" :key="recipe.id"
+                <BeerCard
+v-for="recipe in filteredRecipes" :key="recipe.id" :card="recipe"
                     @start-brew="handleStartBrew" @edit="handleEdit" @delete="handleDelete" />
             </div>
         </main>
@@ -173,13 +175,15 @@ onMounted(async () => {
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-2">
                             <Label for="batch_number">Batch Number</Label>
-                            <Input id="batch_number" v-model.number="batchForm.batch_number" type="number" min="1"
+                            <Input
+id="batch_number" v-model.number="batchForm.batch_number" type="number" min="1"
                                 required />
                         </div>
 
                         <div class="space-y-2">
                             <Label for="batch_size_form">Batch Size (L)</Label>
-                            <Input id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1"
+                            <Input
+id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1"
                                 min="0" required />
                         </div>
                     </div>
@@ -199,7 +203,7 @@ onMounted(async () => {
                     <Button type="button" variant="outline" @click="showStartBrewDialog = false">
                         Cancel
                     </Button>
-                    <Button type="button" @click="confirmStartBrew" :disabled="batchLoading">
+                    <Button type="button" :disabled="batchLoading" @click="confirmStartBrew">
                         <Icon v-if="batchLoading" name="mdi:loading" class="mr-2 h-4 w-4 animate-spin" />
                         Start Brewing
                     </Button>

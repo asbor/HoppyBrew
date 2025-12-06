@@ -10,7 +10,7 @@
                     <ul>
                         <li v-for="(recipe, index) in recipe" :key="index">
                             <label>
-                                <input type="checkbox" v-model="selectedRecipe" :value="recipe">
+                                <input v-model="selectedRecipe" type="checkbox" :value="recipe">
                                 {{ recipe.name }}
                             </label>
                         </li>
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div v-if="selectedRecipe.length > 0" class="grid gap-4 lg:grid-cols-3">
-            <XMLBeerCard v-for='( recipe, index ) in selectedRecipe' :card="recipe" :key='index' />
+            <XMLBeerCard v-for='( recipe, index ) in selectedRecipe' :key='index' :card="recipe" />
         </div>
     </div>
 

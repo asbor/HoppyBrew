@@ -1,7 +1,8 @@
 <template>
     <div class="p-2">
         <div class="flex items-center gap-2">
-            <div class="indicator"
+            <div
+class="indicator"
                 :class="{ 'connected': isConnectedToDatabase, 'disconnected': !isConnectedToDatabase }">
             </div>
             <span>{{ isConnectedToDatabase ? 'Connected' : 'Disconnected' }}</span>

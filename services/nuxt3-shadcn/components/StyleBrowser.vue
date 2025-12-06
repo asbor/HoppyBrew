@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
 import { useBeerStyles, type BeerStyle, type StyleGuidelineSource, type StyleCategory } from '~/composables/useBeerStyles'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -7,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useDebounceFn } from '@vueuse/core'
 
 const beerStylesApi = useBeerStyles()
 
@@ -143,13 +143,13 @@ onMounted(() => {
             <div 
               v-for="source in guidelineSources" 
               :key="source.id"
-              @click="selectedGuideline = source.id || null"
               :class="[
                 'p-2 rounded-md cursor-pointer transition-colors',
                 selectedGuideline === source.id 
                   ? 'bg-primary text-primary-foreground' 
                   : 'hover:bg-muted'
               ]"
+              @click="selectedGuideline = source.id || null"
             >
               <div class="font-medium">{{ source.abbreviation || source.name }}</div>
               <div class="text-xs opacity-80">{{ source.year }}</div>
@@ -162,26 +162,26 @@ onMounted(() => {
             <ScrollArea class="h-[400px]">
               <div class="space-y-1">
                 <div
-                  @click="selectedCategory = null"
                   :class="[
                     'px-2 py-1.5 rounded-md cursor-pointer transition-colors text-sm',
                     selectedCategory === null
                       ? 'bg-secondary text-secondary-foreground'
                       : 'hover:bg-muted'
                   ]"
+                  @click="selectedCategory = null"
                 >
                   All Categories
                 </div>
                 <div 
                   v-for="category in filteredCategories" 
                   :key="category.id"
-                  @click="selectedCategory = category.id || null"
                   :class="[
                     'px-2 py-1.5 rounded-md cursor-pointer transition-colors text-sm',
                     selectedCategory === category.id
                       ? 'bg-secondary text-secondary-foreground'
                       : 'hover:bg-muted'
                   ]"
+                  @click="selectedCategory = category.id || null"
                 >
                   <span class="font-medium">{{ category.code }}</span> {{ category.name }}
                 </div>

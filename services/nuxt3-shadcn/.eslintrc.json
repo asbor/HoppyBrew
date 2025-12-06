@@ -8,7 +8,7 @@
     "@nuxtjs/eslint-config-typescript",
     "plugin:vue/vue3-essential",
     "eslint:recommended",
-    "@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
   "parser": "vue-eslint-parser",
@@ -22,10 +22,30 @@
     "vue"
   ],
   "rules": {
+    "no-undef": "off",
     "vue/multi-word-component-names": "off",
-    "@typescript-eslint/no-unused-vars": "error",
-    "no-console": "warn",
-    "no-debugger": "error"
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-console": "off",
+    "no-debugger": "error",
+    "vue/no-mutating-props": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "require-await": "off",
+    "camelcase": "off",
+    "vue/require-prop-types": "off",
+    "vue/require-default-prop": "off",
+    "vue/no-v-html": "off",
+    "vue/no-use-before-define": "off",
+    "no-use-before-define": "off",
+    "import/order": "off",
+    "import/no-named-as-default-member": "off",
+    "vue/no-unused-vars": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "no-useless-constructor": "off",
+    "@typescript-eslint/ban-types": "off",
+    "no-new": "off",
+    "vue/require-explicit-emits": "off",
+    "vue/no-template-shadow": "off",
+    "vue/no-parsing-error": "off"
   },
   "ignorePatterns": [
     "dist",

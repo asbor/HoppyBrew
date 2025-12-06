@@ -91,7 +91,7 @@ async function importMisc() {
         <AlertDialogContent>
             <AlertDialogHeader>
                 <AlertDialogTitle>Import Misc from BeerXML</AlertDialogTitle>
-                <input type="file" @change="handleFileChangeMisc" accept=".xml" />
+                <input type="file" accept=".xml" @change="handleFileChangeMisc" />
                 <div v-if="importedMisc.length > 0">
                     <h2>Imported Misc:</h2>
                     <ul>

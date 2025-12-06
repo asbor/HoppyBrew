@@ -6,7 +6,7 @@
                 <h1 class="text-3xl font-bold mb-2">Yeast Inventory</h1>
                 <p class="text-muted-foreground">Manage your yeast strains and cultures</p>
             </div>
-            <Button @click="showAddDialog = true" class="bg-primary hover:bg-primary/90">
+            <Button class="bg-primary hover:bg-primary/90" @click="showAddDialog = true">
                 <Plus class="mr-2 h-4 w-4" />
                 Add Yeast
             </Button>
@@ -15,7 +15,8 @@
         <!-- Search and Filter -->
         <div class="flex gap-4 mb-6">
             <div class="flex-1">
-                <Input v-model="searchQuery" placeholder="Search yeasts by name, laboratory, type..."
+                <Input
+v-model="searchQuery" placeholder="Search yeasts by name, laboratory, type..."
                     class="bg-card border-input" />
             </div>
             <Select v-model="filterType">
@@ -37,19 +38,21 @@
         </div>
 
         <!-- Error State -->
-        <div v-else-if="yeastsError"
+        <div
+v-else-if="yeastsError"
             class="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded">
             <p class="font-bold">Error loading yeasts</p>
             <p>{{ yeastsError }}</p>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="filteredYeasts.length === 0 && !searchQuery"
+        <div
+v-else-if="filteredYeasts.length === 0 && !searchQuery"
             class="text-center py-12 bg-card rounded-lg border border-border">
             <Package class="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 class="text-lg font-semibold mb-2">No yeasts in inventory</h3>
             <p class="text-muted-foreground mb-4">Start by adding your first yeast strain</p>
-            <Button @click="showAddDialog = true" class="bg-primary hover:bg-primary/90">
+            <Button class="bg-primary hover:bg-primary/90" @click="showAddDialog = true">
                 <Plus class="mr-2 h-4 w-4" />
                 Add First Yeast
             </Button>
@@ -74,7 +77,8 @@
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow v-for="yeast in filteredYeasts" :key="yeast.id" class="border-border hover:bg-accent/50"
+                    <TableRow
+v-for="yeast in filteredYeasts" :key="yeast.id" class="border-border hover:bg-accent/50"
                         :class="{ 'bg-destructive/10': isLowStock(yeast.amount) || isExpiringSoon(yeast.expiry_date) }">
                         <TableCell class="font-medium">
                             <div>{{ yeast.name }}</div>
@@ -121,8 +125,9 @@
                                 <Button variant="ghost" size="sm" @click="editYeast(yeast)">
                                     <Edit class="h-4 w-4" />
                                 </Button>
-                                <Button variant="ghost" size="sm" @click="confirmDelete(yeast)"
-                                    class="text-destructive hover:text-destructive hover:bg-destructive/10">
+                                <Button
+variant="ghost" size="sm" class="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    @click="confirmDelete(yeast)">
                                     <Trash2 class="h-4 w-4" />
                                 </Button>
                             </div>
@@ -161,19 +166,22 @@
                 <div class="grid grid-cols-2 gap-4 py-4">
                     <div class="col-span-2">
                         <Label for="name">Name *</Label>
-                        <Input id="name" v-model="formData.name" placeholder="e.g., SafAle US-05"
+                        <Input
+id="name" v-model="formData.name" placeholder="e.g., SafAle US-05"
                             class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="laboratory">Laboratory</Label>
-                        <Input id="laboratory" v-model="formData.laboratory" placeholder="e.g., Fermentis"
+                        <Input
+id="laboratory" v-model="formData.laboratory" placeholder="e.g., Fermentis"
                             class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="product_id">Product ID</Label>
-                        <Input id="product_id" v-model="formData.product_id" placeholder="e.g., US-05"
+                        <Input
+id="product_id" v-model="formData.product_id" placeholder="e.g., US-05"
                             class="bg-background border-input" />
                     </div>
 
@@ -206,19 +214,22 @@
 
                     <div>
                         <Label for="min_temperature">Min Temperature (°C)</Label>
-                        <Input id="min_temperature" v-model.number="formData.min_temperature" type="number" step="0.5"
+                        <Input
+id="min_temperature" v-model.number="formData.min_temperature" type="number" step="0.5"
                             placeholder="e.g., 15" class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="max_temperature">Max Temperature (°C)</Label>
-                        <Input id="max_temperature" v-model.number="formData.max_temperature" type="number" step="0.5"
+                        <Input
+id="max_temperature" v-model.number="formData.max_temperature" type="number" step="0.5"
                             placeholder="e.g., 24" class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="attenuation">Attenuation (%)</Label>
-                        <Input id="attenuation" v-model.number="formData.attenuation" type="number" step="1"
+                        <Input
+id="attenuation" v-model.number="formData.attenuation" type="number" step="1"
                             placeholder="e.g., 75" class="bg-background border-input" />
                     </div>
 
@@ -239,7 +250,8 @@
 
                     <div>
                         <Label for="amount">Amount *</Label>
-                        <Input id="amount" v-model.number="formData.amount" type="number" step="1" placeholder="e.g., 5"
+                        <Input
+id="amount" v-model.number="formData.amount" type="number" step="1" placeholder="e.g., 5"
                             class="bg-background border-input" />
                     </div>
 
@@ -260,37 +272,42 @@
 
                     <div>
                         <Label for="supplier">Supplier</Label>
-                        <Input id="supplier" v-model="formData.supplier" placeholder="e.g., BrewStore"
+                        <Input
+id="supplier" v-model="formData.supplier" placeholder="e.g., BrewStore"
                             class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="cost_per_unit">Cost per Unit (€)</Label>
-                        <Input id="cost_per_unit" v-model.number="formData.cost_per_unit" type="number" step="0.01"
+                        <Input
+id="cost_per_unit" v-model.number="formData.cost_per_unit" type="number" step="0.01"
                             placeholder="e.g., 4.50" class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="manufacture_date">Manufacture Date</Label>
-                        <Input id="manufacture_date" v-model="formData.manufacture_date" type="date"
+                        <Input
+id="manufacture_date" v-model="formData.manufacture_date" type="date"
                             class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="expiry_date">Expiry Date</Label>
-                        <Input id="expiry_date" v-model="formData.expiry_date" type="date"
+                        <Input
+id="expiry_date" v-model="formData.expiry_date" type="date"
                             class="bg-background border-input" />
                     </div>
 
                     <div class="col-span-2">
                         <Label for="notes">Notes</Label>
-                        <Textarea id="notes" v-model="formData.notes" placeholder="Additional notes..."
+                        <Textarea
+id="notes" v-model="formData.notes" placeholder="Additional notes..."
                             class="bg-background border-input" />
                     </div>
                 </div>
                 <DialogFooter>
                     <Button variant="outline" @click="cancelEdit">Cancel</Button>
-                    <Button @click="saveYeast" :disabled="!isFormValid" class="bg-primary hover:bg-primary/90">
+                    <Button :disabled="!isFormValid" class="bg-primary hover:bg-primary/90" @click="saveYeast">
                         {{ editingYeast ? 'Update' : 'Add' }} Yeast
                     </Button>
                 </DialogFooter>

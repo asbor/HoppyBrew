@@ -19,17 +19,20 @@
             <RecipeBlock class="border-2 p-4">
               <div>
                 <label for="name">Name:</label>
-                <input type="text" id="name" v-model="recipe.name" required placeholder="Optional"
+                <input
+id="name" v-model="recipe.name" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="brewer">Brewer:</label>
-                <input type="text" id="brewer" v-model="recipe.brewer" required placeholder="Optional"
+                <input
+id="brewer" v-model="recipe.brewer" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="type">Type:</label>
-                <input type="text" id="type" v-model="recipe.type" required placeholder="Optional"
+                <input
+id="type" v-model="recipe.type" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </RecipeBlock>
@@ -37,22 +40,26 @@
             <EquipmentBlock class="border-2 p-4">
               <div>
                 <label for="batch_size">Batch Size:</label>
-                <input type="number" id="batch_size" v-model="recipe.batch_size" required placeholder="Optional"
+                <input
+id="batch_size" v-model="recipe.batch_size" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="boil_size">Boil Size:</label>
-                <input type="number" id="boil_size" v-model="recipe.boil_size" required placeholder="Optional"
+                <input
+id="boil_size" v-model="recipe.boil_size" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="boil_time">Boil Time:</label>
-                <input type="number" id="boil_time" v-model="recipe.boil_time" required placeholder="Optional"
+                <input
+id="boil_time" v-model="recipe.boil_time" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="efficiency">Efficiency:</label>
-                <input type="number" id="efficiency" v-model="recipe.efficiency" required placeholder="Optional"
+                <input
+id="efficiency" v-model="recipe.efficiency" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </EquipmentBlock>
@@ -60,27 +67,32 @@
             <StyleBlock class="border-2 p-4">
               <div>
                 <label for="abv">ABV:</label>
-                <input type="number" id="abv" v-model="recipe.abv" required placeholder="Optional"
+                <input
+id="abv" v-model="recipe.abv" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="og">OG:</label>
-                <input type="number" id="og" v-model="recipe.og" required placeholder="Optional"
+                <input
+id="og" v-model="recipe.og" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="fg">FG:</label>
-                <input type="number" id="fg" v-model="recipe.fg" required placeholder="Optional"
+                <input
+id="fg" v-model="recipe.fg" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="ibu">IBU:</label>
-                <input type="number" id="ibu" v-model="recipe.ibu" required placeholder="Optional"
+                <input
+id="ibu" v-model="recipe.ibu" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
               <div>
                 <label for="est_color">EBC:</label>
-                <input type="number" id="est_color" v-model="recipe.est_color" required placeholder="Optional"
+                <input
+id="est_color" v-model="recipe.est_color" type="number" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </StyleBlock>
@@ -91,7 +103,8 @@
               <div>
                 <label for="fermentables">Fermentables:</label>
                 <div v-for="(fermentable, index) in recipe.fermentables" :key="index">
-                  <input type="text" v-model="fermentable.name" required placeholder="Optional"
+                  <input
+v-model="fermentable.name" type="text" required placeholder="Optional"
                     class="border-2 border-gray-300 rounded-lg p-2 w-full">
                 </div>
               </div>
@@ -101,7 +114,8 @@
               <div>
                 <label for="hops">Hops:</label>
                 <div v-for="(hop, index) in recipe.hops" :key="index">
-                  <input type="text" v-model="hop.name" required placeholder="Optional"
+                  <input
+v-model="hop.name" type="text" required placeholder="Optional"
                     class="border-2 border-gray-300 rounded-lg p-2 w-full">
                 </div>
               </div>
@@ -111,7 +125,8 @@
               <div>
                 <label for="miscs">Miscs:</label>
                 <div v-for="(misc, index) in recipe.miscs" :key="index">
-                  <input type="text" v-model="misc.name" required placeholder="Optional"
+                  <input
+v-model="misc.name" type="text" required placeholder="Optional"
                     class="border-2 border-gray-300 rounded-lg p-2 w-full">
                 </div>
               </div>
@@ -121,7 +136,8 @@
               <div>
                 <label for="yeasts">Yeasts:</label>
                 <div v-for="(yeast, index) in recipe.yeasts" :key="index">
-                  <input type="text" v-model="yeast.name" required placeholder="Optional"
+                  <input
+v-model="yeast.name" type="text" required placeholder="Optional"
                     class="border-2 border-gray-300 rounded-lg p-2 w-full">
                 </div>
               </div>
@@ -130,7 +146,8 @@
             <MashBlock class="border-2 p-4">
               <div>
                 <label for="mash">Mash:</label>
-                <input type="text" id="mash" v-model="recipe.mash" required placeholder="Optional"
+                <input
+id="mash" v-model="recipe.mash" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </MashBlock>
@@ -138,7 +155,8 @@
             <FermentationBlock class="border-2 p-4">
               <div>
                 <label for="fermentation">Fermentation:</label>
-                <input type="text" id="fermentation" v-model="recipe.fermentation" required placeholder="Optional"
+                <input
+id="fermentation" v-model="recipe.fermentation" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </FermentationBlock>
@@ -148,7 +166,8 @@
             <WaterBlock class="border-2 p-4">
               <div>
                 <label for="water">Water:</label>
-                <input type="text" id="water" v-model="recipe.water" required placeholder="Optional"
+                <input
+id="water" v-model="recipe.water" type="text" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full">
               </div>
             </WaterBlock>
@@ -156,7 +175,8 @@
             <NotesBlock class="border-2 p-4">
               <div>
                 <label for="notes">Notes:</label>
-                <textarea id="notes" v-model="recipe.notes" required placeholder="Optional"
+                <textarea
+id="notes" v-model="recipe.notes" required placeholder="Optional"
                   class="border-2 border-gray-300 rounded-lg p-2 w-full"></textarea>
               </div>
             </NotesBlock>

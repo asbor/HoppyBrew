@@ -230,7 +230,7 @@ export const useCalculators = () => {
     
     return {
       volume: waterToAdd,
-      finalVolume: finalVolume,
+      finalVolume,
       formatted: `Add ${waterToAdd.toFixed(1)}L to reach ${finalVolume.toFixed(1)}L total`
     }
   }

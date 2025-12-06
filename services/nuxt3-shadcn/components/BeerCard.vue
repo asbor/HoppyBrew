@@ -100,26 +100,26 @@ const fallbackSrm = computed(() => cardData.value.est_color || cardData.value.co
             <!-- Action Buttons Row -->
             <div class="flex w-full gap-2">
                 <Button 
-                    @click="handleStartBrew" 
                     variant="default" 
                     size="sm" 
-                    class="flex-1"
+                    class="flex-1" 
+                    @click="handleStartBrew"
                 >
                     <Icon name="mdi:flask" class="mr-1 h-4 w-4" />
                     Start Brew
                 </Button>
                 <Button 
-                    @click="handleEdit" 
                     variant="outline" 
-                    size="sm"
+                    size="sm" 
+                    @click="handleEdit"
                 >
                     <Icon name="mdi:pencil" class="h-4 w-4" />
                 </Button>
                 <Button 
-                    @click="handleDelete" 
                     variant="outline" 
-                    size="sm"
+                    size="sm" 
                     class="text-destructive hover:text-destructive"
+                    @click="handleDelete"
                 >
                     <Icon name="mdi:delete" class="h-4 w-4" />
                 </Button>

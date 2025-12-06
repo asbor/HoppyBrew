@@ -5,9 +5,8 @@ Converts any invalid statuses to valid BatchStatus values.
 """
 
 import sys
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
-from database import get_db, engine
+from sqlalchemy import text
+from database import get_db
 from Database.Models import Batches
 from Database.enums import BatchStatus
 

@@ -8,7 +8,8 @@
     <main class="px-4 grow">
       <div class="grid gap-1">
         <DropDownCreate v-if="false" />
-        <NuxtLink :to="item.path" v-for='(item, index) in items' :key='index'
+        <NuxtLink
+v-for='(item, index) in items' :key='index' :to="item.path"
           class="flex items-center gap-2 px-4 py-2 transition rounded cursor-pointer hover:bg-accent hover:text-accent-foreground">
           <Icon size="24" :name="item.icon" />
           <span class="text-base">{{ item.title }}</span>
@@ -18,7 +19,7 @@
     <footer>
       <div>
         <div class="p-4">
-          <button @click="toggleDark()" class="flex items-center gap-2 text-base">
+          <button class="flex items-center gap-2 text-base" @click="toggleDark()">
             <Icon size="24" :name="isDark ? 'bx:bx-moon' : 'bx:bx-sun'" />
             <span>Toggle Color Mode</span>
           </button>

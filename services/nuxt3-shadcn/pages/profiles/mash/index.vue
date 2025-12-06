@@ -84,7 +84,7 @@ onMounted(fetchMashProfiles)
           Manage your mash schedules and brewing profiles
         </p>
       </div>
-      <Button asChild>
+      <Button as-child>
         <NuxtLink href="/profiles/mash/newMash">
           Create New Profile
         </NuxtLink>
@@ -112,7 +112,7 @@ onMounted(fetchMashProfiles)
               Create your first mash profile to get started
             </p>
           </div>
-          <Button asChild>
+          <Button as-child>
             <NuxtLink href="/profiles/mash/newMash">
               Create Your First Profile
             </NuxtLink>
@@ -167,15 +167,15 @@ onMounted(fetchMashProfiles)
               </TableCell>
               <TableCell class="text-right">
                 <div class="flex justify-end gap-2">
-                  <Button asChild size="sm" variant="outline">
+                  <Button as-child size="sm" variant="outline">
                     <NuxtLink :href="`/profiles/mash/${profile.id}`">
                       Edit
                     </NuxtLink>
                   </Button>
                   <Button 
-                    @click="deleteMashProfile(profile.id, profile.name)"
                     size="sm"
                     variant="destructive"
+                    @click="deleteMashProfile(profile.id, profile.name)"
                   >
                     Delete
                   </Button>

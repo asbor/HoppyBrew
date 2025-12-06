@@ -7,7 +7,7 @@
       </CardHeader>
       <CardContent>
         <p>Packaged phase component - placeholder for now</p>
-        <Button @click="$emit('complete-batch')" class="mt-4">
+        <Button class="mt-4" @click="$emit('complete-batch')">
           <Icon name="mdi:check-circle" class="mr-2 h-4 w-4" />
           Mark Complete
         </Button>

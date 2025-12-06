@@ -7,7 +7,7 @@
       </CardHeader>
       <CardContent>
         <p>Completed phase component - placeholder for now</p>
-        <Button @click="$emit('archive-batch')" variant="outline" class="mt-4">
+        <Button variant="outline" class="mt-4" @click="$emit('archive-batch')">
           <Icon name="mdi:archive" class="mr-2 h-4 w-4" />
           Archive Batch
         </Button>

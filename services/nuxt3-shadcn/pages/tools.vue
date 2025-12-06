@@ -316,11 +316,11 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label for="og">Original Gravity (OG)</Label>
-                <Input id="og" type="number" step="0.001" v-model.number="og" />
+                <Input id="og" v-model.number="og" type="number" step="0.001" />
               </div>
               <div class="space-y-2">
                 <Label for="fg">Final Gravity (FG)</Label>
-                <Input id="fg" type="number" step="0.001" v-model.number="fg" />
+                <Input id="fg" v-model.number="fg" type="number" step="0.001" />
               </div>
             </div>
             <div class="pt-4 border-t">
@@ -344,23 +344,23 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label for="alpha">Alpha Acid (%)</Label>
-                <Input id="alpha" type="number" step="0.1" v-model.number="alphaAcid" />
+                <Input id="alpha" v-model.number="alphaAcid" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="hopWeight">Hop Weight (oz)</Label>
-                <Input id="hopWeight" type="number" step="0.1" v-model.number="hopWeight" />
+                <Input id="hopWeight" v-model.number="hopWeight" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="boilTime">Boil Time (min)</Label>
-                <Input id="boilTime" type="number" v-model.number="boilTime" />
+                <Input id="boilTime" v-model.number="boilTime" type="number" />
               </div>
               <div class="space-y-2">
                 <Label for="batchSize">Batch Size (gal)</Label>
-                <Input id="batchSize" type="number" step="0.1" v-model.number="batchSize" />
+                <Input id="batchSize" v-model.number="batchSize" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="boilGravity">Boil Gravity</Label>
-                <Input id="boilGravity" type="number" step="0.001" v-model.number="boilGravity" />
+                <Input id="boilGravity" v-model.number="boilGravity" type="number" step="0.001" />
               </div>
             </div>
             <div class="pt-4 border-t">
@@ -384,15 +384,15 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="space-y-2">
                 <Label for="grainColor">Grain Color (°L)</Label>
-                <Input id="grainColor" type="number" step="0.1" v-model.number="grainColor" />
+                <Input id="grainColor" v-model.number="grainColor" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="grainWeight">Grain Weight (lbs)</Label>
-                <Input id="grainWeight" type="number" step="0.1" v-model.number="grainWeight" />
+                <Input id="grainWeight" v-model.number="grainWeight" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="batchSizeSRM">Batch Size (gal)</Label>
-                <Input id="batchSizeSRM" type="number" step="0.1" v-model.number="batchSizeSRM" />
+                <Input id="batchSizeSRM" v-model.number="batchSizeSRM" type="number" step="0.1" />
               </div>
             </div>
             <div class="pt-4 border-t">
@@ -422,15 +422,15 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label for="batchVolume">Batch Volume (L)</Label>
-                <Input id="batchVolume" type="number" step="0.1" v-model.number="batchVolume" />
+                <Input id="batchVolume" v-model.number="batchVolume" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="desiredCO2">Desired CO₂ (volumes)</Label>
-                <Input id="desiredCO2" type="number" step="0.1" v-model.number="desiredCO2" />
+                <Input id="desiredCO2" v-model.number="desiredCO2" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="temperature">Beer Temperature (°C)</Label>
-                <Input id="temperature" type="number" v-model.number="temperature" />
+                <Input id="temperature" v-model.number="temperature" type="number" />
               </div>
               <div class="space-y-2">
                 <Label for="sugarType">Sugar Type</Label>
@@ -472,19 +472,19 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-2">
                 <Label for="grainTemp">Grain Temperature (°C)</Label>
-                <Input id="grainTemp" type="number" v-model.number="grainTemp" />
+                <Input id="grainTemp" v-model.number="grainTemp" type="number" />
               </div>
               <div class="space-y-2">
                 <Label for="targetTemp">Target Mash Temperature (°C)</Label>
-                <Input id="targetTemp" type="number" v-model.number="targetTemp" />
+                <Input id="targetTemp" v-model.number="targetTemp" type="number" />
               </div>
               <div class="space-y-2">
                 <Label for="grainWeightKg">Grain Weight (kg)</Label>
-                <Input id="grainWeightKg" type="number" step="0.1" v-model.number="grainWeightKg" />
+                <Input id="grainWeightKg" v-model.number="grainWeightKg" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="waterToGrainRatio">Water to Grain Ratio (L/kg)</Label>
-                <Input id="waterToGrainRatio" type="number" step="0.1" v-model.number="waterToGrainRatio" />
+                <Input id="waterToGrainRatio" v-model.number="waterToGrainRatio" type="number" step="0.1" />
               </div>
             </div>
             <div class="pt-4 border-t">
@@ -517,15 +517,15 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="space-y-2">
                 <Label for="currentGravity">Current Gravity</Label>
-                <Input id="currentGravity" type="number" step="0.001" v-model.number="currentGravity" />
+                <Input id="currentGravity" v-model.number="currentGravity" type="number" step="0.001" />
               </div>
               <div class="space-y-2">
                 <Label for="currentVolume">Current Volume (L)</Label>
-                <Input id="currentVolume" type="number" step="0.1" v-model.number="currentVolume" />
+                <Input id="currentVolume" v-model.number="currentVolume" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="targetGravityDilute">Target Gravity</Label>
-                <Input id="targetGravityDilute" type="number" step="0.001" v-model.number="targetGravityDilute" />
+                <Input id="targetGravityDilute" v-model.number="targetGravityDilute" type="number" step="0.001" />
               </div>
             </div>
             <div class="pt-4 border-t">
@@ -557,11 +557,11 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="space-y-2">
                 <Label for="targetGravity">Target Gravity</Label>
-                <Input id="targetGravity" type="number" step="0.001" v-model.number="targetGravity" />
+                <Input id="targetGravity" v-model.number="targetGravity" type="number" step="0.001" />
               </div>
               <div class="space-y-2">
                 <Label for="batchVolumeYeast">Batch Volume (L)</Label>
-                <Input id="batchVolumeYeast" type="number" step="0.1" v-model.number="batchVolumeYeast" />
+                <Input id="batchVolumeYeast" v-model.number="batchVolumeYeast" type="number" step="0.1" />
               </div>
               <div class="space-y-2">
                 <Label for="yeastType">Yeast Type</Label>
@@ -606,27 +606,27 @@ const mashPH = computed(() => {
                 <div class="grid grid-cols-2 gap-3">
                   <div class="space-y-2">
                     <Label for="srcCa">Calcium (Ca²⁺)</Label>
-                    <Input id="srcCa" type="number" min="0" v-model.number="sourceWater.calcium" />
+                    <Input id="srcCa" v-model.number="sourceWater.calcium" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="srcMg">Magnesium (Mg²⁺)</Label>
-                    <Input id="srcMg" type="number" min="0" v-model.number="sourceWater.magnesium" />
+                    <Input id="srcMg" v-model.number="sourceWater.magnesium" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="srcNa">Sodium (Na⁺)</Label>
-                    <Input id="srcNa" type="number" min="0" v-model.number="sourceWater.sodium" />
+                    <Input id="srcNa" v-model.number="sourceWater.sodium" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="srcCl">Chloride (Cl⁻)</Label>
-                    <Input id="srcCl" type="number" min="0" v-model.number="sourceWater.chloride" />
+                    <Input id="srcCl" v-model.number="sourceWater.chloride" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="srcSO4">Sulfate (SO₄²⁻)</Label>
-                    <Input id="srcSO4" type="number" min="0" v-model.number="sourceWater.sulfate" />
+                    <Input id="srcSO4" v-model.number="sourceWater.sulfate" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="srcHCO3">Bicarbonate (HCO₃⁻)</Label>
-                    <Input id="srcHCO3" type="number" min="0" v-model.number="sourceWater.bicarbonate" />
+                    <Input id="srcHCO3" v-model.number="sourceWater.bicarbonate" type="number" min="0" />
                   </div>
                 </div>
               </div>
@@ -637,27 +637,27 @@ const mashPH = computed(() => {
                 <div class="grid grid-cols-2 gap-3">
                   <div class="space-y-2">
                     <Label for="tgtCa">Calcium (Ca²⁺)</Label>
-                    <Input id="tgtCa" type="number" min="0" v-model.number="targetWater.calcium" />
+                    <Input id="tgtCa" v-model.number="targetWater.calcium" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="tgtMg">Magnesium (Mg²⁺)</Label>
-                    <Input id="tgtMg" type="number" min="0" v-model.number="targetWater.magnesium" />
+                    <Input id="tgtMg" v-model.number="targetWater.magnesium" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="tgtNa">Sodium (Na⁺)</Label>
-                    <Input id="tgtNa" type="number" min="0" v-model.number="targetWater.sodium" />
+                    <Input id="tgtNa" v-model.number="targetWater.sodium" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="tgtCl">Chloride (Cl⁻)</Label>
-                    <Input id="tgtCl" type="number" min="0" v-model.number="targetWater.chloride" />
+                    <Input id="tgtCl" v-model.number="targetWater.chloride" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="tgtSO4">Sulfate (SO₄²⁻)</Label>
-                    <Input id="tgtSO4" type="number" min="0" v-model.number="targetWater.sulfate" />
+                    <Input id="tgtSO4" v-model.number="targetWater.sulfate" type="number" min="0" />
                   </div>
                   <div class="space-y-2">
                     <Label for="tgtHCO3">Bicarbonate (HCO₃⁻)</Label>
-                    <Input id="tgtHCO3" type="number" min="0" v-model.number="targetWater.bicarbonate" />
+                    <Input id="tgtHCO3" v-model.number="targetWater.bicarbonate" type="number" min="0" />
                   </div>
                 </div>
               </div>
@@ -667,11 +667,11 @@ const mashPH = computed(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
               <div class="space-y-2">
                 <Label for="waterVolume">Water Volume (L)</Label>
-                <Input id="waterVolume" type="number" step="0.1" min="1" v-model.number="waterVolume" />
+                <Input id="waterVolume" v-model.number="waterVolume" type="number" step="0.1" min="1" />
               </div>
               <div class="space-y-2">
                 <Label for="mashGrainWeight">Grain Weight (kg) - for pH estimation</Label>
-                <Input id="mashGrainWeight" type="number" step="0.1" min="0" v-model.number="mashGrainWeight" />
+                <Input id="mashGrainWeight" v-model.number="mashGrainWeight" type="number" step="0.1" min="0" />
               </div>
             </div>
 
@@ -682,7 +682,8 @@ const mashPH = computed(() => {
               <!-- Salt Additions Table -->
               <div class="bg-gray-50 p-4 rounded-lg">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div v-for="(amount, salt) in waterAdjustments.salts" :key="salt" 
+                  <div
+v-for="(amount, salt) in waterAdjustments.salts" :key="salt" 
                        class="bg-white p-3 rounded border">
                     <div class="font-semibold text-sm">{{ salts[salt as keyof typeof salts].name }}</div>
                     <div class="text-2xl font-bold text-primary">

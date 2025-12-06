@@ -159,7 +159,7 @@ onMounted(async () => {
             <Icon name="mdi:view-grid" class="h-4 w-4" />
           </Button>
         </div>
-        <Button asChild>
+        <Button as-child>
           <NuxtLink href="/batches/newBatch">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             New Batch
@@ -202,36 +202,43 @@ onMounted(async () => {
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <Button variant="outline" size="sm" :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
+        <Button
+variant="outline" size="sm" :class="{ 'bg-primary text-primary-foreground': filterStatus === 'all' }"
           @click="filterStatus = 'all'">
           All
         </Button>
-        <Button variant="outline" size="sm"
+        <Button
+variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'planning' }"
           @click="filterStatus = 'planning'">
           Planning
         </Button>
-        <Button variant="outline" size="sm"
+        <Button
+variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'brewing' }"
           @click="filterStatus = 'brewing'">
           Brewing
         </Button>
-        <Button variant="outline" size="sm"
+        <Button
+variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'fermenting' }"
           @click="filterStatus = 'fermenting'">
           Fermenting
         </Button>
-        <Button variant="outline" size="sm"
+        <Button
+variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'conditioning' }"
           @click="filterStatus = 'conditioning'">
           Conditioning
         </Button>
-        <Button variant="outline" size="sm"
+        <Button
+variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'packaging' }"
           @click="filterStatus = 'packaging'">
           Packaging
         </Button>
-        <Button variant="outline" size="sm"
+        <Button
+variant="outline" size="sm"
           :class="{ 'bg-primary text-primary-foreground': filterStatus === 'complete' }"
           @click="filterStatus = 'complete'">
           Complete
@@ -259,7 +266,7 @@ onMounted(async () => {
         </CardDescription>
       </CardHeader>
       <CardFooter class="justify-center">
-        <Button asChild>
+        <Button as-child>
           <NuxtLink href="/batches/newBatch">
             <Icon name="mdi:plus" class="mr-2 h-4 w-4" />
             Create First Batch
@@ -314,13 +321,14 @@ onMounted(async () => {
               <TableCell>{{ batch.fg?.toFixed(3) || 'N/A' }}</TableCell>
               <TableCell>{{ batch.abv?.toFixed(1) || 'N/A' }}%</TableCell>
               <TableCell class="text-right space-x-2">
-                <Button asChild variant="ghost" size="sm">
+                <Button as-child variant="ghost" size="sm">
                   <NuxtLink :href="`/batches/${batch.id}`">
                     <Icon name="mdi:pencil" class="h-4 w-4" />
                   </NuxtLink>
                 </Button>
-                <Button variant="ghost" size="sm" @click="deleteBatch(batch.id)"
-                  class="text-destructive hover:text-destructive">
+                <Button
+variant="ghost" size="sm" class="text-destructive hover:text-destructive"
+                  @click="deleteBatch(batch.id)">
                   <Icon name="mdi:delete" class="h-4 w-4" />
                 </Button>
               </TableCell>

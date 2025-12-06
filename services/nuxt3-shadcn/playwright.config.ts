@@ -1,6 +1,6 @@
-import { defineConfig, devices, type ReporterDescription } from '@playwright/test'
 import { fileURLToPath } from 'node:url'
 import { dirname } from 'node:path'
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test'
 
 const baseDir = dirname(fileURLToPath(import.meta.url))
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3000'

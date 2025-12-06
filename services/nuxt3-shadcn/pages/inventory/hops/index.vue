@@ -6,10 +6,10 @@
       </div>
       <div>
         <div class="flex gap-4">
-          <Button asChild>
+          <Button as-child>
             <NuxtLink href="/inventory/hops/newHop">New hop</NuxtLink>
           </Button>
-          <Button asChild>
+          <Button as-child>
             <BeerXMLImportHopDialog />
           </Button>
         </div>
@@ -59,7 +59,7 @@
             <TableCell>{{ hop.display_time }}</TableCell>
             <TableCell class="text-right">
               <!-- Add buttons for actions like edit or delete -->
-              <Button asChild class="mr-2">
+              <Button as-child class="mr-2">
                 <NuxtLink :href="`/inventory/hops/${hop.id}`">Edit</NuxtLink>
               </Button>
 
@@ -76,6 +76,7 @@
 
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import {
   Table,
   TableBody,
@@ -85,7 +86,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ref, onMounted } from 'vue';
 
 // Define interface for hop 
 interface Hop {

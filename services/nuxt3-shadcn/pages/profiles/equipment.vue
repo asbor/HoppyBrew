@@ -82,7 +82,7 @@
           </DialogDescription>
         </DialogHeader>
         
-        <form @submit.prevent="saveProfile" class="space-y-4">
+        <form class="space-y-4" @submit.prevent="saveProfile">
           <!-- Basic Information -->
           <div class="space-y-4">
             <h3 class="font-semibold">Basic Information</h3>

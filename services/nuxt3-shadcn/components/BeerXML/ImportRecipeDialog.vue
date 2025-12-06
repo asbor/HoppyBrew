@@ -77,7 +77,7 @@ function parseBeerXML(beerXMLContent) {
         age: recipe.AGE ? parseInt(recipe.AGE[0]) : 0, // Integer
         age_temp: recipe.AGE_TEMP ? parseFloat(recipe.AGE_TEMP[0]) : 0, // Float
         carbonation_used: recipe.CARBONATION_USED ? recipe.CARBONATION_USED[0] : '', // String
-        //carbonation_date: recipe.CARBONATION_DATE ? recipe.CARBONATION_DATE[0] : '', // String
+        // carbonation_date: recipe.CARBONATION_DATE ? recipe.CARBONATION_DATE[0] : '', // String
         est_og: recipe.EST_OG ? parseFloat(recipe.EST_OG[0]) : 0, // Float
         est_fg: recipe.EST_FG ? parseFloat(recipe.EST_FG[0]) : 0, // Float
         est_color: recipe.EST_COLOR ? parseFloat(recipe.EST_COLOR[0]) : 0, // Float
@@ -99,7 +99,7 @@ function parseBeerXML(beerXMLContent) {
 
         // Hops
         hops: recipe.HOPS && Array.isArray(recipe.HOPS[0].HOP) ? recipe.HOPS[0].HOP.map((hop) => ({
-          //version: hop.VERSION ? parseInt(hop.VERSION[0]) : 0, // Integer (Not used in either schema)
+          // version: hop.VERSION ? parseInt(hop.VERSION[0]) : 0, // Integer (Not used in either schema)
 
           // MasterHopBase:
           name: hop.NAME ? hop.NAME[0] : '', // String (MasterHopBase)
@@ -381,7 +381,7 @@ async function importRecipes() {
           Choose a BeerXML file to import recipes.
         </AlertDialogDescription>
       </AlertDialogHeader>
-      <input type="file" @change="handleFileChange" accept=".xml" />
+      <input type="file" accept=".xml" @change="handleFileChange" />
       <div v-if="importedRecipes.length > 0">
         <h2>Imported Recipes:</h2>
         <ul>

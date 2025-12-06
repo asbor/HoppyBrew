@@ -127,7 +127,8 @@
         </CardHeader>
         <CardContent>
           <div class="space-y-3">
-            <div v-for="fermentable in sampleFermentables" :key="fermentable.name" 
+            <div
+v-for="fermentable in sampleFermentables" :key="fermentable.name" 
                  class="flex justify-between items-center">
               <div>
                 <p class="font-medium">{{ fermentable.amount }}kg {{ fermentable.name }}</p>
@@ -152,7 +153,8 @@
         </CardHeader>
         <CardContent>
           <div class="space-y-3">
-            <div v-for="hop in sampleHops" :key="hop.name" 
+            <div
+v-for="hop in sampleHops" :key="hop.name" 
                  class="flex justify-between items-center">
               <div>
                 <p class="font-medium">{{ hop.amount }}g {{ hop.name }}</p>
@@ -180,7 +182,8 @@
         </CardHeader>
         <CardContent>
           <div class="space-y-3">
-            <div v-for="step in mashSteps" :key="step.name" 
+            <div
+v-for="step in mashSteps" :key="step.name" 
                  class="flex justify-between items-center p-3 bg-gray-50 rounded">
               <div>
                 <p class="font-medium">{{ step.name }}</p>
@@ -207,7 +210,8 @@
             <!-- Yeast -->
             <div>
               <h5 class="font-medium mb-2">Yeast</h5>
-              <div v-for="yeast in sampleYeasts" :key="yeast.name" 
+              <div
+v-for="yeast in sampleYeasts" :key="yeast.name" 
                    class="flex justify-between items-center">
                 <div>
                   <p class="font-medium">{{ yeast.amount }} {{ yeast.name }}</p>
@@ -222,7 +226,8 @@
             <!-- Misc -->
             <div v-if="sampleMiscs.length > 0">
               <h5 class="font-medium mb-2">Additions</h5>
-              <div v-for="misc in sampleMiscs" :key="misc.name" 
+              <div
+v-for="misc in sampleMiscs" :key="misc.name" 
                    class="flex justify-between items-center">
                 <div>
                   <p class="font-medium">{{ misc.amount }}g {{ misc.name }}</p>
@@ -249,7 +254,8 @@
           <div>
             <h4 class="font-semibold mb-3">Inventory Status</h4>
             <div class="space-y-2">
-              <div class="flex items-center justify-between p-2 rounded" 
+              <div
+class="flex items-center justify-between p-2 rounded" 
                    :class="getInventoryStatusClass('fermentables')">
                 <span class="flex items-center gap-2">
                   <Icon name="mdi:grain" class="h-4 w-4" />
@@ -259,7 +265,8 @@
                   {{ getInventoryStatus('fermentables') }}
                 </Badge>
               </div>
-              <div class="flex items-center justify-between p-2 rounded" 
+              <div
+class="flex items-center justify-between p-2 rounded" 
                    :class="getInventoryStatusClass('hops')">
                 <span class="flex items-center gap-2">
                   <Icon name="mdi:flower" class="h-4 w-4" />
@@ -269,7 +276,8 @@
                   {{ getInventoryStatus('hops') }}
                 </Badge>
               </div>
-              <div class="flex items-center justify-between p-2 rounded" 
+              <div
+class="flex items-center justify-between p-2 rounded" 
                    :class="getInventoryStatusClass('yeast')">
                 <span class="flex items-center gap-2">
                   <Icon name="mdi:bacteria" class="h-4 w-4" />
@@ -286,19 +294,19 @@
           <div>
             <h4 class="font-semibold mb-3">Actions</h4>
             <div class="space-y-2">
-              <Button @click="printBrewSheet" variant="outline" class="w-full justify-start">
+              <Button variant="outline" class="w-full justify-start" @click="printBrewSheet">
                 <Icon name="mdi:printer" class="mr-2 h-4 w-4" />
                 Print Brew Sheet
               </Button>
-              <Button @click="reserveIngredients" variant="outline" class="w-full justify-start">
+              <Button variant="outline" class="w-full justify-start" @click="reserveIngredients">
                 <Icon name="mdi:cart" class="mr-2 h-4 w-4" />
                 Reserve Ingredients
               </Button>
-              <Button @click="scheduleBrewDay" variant="outline" class="w-full justify-start">
+              <Button variant="outline" class="w-full justify-start" @click="scheduleBrewDay">
                 <Icon name="mdi:calendar" class="mr-2 h-4 w-4" />
                 Schedule Brew Day
               </Button>
-              <Button @click="$emit('start-brew')" class="w-full justify-start">
+              <Button class="w-full justify-start" @click="$emit('start-brew')">
                 <Icon name="mdi:fire" class="mr-2 h-4 w-4" />
                 Start Brew Day
               </Button>

@@ -76,10 +76,10 @@
                   <Button variant="ghost" size="icon" @click="viewProfile(profile)">
                     <Eye class="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" @click="editProfile(profile)" :disabled="profile.is_default">
+                  <Button variant="ghost" size="icon" :disabled="profile.is_default" @click="editProfile(profile)">
                     <Pencil class="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" @click="deleteProfile(profile)" :disabled="profile.is_default">
+                  <Button variant="ghost" size="icon" :disabled="profile.is_default" @click="deleteProfile(profile)">
                     <Trash2 class="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
@@ -100,7 +100,7 @@
           </DialogDescription>
         </DialogHeader>
 
-        <form @submit.prevent="saveProfile" class="space-y-4">
+        <form class="space-y-4" @submit.prevent="saveProfile">
           <!-- Basic Information -->
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">

@@ -1,7 +1,7 @@
 <script setup>
-let props = defineProps(['currentCategory', 'data']);
-let data = props.data || [];
-let currentCategory = props.currentCategory || 'today';
+const props = defineProps(['currentCategory', 'data']);
+const data = props.data || [];
+const currentCategory = props.currentCategory || 'today';
 
 let categories = ref({
   today: [
@@ -55,7 +55,7 @@ let categories = ref({
   ]
 })
 
-let options = computed(() => ({
+const options = computed(() => ({
   chart: {
     type: 'line',
     animation: {
@@ -106,24 +106,24 @@ let options = computed(() => ({
 }))
 
 function generateMonth() {
-  let currentDate = new Date();
-  let currentMonth = currentDate.getMonth() + 1; // Current month (1 for January, 2 for February, etc.)
-  let currentYear = currentDate.getFullYear(); // Current year
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1; // Current month (1 for January, 2 for February, etc.)
+  const currentYear = currentDate.getFullYear(); // Current year
 
   function generateMonthDates() {
-    let monthDates = [];
-    let daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+    const monthDates = [];
+    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
 
     for (let i = 1; i <= daysInMonth; i++) {
-      let dayString = ("0" + i).slice(-2); // Format day with two digits (01, 02, ..., 31)
-      let monthString = ("0" + currentMonth).slice(-2); // Format month with two digits (01, 02, ..., 12)
+      const dayString = ("0" + i).slice(-2); // Format day with two digits (01, 02, ..., 31)
+      const monthString = ("0" + currentMonth).slice(-2); // Format month with two digits (01, 02, ..., 12)
       monthDates.push(monthString + "/" + dayString);
     }
 
     return monthDates;
   }
 
-  let month = generateMonthDates();
+  const month = generateMonthDates();
   categories = ({ ...categories, month })
   return month;
 }

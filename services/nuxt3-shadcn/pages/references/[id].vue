@@ -19,23 +19,27 @@
                         <div class="border-2 p-4">
                             <div>
                                 <label for="name">Name:</label>
-                                <input type="text" id="name" v-model="reference.name" required placeholder="Name"
+                                <input
+id="name" v-model="reference.name" type="text" required placeholder="Name"
                                     class="border-2 border-gray-300 rounded-lg p-2 w-full">
                             </div>
                             <div>
                                 <label for="url">URL:</label>
-                                <input type="url" id="url" v-model="reference.url" required
+                                <input
+id="url" v-model="reference.url" type="url" required
                                     placeholder="https://example.com"
                                     class="border-2 border-gray-300 rounded-lg p-2 w-full">
                             </div>
                             <div>
                                 <label for="description">Description:</label>
-                                <textarea id="description" v-model="reference.description" placeholder="Description"
+                                <textarea
+id="description" v-model="reference.description" placeholder="Description"
                                     class="border-2 border-gray-300 rounded-lg p-2 w-full"></textarea>
                             </div>
                             <div>
                                 <label for="category">Category:</label>
-                                <input type="text" id="category" v-model="reference.category" placeholder="Category"
+                                <input
+id="category" v-model="reference.category" type="text" placeholder="Category"
                                     class="border-2 border-gray-300 rounded-lg p-2 w-full">
                             </div>
                         </div>

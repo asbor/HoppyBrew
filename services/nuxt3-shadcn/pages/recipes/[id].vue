@@ -189,7 +189,7 @@ function onFileSelected(event: Event) {
             <Copy class="h-4 w-4 mr-2" />
             Clone
           </Button>
-          <Button @click="openStartBrewDialog" class="bg-green-600 hover:bg-green-700">
+          <Button class="bg-green-600 hover:bg-green-700" @click="openStartBrewDialog">
             <Play class="h-4 w-4 mr-2" />
             Start Batch
           </Button>
@@ -209,7 +209,7 @@ function onFileSelected(event: Event) {
               <input type="file" accept="image/*" class="hidden" @change="onFileSelected" />
               Upload
             </Button>
-            <Button @click="onImageUrlSave" :disabled="imageSaving">
+            <Button :disabled="imageSaving" @click="onImageUrlSave">
               <Icon v-if="imageSaving" name="mdi:loading" class="h-4 w-4 mr-2 animate-spin" />
               Save
             </Button>
@@ -251,7 +251,8 @@ function onFileSelected(event: Event) {
       <!-- Ingredients Sections -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Fermentables -->
-        <FermentablesBlock v-if="recipe.fermentables && recipe.fermentables.length > 0"
+        <FermentablesBlock
+v-if="recipe.fermentables && recipe.fermentables.length > 0"
           :fermentables="recipe.fermentables" />
 
         <!-- Hops -->
@@ -267,7 +268,8 @@ function onFileSelected(event: Event) {
       <!-- Additional Information Blocks -->
       <div class="space-y-6">
         <EquipmentBlock v-if="recipe.equipment_profiles" :equipment="recipe.equipment_profiles" />
-        <StyleBlock v-if="recipe.style_profile || recipe.style_guideline" :style-profile="recipe.style_profile"
+        <StyleBlock
+v-if="recipe.style_profile || recipe.style_guideline" :style-profile="recipe.style_profile"
           :style-guideline="recipe.style_guideline" />
         <WaterBlock v-if="recipe.water_profiles" :water="recipe.water_profiles" />
         <MashBlock v-if="recipe.mash_profile" :mash="recipe.mash_profile" />
@@ -300,7 +302,8 @@ function onFileSelected(event: Event) {
 
             <div class="space-y-2">
               <Label for="batch_size_form">Batch Size (L)</Label>
-              <Input id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1" min="0"
+              <Input
+id="batch_size_form" v-model.number="batchForm.batch_size" type="number" step="0.1" min="0"
                 required />
             </div>
           </div>
@@ -320,7 +323,7 @@ function onFileSelected(event: Event) {
           <Button type="button" variant="outline" @click="showStartBrewDialog = false">
             Cancel
           </Button>
-          <Button type="button" @click="handleStartBrew" :disabled="batchLoading">
+          <Button type="button" :disabled="batchLoading" @click="handleStartBrew">
             <Icon v-if="batchLoading" name="mdi:loading" class="mr-2 h-4 w-4 animate-spin" />
             Start Brewing
           </Button>

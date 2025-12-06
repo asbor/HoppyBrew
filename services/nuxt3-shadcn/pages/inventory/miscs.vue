@@ -6,7 +6,7 @@
                 <h1 class="text-3xl font-bold mb-2">Miscellaneous Inventory</h1>
                 <p class="text-muted-foreground">Manage spices, finings, water agents, and other additives</p>
             </div>
-            <Button @click="showAddDialog = true" class="bg-primary hover:bg-primary/90">
+            <Button class="bg-primary hover:bg-primary/90" @click="showAddDialog = true">
                 <Plus class="mr-2 h-4 w-4" />
                 Add Misc Item
             </Button>
@@ -15,7 +15,8 @@
         <!-- Search and Filter -->
         <div class="flex gap-4 mb-6">
             <div class="flex-1">
-                <Input v-model="searchQuery" placeholder="Search miscellaneous items by name, type, use..."
+                <Input
+v-model="searchQuery" placeholder="Search miscellaneous items by name, type, use..."
                     class="bg-card border-input" />
             </div>
             <Select v-model="filterType">
@@ -40,19 +41,21 @@
         </div>
 
         <!-- Error State -->
-        <div v-else-if="miscsError"
+        <div
+v-else-if="miscsError"
             class="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded">
             <p class="font-bold">Error loading miscellaneous items</p>
             <p>{{ miscsError }}</p>
         </div>
 
         <!-- Empty State -->
-        <div v-else-if="filteredMiscs.length === 0 && !searchQuery"
+        <div
+v-else-if="filteredMiscs.length === 0 && !searchQuery"
             class="text-center py-12 bg-card rounded-lg border border-border">
             <Package class="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 class="text-lg font-semibold mb-2">No miscellaneous items in inventory</h3>
             <p class="text-muted-foreground mb-4">Start by adding your first item</p>
-            <Button @click="showAddDialog = true" class="bg-primary hover:bg-primary/90">
+            <Button class="bg-primary hover:bg-primary/90" @click="showAddDialog = true">
                 <Plus class="mr-2 h-4 w-4" />
                 Add First Item
             </Button>
@@ -74,7 +77,8 @@
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow v-for="misc in filteredMiscs" :key="misc.id" class="border-border hover:bg-accent/50"
+                    <TableRow
+v-for="misc in filteredMiscs" :key="misc.id" class="border-border hover:bg-accent/50"
                         :class="{ 'bg-destructive/10': isLowStock(misc.amount) }">
                         <TableCell class="font-medium">{{ misc.name }}</TableCell>
                         <TableCell>
@@ -100,8 +104,9 @@
                                 <Button variant="ghost" size="sm" @click="editMisc(misc)">
                                     <Edit class="h-4 w-4" />
                                 </Button>
-                                <Button variant="ghost" size="sm" @click="confirmDelete(misc)"
-                                    class="text-destructive hover:text-destructive hover:bg-destructive/10">
+                                <Button
+variant="ghost" size="sm" class="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    @click="confirmDelete(misc)">
                                     <Trash2 class="h-4 w-4" />
                                 </Button>
                             </div>
@@ -141,7 +146,8 @@
                 <div class="grid grid-cols-2 gap-4 py-4">
                     <div class="col-span-2">
                         <Label for="name">Name *</Label>
-                        <Input id="name" v-model="formData.name" placeholder="e.g., Irish Moss"
+                        <Input
+id="name" v-model="formData.name" placeholder="e.g., Irish Moss"
                             class="bg-background border-input" />
                     </div>
 
@@ -180,7 +186,8 @@
 
                     <div>
                         <Label for="amount">Amount *</Label>
-                        <Input id="amount" v-model.number="formData.amount" type="number" step="0.1"
+                        <Input
+id="amount" v-model.number="formData.amount" type="number" step="0.1"
                             placeholder="e.g., 100" class="bg-background border-input" />
                     </div>
 
@@ -204,31 +211,35 @@
 
                     <div class="col-span-2">
                         <Label for="use_for">Use For</Label>
-                        <Input id="use_for" v-model="formData.use_for"
+                        <Input
+id="use_for" v-model="formData.use_for"
                             placeholder="e.g., Clarity, pH adjustment, flavor" class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="supplier">Supplier</Label>
-                        <Input id="supplier" v-model="formData.supplier" placeholder="e.g., BrewStore"
+                        <Input
+id="supplier" v-model="formData.supplier" placeholder="e.g., BrewStore"
                             class="bg-background border-input" />
                     </div>
 
                     <div>
                         <Label for="cost_per_unit">Cost per Unit (€)</Label>
-                        <Input id="cost_per_unit" v-model.number="formData.cost_per_unit" type="number" step="0.01"
+                        <Input
+id="cost_per_unit" v-model.number="formData.cost_per_unit" type="number" step="0.01"
                             placeholder="e.g., 0.10" class="bg-background border-input" />
                     </div>
 
                     <div class="col-span-2">
                         <Label for="notes">Notes</Label>
-                        <Textarea id="notes" v-model="formData.notes" placeholder="Additional notes..."
+                        <Textarea
+id="notes" v-model="formData.notes" placeholder="Additional notes..."
                             class="bg-background border-input" />
                     </div>
                 </div>
                 <DialogFooter>
                     <Button variant="outline" @click="cancelEdit">Cancel</Button>
-                    <Button @click="saveMisc" :disabled="!isFormValid" class="bg-primary hover:bg-primary/90">
+                    <Button :disabled="!isFormValid" class="bg-primary hover:bg-primary/90" @click="saveMisc">
                         {{ editingMisc ? 'Update' : 'Add' }} Item
                     </Button>
                 </DialogFooter>

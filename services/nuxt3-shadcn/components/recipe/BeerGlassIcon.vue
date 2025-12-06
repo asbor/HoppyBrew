@@ -32,7 +32,8 @@ const textColor = computed(() => getBeerTextColor(props.srm))
       <!-- Handle -->
       <path d="M46 18 h4 a4 4 0 0 1 4 4 v12 a6 6 0 0 1 -6 6 h-2" fill="none" stroke="#94a3b8" stroke-width="3" />
     </svg>
-    <span v-if="label" class="absolute text-[10px] font-semibold px-1 rounded"
+    <span
+v-if="label" class="absolute text-[10px] font-semibold px-1 rounded"
       :style="{ color: textColor, bottom: '2px' }">
       {{ label }}
     </span>

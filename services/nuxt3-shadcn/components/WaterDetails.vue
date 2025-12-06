@@ -5,7 +5,8 @@
         </header>
         <div>
             <label for="water">Water:</label>
-            <input type="text" id="water" v-model="batch.water" required placeholder="Optional"
+            <input
+id="water" v-model="batch.water" type="text" required placeholder="Optional"
                 class="border-2 border-gray-300 rounded-lg p-2 w-full">
         </div>
     </div>

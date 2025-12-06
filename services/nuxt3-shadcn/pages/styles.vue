@@ -85,12 +85,6 @@ onUnmounted(() => {
 });
 </script>
 
-<style>
-.selected {
-    background-color: #f0f0f0;
-}
-</style>
-
 <template>
     <div class="grid w-full gap-4">
         <header class="flex items-start justify-between">
@@ -101,13 +95,16 @@ onUnmounted(() => {
         </header>
         <main class="grid w-full gap-4">
             <div>
-                <input type="text" v-model="searchQuery" @input="updateSuggestions"
-                    @keydown.enter.prevent="handleEnterKey" @keydown="handleArrowKeys"
-                    placeholder="Search for style guidelines..."
-                    class="w-full p-2 border border-neutral-200 rounded bg-neutral-200" />
-                <ul ref="suggestionsDropdown" v-if="suggestions.length > 0"
+                <input
+v-model="searchQuery" type="text" placeholder="Search for style guidelines..."
+                    class="w-full p-2 border border-neutral-200 rounded bg-neutral-200" @input="updateSuggestions"
+                    @keydown.enter.prevent="handleEnterKey"
+                    @keydown="handleArrowKeys" />
+                <ul
+v-if="suggestions.length > 0" ref="suggestionsDropdown"
                     class="absolute bg-white border border-gray-300 rounded mt-1 w-full">
-                    <li v-for="(suggestion, index) in suggestions" :key="index"
+                    <li
+v-for="(suggestion, index) in suggestions" :key="index"
                         :class="{ 'selected': index === selectedSuggestionIndex }" @click="selectSuggestion(suggestion)"
                         @mouseenter="selectedSuggestionIndex = index">
                         {{ suggestion }}
@@ -128,3 +125,9 @@ onUnmounted(() => {
         </footer>
     </div>
 </template>
+
+<style>
+.selected {
+    background-color: #f0f0f0;
+}
+</style>
