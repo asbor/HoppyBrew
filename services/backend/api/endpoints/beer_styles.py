@@ -385,6 +385,124 @@ async def search_beer_styles(
     return db_query.offset(offset).limit(limit).all()
 
 
+def _calculate_style_distance(
+    style: models.BeerStyle,
+    abv: Optional[float],
+    ibu: Optional[float],
+    og: Optional[float],
+    fg: Optional[float],
+    srm: Optional[float],
+) -> float:
+    """
+    Calculate a distance score for how well a style matches the given vitals.
+    Lower score = better match.
+    Returns 0 if the vitals fall within the style's ranges.
+    """
+    distance = 0.0
+
+    # Helper to convert Decimal to float safely
+    def to_float(val):
+        if val is None:
+            return None
+        try:
+            return float(val)
+        except (TypeError, ValueError):
+            return None
+
+    if abv is not None:
+        style_abv_min = to_float(style.abv_min)
+        style_abv_max = to_float(style.abv_max)
+        if style_abv_min is not None and style_abv_max is not None:
+            if abv < style_abv_min:
+                distance += (style_abv_min - abv) ** 2
+            elif abv > style_abv_max:
+                distance += (abv - style_abv_max) ** 2
+
+    if ibu is not None:
+        style_ibu_min = to_float(style.ibu_min)
+        style_ibu_max = to_float(style.ibu_max)
+        if style_ibu_min is not None and style_ibu_max is not None:
+            if ibu < style_ibu_min:
+                # Normalize IBU contribution (scale down by 10)
+                distance += ((style_ibu_min - ibu) / 10) ** 2
+            elif ibu > style_ibu_max:
+                distance += ((ibu - style_ibu_max) / 10) ** 2
+
+    if og is not None:
+        style_og_min = to_float(style.og_min)
+        style_og_max = to_float(style.og_max)
+        if style_og_min is not None and style_og_max is not None:
+            if og < style_og_min:
+                # OG differences are small, scale up by 1000
+                distance += ((style_og_min - og) * 1000) ** 2
+            elif og > style_og_max:
+                distance += ((og - style_og_max) * 1000) ** 2
+
+    if fg is not None:
+        style_fg_min = to_float(style.fg_min)
+        style_fg_max = to_float(style.fg_max)
+        if style_fg_min is not None and style_fg_max is not None:
+            if fg < style_fg_min:
+                distance += ((style_fg_min - fg) * 1000) ** 2
+            elif fg > style_fg_max:
+                distance += ((fg - style_fg_max) * 1000) ** 2
+
+    if srm is not None:
+        style_srm_min = to_float(style.color_min_srm)
+        style_srm_max = to_float(style.color_max_srm)
+        if style_srm_min is not None and style_srm_max is not None:
+            if srm < style_srm_min:
+                distance += (style_srm_min - srm) ** 2
+            elif srm > style_srm_max:
+                distance += (srm - style_srm_max) ** 2
+
+    return distance
+
+
+@router.get(
+    "/beer-styles/suggest",
+    response_model=List[schemas.BeerStyleMatch],
+    summary="Suggest matching beer styles",
+    response_description="Beer styles that match the given vital statistics, sorted by score",
+)
+async def suggest_beer_styles(
+    abv: Optional[float] = Query(None, description="Target ABV percentage"),
+    ibu: Optional[float] = Query(None, description="Target IBU"),
+    og: Optional[float] = Query(None, description="Original gravity (e.g., 1.050)"),
+    fg: Optional[float] = Query(None, description="Final gravity (e.g., 1.010)"),
+    srm: Optional[float] = Query(None, description="Color in SRM"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum number of results"),
+    db: Session = Depends(get_db),
+):
+    """
+    Suggest beer styles based on vital statistics.
+
+    This endpoint finds beer styles that best match the given ABV, IBU, OG, FG, and/or SRM
+    values. Styles are ranked by a distance score - lower scores indicate better matches.
+    A score of 0 means the values fall within the style's specified ranges.
+    """
+    # Fetch all styles with their ranges
+    styles = (
+        db.query(models.BeerStyle)
+        .options(
+            joinedload(models.BeerStyle.guideline_source),
+            joinedload(models.BeerStyle.category),
+        )
+        .all()
+    )
+
+    # Calculate distance for each style
+    scored_styles = []
+    for style in styles:
+        distance = _calculate_style_distance(style, abv, ibu, og, fg, srm)
+        scored_styles.append({"style": style, "score": round(distance, 4)})
+
+    # Sort by score (lower is better) and limit results
+    scored_styles.sort(key=lambda x: x["score"])
+
+    return scored_styles[:limit]
+
+
 @router.get(
     "/beer-styles/{style_id}",
     response_model=schemas.BeerStyle,

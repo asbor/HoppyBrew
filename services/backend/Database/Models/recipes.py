@@ -10,6 +10,7 @@ class Recipes(Base):
     __table_args__ = (
         Index("ix_recipes_origin_recipe_id", "origin_recipe_id"),
         Index("ix_recipes_name_version", "name", "version"),
+        Index("ix_recipes_style_id", "style_id"),
     )
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
@@ -64,6 +65,12 @@ class Recipes(Base):
     display_secondary_temp = Column(String)
     display_tertiary_temp = Column(String)
     display_age_temp = Column(String)
+    # Link to beer style from beer_styles table
+    style_id = Column(Integer, ForeignKey("beer_styles.id"), nullable=True)
+    style = relationship(
+        "BeerStyle",
+        backref="recipes",
+    )
     hops = relationship(
         "RecipeHop",
         back_populates="recipe",

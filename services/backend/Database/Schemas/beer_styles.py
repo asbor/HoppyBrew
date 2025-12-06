@@ -182,3 +182,12 @@ class BeerStyleSearch(BaseModel):
     is_custom: Optional[bool] = None
     limit: int = 100
     offset: int = 0
+
+
+class BeerStyleMatch(BaseModel):
+    """Schema for beer style suggestion match results"""
+
+    style: "BeerStyle"
+    score: float  # Distance score - lower is better match
+
+    model_config = ConfigDict(from_attributes=True)

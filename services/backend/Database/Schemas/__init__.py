@@ -41,6 +41,7 @@ from .beer_styles import (
     BeerStyleUpdate,
     BeerStyle,
     BeerStyleSearch,
+    BeerStyleMatch,
 )
 from .equipment_profiles import EquipmentProfileBase
 from .water_profiles import (
@@ -171,6 +172,7 @@ __all__ = [
     "BeerStyleUpdate",
     "BeerStyle",
     "BeerStyleSearch",
+    "BeerStyleMatch",
     "EquipmentProfileBase",
     "WaterProfileBase",
     "WaterProfileCreate",

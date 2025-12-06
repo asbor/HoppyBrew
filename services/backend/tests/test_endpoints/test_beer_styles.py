@@ -427,3 +427,110 @@ def test_filter_beer_styles_by_custom(client, db_session):
     data = response.json()
     assert len(data) == 1
     assert data[0]["name"] == "American IPA"
+
+
+def test_suggest_beer_styles(client, db_session):
+    """Test suggesting beer styles based on vitals"""
+    source = models.StyleGuidelineSource(name="BJCP 2021", year=2021)
+    db_session.add(source)
+    db_session.commit()
+    db_session.refresh(source)
+
+    # Create styles with different vital ranges
+    style1 = models.BeerStyle(
+        guideline_source_id=source.id,
+        name="American IPA",
+        abv_min=5.5,
+        abv_max=7.5,
+        ibu_min=40,
+        ibu_max=70,
+        og_min=1.056,
+        og_max=1.070,
+        fg_min=1.008,
+        fg_max=1.014,
+        color_min_srm=6,
+        color_max_srm=14,
+        is_custom=False,
+    )
+    style2 = models.BeerStyle(
+        guideline_source_id=source.id,
+        name="Light Lager",
+        abv_min=3.5,
+        abv_max=4.5,
+        ibu_min=8,
+        ibu_max=15,
+        og_min=1.032,
+        og_max=1.040,
+        fg_min=1.004,
+        fg_max=1.008,
+        color_min_srm=2,
+        color_max_srm=4,
+        is_custom=False,
+    )
+    style3 = models.BeerStyle(
+        guideline_source_id=source.id,
+        name="Imperial Stout",
+        abv_min=8.0,
+        abv_max=12.0,
+        ibu_min=50,
+        ibu_max=90,
+        og_min=1.075,
+        og_max=1.115,
+        fg_min=1.018,
+        fg_max=1.030,
+        color_min_srm=30,
+        color_max_srm=40,
+        is_custom=False,
+    )
+    db_session.add_all([style1, style2, style3])
+    db_session.commit()
+
+    # Query for an IPA-like beer
+    response = client.get("/beer-styles/suggest?abv=6.0&ibu=55&srm=10&limit=3")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 3
+
+    # American IPA should be the best match (score 0)
+    assert data[0]["style"]["name"] == "American IPA"
+    assert data[0]["score"] == 0
+
+    # The other styles should have non-zero scores
+    assert data[1]["score"] > 0
+    assert data[2]["score"] > 0
+
+
+def test_suggest_beer_styles_empty_db(client, db_session):
+    """Test suggesting beer styles when no styles exist"""
+    response = client.get("/beer-styles/suggest?abv=5.5&ibu=40")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 0
+
+
+def test_suggest_beer_styles_partial_params(client, db_session):
+    """Test suggesting beer styles with only some parameters"""
+    source = models.StyleGuidelineSource(name="BJCP 2021", year=2021)
+    db_session.add(source)
+    db_session.commit()
+    db_session.refresh(source)
+
+    style = models.BeerStyle(
+        guideline_source_id=source.id,
+        name="American IPA",
+        abv_min=5.5,
+        abv_max=7.5,
+        ibu_min=40,
+        ibu_max=70,
+        is_custom=False,
+    )
+    db_session.add(style)
+    db_session.commit()
+
+    # Query with just ABV
+    response = client.get("/beer-styles/suggest?abv=6.5")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["style"]["name"] == "American IPA"
+    assert data[0]["score"] == 0  # ABV 6.5 is within 5.5-7.5

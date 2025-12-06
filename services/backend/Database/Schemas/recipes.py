@@ -1,7 +1,7 @@
 # Database/Schemas/recipes_hops.py
 
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Any
 from .hops import RecipeHopBase, RecipeHop
 from .fermentables import RecipeFermentableBase, RecipeFermentable
 from .miscs import RecipeMiscBase, RecipeMisc
@@ -120,6 +120,8 @@ class RecipeBase(BaseModel):
     display_secondary_temp: Optional[str] = None
     display_tertiary_temp: Optional[str] = None
     display_age_temp: Optional[str] = None
+    # Reference to beer style
+    style_id: Optional[int] = None
     # List of objects for each ingredient type
     hops: List[RecipeHopBase] = Field(default_factory=list)
     fermentables: List[RecipeFermentableBase] = Field(default_factory=list)
@@ -138,6 +140,8 @@ class Recipe(RecipeBase):
     fermentables: List[RecipeFermentable] = Field(default_factory=list)
     miscs: List[RecipeMisc] = Field(default_factory=list)
     yeasts: List[RecipeYeast] = Field(default_factory=list)
+    # Beer style relationship (optional - loaded when style_id is set)
+    style: Optional[Any] = None
 
     model_config = ConfigDict(
         from_attributes=True,  # Pydantic v2: renamed from orm_mode
@@ -147,6 +151,8 @@ class Recipe(RecipeBase):
                 "id": 42,
                 "is_batch": False,
                 "origin_recipe_id": None,
+                "style_id": None,
+                "style": None,
             }
         },
     )
